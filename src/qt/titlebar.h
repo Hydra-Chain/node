@@ -44,6 +44,12 @@ public:
      */
     void setTabBarInfo(QObject* info);
 
+    /**
+     * @brief getUI gets the *ui member
+     */
+    Ui::TitleBar* getUI() {return ui;};
+
+
 Q_SIGNALS:
 
 public Q_SLOTS:

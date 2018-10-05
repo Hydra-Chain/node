@@ -225,7 +225,7 @@
      </widget>
      <widget class="QWidget" name="tabWallet">
       <attribute name="title">
-       <string>W&amp;allet</string>
+       <string>&amp;Wallet</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_Wallet">
        <property name="spacing">

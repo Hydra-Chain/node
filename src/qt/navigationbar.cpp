@@ -9,15 +9,17 @@
 
 namespace NavigationBar_NS
 {
-static const int ToolButtonWidth = 200;
-static const int ToolButtonHeight = 54;
+static const int ToolButtonWidth = 185;
+//static const int ToolButtonHeight = 54;
 static const int ToolButtonIconSize = 32;
-static const int MarginLeft = 0;
+static const int MarginLeft = 6;
 static const int MarginRight = 0;
-static const int MarginTop = 0;
-static const int MarginBottom = 8;
-static const int ButtonSpacing = 2;
+static const int MarginTop = 6;
+static const int MarginBottom = 0;
+static const int ButtonSpacing = 0;
 static const int SubNavPaddingRight = 40;
+static const int SubNavSpacing = 10;
+
 }
 using namespace NavigationBar_NS;
 
@@ -73,15 +75,15 @@ protected:
             }
             else if(toolbutton->state & (QStyle::State_Sunken | QStyle::State_On))
             {
-                color = 0xe5f3f9;
+                color = 0xffffff;
             }
             else if(toolbutton->state & QStyle::State_MouseOver)
             {
-                color = 0xb3dcef;
+                color = 0xffffff;
             }
             else
             {
-                color = 0x7fc4e3;
+                color = 0x000012;
             }
 
             // Determine area
@@ -110,9 +112,9 @@ protected:
     void updateIcon(QStyleOptionToolButton &toolbutton)
     {
         // Update mouse over icon
-        if((toolbutton.state & QStyle::State_Enabled) &&
+        if(!((toolbutton.state & QStyle::State_Enabled) &&
                 !(toolbutton.state & QStyle::State_On) &&
-                (toolbutton.state & QStyle::State_MouseOver))
+                (toolbutton.state & QStyle::State_MouseOver)))
         {
             if(!m_iconCached)
             {
@@ -122,6 +124,12 @@ protected:
                 m_iconCached = true;
             }
             toolbutton.icon = m_hoverIcon;
+        }
+        else
+        {
+			QIcon icon = toolbutton.icon;
+			QPixmap pixmap = icon.pixmap(toolbutton.iconSize, QIcon::Normal, QIcon::On);
+			toolbutton.icon = QIcon(pixmap);;
         }
     }
 
@@ -161,7 +169,7 @@ QAction *NavigationBar::addGroup(QList<QAction *> list, const QString &text)
     return action;
 }
 
-void NavigationBar::buildUi()
+void NavigationBar::buildUi(QVBoxLayout* vboxLayoutMainSuper)
 {
     // Build the layout of the complex GUI component
     if(!m_built)
@@ -172,13 +180,26 @@ void NavigationBar::buildUi()
         // Create new layout for the bar
         QActionGroup* actionGroup = new QActionGroup(this);
         actionGroup->setExclusive(true);
-        QVBoxLayout* vboxLayout = new QVBoxLayout(this);
-        int defButtonWidth = ToolButtonWidth;
+        QVBoxLayout* vboxLayoutMain = new QVBoxLayout(this);
+        vboxLayoutMain->setSpacing(SubNavSpacing);
+        vboxLayoutMain->setMargin(0);
+        QHBoxLayout* vboxLayout = new QHBoxLayout();
         vboxLayout->setContentsMargins(m_subBar ? 0 : MarginLeft,
                                        m_subBar ? 0 : MarginTop,
                                        m_subBar ? 0 : MarginRight,
                                        m_subBar ? 0 : MarginBottom);
+        if(m_subBar)
+        {
+        	vboxLayoutMainSuper->addLayout(vboxLayout);
+        }
+        else
+        {
+        	vboxLayoutMain->addLayout(vboxLayout);
+        }
+        int defButtonWidth = ToolButtonWidth;
+
         vboxLayout->setSpacing(m_subBar ? 0 : ButtonSpacing);
+        vboxLayout->setAlignment(Qt::AlignTop);
 
         // List all actions
         for(int i = 0; i < m_actions.count(); i++)
@@ -188,13 +209,16 @@ void NavigationBar::buildUi()
             action->setActionGroup(actionGroup);
             action->setCheckable(true);
             QToolButton* toolButton = new NavToolButton(this, m_subBar);
-            toolButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+            toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
             toolButton->setToolButtonStyle(m_toolStyle);
             toolButton->setDefaultAction(action);
+            mapActionToolButton(action, toolButton);
             toolButton->setIconSize(QSize(ToolButtonIconSize, ToolButtonIconSize));
+            toolButton->setStyleSheet("border-radius: 0px;");
             if(m_subBar)
             {
                 SetObjectStyleSheet(toolButton, StyleSheetNames::ToolSubBlack);
+                toolButton->setVisible(!m_subBar);
             }
             else
             {
@@ -204,10 +228,12 @@ void NavigationBar::buildUi()
             if(m_groups.contains(action))
             {
                 // Add the tool button
-                QVBoxLayout* vboxLayout2 = new QVBoxLayout();
-                vboxLayout->addLayout(vboxLayout2);
-                vboxLayout2->addWidget(toolButton);
-                vboxLayout2->setSpacing(0);
+                if(!m_subBar)
+				{
+                	toolButton->setMinimumWidth(defButtonWidth);
+				}
+                vboxLayout->addWidget(toolButton);
+                //vboxLayout2->setSpacing(0);
                 if(!m_subBar)
                 {
                     SetObjectStyleSheet(toolButton, StyleSheetNames::ToolGroupBlack);
@@ -221,13 +247,20 @@ void NavigationBar::buildUi()
                 {
                     subNavBar->addAction(group[j]);
                 }
-                vboxLayout2->addWidget(subNavBar);
-                subNavBar->buildUi();
+                if(!m_subBar)
+				{
+                	subNavBar->setMinimumWidth(defButtonWidth);
+				}
+                vboxLayoutMain->addWidget(subNavBar);
+                subNavBar->buildUi(vboxLayoutMain);
                 connect(action, SIGNAL(toggled(bool)), subNavBar, SLOT(onSubBarClick(bool)));
             }
             else
             {
-
+            	if(!m_subBar)
+            	{
+            		toolButton->setMinimumWidth(defButtonWidth);
+            	}
                 vboxLayout->addWidget(toolButton);
             }
         }
@@ -240,7 +273,7 @@ void NavigationBar::buildUi()
                 m_actions[0]->setChecked(true);
             }
             setMinimumWidth(defButtonWidth + MarginLeft + MarginRight);
-            vboxLayout->addStretch(1);
+            vboxLayout->addStretch();
         }
 
         // The component is built
@@ -250,6 +283,11 @@ void NavigationBar::buildUi()
 
 void NavigationBar::onSubBarClick(bool clicked)
 {
+    for(int i = 0; i < m_actions.count(); i++)
+    {
+        QAction* action = m_actions[i];
+        m_ActionToolbars[action]->setVisible(false);
+    }
     // Expand/collapse the sub-navigation bar
     setVisible(clicked);
 
@@ -261,11 +299,12 @@ void NavigationBar::onSubBarClick(bool clicked)
         for(int i = 0; i < m_actions.count(); i++)
         {
             QAction* action = m_actions[i];
+            m_ActionToolbars[action]->setVisible(true);
             if(action->isChecked())
             {
                 action->trigger();
                 haveChecked = true;
-                break;
+                //break;
             }
         }
         if(!haveChecked)
@@ -292,6 +331,12 @@ void NavigationBar::mapGroup(QAction *action, QList<QAction *> list)
     // Map the group with the actions
     addAction(action);
     m_groups[action] = list;
+}
+
+void NavigationBar::mapActionToolButton(QAction *action, QToolButton *toolButton)
+{
+    // Map the toolButton with the actions
+    m_ActionToolbars[action] = toolButton;
 }
 
 void NavigationBar::setSubBar(bool subBar)

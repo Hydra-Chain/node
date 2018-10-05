@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include <vector>
+#include "../validation.h"
 
 class CBlockIndex;
 class CCoinsViewCache;
@@ -17,6 +18,8 @@ class CValidationState;
 
 /** Context-independent validity checks */
 bool CheckTransaction(const CTransaction& tx, CValidationState& state, bool fCheckDuplicateInputs=true);
+
+bool CheckQtumTransaction(const ExtractQtumTX & extractQtumTxResult, CValidationState& state);
 
 namespace Consensus {
 /**

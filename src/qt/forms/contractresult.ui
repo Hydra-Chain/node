@@ -124,7 +124,7 @@ background: transparent;
           </size>
          </property>
          <property name="text">
-          <string>SenderAddress</string>
+          <string>Sender Address</string>
          </property>
         </widget>
        </item>
@@ -348,7 +348,7 @@ background: transparent;
           </size>
          </property>
          <property name="text">
-          <string>SenderAddress</string>
+          <string>Sender Address</string>
          </property>
         </widget>
        </item>

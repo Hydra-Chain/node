@@ -158,6 +158,22 @@ BASE_SCRIPTS= [
     'qtum-many-value-refunds-from-same-tx.py',
     'qtum-combined-outputs-exceed-gas-limit.py',
     'qtum-dgp-gas-price-lingering-mempool-tx.py',
+
+    # LockTrip
+    'economy-addcontract-outside-coinstake.py',
+    'economy-addedcontract-with-coinstakecall.py',
+    'economy-addedcontract-without-coinstakecall.py',
+    'economy-block-with-required-dividend.py',
+    'economy-block-without-required-dividend.py',
+    'economy-dividend-systemcontract.py',
+    'economy-dividend-wrongreceiver.py',
+    'economy-nocontract-coinstakecall.py',
+    'economy-opcoinstake-differentcontract.py',
+    'economy-opcoinstake-onceinblock.py',
+    'economy-opcoinstake-tx.py',
+    'economy-opcoinstake-txinblock.py',
+    'economy-updatecontract-right.py',
+    'economy-updatecontract-wrong.py'
 ]
 
 EXTENDED_SCRIPTS = [
@@ -307,8 +323,8 @@ def main():
 def run_tests(test_list, src_dir, build_dir, exeext, tmpdir, jobs=1, enable_coverage=False, args=[]):
     # Warn if bitcoind is already running (unix only)
     try:
-        if subprocess.check_output(["pidof", "qtumd"]) is not None:
-            print("%sWARNING!%s There is already a qtumd process running on this system. Tests may fail unexpectedly due to resource contention!" % (BOLD[1], BOLD[0]))
+        if subprocess.check_output(["pidof", "locktripd"]) is not None:
+            print("%sWARNING!%s There is already a locktripd process running on this system. Tests may fail unexpectedly due to resource contention!" % (BOLD[1], BOLD[0]))
     except (OSError, subprocess.SubprocessError):
         pass
 
@@ -319,8 +335,8 @@ def run_tests(test_list, src_dir, build_dir, exeext, tmpdir, jobs=1, enable_cove
 
     #Set env vars
     if "BITCOIND" not in os.environ:
-        os.environ["BITCOIND"] = build_dir + '/src/qtumd' + exeext
-        os.environ["BITCOINCLI"] = build_dir + '/src/qtum-cli' + exeext
+        os.environ["BITCOIND"] = build_dir + '/src/locktripd' + exeext
+        os.environ["BITCOINCLI"] = build_dir + '/src/locktrip-cli' + exeext
 
     tests_dir = src_dir + '/test/functional/'
 

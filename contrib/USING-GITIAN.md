@@ -7,14 +7,14 @@ Generate GPG key on your computer:
 3. ```gpg --armor --export 3AA5C34371567BD2```(Enter the hash from previous command)
 Copy got gpg key into the /contrib/gitian-keys/ folder with .pgp format.
 ### Setting up Gitian
-1. Replace .yml files in qtum/contrib/gitian-descriptors folder. Replace gitian-build.sh in qtum/contrib folder. Add windeploy/ folder into the qtum/contrib. Push these changes to remote repository https://github.com/qtumproject/qtum/. Also very important, windeploy/ folder should be The same version as you want to build. You will couldn't build win binaries without this folder in version which you want to build.
-2. gitian-build.sh script should be started from directory where qtum places(like in instruction).
+1. Replace .yml files in LockTrip/contrib/gitian-descriptors folder. Replace gitian-build.sh in LockTrip/contrib folder. Add windeploy/ folder into the LockTrip/contrib. Push these changes to remote repository https://gitlab.com/LockTrip-Dev-Team/LockTrip. Also very important, windeploy/ folder should be The same version as you want to build. You will couldn't build win binaries without this folder in version which you want to build.
+2. gitian-build.sh script should be started from directory where LockTrip places(like in instruction).
 ##### First time / New Gitian builders
-These actions are executed once when first using gitian-builder. If you have used gitian-builder for qtum skip these steps.
-1. ```qtum/contrib/gitian-build.sh --setup``` This command create and setup virtual machines to build your binaries files. This command may take a while (about 40 minutes). If you want to use KVM as build VM , run script with ```--kvm```.
-    ```qtum/contrib/gitian-build.sh --setup --kvm```
+These actions are executed once when first using gitian-builder. If you have used gitian-builder for LockTrip skip these steps.
+1. ```LockTrip/contrib/gitian-build.sh --setup``` This command create and setup virtual machines to build your binaries files. This command may take a while (about 40 minutes). If you want to use KVM as build VM , run script with ```--kvm```.
+    ```LockTrip/contrib/gitian-build.sh --setup --kvm```
 
-2. Create the OS X SDK tarball( https://github.com/qtumproject/qtum/blob/master/doc/README_osx.md), create inputs/ folder in gitian-builder/ . Copy MacOSX10.11.sdk.tar.gz into the inputs/ directory.
+2. Create the OS X SDK tarball( https://gitlab.com/LockTrip-Dev-Team/LockTrip/blob/master/doc/README_osx.md), create inputs/ folder in gitian-builder/ . Copy MacOSX10.11.sdk.tar.gz into the inputs/ directory.
 ##### Not first time
 Ensure that the ./gitian.sigs directory is up to date for signs verifying.
 
@@ -28,10 +28,10 @@ Ensure that the ./gitian-builder directory is up to date.
     git pull
     popd
 
-### Build and sign Qtum for Linux, Windows, and OS X:
+### Build and sign LockTrip for Linux, Windows, and OS X:
 
-  ```qtum/contrib/gitian-build.sh --build --signer signer version``` or 
-  ```qtum/contrib/gitian-build.sh --build --kvm --signer signer version```
+  ```LockTrip/contrib/gitian-build.sh --build --signer signer version``` or 
+  ```LockTrip/contrib/gitian-build.sh --build --kvm --signer signer version```
 
 signer — GPG Signer sign assert files for builds (name you entered with GPG key creation). When script is running you must specify passphrase. Use passphrase you entered with the GPG key creation. 
 
@@ -47,12 +47,12 @@ When script is running you may check state of installation and build progress wi
     
 Output will look something like:
     
-    Initialized empty Git repository in /home/gitianuser/gitian-builder/inputs/qtum/.git/
+    Initialized empty Git repository in /home/gitianuser/gitian-builder/inputs/LockTrip/.git/
     remote: Counting objects: 57959, done.
     remote: Total 57959 (delta 0), reused 0 (delta 0), pack-reused 57958
     Receiving objects: 100% (57959/57959), 53.76 MiB | 484.00 KiB/s, done.
     Resolving deltas: 100% (41590/41590), done.
-    From https://github.com/qtumproject/qtum
+    From https://gitlab.com/LockTrip-Dev-Team/LockTrip
     ... (new tags, new branch etc)
     --- Building for trusty amd64 ---
     Stopping target if it is up
@@ -84,15 +84,15 @@ Build output expected:
 
 Add other gitian builders keys to your gpg keyring
 
-    gpg --import qtum/contrib/gitian-keys/*.pgp
+    gpg --import LockTrip/contrib/gitian-keys/*.pgp
     gpg --refresh-keys
 
 Verify the signatures
 
     pushd ./gitian-builder
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../qtum/contrib/gitian-descriptors/gitian-linux.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../qtum/contrib/gitian-descriptors/gitian-win.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../qtum/contrib/gitian-descriptors/gitian-osx.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../LockTrip/contrib/gitian-descriptors/gitian-linux.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../LockTrip/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../LockTrip/contrib/gitian-descriptors/gitian-osx.yml
     popd
 
 ### Next steps:
@@ -114,7 +114,7 @@ Codesigner only: Sign the windows binaries:
 
 Codesigner only: Commit the detached codesign payloads:
 
-    cd /path/to/qtum-detached-sigs
+    cd /path/to/LockTrip-detached-sigs
     checkout the appropriate branch for this release series
     rm -rf *
     tar xf signature-osx.tar.gz
@@ -126,14 +126,14 @@ Codesigner only: Commit the detached codesign payloads:
 Non-codesigners: wait for Windows/OS X detached signatures:
 
     Once the Windows/OS X builds each have 3 matching signatures, they will be signed with their respective release keys.
-    Detached signatures will then be committed to the qtum-detached-sigs repository, which can be combined with the unsigned apps to create signed binaries.
+    Detached signatures will then be committed to the LockTrip-detached-sigs repository, which can be combined with the unsigned apps to create signed binaries.
 
 Create the signed OS X binary:
-```qtum/contrib/gitian-build.sh --sign -o x --signer signer version```
+```LockTrip/contrib/gitian-build.sh --sign -o x --signer signer version```
 
 Create the signed Win binary:
-```qtum/contrib/gitian-build.sh --sign -o w --signer signer version```
+```LockTrip/contrib/gitian-build.sh --sign -o w --signer signer version```
 
 Commit your signed signatures for OS X and Win.
 You can verify all binaries with:
-```qtum/contrib/gitian-build.sh --verify version```
+```LockTrip/contrib/gitian-build.sh --verify version```

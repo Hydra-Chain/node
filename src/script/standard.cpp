@@ -35,6 +35,7 @@ const char* GetTxnOutputType(txnouttype t)
     case TX_WITNESS_V0_SCRIPTHASH: return "witness_v0_scripthash";
     case TX_CREATE: return "create";
     case TX_CALL: return "call";
+    case TX_COINSTAKE_CALL: return "coinstake_call";
     }
     return nullptr;
 }
@@ -61,12 +62,14 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::v
         // Sender provides N pubkeys, receivers provides M signatures
         mTemplates.insert(std::make_pair(TX_MULTISIG, CScript() << OP_SMALLINTEGER << OP_PUBKEYS << OP_SMALLINTEGER << OP_CHECKMULTISIG));
 
+        //Call contract from coinstake
+        mTemplates.insert(std::make_pair(TX_COINSTAKE_CALL, CScript() << OP_VERSION << OP_DATA << OP_PUBKEYHASH << OP_COINSTAKE_CALL));
+
         // Contract creation tx
         mTemplates.insert(std::make_pair(TX_CREATE, CScript() << OP_VERSION << OP_GAS_LIMIT << OP_GAS_PRICE << OP_DATA << OP_CREATE));
 
         // Call contract tx
         mTemplates.insert(std::make_pair(TX_CALL, CScript() << OP_VERSION << OP_GAS_LIMIT << OP_GAS_PRICE << OP_DATA << OP_PUBKEYHASH << OP_CALL));
-
     }
 
     vSolutionsRet.clear();
@@ -94,6 +97,7 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::v
             vSolutionsRet.push_back(witnessprogram);
             return true;
         }
+
         return false;
     }
 
@@ -167,8 +171,9 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::v
             }
             else if (opcode2 == OP_PUBKEYHASH)
             {
-                if (vch1.size() != sizeof(uint160))
+                if (vch1.size() != sizeof(uint160)) {
                     break;
+                }
                 vSolutionsRet.push_back(vch1);
             }
             else if (opcode2 == OP_SMALLINTEGER)
@@ -187,8 +192,9 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::v
             {
                 if(0 <= opcode1 && opcode1 <= OP_PUSHDATA4)
                 {
-                    if(vch1.empty() || vch1.size() > 4 || (vch1.back() & 0x80))
+                    if(vch1.empty() || vch1.size() > 4 || (vch1.back() & 0x80)) {
                         return false;
+                    }
 
                     version = VersionVM::fromRaw(CScriptNum::vch_to_uint64(vch1));
                     if(!(version.toRaw() == VersionVM::GetEVMDefault().toRaw() || version.toRaw() == VersionVM::GetNoExec().toRaw())){
@@ -206,6 +212,7 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::v
                             return false;
                         }
                         if (val > MAX_BLOCK_GAS_LIMIT_DGP) {
+
                             //do not allow transactions that could use more gas than is in a block
                             return false;
                         }
@@ -249,8 +256,9 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::v
             {
                 if(0 <= opcode1 && opcode1 <= OP_PUSHDATA4)
                 {
-                    if(vch1.empty())
+                    if(vch1.empty()) {
                         break;
+                    }
                 }
             }
             ///////////////////////////////////////////////////////////

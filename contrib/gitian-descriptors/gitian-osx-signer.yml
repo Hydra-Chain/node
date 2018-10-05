@@ -1,5 +1,5 @@
 ---
-name: "qtum-dmg-signer"
+name: "locktrip-dmg-signer"
 suites:
 - "trusty"
 architectures:
@@ -7,10 +7,10 @@ architectures:
 packages:
 - "faketime"
 remotes:
-- "url": "https://github.com/qtumproject/qtum-detached-sigs.git"
+- "url": "https://gitlab.com/LockTrip-Dev-Team/locktrip-detached-sigs.git"
   "dir": "signature"
 files:
-- "qtum-osx-unsigned.tar.gz"
+- "locktrip-osx-unsigned.tar.gz"
 script: |
   WRAP_DIR=$HOME/wrapped
   mkdir -p ${WRAP_DIR}
@@ -27,8 +27,8 @@ script: |
     chmod +x ${WRAP_DIR}/${prog}
   done
 
-  UNSIGNED=qtum-osx-unsigned.tar.gz
-  SIGNED=qtum-osx-signed.dmg
+  UNSIGNED=locktrip-osx-unsigned.tar.gz
+  SIGNED=locktrip-osx-signed.dmg
 
   tar -xf ${UNSIGNED}
   OSX_VOLNAME="$(cat osx_volname)"

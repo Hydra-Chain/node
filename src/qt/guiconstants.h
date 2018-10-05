@@ -48,9 +48,9 @@ static const int MAX_URI_LENGTH = 255;
 /* Number of frames in spinner animation */
 #define SPINNER_FRAMES 36
 
-#define QAPP_ORG_NAME "Qtum"
+#define QAPP_ORG_NAME "LockTrip"
 #define QAPP_ORG_DOMAIN "qtum.org"
-#define QAPP_APP_NAME_DEFAULT "Qtum-Qt"
-#define QAPP_APP_NAME_TESTNET "Qtum-Qt-testnet"
+#define QAPP_APP_NAME_DEFAULT "LockTrip-Qt"
+#define QAPP_APP_NAME_TESTNET "Locktrip-Qt-testnet"
 
 #endif // BITCOIN_QT_GUICONSTANTS_H

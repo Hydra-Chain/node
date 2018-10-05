@@ -28,10 +28,12 @@
 #include "utilmoneystr.h"
 #include "validationinterface.h"
 #include "wallet/wallet.h"
+#include "locktrip/economy.h"
 
 #include <algorithm>
 #include <queue>
 #include <utility>
+#include <stdint.h>
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -110,25 +112,124 @@ void BlockAssembler::resetBlock()
     nFees = 0;
 }
 
-void BlockAssembler::RebuildRefundTransaction(){
+void BlockAssembler::AddDividentsToCoinstakeTransaction(){
     int refundtx=0; //0 for coinbase in PoW
     if(pblock->IsProofOfStake()){
         refundtx=1; //1 for coinstake in PoS
     }
-    CMutableTransaction contrTx(originalRewardTx);
-    contrTx.vout[refundtx].nValue = nFees + GetBlockSubsidy(nHeight, chainparams.GetConsensus());
-    contrTx.vout[refundtx].nValue -= bceResult.refundSender;
-    //note, this will need changed for MPoS
-    int i=contrTx.vout.size();
-    contrTx.vout.resize(contrTx.vout.size()+bceResult.refundOutputs.size());
-    for(CTxOut& vout : bceResult.refundOutputs){
-        contrTx.vout[i]=vout;
-        i++;
+
+    Economy e;
+    dev::Address contractOwner;
+    std::vector<CTxOut> dividends;
+    for (const auto& pair : bceResult.dividendByContract) {
+        e.getContractOwner(pair.first, contractOwner);
+        //if the contract doesn't have owner we won't pay dividents.Contracts without owners should be dgb contracts and economy contract.
+        if(contractOwner != dev::Address("0"))
+        {
+            originalRewardTx.vout[refundtx].nValue -= pair.second; // Remove the dividents from miner fee and reward.
+            CScript script(CScript() << OP_DUP << OP_HASH160 << contractOwner.asBytes() << OP_EQUALVERIFY << OP_CHECKSIG);
+            CTxOut dividend(pair.second, script);
+            dividends.push_back(dividend);
+            nFees -= pair.second;
+        }
     }
-    pblock->vtx[refundtx] = MakeTransactionRef(std::move(contrTx));
+
+    originalRewardTx.vout.insert(std::end(originalRewardTx.vout), std::begin(dividends), std::end(dividends));
 }
 
-std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx, bool fProofOfStake, int64_t* pTotalFees, int32_t txProofTime, int32_t nTimeLimit)
+void BlockAssembler::CalculateRewardWithoutDividents() {
+    int refundtx=0; //0 for coinbase in PoW
+    if(pblock->IsProofOfStake()){
+        refundtx=1; //1 for coinstake in PoS
+    }
+    originalRewardTx.vout[refundtx].nValue = nFees + GetBlockSubsidy(nHeight, chainparams.GetConsensus());
+    originalRewardTx.vout[refundtx].nValue -= bceResult.refundSender;
+}
+
+void BlockAssembler::AddRefundTransactions(){
+    //note, this will need changed for MPoS
+    int i=originalRewardTx.vout.size();
+    originalRewardTx.vout.resize(originalRewardTx.vout.size() + bceResult.refundOutputs.size());
+    for(CTxOut& vout : bceResult.refundOutputs){
+        originalRewardTx.vout[i]=vout;
+        i++;
+    }
+}
+
+void BlockAssembler::AddTransactionForSavingContractOwners(){
+    Economy e;
+    CScript scriptPubKey;
+    e.getCScriptForAddContract(bceResult.contractAddresses, bceResult.contractOwners, scriptPubKey);
+
+    originalRewardTx.vout.resize(originalRewardTx.vout.size() + 1);
+    int lastElementIndex = originalRewardTx.vout.size() - 1;
+    originalRewardTx.vout[lastElementIndex].scriptPubKey = scriptPubKey;
+    originalRewardTx.vout[lastElementIndex].nValue = 0;
+}
+
+bool BlockAssembler::ExecuteCoinstakeContractCalls(CWallet& wallet, int64_t* pTotalFees, int32_t txProofTime){
+    CKey key;
+    CMutableTransaction txCoinStake(*pblock->vtx[1]);
+    uint32_t nTimeBlock = txProofTime;
+    nTimeBlock &= ~STAKE_TIMESTAMP_MASK;
+
+    wallet.CreateCoinStake(wallet, pblock->nBits, *pTotalFees, nTimeBlock, txCoinStake, key);
+    auto tx = MakeTransactionRef(txCoinStake);
+    QtumTxConverter convert(*(tx.get()), NULL, &pblock->vtx);
+
+    ExtractQtumTX resultConverter;
+    if (!convert.extractionQtumTransactions(resultConverter)) {
+        LogPrintf("ERROR: %s - Error converting txs to qtum txs\n", __func__);
+        return false;
+    }
+
+    std::vector<QtumTransaction> qtumTransactions = resultConverter.first;
+    dev::h256 oldHashStateRoot(globalState->rootHash());
+    dev::h256 oldHashUTXORoot(globalState->rootHashUTXO());
+
+    ByteCodeExec exec(*pblock, qtumTransactions, INT64_MAX);
+    if (!exec.performByteCode()) {
+        LogPrintf("ERROR: %s - Error performing byte code\n", __func__);
+        //error, don't add contract
+        globalState->setRoot(oldHashStateRoot);
+        globalState->setRootUTXO(oldHashUTXORoot);
+        return false;
+    }
+
+    ByteCodeExecResult testExecResult;
+    if(!exec.processingResults(testExecResult)){
+        LogPrintf("ERROR: %s - Error processing results\n", __func__);
+        globalState->setRoot(oldHashStateRoot);
+        globalState->setRootUTXO(oldHashUTXORoot);
+        return false;
+    }
+
+    bool hasExceptions = std::any_of(
+            std::begin(testExecResult.execExceptions),
+            std::end(testExecResult.execExceptions),
+            [](dev::eth::TransactionException ex) {
+                return ex != dev::eth::TransactionException::None;
+            });
+
+    if(hasExceptions){
+        LogPrintf("ERROR: %s - exception raised during contract executions\n", __func__);
+        globalState->setRoot(oldHashStateRoot);
+        globalState->setRootUTXO(oldHashUTXORoot);
+        return false;
+    }
+
+    return  true;
+}
+
+void BlockAssembler::ReplaceRewardTransaction() {
+    int refundtx=0; //0 for coinbase in PoW
+    if(pblock->IsProofOfStake()){
+        refundtx=1; //1 for coinstake in PoS
+    }
+    pblock->vtx[refundtx] = MakeTransactionRef(std::move(originalRewardTx));
+}
+
+std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx, bool fProofOfStake, int64_t* pTotalFees, int32_t txProofTime, int32_t nTimeLimit, CWallet* wallet)
 {
     int64_t nTimeStart = GetTimeMicros();
 
@@ -246,15 +347,25 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     int nPackagesSelected = 0;
     int nDescendantsUpdated = 0;
     addPackageTxs(nPackagesSelected, nDescendantsUpdated, minGasPrice);
-    pblock->hashStateRoot = uint256(h256Touint(dev::h256(globalState->rootHash())));
-    pblock->hashUTXORoot = uint256(h256Touint(dev::h256(globalState->rootHashUTXO())));
-    globalState->setRoot(oldHashStateRoot);
-    globalState->setRootUTXO(oldHashUTXORoot);
 
-    //this should already be populated by AddBlock in case of contracts, but if no contracts
-    //then it won't get populated
-    RebuildRefundTransaction();
-    ////////////////////////////////////////////////////////
+    CalculateRewardWithoutDividents();
+    AddRefundTransactions();
+    if(fProofOfStake) {
+        if(bceResult.contractAddresses.size() != bceResult.contractOwners.size())
+        {
+            globalState->setRoot(oldHashStateRoot);
+            globalState->setRootUTXO(oldHashUTXORoot);
+            LogPrintf("ERROR: %s - Contract addresses and contract owners are with different count in the block\n", __func__);
+            return nullptr;
+        }
+
+        AddDividentsToCoinstakeTransaction();
+        if(bceResult.contractAddresses.size() != 0) {
+            AddTransactionForSavingContractOwners();
+        }
+    }
+
+    ReplaceRewardTransaction();
 
     pblocktemplate->vchCoinbaseCommitment = GenerateCoinbaseCommitment(*pblock, pindexPrev, chainparams.GetConsensus(), fProofOfStake);
     pblocktemplate->vTxFees[0] = -nFees;
@@ -269,6 +380,20 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
     pblock->nNonce         = 0;
     pblocktemplate->vTxSigOpsCost[0] = WITNESS_SCALE_FACTOR * GetLegacySigOpCount(*pblock->vtx[0]);
+
+    if(fProofOfStake && bceResult.contractAddresses.size() != 0) {
+        if(!ExecuteCoinstakeContractCalls(*wallet, pTotalFees, txProofTime)) {
+            globalState->setRoot(oldHashStateRoot);
+            globalState->setRootUTXO(oldHashUTXORoot);
+            LogPrintf("ERROR: %s - Execution of coinstake contract calls failed!\n");
+            return nullptr;
+        }
+    }
+
+    pblock->hashStateRoot = uint256(h256Touint(dev::h256(globalState->rootHash())));
+    pblock->hashUTXORoot = uint256(h256Touint(dev::h256(globalState->rootHashUTXO())));
+    globalState->setRoot(oldHashStateRoot);
+    globalState->setRootUTXO(oldHashUTXORoot);
 
     CValidationState state;
     if (!fProofOfStake && !TestBlockValidity(state, chainparams, *pblock, pindexPrev, false, false)) {
@@ -369,7 +494,17 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateEmptyBlock(const CScript& 
     pblock->hashStateRoot = uint256(h256Touint(dev::h256(globalState->rootHash())));
     pblock->hashUTXORoot = uint256(h256Touint(dev::h256(globalState->rootHashUTXO())));
 
-    RebuildRefundTransaction();
+    CalculateRewardWithoutDividents();
+    AddRefundTransactions();
+
+    if(fProofOfStake) {
+        AddDividentsToCoinstakeTransaction();
+        if(bceResult.contractAddresses.size() != 0) {
+            AddTransactionForSavingContractOwners();
+        }
+    }
+
+    ReplaceRewardTransaction();
     ////////////////////////////////////////////////////////
 
     pblocktemplate->vchCoinbaseCommitment = GenerateCoinbaseCommitment(*pblock, pindexPrev, chainparams.GetConsensus(), fProofOfStake);
@@ -441,7 +576,7 @@ bool BlockAssembler::AttemptToAddContractToBlock(CTxMemPool::txiter iter, uint64
     {
         return false;
     }
-    
+
     dev::h256 oldHashStateRoot(globalState->rootHash());
     dev::h256 oldHashUTXORoot(globalState->rootHashUTXO());
     // operate on local vars first, then later apply to `this`
@@ -537,6 +672,20 @@ bool BlockAssembler::AttemptToAddContractToBlock(CTxMemPool::txiter iter, uint64
     //block is not too big, so apply the contract execution and it's results to the actual block
 
     //apply local bytecode to global bytecode state
+    auto refundOutputs = testExecResult.refundOutputs;
+
+
+    bceResult.contractAddresses.insert(
+            std::end(bceResult.contractAddresses),
+            std::begin(testExecResult.contractAddresses),
+            std::end(testExecResult.contractAddresses));
+    bceResult.contractOwners.insert(
+            std::end(bceResult.contractOwners),
+            std::begin(testExecResult.contractOwners),
+            std::end(testExecResult.contractOwners));
+    bceResult.dividendByContract.insert(
+            std::begin(exec.dividendByContract),
+            std::end(exec.dividendByContract));
     bceResult.usedGas += testExecResult.usedGas;
     bceResult.refundSender += testExecResult.refundSender;
     bceResult.refundOutputs.insert(bceResult.refundOutputs.end(), testExecResult.refundOutputs.begin(), testExecResult.refundOutputs.end());
@@ -559,7 +708,6 @@ bool BlockAssembler::AttemptToAddContractToBlock(CTxMemPool::txiter iter, uint64
     }
     //calculate sigops from new refund/proof tx
     this->nBlockSigOpsCost -= GetLegacySigOpCount(*pblock->vtx[proofTx]);
-    RebuildRefundTransaction();
     this->nBlockSigOpsCost += GetLegacySigOpCount(*pblock->vtx[proofTx]);
 
     bceResult.valueTransfers.clear();
@@ -883,7 +1031,7 @@ void ThreadStakeMiner(CWallet *pwallet)
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
 
     // Make this thread recognisable as the mining thread
-    RenameThread("qtumcoin-miner");
+    RenameThread("locktripcoin-miner");
 
     CReserveKey reservekey(pwallet);
 
@@ -925,7 +1073,9 @@ void ThreadStakeMiner(CWallet *pwallet)
             // First just create an empty block. No need to process transactions until we know we can create a block
             std::unique_ptr<CBlockTemplate> pblocktemplate(BlockAssembler(Params()).CreateEmptyBlock(reservekey.reserveScript, true, true, &nTotalFees));
             if (!pblocktemplate.get())
+            {
                 return;
+            }
             CBlockIndex* pindexPrev =  chainActive.Tip();
 
             uint32_t beginningTime=GetAdjustedTime();
@@ -952,9 +1102,12 @@ void ThreadStakeMiner(CWallet *pwallet)
                     // Create a block that's properly populated with transactions
                     std::unique_ptr<CBlockTemplate> pblocktemplatefilled(
                             BlockAssembler(Params()).CreateNewBlock(pblock->vtx[1]->vout[1].scriptPubKey, true, true, &nTotalFees,
-                                                                    i, FutureDrift(GetAdjustedTime()) - STAKE_TIME_BUFFER));
+                                                                    i, FutureDrift(GetAdjustedTime()) - STAKE_TIME_BUFFER, pwallet));
                     if (!pblocktemplatefilled.get())
+                    {
+                        LogPrintf("ERROR: %s - CreateNewBlock() returned nullptr\n");
                         return;
+                    }
                     if (chainActive.Tip()->GetBlockHash() != pblock->hashPrevBlock) {
                         //another block was received while building ours, scrap progress
                         LogPrintf("ThreadStakeMiner(): Valid future PoS block was orphaned before becoming valid");

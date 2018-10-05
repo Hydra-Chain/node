@@ -149,8 +149,8 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     result.push_back(Pair("bits", strprintf("%08x", blockindex->nBits)));
     result.push_back(Pair("difficulty", GetDifficulty(blockindex)));
     result.push_back(Pair("chainwork", blockindex->nChainWork.GetHex()));
-    result.push_back(Pair("hashStateRoot", blockindex->hashStateRoot.GetHex())); // qtum
-    result.push_back(Pair("hashUTXORoot", blockindex->hashUTXORoot.GetHex())); // qtum
+    result.push_back(Pair("hashStateRoot", blockindex->hashStateRoot.GetHex())); // locktrip
+    result.push_back(Pair("hashUTXORoot", blockindex->hashUTXORoot.GetHex())); // locktrip
 
     if (blockindex->pprev)
         result.push_back(Pair("previousblockhash", blockindex->pprev->GetBlockHash().GetHex()));
@@ -1359,16 +1359,8 @@ UniValue waitforlogs(const JSONRPCRequest& request_) {
 
     UniValue jsonLogs(UniValue::VARR);
 
-    std::set<uint256> dupes;
-
     for (const auto& txHashes : hashesToBlock) {
         for (const auto& txHash : txHashes) {
-
-            if(dupes.find(txHash) != dupes.end()) {
-                continue;
-            }
-            dupes.insert(txHash);
-
             std::vector<TransactionReceiptInfo> receipts = pstorageresult->getResult(
                     uintToh256(txHash));
 
@@ -1497,20 +1489,12 @@ UniValue searchlogs(const JSONRPCRequest& request)
 
     auto topics = params.topics;
 
-    std::set<uint256> dupes;
-
     for(const auto& hashesTx : hashesToBlock)
     {
         for(const auto& e : hashesTx)
         {
-
-            if(dupes.find(e) != dupes.end()) {
-                continue;
-            }
-            dupes.insert(e);
-
             std::vector<TransactionReceiptInfo> receipts = pstorageresult->getResult(uintToh256(e));
-
+            
             for(const auto& receipt : receipts) {
                 if(receipt.logs.empty()) {
                     continue;
@@ -1815,8 +1799,8 @@ UniValue gettxout(const JSONRPCRequest& request)
             "     \"hex\" : \"hex\",        (string) \n"
             "     \"reqSigs\" : n,          (numeric) Number of required signatures\n"
             "     \"type\" : \"pubkeyhash\", (string) The type, eg pubkeyhash\n"
-            "     \"addresses\" : [          (array of string) array of qtum addresses\n"
-            "        \"address\"     (string) qtum address\n"
+            "     \"addresses\" : [          (array of string) array of locktrip addresses\n"
+            "        \"address\"     (string) locktrip address\n"
             "        ,...\n"
             "     ]\n"
             "  },\n"

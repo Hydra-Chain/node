@@ -17,6 +17,14 @@
 #include <QMenu>
 #include <QPoint>
 #include <QSystemTrayIcon>
+#include <QBitmap>
+#include <QPainter>
+#include <QPixmap>
+
+
+class QBitmap;
+class QPainter;
+class QPixmap;
 
 class ClientModel;
 class NetworkStyle;
@@ -178,11 +186,12 @@ private:
     void updateHeadersSyncProgressLabel();
 
     /** Add docking windows to the main windows */
-    void addDockWindows(Qt::DockWidgetArea area, QWidget* widget);
+    void addDockWindows(Qt::DockWidgetArea area, QWidget* widget, bool isToolBar);
 
 Q_SIGNALS:
     /** Signal raised when a URI was entered or dragged to the GUI */
     void receivedURI(const QString &uri);
+
 
 public Q_SLOTS:
     /** Set number of connections shown in the UI */

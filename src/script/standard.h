@@ -60,6 +60,7 @@ enum txnouttype
     TX_NULL_DATA,
     TX_WITNESS_V0_SCRIPTHASH,
     TX_WITNESS_V0_KEYHASH,
+    TX_COINSTAKE_CALL,
     TX_CREATE,
     TX_CALL,
 };

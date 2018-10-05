@@ -93,7 +93,7 @@ class OpCallTest(BitcoinTestFramework):
         sync_blocks(self.nodes)
         for i in range(2):
             assert(self.nodes[i].getblockcount() == block_height+1)
-            assert(len(self.nodes[i].listcontracts()) == 1+NUM_DEFAULT_DGP_CONTRACTS)
+            assert(len(self.nodes[i].listcontracts()) == 1+1+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 1 new economy contract in genesis
 
     # Sends a tx containing 2 op_call outputs calling inc()
     def many_calls_in_same_tx_test(self):

@@ -2,6 +2,9 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+
+//Commented for now nSubsidyHalvingInterval is removed
+/*
 #include "chainparams.h"
 #include "validation.h"
 #include "net.h"
@@ -45,6 +48,7 @@ BOOST_AUTO_TEST_CASE(block_subsidy_test)
     TestBlockSubsidyHalvings(1000); // Just another interval
 }
 
+//Commented for now nSubsidyHalvingInterval is removed
 BOOST_AUTO_TEST_CASE(subsidy_limit_test)
 {
     const auto chainParams = CreateChainParams(CBaseChainParams::MAIN);
@@ -103,3 +107,4 @@ BOOST_AUTO_TEST_CASE(test_combiner_all)
     BOOST_CHECK(Test());
 }
 BOOST_AUTO_TEST_SUITE_END()
+*/

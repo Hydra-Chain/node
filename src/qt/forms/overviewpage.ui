@@ -557,7 +557,7 @@
      <item>
       <widget class="QLabel" name="labelRecentTransactions">
        <property name="text">
-        <string>RecentTransactions</string>
+        <string>Recent Transactions</string>
        </property>
       </widget>
      </item>
@@ -663,7 +663,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="labelAmount">
+           <widget class="QLabel" name="labelAmountOverview">
             <property name="text">
              <string>Amount</string>
             </property>
@@ -677,7 +677,7 @@
         <item>
          <widget class="QListView" name="listTransactions">
           <property name="styleSheet">
-           <string notr="true">QListView { background: transparent; }</string>
+           <string notr="true">QListView { background: #e8e8e8; }</string>
           </property>
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>

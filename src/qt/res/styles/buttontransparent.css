@@ -2,21 +2,21 @@
 Push Button Transparent CSS
 --------------------------------------------*/
 QPushButton {
-	background-color: transparent;
+	color: #ffffff;
+	background-color: #a2c5bf;
 	padding: 6px;
 	border: none;
-    min-width: 0px;
-    border-radius: 0px;
+	min-width: 0px;
+	border-radius: 2px;
+	margin: 5px;
 }
 QPushButton::hover{
-	background-color: rgba(89, 89, 92, 20%);
-	border-top: 1px solid #2c2c2c;
-	border-bottom: 1px solid #2c2c2c;
+	background-color: #d87a61;
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
 QPushButton::pressed{
-	background-color: rgba(89, 89, 92, 30%);
+	background-color: #223843;
 }
 QPushButton::disabled{
 	background-color: transparent;

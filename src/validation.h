@@ -50,7 +50,7 @@ extern bool fGettingValuesDGP;
 
 struct EthTransactionParams;
 using valtype = std::vector<unsigned char>;
-using ExtractQtumTX = std::pair<std::vector<QtumTransaction>, std::vector<EthTransactionParams>>;
+typedef std::pair<std::vector<QtumTransaction>, std::vector<EthTransactionParams>> ExtractQtumTX;
 ///////////////////////////////////////////
 
 class CBlockIndex;
@@ -627,11 +627,16 @@ struct EthTransactionParams{
     dev::u256 gasPrice;
     valtype code;
     dev::Address receiveAddress;
+    opcodetype type;
+
 
     bool operator!=(EthTransactionParams etp){
-        if(this->version.toRaw() != etp.version.toRaw() || this->gasLimit != etp.gasLimit ||
-        this->gasPrice != etp.gasPrice || this->code != etp.code ||
-        this->receiveAddress != etp.receiveAddress)
+        if(this->version.toRaw() != etp.version.toRaw() ||
+        this->gasLimit != etp.gasLimit ||
+        this->gasPrice != etp.gasPrice ||
+        this->code != etp.code ||
+        this->receiveAddress != etp.receiveAddress ||
+        this->type != etp.type)
             return true;
         return false;
     }
@@ -642,6 +647,10 @@ struct ByteCodeExecResult{
     CAmount refundSender = 0;
     std::vector<CTxOut> refundOutputs;
     std::vector<CTransaction> valueTransfers;
+    std::vector<dev::Address> contractAddresses;
+    std::vector<dev::Address> contractOwners;
+    std::vector<dev::eth::TransactionException> execExceptions;
+    std::map<dev::Address, CAmount> dividendByContract;
 };
 
 class QtumTxConverter{
@@ -679,6 +688,8 @@ public:
     bool processingResults(ByteCodeExecResult& result);
 
     std::vector<ResultExecute>& getResult(){ return result; }
+
+    std::map<dev::Address, CAmount> dividendByContract;
 
 private:
 

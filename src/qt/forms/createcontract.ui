@@ -44,7 +44,7 @@
             </font>
            </property>
            <property name="text">
-            <string>Create Smart Contract</string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -253,7 +253,7 @@
                <x>0</x>
                <y>0</y>
                <width>656</width>
-               <height>172</height>
+               <height>157</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5"/>
@@ -453,6 +453,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>BitcoinAmountField</class>
+   <extends>QLineEdit</extends>
+   <header>bitcoinamountfield.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QValidatedTextEdit</class>
    <extends>QTextEdit</extends>
    <header>qvalidatedtextedit.h</header>
@@ -461,12 +467,6 @@
    <class>AddressField</class>
    <extends>QComboBox</extends>
    <header>addressfield.h</header>
-  </customwidget>
-  <customwidget>
-   <class>BitcoinAmountField</class>
-   <extends>QLineEdit</extends>
-   <header>bitcoinamountfield.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -65,7 +65,7 @@ public:
         QString typeString = ind.data(Qt::DisplayRole).toString();
 
         QRect mainRect = option.rect;
-        QColor txColor = index.row() % 2 ? QColor("#393939") : QColor("#2e2e2e");
+        QColor txColor = index.row() % 2 ? QColor("#ffffff") : QColor("#f1f1f1"); 
         painter->fillRect(mainRect, txColor);
 
         QPen pen;
@@ -78,7 +78,7 @@ public:
             painter->drawRect(mainRect.x()+1, mainRect.y()+1, mainRect.width()-2, mainRect.height()-2);
         }
 
-        QColor foreground("#dedede");
+        QColor foreground("#1f2427");
         painter->setPen(foreground);
 
         QRect dateRect(mainRect.left() + MARGIN, mainRect.top(), DATE_WIDTH, TX_SIZE);
@@ -120,7 +120,7 @@ public:
 
         if(amount < 0)
         {
-            foreground = COLOR_NEGATIVE;
+            foreground = COLOR_BLACK;
         }
         else if(!confirmed)
         {
@@ -128,7 +128,7 @@ public:
         }
         else
         {
-            foreground = QColor("#ffffff");
+            foreground = QColor("#1f2427");
         }
         painter->setPen(foreground);
 
@@ -173,12 +173,12 @@ public:
         QRect mainRect = option.rect;
         mainRect.setWidth(option.rect.width());
 
-        painter->fillRect(mainRect, QColor("#383938"));
+        painter->fillRect(mainRect, QColor("#f1f1f1"));
 
         QRect hLineRect(mainRect.left(), mainRect.bottom(), mainRect.width(), 1);
-        painter->fillRect(hLineRect, QColor("#2e2e2e"));
+        painter->fillRect(hLineRect, QColor("#a2c5bf"));
 
-        QColor foreground("#dedede");
+        QColor foreground("#1f2427");
         painter->setPen(foreground);
         
         QFont font = option.font;
@@ -258,7 +258,7 @@ OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) 
 
     ui->labelDate->setFixedWidth(DATE_WIDTH);
     ui->labelType->setFixedWidth(TYPE_WIDTH);
-    ui->labelAmount->setFixedWidth(AMOUNT_WIDTH);
+    ui->labelAmountOverview->setFixedWidth(AMOUNT_WIDTH);
 
     // Recent transactions
     ui->listTransactions->setItemDelegate(txdelegate);

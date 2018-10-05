@@ -3,9 +3,11 @@
 
 #include <QWidget>
 #include <QAction>
+#include <QToolButton>
 #include <QList>
 #include <QMap>
 #include <QSize>
+#include <QLayout>
 
 /**
  * @brief The NavigationBar class Custom control for navigation bar
@@ -25,6 +27,14 @@ public:
      * @param action Action to add
      */
     void addAction(QAction *action);
+
+
+    /**
+     * @brief ActionToolbars Map the action with toolButton
+     * @param action Action
+     * @param toolButton ToolButton
+     */
+	void mapActionToolButton(QAction* action, QToolButton* toolButton);
 
     /**
      * @brief addGroup Add group of actions
@@ -53,7 +63,7 @@ public:
     /**
      * @brief buildUi Construct the layout of the composite GUI control
      */
-    void buildUi();
+    void buildUi(QVBoxLayout* vboxLayoutMainSuper = 0);
 
 Q_SIGNALS:
     /**
@@ -85,6 +95,7 @@ private:
     void setSubBar(bool subBar);
 
     QList<QAction*> m_actions;
+    QMap<QAction*, QToolButton*> m_ActionToolbars;
     QMap<QAction*, QList<QAction*>> m_groups;
     Qt::ToolButtonStyle m_toolStyle;
     bool m_subBar;

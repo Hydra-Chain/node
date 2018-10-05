@@ -26,9 +26,9 @@ Build-Depends: debhelper,
  python,
  libzmq3-dev
 Standards-Version: 3.9.2
-Homepage: https://qtum.org/
-Vcs-Git: git://github.com/qtumproject/qtum.git
-Vcs-Browser: https://github.com/qtumproject/qtum
+Homepage: https://locktrip.com/
+Vcs-Git: git://gitlab.com/LockTrip-Dev-Team/LockTrip.git
+Vcs-Browser: https://gitlab.com/LockTrip-Dev-Team/LockTrip.git
 
 Package: qtumd
 Architecture: any

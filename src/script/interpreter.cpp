@@ -1034,6 +1034,7 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                     return true; // temp
                 }
                 break;
+                case OP_COINSTAKE_CALL:
                 case OP_CREATE:
                 case OP_CALL:
                 {

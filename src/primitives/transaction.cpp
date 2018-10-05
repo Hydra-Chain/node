@@ -124,7 +124,14 @@ bool CTransaction::HasCreateOrCall() const{
     return false;
 }
 
-
+bool CTransaction::HasOpCoinstakeCall() const{
+    for(const CTxOut& v : vout){
+        if(v.scriptPubKey.HasOpCoinstakeCall()){
+            return true;
+        }
+    }
+    return false;
+}
 
 bool CTransaction::HasOpSpend() const{
     for(const CTxIn& i : vin){

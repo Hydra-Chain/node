@@ -31,7 +31,7 @@ static const bool DEFAULT_STAKE_CACHE = true;
 //How many seconds to look ahead and prepare a block for staking
 //Look ahead up to 3 "timeslots" in the future, 48 seconds
 //Reduce this to reduce computational waste for stakers, increase this to increase the amount of time available to construct full blocks
-static const int32_t MAX_STAKE_LOOKAHEAD = 16 * 3;
+static const int32_t MAX_STAKE_LOOKAHEAD = 16 * 2;
 
 //Will not add any more contracts when GetAdjustedTime() >= nTimeLimit-BYTECODE_TIME_BUFFER
 //This does not affect non-contract transactions
@@ -248,7 +248,7 @@ public:
     int32_t nTimeLimit;
 
     /** Construct a new block template with coinbase to scriptPubKeyIn */
-    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true, bool fProofOfStake=false, int64_t* pTotalFees = 0, int32_t nTime=0, int32_t nTimeLimit=0);
+    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true, bool fProofOfStake=false, int64_t* pTotalFees=0, int32_t nTime=0, int32_t nTimeLimit=0, CWallet* wallet=nullptr);
     std::unique_ptr<CBlockTemplate> CreateEmptyBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true, bool fProofOfStake=false, int64_t* pTotalFees = 0, int32_t nTime=0);
 private:
     // utility functions
@@ -265,8 +265,17 @@ private:
       * statistics from the package selection (for logging statistics). */
     void addPackageTxs(int &nPackagesSelected, int &nDescendantsUpdated, uint64_t minGasPrice);
 
-    /** Rebuild the coinbase/coinstake transaction to account for new gas refunds **/
-    void RebuildRefundTransaction();
+    void AddDividentsToCoinstakeTransaction();
+
+    void CalculateRewardWithoutDividents();
+
+    void AddTransactionForSavingContractOwners();
+
+    void AddRefundTransactions();
+
+    void ReplaceRewardTransaction();
+
+    bool ExecuteCoinstakeContractCalls(CWallet& wallet, int64_t* pTotalFees, int32_t txProofTime);
 
     // helper functions for addPackageTxs()
     /** Remove confirmed (inBlock) entries from given set */

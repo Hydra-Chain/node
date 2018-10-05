@@ -24,7 +24,7 @@ extern unsigned int dgpMaxProtoMsgLength;
 extern unsigned int dgpMaxTxSigOps;
 
 /** Coinbase transaction outputs can only be spent after this number of new blocks (network rule) */
-static const int COINBASE_MATURITY = 500;
+static const int COINBASE_MATURITY = 1500;
 
 static const int MAX_TRANSACTION_BASE_SIZE = 1000000;
 

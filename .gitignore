@@ -36,7 +36,6 @@ src/config/stamp-h1
 share/setup.nsi
 share/qt/Info.plist
 
-src/univalue/gen
 
 src/qt/*.moc
 src/qt/moc_*.cpp
@@ -55,7 +54,6 @@ src/qt/test/moc*.cpp
 *.pyc
 *.o
 *.o-*
-*.patch
 *.a
 *.pb.cc
 *.pb.h
@@ -112,12 +110,20 @@ contrib/devtools/split-debug.sh
 .cproject
 .project
 .settings/language.settings.xml
-src/qtum-cli
-src/qtum-tx
-src/qtumd
+src/locktrip-cli
+src/locktrip-tx
+src/locktripd
 src/bench/bench_qtum
-src/qt/qtum-qt
-src/qt/test/test_qtum-qt
+src/qt/locktrip-qt
+src/qt/test/test_locktrip-qt
 src/test/buildenv.py
 src/test/test_qtum
 src/test/test_qtum_fuzzy
+
+#CLion Ignore
+.idea/
+CMakeLists.txt
+cmake-build-debug/
+
+src/.vscode/c_cpp_properties.json
+src/.vscode/settings.json

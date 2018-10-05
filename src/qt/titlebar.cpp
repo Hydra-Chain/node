@@ -7,10 +7,10 @@
 #include <QPixmap>
 #include "platformstyle.h"
 
-namespace TitleBar_NS {
-const int titleHeight = 35;
-}
-using namespace TitleBar_NS;
+//namespace TitleBar_NS {
+//const int titleHeight = 50;
+//}
+//using namespace TitleBar_NS;
 
 TitleBar::TitleBar(const PlatformStyle *platformStyle, QWidget *parent) :
     QWidget(parent),
@@ -22,8 +22,10 @@ TitleBar::TitleBar(const PlatformStyle *platformStyle, QWidget *parent) :
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     ui->tabWidget->setDrawBase(false);
     ui->tabWidget->setTabsClosable(true);
-    setFixedHeight(titleHeight);
+    //setFixedHeight(titleHeight);
     m_iconCloseTab = platformStyle->TextColorIcon(":/icons/quit");
+    ui->widgetLogo->setMinimumWidth(0);
+    ui->tabWidget->setVisible(false);
 }
 
 TitleBar::~TitleBar()
@@ -75,5 +77,5 @@ void TitleBar::setBalance(const CAmount& balance, const CAmount& unconfirmedBala
 
 void TitleBar::on_navigationResized(const QSize &_size)
 {
-    ui->widgetLogo->setFixedWidth(_size.width());
+    //ui->widgetLogo->setFixedWidth(_size.width());
 }

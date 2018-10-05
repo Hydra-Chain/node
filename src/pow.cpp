@@ -107,12 +107,14 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
     bnTarget.SetCompact(nBits, &fNegative, &fOverflow);
 
     // Check range
-    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > GetLimit(params, fProofOfStake))
+    if (fNegative || bnTarget == 0 || fOverflow || bnTarget > GetLimit(params, fProofOfStake)) {
         return false;
+    }
 
     // Check proof of work matches claimed amount
-    if (UintToArith256(hash) > bnTarget)
+    if (UintToArith256(hash) > bnTarget) {
         return false;
+    }
 
     return true;
 }

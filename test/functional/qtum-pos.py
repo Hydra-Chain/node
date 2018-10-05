@@ -130,12 +130,8 @@ class QtumPOSTest(ComparisonTestFramework):
                 self.bad_vout_staking_prevouts.append((COutPoint(int(unspent['txid'], 16), 0xff), int(unspent['amount'])*COIN, tx_block_time))
                 self.bad_txid_staking_prevouts.append((COutPoint(int(unspent['txid'], 16)+1, unspent['vout']), int(unspent['amount'])*COIN, tx_block_time))
 
-
             if unspent['confirmations'] < COINBASE_MATURITY:
                 self.unconfirmed_staking_prevouts.append((COutPoint(int(unspent['txid'], 16), unspent['vout']), int(unspent['amount'])*COIN, tx_block_time))
-
-
-
 
         # First let 25 seconds pass so that we do not submit blocks directly after the last one
         #time.sleep(100)

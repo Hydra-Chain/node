@@ -10,7 +10,7 @@ using namespace dev::eth;
 
 QtumState::QtumState(u256 const& _accountStartNonce, OverlayDB const& _db, const string& _path, BaseState _bs) :
         State(_accountStartNonce, _db, _bs) {
-            dbUTXO = QtumState::openDB(_path + "/qtumDB", sha3(rlp("")), WithExisting::Trust);
+            dbUTXO = QtumState::openDB(_path + "/locktripDB", sha3(rlp("")), WithExisting::Trust);
 	        stateUTXO = SecureTrieDB<Address, OverlayDB>(&dbUTXO);
 }
 
@@ -86,7 +86,6 @@ ResultExecute QtumState::execute(EnvInfo const& _envInfo, SealEngineFace const& 
         }
     }
     catch(Exception const& _e){
-
         printfErrorLog(dev::eth::toTransactionException(_e));
         res.excepted = dev::eth::toTransactionException(_e);
         res.gasUsed = _t.gas();
@@ -112,6 +111,7 @@ ResultExecute QtumState::execute(EnvInfo const& _envInfo, SealEngineFace const& 
         ex.gasRefunded=0;
         ex.gasUsed=gas;
         ex.excepted=TransactionException();
+
         //create a refund tx to send back any coins that were suppose to be sent to the contract
         CMutableTransaction refund;
         if(_t.value() > 0) {

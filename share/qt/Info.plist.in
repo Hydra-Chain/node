@@ -29,10 +29,10 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>Qtum-Qt</string>
+  <string>LockTrip-Qt</string>
   
   <key>CFBundleName</key>
-  <string>Qtum-Qt</string>
+  <string>LockTrip-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>

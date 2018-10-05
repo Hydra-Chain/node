@@ -1479,7 +1479,7 @@ void ThreadMapPort()
             }
         }
 
-        std::string strDesc = "Qtum " + FormatFullVersion();
+        std::string strDesc = "LockTrip " + FormatFullVersion();
 
         try {
             while (true) {

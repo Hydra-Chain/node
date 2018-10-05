@@ -273,6 +273,15 @@ people without access to `bitcoin.org` to download the binary distribution.
 Also put it into the `optional_magnetlink:` slot in the YAML file for
 bitcoin.org (see below for bitcoin.org update instructions).
 
+- To upload binaries to gitlab tag - execute the following command from the directory of the binaries
+```bash
+for filename in *.*; do curl --request POST --header "PRIVATE-TOKEN: <PRIVATE_TOKEN>" --form "file=@${filename}" https://gitlab.com/api/v4/projects/<PROJECT_ID>/uploads | json_pp; done
+```
+- To get the project id - execute the following command 
+```bash
+curl -XGET --header "PRIVATE-TOKEN: <PRIVATE_TOKEN>" "https://gitlab.com/api/v4/projects/LockTrip-Dev-Team%2FLockTrip" | json_pp
+```
+
 - Update bitcoin.org version
 
   - First, check to see if the Bitcoin.org maintainers have prepared a

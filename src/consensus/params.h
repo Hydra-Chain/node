@@ -9,6 +9,7 @@
 #include "uint256.h"
 #include <map>
 #include <string>
+#include "amount.h"
 
 namespace Consensus {
 
@@ -38,7 +39,8 @@ struct BIP9Deployment {
  */
 struct Params {
     uint256 hashGenesisBlock;
-    int nSubsidyHalvingInterval;
+    int nBlockRewardChangeInterval;
+    std::vector<CAmount> blockRewardPerInterval;
     /** Block height and hash at which BIP34 becomes active */
     int BIP34Height;
     uint256 BIP34Hash;
@@ -66,6 +68,7 @@ struct Params {
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;
     int nLastPOWBlock;
+    CAmount totalCoinsSupply;
     int nFirstMPoSBlock;
     int nMPoSRewardRecipients;
     int nFixUTXOCacheHFHeight;

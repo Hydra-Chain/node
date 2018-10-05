@@ -36,7 +36,7 @@
 #include "consensus/merkle.h"
 
 #if defined(NDEBUG)
-# error "Qtum cannot be compiled without assertions."
+# error "LockTrip cannot be compiled without assertions."
 #endif
 
 std::atomic<int64_t> nTimeBestReceived(0); // Used only to inform the wallet of when we last received a block
@@ -2019,6 +2019,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
 
         LOCK(cs_main);
         if (IsInitialBlockDownload() && !pfrom->fWhitelisted) {
+            LogPrint(BCLog::NET, "IsInitialBlockDownload()=%d, pfrom->fWhitelisted=%d\n", IsInitialBlockDownload(), pfrom->fWhitelisted);
             LogPrint(BCLog::NET, "Ignoring getheaders from peer=%d because node is in initial block download\n", pfrom->GetId());
             return true;
         }

@@ -180,7 +180,7 @@ void Shutdown()
     /// for example if the data directory was found to be locked.
     /// Be sure that anything that writes files or flushes caches only does this if the respective
     /// module was initialized.
-    RenameThread("qtum-shutoff");
+    RenameThread("locktrip-shutoff");
     mempool.AddTransactionsUpdated(1);
 
     StopHTTPRPC();
@@ -542,8 +542,8 @@ std::string HelpMessage(HelpMessageMode mode)
 
 std::string LicenseInfo()
 {
-    const std::string URL_SOURCE_CODE = "<https://github.com/qtumproject/qtum>";
-    const std::string URL_WEBSITE = "<https://qtum.org>";
+    const std::string URL_SOURCE_CODE = "<https://gitlab.com/LockTrip-Dev-Team/LockTrip>";
+    const std::string URL_WEBSITE = "<https://locktrip.com>";
 
     return CopyrightHolders(strprintf(_("Copyright (C) %i"), COPYRIGHT_YEAR) + " ") + "\n" +
            "\n" +
@@ -841,7 +841,7 @@ void InitLogging()
     fLogIPs = gArgs.GetBoolArg("-logips", DEFAULT_LOGIPS);
 
     LogPrintf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    LogPrintf("Qtum version %s\n", FormatFullVersion());
+    LogPrintf("LockTrip version %s\n", FormatFullVersion());
 }
 
 namespace { // Variables internal to initialization process only
@@ -1551,7 +1551,7 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
                 }
 
                 dev::eth::Ethash::init();
-                fs::path qtumStateDir = GetDataDir() / "stateQtum";
+                fs::path qtumStateDir = GetDataDir() / "stateLockTrip";
                 bool fStatus = fs::exists(qtumStateDir);
                 const std::string dirQtum(qtumStateDir.string());
                 const dev::h256 hashDB(dev::sha3(dev::rlp("")));

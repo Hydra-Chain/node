@@ -33,6 +33,9 @@
 #include "wallet/wallet.h"
 #endif // ENABLE_WALLET
 
+#include "titlebar.h"
+#include "ui_titlebar.h"
+
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
 #endif
@@ -81,6 +84,19 @@ const std::string BitcoinGUI::DEFAULT_UIPLATFORM =
         "other"
 #endif
         ;
+
+
+namespace BitCoinGUI_NS
+{
+	static const int NavigationBarWidth = 1120;
+	static const int TitleBarSize = 270;
+	//status bar
+	static const int StatusBarPositionX = 125;
+	static const int StatusBarPositionY = 30;
+	static const int StatusBarWidth = 150;
+	static const int StatusBarHeight = 20;
+}
+using namespace BitCoinGUI_NS;
 
 /** Display name for default wallet name. Uses tilde to avoid name
  * collisions in the future with additional wallets */
@@ -225,9 +241,15 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     statusBar()->setStyleSheet("QSizeGrip { width: 3px; height: 25px; border: 0px solid black; } \n QStatusBar::item { border: 0px solid black; }");
 
     // Status bar notification icons
-    QFrame *frameBlocks = new QFrame();
+    QFrame *frameBlocks = new QFrame(appTitleBar->getUI()->lblBalance);
     frameBlocks->setContentsMargins(0,0,0,0);
-    frameBlocks->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    frameBlocks->setGeometry(StatusBarPositionX, StatusBarPositionY, StatusBarWidth, StatusBarHeight);
+    frameBlocks->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    //frameBlocks->setWindowFlags(Qt::FramelessWindowHint);
+    frameBlocks->setAttribute(Qt::WA_NoSystemBackground);
+    frameBlocks->setAttribute(Qt::WA_TranslucentBackground);
+    //frameBlocks->setAttribute(Qt::WA_TransparentForMouseEvents);
+
     QHBoxLayout *frameBlocksLayout = new QHBoxLayout(frameBlocks);
     frameBlocksLayout->setContentsMargins(3,0,0,0);
     frameBlocksLayout->setSpacing(3);
@@ -280,7 +302,9 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
 
     statusBar()->addWidget(progressBarLabel);
     statusBar()->addWidget(progressBar);
-    statusBar()->addPermanentWidget(frameBlocks);
+    //addDockWindows(Qt::TopDockWidgetArea, frameBlocks, false);
+    frameBlocks->show();
+    //appTitleBar->addPermanentWidget(frameBlocks);
 
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
     this->installEventFilter(this);
@@ -300,7 +324,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     if(fCheckForUpdates && qtumVersionChecker->newVersionAvailable())
     {
         QString link = QString("<a href=%1>%2</a>").arg(QTUM_RELEASES, QTUM_RELEASES);
-        QString message(tr("New version of Qtum wallet is available on the Qtum source code repository: <br /> %1. <br />It is recommended to download it and update this application").arg(link));
+        QString message(tr("New version of LockTrip wallet is available on the LockTrip source code repository: <br /> %1. <br />It is recommended to download it and update this application").arg(link));
         QMessageBox::information(this, tr("Check for updates"), message);
     }
 
@@ -312,8 +336,12 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
         connect(modalBackupOverlay, SIGNAL(backupWallet()), walletFrame, SLOT(backupWallet()));
     }
 #endif
+    appMenuBar->setVisible(false);
+    //setStyleSheet("QMainWindow{ background-image: url(:/styles/app-icons/bg); }");
+    setStyleSheet("QMainWindow::separator { width: 0px; height: 0px; margin: 0px; padding: 0px; }");
+    update();
+    repaint();
 
-    setStyleSheet("QMainWindow::separator { width: 1px; height: 1px; margin: 0px; padding: 0px; }");
 }
 
 BitcoinGUI::~BitcoinGUI()
@@ -345,7 +373,7 @@ void BitcoinGUI::createActions()
     tabGroup->addAction(overviewAction);
 
     sendCoinsAction = new QAction(platformStyle->MultiStatesIcon(":/icons/send_to"), tr("&Send"), this);
-    sendCoinsAction->setStatusTip(tr("Send coins to a Qtum address"));
+    sendCoinsAction->setStatusTip(tr("Send coins to a LockTrip address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
     sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
@@ -356,7 +384,7 @@ void BitcoinGUI::createActions()
     sendCoinsMenuAction->setToolTip(sendCoinsMenuAction->statusTip());
 
     receiveCoinsAction = new QAction(platformStyle->MultiStatesIcon(":/icons/receive_from"), tr("&Receive"), this);
-    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and qtum: URIs)"));
+    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and LOC: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
     receiveCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_3));
@@ -373,9 +401,9 @@ void BitcoinGUI::createActions()
     smartContractAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
     tabGroup->addAction(smartContractAction);
 
-    createContractAction = new QAction(tr("Create"), this);
-    sendToContractAction = new QAction(tr("Send To"), this);
-    callContractAction = new QAction(tr("Call"), this);
+    createContractAction = new QAction(tr("Create Contract"), this);
+    sendToContractAction = new QAction(tr("Send To Contract"), this);
+    callContractAction = new QAction(tr("Call Contract"), this);
 
     historyAction = new QAction(platformStyle->MultiStatesIcon(":/icons/history"), tr("&Transactions"), this);
     historyAction->setStatusTip(tr("Browse transaction history"));
@@ -384,8 +412,8 @@ void BitcoinGUI::createActions()
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
     tabGroup->addAction(historyAction);
 
-    QRCTokenAction = new QAction(platformStyle->MultiStatesIcon(":/icons/qrctoken"), tr("&QRC Tokens"), this);
-    QRCTokenAction->setStatusTip(tr("QRC Tokens (send, receive or add Tokens in list)"));
+    QRCTokenAction = new QAction(platformStyle->MultiStatesIcon(":/icons/qrctoken"), tr("&LRC Tokens"), this);
+    QRCTokenAction->setStatusTip(tr("LRC Tokens (send, receive or add Tokens in list)"));
     QRCTokenAction->setToolTip(QRCTokenAction->statusTip());
     QRCTokenAction->setCheckable(true);
     QRCTokenAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
@@ -457,9 +485,9 @@ void BitcoinGUI::createActions()
     lockWalletAction = new QAction(platformStyle->MenuColorIcon(":/icons/lock_closed"), tr("&Lock Wallet"), this);
     lockWalletAction->setToolTip(tr("Lock wallet"));
     signMessageAction = new QAction(platformStyle->MenuColorIcon(":/icons/edit"), tr("Sign &message..."), this);
-    signMessageAction->setStatusTip(tr("Sign messages with your Qtum addresses to prove you own them"));
+    signMessageAction->setStatusTip(tr("Sign messages with your LockTrip addresses to prove you own them"));
     verifyMessageAction = new QAction(platformStyle->MenuColorIcon(":/icons/verify"), tr("&Verify message..."), this);
-    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified Qtum addresses"));
+    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified LockTrip addresses"));
 
     openRPCConsoleAction = new QAction(platformStyle->MenuColorIcon(":/icons/debugwindow"), tr("&Debug window"), this);
     openRPCConsoleAction->setStatusTip(tr("Open debugging and diagnostic console"));
@@ -472,11 +500,11 @@ void BitcoinGUI::createActions()
     usedReceivingAddressesAction->setStatusTip(tr("Show the list of used receiving addresses and labels"));
 
     openAction = new QAction(platformStyle->MenuColorIcon(":/icons/open"), tr("Open &URI..."), this);
-    openAction->setStatusTip(tr("Open a qtum: URI or payment request"));
+    openAction->setStatusTip(tr("Open a LOC: URI or payment request"));
 
     showHelpMessageAction = new QAction(platformStyle->MenuColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
-    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Qtum command-line options").arg(tr(PACKAGE_NAME)));
+    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible LockTrip command-line options").arg(tr(PACKAGE_NAME)));
 
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(aboutClicked()));
@@ -563,7 +591,7 @@ void BitcoinGUI::createToolBars()
     {
         // Create custom tool bar component
         appNavigationBar = new NavigationBar();
-        addDockWindows(Qt::LeftDockWidgetArea, appNavigationBar);
+        addDockWindows(Qt::TopDockWidgetArea, appNavigationBar, true);
 
         // Fill the component with actions
         appNavigationBar->addAction(overviewAction);
@@ -591,7 +619,7 @@ void BitcoinGUI::createTitleBars()
     {
         // Create custom title bar component
         appTitleBar = new TitleBar(platformStyle);
-        addDockWindows(Qt::TopDockWidgetArea, appTitleBar);
+        addDockWindows(Qt::TopDockWidgetArea, appTitleBar, false);
         connect(appNavigationBar, SIGNAL(resized(QSize)), appTitleBar, SLOT(on_navigationResized(QSize)));
     }
 }
@@ -904,7 +932,7 @@ void BitcoinGUI::updateNetworkState()
     QString tooltip;
 
     if (clientModel->getNetworkActive()) {
-        tooltip = tr("%n active connection(s) to Qtum network", "", count) + QString(".<br>") + tr("Click to disable network activity.");
+        tooltip = tr("%n active connection(s) to LockTrip network", "", count) + QString(".<br>") + tr("Click to disable network activity.");
     } else {
         tooltip = tr("Network activity disabled.") + QString("<br>") + tr("Click to enable network activity again.");
         icon = ":/icons/network_disabled";
@@ -913,8 +941,7 @@ void BitcoinGUI::updateNetworkState()
     // Don't word-wrap this (fixed-width) tooltip
     tooltip = QString("<nobr>") + tooltip + QString("</nobr>");
     connectionsControl->setToolTip(tooltip);
-
-    connectionsControl->setPixmap(QIcon(icon).pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
+    connectionsControl->setPixmap(QIcon(icon).pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE, QIcon::Active, QIcon::On));
 }
 
 void BitcoinGUI::setNumConnections(int count)
@@ -1055,7 +1082,7 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVer
 
 void BitcoinGUI::message(const QString &title, const QString &message, unsigned int style, bool *ret)
 {
-    QString strTitle = tr("Qtum"); // default title
+    QString strTitle = tr("LockTrip"); // default title
     // Default to information icon
     int nMBoxIcon = QMessageBox::Information;
     int nNotifyIcon = Notificator::Information;
@@ -1218,6 +1245,15 @@ bool BitcoinGUI::eventFilter(QObject *object, QEvent *event)
         // Prevent adding text from setStatusTip(), if we currently use the status bar for displaying other stuff
         if (progressBarLabel->isVisible() || progressBar->isVisible())
             return true;
+    }
+
+    if (event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+        if (keyEvent->key() == Qt::Key_Alt)
+        {
+        	appMenuBar->setVisible(!appMenuBar->isVisible());
+        }
     }
     return QMainWindow::eventFilter(object, event);
 }
@@ -1497,7 +1533,7 @@ void BitcoinGUI::toggleNetworkActive()
     }
 }
 
-void BitcoinGUI::addDockWindows(Qt::DockWidgetArea area, QWidget* widget)
+void BitcoinGUI::addDockWindows(Qt::DockWidgetArea area, QWidget* widget, bool isToolBar)
 {
     QDockWidget *dock = new QDockWidget(this);
     dock->setFeatures(QDockWidget::NoDockWidgetFeatures);
@@ -1506,6 +1542,14 @@ void BitcoinGUI::addDockWindows(Qt::DockWidgetArea area, QWidget* widget)
     titleBar->setMaximumSize(0, 0);
     dock->setTitleBarWidget(titleBar);
     dock->setWidget(widget);
+    if(isToolBar)
+    {
+        dock->setFixedWidth(NavigationBarWidth);
+    }
+    else
+    {
+    	dock->setMinimumWidth(TitleBarSize);
+    }
     addDockWidget(area, dock);
 }
 
@@ -1524,6 +1568,7 @@ UnitDisplayStatusBarControl::UnitDisplayStatusBarControl(const PlatformStyle *pl
     }
     setMinimumSize(max_width, 0);
     setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    setStyleSheet("UnitDisplayStatusBarControl { color : white; }");
 }
 
 /** So that it responds to button clicks */

@@ -41,24 +41,21 @@ public:
         bool selected = option.state & QStyle::State_Selected;
         if(selected)
         {
-            painter->fillRect(mainRect,QColor("#009ee5"));
+            painter->fillRect(mainRect,QColor("#223843"));
         }
         else
         {
-            painter->fillRect(mainRect,QColor("#383938"));
+            painter->fillRect(mainRect,QColor("#f1f1f1"));
         }
 
         QRect hLineRect(mainRect.left(), mainRect.bottom(), mainRect.width(), 1);
         painter->fillRect(hLineRect, QColor("#2e2e2e"));
 
-        QColor foreground("#dddddd");
-        painter->setPen(foreground);
-
         QFont font = option.font;
         font.setPointSizeF(option.font.pointSizeF() * 1.1);
         font.setBold(true);
         painter->setFont(font);
-        QColor amountColor("#ffffff");
+        QColor amountColor("#d87a61");
         painter->setPen(amountColor);
 
         QFontMetrics fmName(option.font);
@@ -75,7 +72,15 @@ public:
         QFont addressFont = option.font;
         addressFont.setPointSizeF(option.font.pointSizeF() * 0.8);
         painter->setFont(addressFont);
-        painter->setPen(foreground);
+
+        if (selected) {
+            QColor foreground("#ffffff");
+            painter->setPen(foreground);
+        } else {
+            QColor foreground("#000000");
+            painter->setPen(foreground);
+        }
+
         QRect receiveAddressRect(mainRect.left() + MARGIN, tokenSymbolRect.bottom(), mainRect.width() - 2 * MARGIN, mainRect.height() / 2 - 2 * MARGIN);
         painter->drawText(receiveAddressRect, Qt::AlignLeft|Qt::AlignVCenter, receiveAddress);
 

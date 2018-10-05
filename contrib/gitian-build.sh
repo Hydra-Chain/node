@@ -17,8 +17,8 @@ osx=true
 SIGNER=
 VERSION=
 commit=false
-url=https://github.com/qtumproject/qtum
-ethurl=https://github.com/qtumproject/cpp-eth-qtum
+url=https://gitlab.com/LockTrip-Dev-Team/LockTrip
+ethurl=https://gitlab.com/LockTrip-Dev-Team/cpp-ethereum
 proc=2
 mem=2000
 lxc=true
@@ -32,7 +32,7 @@ commitFiles=true
 read -d '' usage <<- EOF
 Usage: $scriptName [-c|u|v|b|s|B|o|h|j|m|] version
 
-Run this script from the directory containing the qtum, gitian-builder, gitian.sigs, and qtum-detached-sigs.
+Run this script from the directory containing the locktrip, gitian-builder, gitian.sigs, and locktrip-detached-sigs.
 
 Arguments:
 --signer signer          GPG signer to sign each build assert file
@@ -40,7 +40,7 @@ version		Version number, commit, or branch to build. If building a commit or bra
 
 Options:
 -c|--commit	Indicate that the version argument is for a commit or branch
--u|--url	Specify the URL of the repository. Default is https://github.com/qtumproject/qtum
+-u|--url	Specify the URL of the repository. Default is https://gitlab.com/LockTrip-Dev-Team/LockTrip
 -v|--verify 	Verify the gitian build
 -b|--build	Do a gitian build
 -s|--sign	Make signed binaries for Windows and Mac OSX
@@ -218,8 +218,8 @@ echo ${COMMIT}
 if [[ $setup = true ]]
 then
     sudo apt-get install ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm qemu-utils
-    git clone https://github.com/qtumproject/gitian.sigs.git
-    git clone https://github.com/qtumproject/qtum-detached-sigs.git
+    git clone https://gitlab.com/LockTrip-Dev-Team/gitian.sigs.git
+    git clone https://gitlab.com/LockTrip-Dev-Team/locktrip-detached-sigs.git
     git clone https://github.com/devrandom/gitian-builder.git
     pushd ./gitian-builder
     if [[ -n "$USE_LXC" ]]
@@ -233,7 +233,7 @@ then
         echo "Setup trusty"
         bin/make-base-vm --suite trusty --arch amd64
         echo "Setup xenial"
-        bin/make-base-vm --suite xenial --arch amd64 
+        bin/make-base-vm --suite xenial --arch amd64
     fi
     popd
 fi
@@ -248,17 +248,17 @@ then
 	    exit 1
 	fi
 	# Make output folder
-	mkdir -p ./qtum-binaries/${VERSION}
-	
+	mkdir -p ./locktrip-binaries/${VERSION}
+
 	# Build Dependencies
 	echo ""
 	echo "Building Dependencies"
 	echo ""
-	pushd ./gitian-builder	
+	pushd ./gitian-builder
 	mkdir -p inputs
 	wget -N -P inputs $osslPatchUrl
 	wget -N -P inputs $osslTarUrl
-	make -C ../qtum/depends download SOURCES_PATH=`pwd`/cache/common
+	make -C ../LockTrip/depends download SOURCES_PATH=`pwd`/cache/common
 
 	# Linux
 	if [[ $linux = true ]]
@@ -266,9 +266,11 @@ then
         echo ""
 	    echo "Compiling ${VERSION} Linux"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit qtum=${COMMIT},cpp-eth-qtum=develop --url qtum=${url},cpp-eth-qtum=${ethurl} ../qtum/contrib/gitian-descriptors/gitian-linux.yml
-	    ./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../qtum/contrib/gitian-descriptors/gitian-linux.yml
-	    mv build/out/qtum-*.tar.gz build/out/src/qtum-*.tar.gz ../qtum-binaries/${VERSION}
+	    pwd
+	    echo ""
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit LockTrip=${COMMIT},cpp-ethereum=0.2 --url LockTrip=${url},cpp-ethereum=${ethurl} ../LockTrip/contrib/gitian-descriptors/gitian-linux.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../LockTrip/contrib/gitian-descriptors/gitian-linux.yml
+	    mv build/out/locktrip-*.tar.gz build/out/src/locktrip-*.tar.gz ../locktrip-binaries/${VERSION}
 	fi
 	# Windows
 	if [[ $windows = true ]]
@@ -276,10 +278,10 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} Windows"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit qtum=${COMMIT},cpp-eth-qtum=develop --url qtum=${url},cpp-eth-qtum=${ethurl} ../qtum/contrib/gitian-descriptors/gitian-win.yml
-	    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../qtum/contrib/gitian-descriptors/gitian-win.yml
-	    mv build/out/qtum-*-win-unsigned.tar.gz inputs/qtum-win-unsigned.tar.gz
-	    mv build/out/qtum-*.zip build/out/qtum-*.exe ../qtum-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit LockTrip=${COMMIT},cpp-ethereum=0.2 --url LockTrip=${url},cpp-ethereum=${ethurl} ../LockTrip/contrib/gitian-descriptors/gitian-win.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../LockTrip/contrib/gitian-descriptors/gitian-win.yml
+	    mv build/out/locktrip-*-win-unsigned.tar.gz inputs/locktrip-win-unsigned.tar.gz
+	    mv build/out/locktrip-*.zip build/out/locktrip-*.exe ../locktrip-binaries/${VERSION}
 	fi
 	# Mac OSX
 	if [[ $osx = true ]]
@@ -287,10 +289,10 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} Mac OSX"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit qtum=${COMMIT},cpp-eth-qtum=develop --url qtum=${url},cpp-eth-qtum=${ethurl} ../qtum/contrib/gitian-descriptors/gitian-osx.yml
-	    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../qtum/contrib/gitian-descriptors/gitian-osx.yml
-	    mv build/out/qtum-*-osx-unsigned.tar.gz inputs/qtum-osx-unsigned.tar.gz
-	    mv build/out/qtum-*.tar.gz build/out/qtum-*.dmg ../qtum-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit LockTrip=${COMMIT},cpp-ethereum=0.2 --url LockTrip=${url},cpp-ethereum=${ethurl} ../LockTrip/contrib/gitian-descriptors/gitian-osx.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../LockTrip/contrib/gitian-descriptors/gitian-osx.yml
+	    mv build/out/locktrip-*-osx-unsigned.tar.gz inputs/locktrip-osx-unsigned.tar.gz
+	    mv build/out/locktrip-*.tar.gz build/out/locktrip-*.dmg ../locktrip-binaries/${VERSION}
 	fi
 	popd
 
@@ -317,27 +319,27 @@ then
 	echo ""
 	echo "Verifying ${VERSION} Linux"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../qtum/contrib/gitian-descriptors/gitian-linux.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../LockTrip/contrib/gitian-descriptors/gitian-linux.yml
 	# Windows
 	echo ""
 	echo "Verifying ${VERSION} Windows"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../qtum/contrib/gitian-descriptors/gitian-win.yml
-	# Mac OSX	
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../LockTrip/contrib/gitian-descriptors/gitian-win.yml
+	# Mac OSX
 	echo ""
 	echo "Verifying ${VERSION} Mac OSX"
-	echo ""	
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../qtum/contrib/gitian-descriptors/gitian-osx.yml
+	echo ""
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../LockTrip/contrib/gitian-descriptors/gitian-osx.yml
 	# Signed Windows
 	echo ""
 	echo "Verifying ${VERSION} Signed Windows"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../qtum/contrib/gitian-descriptors/gitian-osx-signer.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../LockTrip/contrib/gitian-descriptors/gitian-osx-signer.yml
 	# Signed Mac OSX
 	echo ""
 	echo "Verifying ${VERSION} Signed Mac OSX"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../qtum/contrib/gitian-descriptors/gitian-osx-signer.yml	
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../LockTrip/contrib/gitian-descriptors/gitian-osx-signer.yml
 	popd
 fi
 
@@ -357,10 +359,10 @@ then
 	    echo ""
 	    echo "Signing ${VERSION} Windows"
 	    echo ""
-	    ./bin/gbuild -i --commit signature=${COMMIT} ../qtum/contrib/gitian-descriptors/gitian-win-signer.yml
-	    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../qtum/contrib/gitian-descriptors/gitian-win-signer.yml
-	    mv build/out/qtum-*win64-setup.exe ../qtum-binaries/${VERSION}
-	    mv build/out/qtum-*win32-setup.exe ../qtum-binaries/${VERSION}
+	    ./bin/gbuild -i --commit signature=${COMMIT} ../LockTrip/contrib/gitian-descriptors/gitian-win-signer.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../LockTrip/contrib/gitian-descriptors/gitian-win-signer.yml
+	    mv build/out/locktrip-*win64-setup.exe ../locktrip-binaries/${VERSION}
+	    mv build/out/locktrip-*win32-setup.exe ../locktrip-binaries/${VERSION}
 	fi
 	# Sign Mac OSX
 	if [[ $osx = true ]]
@@ -368,9 +370,9 @@ then
 	    echo ""
 	    echo "Signing ${VERSION} Mac OSX"
 	    echo ""
-	    ./bin/gbuild -i --commit signature=master ../qtum/contrib/gitian-descriptors/gitian-osx-signer.yml
-	    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../qtum/contrib/gitian-descriptors/gitian-osx-signer.yml
-	    mv build/out/qtum-osx-signed.dmg ../qtum-binaries/${VERSION}/qtum-${VERSION}-osx.dmg
+	    ./bin/gbuild -i --commit signature=master ../LockTrip/contrib/gitian-descriptors/gitian-osx-signer.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../LockTrip/contrib/gitian-descriptors/gitian-osx-signer.yml
+	    mv build/out/locktrip-osx-signed.dmg ../locktrip-binaries/${VERSION}/locktrip-${VERSION}-osx.dmg
 	fi
 	popd
 

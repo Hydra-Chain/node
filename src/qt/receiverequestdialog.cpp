@@ -202,16 +202,16 @@ void ReceiveRequestDialog::update()
     ui->btnSaveAs->setEnabled(false);
     QString html;
     html += "<html><font face='verdana, arial, helvetica, sans-serif'>";
-    html += "<font color='#ffffff'>" + tr("PAYMENT INFORMATION")+"</font><br><br>";
+    html += "<font color='#223843'>" + tr("PAYMENT INFORMATION")+"</font><br><br>";
     html += tr("URI")+": ";
     html += "<a href=\""+uri+"\">" + GUIUtil::HtmlEscape(uri) + "</a><br>";
-    html += tr("Address")+": <font color='#ffffff'>" + GUIUtil::HtmlEscape(info.address) + "</font><br>";
+    html += tr("Address")+": <font color='#223843'>" + GUIUtil::HtmlEscape(info.address) + "</font><br>";
     if(info.amount)
-        html += tr("Amount")+": <font color='#ffffff'>" + BitcoinUnits::formatHtmlWithUnit(model->getDisplayUnit(), info.amount) + "</font><br>";
+        html += tr("Amount")+": <font color='#d87a61'>" + BitcoinUnits::formatHtmlWithUnit(model->getDisplayUnit(), info.amount) + "</font><br>";
     if(!info.label.isEmpty())
-        html += tr("Label")+": <font color='#ffffff'>" + GUIUtil::HtmlEscape(info.label) + "</font><br>";
+        html += tr("Label")+": <font color='#223843'>" + GUIUtil::HtmlEscape(info.label) + "</font><br>";
     if(!info.message.isEmpty())
-        html += tr("Message")+": <font color='#ffffff'>" + GUIUtil::HtmlEscape(info.message) + "</font><br>";
+        html += tr("Message")+": <font color='#223843'>" + GUIUtil::HtmlEscape(info.message) + "</font><br>";
     ui->outUri->setText(html);
 
 #ifdef USE_QRCODE

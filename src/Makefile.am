@@ -70,11 +70,11 @@ TESTS =
 BENCHMARKS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += qtumd
+  bin_PROGRAMS += locktripd
 endif
 
 if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += qtum-cli qtum-tx
+  bin_PROGRAMS += locktrip-cli locktrip-tx
 endif
 
 .PHONY: FORCE check-symbols check-security
@@ -178,7 +178,9 @@ BITCOIN_CORE_H = \
   qtum/qtumstate.h \
   qtum/qtumtransaction.h \
   qtum/qtumDGP.h \
-  qtum/storageresults.h
+  qtum/storageresults.h \
+  locktrip/economy.h \
+  locktrip/contractabi-base.h
 
 
 obj/build.h: FORCE
@@ -232,6 +234,8 @@ libbitcoin_server_a_SOURCES = \
   qtum/qtumstate.cpp \
   qtum/qtumtransaction.cpp \
   qtum/qtumDGP.cpp \
+  locktrip/contractabi-base.cpp \
+  locktrip/economy.cpp \
   consensus/consensus.cpp \
   qtum/storageresults.cpp \
   $(BITCOIN_CORE_H)
@@ -582,16 +586,16 @@ nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
 # bitcoind binary #
-qtumd_SOURCES = bitcoind.cpp
-qtumd_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-qtumd_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-qtumd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+locktripd_SOURCES = bitcoind.cpp
+locktripd_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+locktripd_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+locktripd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-qtumd_SOURCES += bitcoind-res.rc
+locktripd_SOURCES += bitcoind-res.rc
 endif
 
-qtumd_LDADD = \
+locktripd_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_COMMON) \
   $(LIBUNIVALUE) \
@@ -606,19 +610,19 @@ qtumd_LDADD = \
   $(LIBCRYPTOPP) \
   $(LIBSECP256K1)
 
-qtumd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+locktripd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 
 # bitcoin-cli binary #
-qtum_cli_SOURCES = bitcoin-cli.cpp
-qtum_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
-qtum_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-qtum_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+locktrip_cli_SOURCES = bitcoin-cli.cpp
+locktrip_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+locktrip_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+locktrip_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-qtum_cli_SOURCES += bitcoin-cli-res.rc
+locktrip_cli_SOURCES += bitcoin-cli-res.rc
 endif
 
-qtum_cli_LDADD = \
+locktrip_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
@@ -629,20 +633,20 @@ qtum_cli_LDADD = \
   $(LIBCRYPTOPP) \
   $(LIBSECP256K1)
 
-qtum_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+locktrip_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
 # bitcoin-tx binary #
-qtum_tx_SOURCES = bitcoin-tx.cpp consensus/consensus.cpp
-qtum_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-qtum_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-qtum_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+locktrip_tx_SOURCES = bitcoin-tx.cpp consensus/consensus.cpp
+locktrip_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+locktrip_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+locktrip_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-qtum_tx_SOURCES += bitcoin-tx-res.rc
+locktrip_tx_SOURCES += bitcoin-tx-res.rc
 endif
 
-qtum_tx_LDADD = \
+locktrip_tx_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_UTIL) \
@@ -654,7 +658,7 @@ qtum_tx_LDADD = \
   $(LIBCRYPTOPP) \
   $(LIBSECP256K1)
 
-qtum_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+locktrip_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
 # bitcoinconsensus library #

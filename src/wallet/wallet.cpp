@@ -3599,21 +3599,20 @@ bool CWallet::CommitTransaction(CWalletTx& wtxNew, CReserveKey& reservekey, CCon
     {
         LOCK2(cs_main, cs_wallet);
         LogPrintf("CommitTransaction:\n%s", wtxNew.tx->ToString());
+
+        // Take key pair from key pool so it won't be used again
+        reservekey.KeepKey();
+
+        // Add tx to wallet, because if it has change it's also ours,
+        // otherwise just for transaction history.
+        AddToWallet(wtxNew);
+
+        // Notify that old coins are spent
+        for (const CTxIn& txin : wtxNew.tx->vin)
         {
-            // Take key pair from key pool so it won't be used again
-            reservekey.KeepKey();
-
-            // Add tx to wallet, because if it has change it's also ours,
-            // otherwise just for transaction history.
-            AddToWallet(wtxNew);
-
-            // Notify that old coins are spent
-            for (const CTxIn& txin : wtxNew.tx->vin)
-            {
-                CWalletTx &coin = mapWallet[txin.prevout.hash];
-                coin.BindWallet(this);
-                NotifyTransactionChanged(this, coin.GetHash(), CT_UPDATED);
-            }
+            CWalletTx &coin = mapWallet[txin.prevout.hash];
+            coin.BindWallet(this);
+            NotifyTransactionChanged(this, coin.GetHash(), CT_UPDATED);
         }
 
         // Track how many getdata requests our transaction gets
@@ -3624,11 +3623,17 @@ bool CWallet::CommitTransaction(CWalletTx& wtxNew, CReserveKey& reservekey, CCon
             // Broadcast
             if (!wtxNew.AcceptToMemoryPool(maxTxFee, state)) {
                 LogPrintf("CommitTransaction(): Transaction cannot be broadcast immediately, %s\n", state.GetRejectReason());
-                // TODO: if we expect the failure to be long term or permanent, instead delete wtx from the wallet and return failure.
+
+                // Fails wallet.py functional test => must fix in order to enable this functionality
+//                if(state.GetRejectCode() != REJECT_DUPLICATE){
+//                  DisableTransaction((CTransaction)*wtxNew.tx);
+//                  return false;
+//                }
             } else {
                 wtxNew.RelayWalletTransaction(connman);
             }
         }
+
     }
     return true;
 }
@@ -4234,10 +4239,9 @@ std::set<CTxDestination> CWallet::GetAccountAddresses(const std::string& strAcco
     return result;
 }
 
-// disable transaction (only for coinstake)
 void CWallet::DisableTransaction(const CTransaction &tx)
 {
-    if (!tx.IsCoinStake() || !IsFromMe(tx))
+    if (!IsFromMe(tx))
         return; // only disconnecting coinstake requires marking input unspent
 
     LOCK(cs_wallet);

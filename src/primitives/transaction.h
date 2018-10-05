@@ -343,6 +343,7 @@ public:
 
 //////////////////////////////////////// // qtum
     bool HasCreateOrCall() const;
+    bool HasOpCoinstakeCall() const;
     bool HasOpSpend() const;
 ////////////////////////////////////////
 

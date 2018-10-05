@@ -185,6 +185,7 @@ enum opcodetype
     OP_CREATE = 0xc1,
     OP_CALL = 0xc2,
     OP_SPEND = 0xc3,
+    OP_COINSTAKE_CALL = 0xc4,
 
     // template matching params
     OP_GAS_PRICE = 0xf5,
@@ -640,6 +641,7 @@ public:
 
         return nFound;
     }
+
     int Find(opcodetype op) const
     {
         int nFound = 0;
@@ -695,7 +697,12 @@ public:
     {
         return Find(OP_CREATE) == 1;
     }
-    
+
+    bool HasOpCoinstakeCall() const
+    {
+        return Find(OP_COINSTAKE_CALL) == 1;
+    }
+
     bool HasOpCall() const
     {
         return Find(OP_CALL) == 1;

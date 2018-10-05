@@ -38,6 +38,8 @@ public:
 
     uint64_t getBlockGasLimit(unsigned int blockHeight);
 
+    void PrintKICEconomy();
+
 private:
 
     bool initStorages(const dev::Address& addr, unsigned int blockHeight, std::vector<unsigned char> data = std::vector<unsigned char>());

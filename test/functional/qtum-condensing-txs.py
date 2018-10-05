@@ -114,7 +114,7 @@ class CondensingTxsTest(BitcoinTestFramework):
         self.sender3 = self.node.createcontract(sender3_bytecode, 1000000)['address']
 
         self.node.generate(1)
-        assert(len(self.node.listcontracts()) == 3+NUM_DEFAULT_DGP_CONTRACTS)
+        assert(len(self.node.listcontracts()) == 3+1+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 1 new economy contract in genesis
 
         self.keep_abi = "e4d06d82"
         self.sendAll_abi = "e14f680f"
