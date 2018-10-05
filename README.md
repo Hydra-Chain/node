@@ -14,51 +14,6 @@ The major features of the LockTrip network include:
 
 Note: LockTrip is considered beta software. We make no warranties or guarantees of its security or stability.
 
-LockTrip Documentation and Usage Resources
----------------
-
-These are some resources that might be helpful in understanding LockTrip. Note that the unofficial documents are not created by the LockTrip team.
-
-Basic usage resources:
-
-* [Official LockTrip Usage Guide](https://github.com/qtumproject/qtum/wiki/Qtum-Wallet-Tutorial)
-* [Unofficial LockTrip staking tutorial](https://steemit.com/qtum/@cryptominder/qtum-staking-tutorial-using-qtum-qt)
-* [Unofficial LockTrip staking tutorial on Raspberry Pi](https://steemit.com/qtum/@cryptominder/qtum-staking-tutorial-using-qtumd-on-a-raspberry-pi-3)
-* [Unofficial guide for keeping your wallet safe](https://steemit.com/qtum/@cryptominder/encrypting-backing-up-and-restoring-your-qtum-wallet)
-* [Block explorer](https://explorer.qtum.org)
-* [Unofficial block explorer](https://qtumexplorer.io/)
-* [Unofficial Raspberry Pi Web UI](https://github.com/rpiwalletui/qtum-ui)
-
-Development resources:
-
-* [Deploying a custom token to LockTrip](https://blog.qtum.org/qtum-custom-token-walkthrough-467d725fa27d)
-* [Early example faucet contract](http://earlz.net/view/2017/06/30/2144/the-qtum-sparknet-faucet)
-* [Unofficial LockTrip Hello World tutorial](https://steemit.com/qtum/@cryptominder/quantum-qtum-blockchain-developer-tutorial-hello-world)
-* [LockTrip Book - A Developer's Guide To QTUM](https://github.com/qtumproject/qtumbook)
-
-General Info about LockTrip:
-
-* [Mainnet event AMA](https://www.reddit.com/r/Qtum/comments/6zs8t0/official_qtum_ama_thread_starts_at_10pm_beijing/)
-* [LockTrip's PoS vs CASPER](https://www.reddit.com/r/Qtum/comments/788oa5/qtums_pos_vs_casper_and_the_nothingatstake_problem/)
-* [Technical article explaining LockTrip's PoS model in depth](http://earlz.net/view/2017/07/27/1904/the-missing-explanation-of-proof-of-stake-version)
-* [Unofficial What is LockTrip article](https://storeofvalue.github.io/posts/what-is-qtum-without-the-bullshit/)
-
-Developer's Tools
------------------
-
-* Smart contract deployment tool
-  * https://github.com/qtumproject/solar
-* DApp JavaScript Library
-  * https://github.com/qtumproject/qtumjs
-* A toolkit for building qtum light wallets
-  * https://github.com/qtumproject/qtumjs-wallet
-* CORS qtumd RPC proxy for DApp
-  * https://github.com/qtumproject/qtumportal
-* Docker images for running qtum services
-  * https://github.com/qtumproject/qtum-docker
-* HTTP API that powers the block explorer and the QTUM web wallet
-  * https://github.com/qtumproject/insight-api
-
 
 What is LockTrip?
 ------------------
@@ -76,39 +31,12 @@ LockTrip currently implements the following:
 * Regtest mode, which enables developers to very quickly build their own private LockTrip network for Dapp testing
 * Compatibility with the Bitcoin Core set of RPC commands and APIs
 
-Alternative Wallets
--------------------
-
-LockTrip uses a full node model, and thus requires downloading the entire blockchain. If you do not need the entire blockchain, and do not intend on developing smart contracts, it may be more ideal to use an alternative wallet such as one of our light wallets that can be synchronized in a matter of seconds. 
-
-### LockTrip
-
-A light wallet that supports the Ledger hardware wallet and is based on the well known Electrum wallet software. 
-
-Download: https://github.com/qtumproject/qtum-electrum/releases
-
-### iOS and Android Wallets
-
-These wallets run on mobile devices and synchronize quickly. 
-
-Android Download: https://play.google.com/store/apps/details?id=org.qtum.wallet
-
-iOS Download: https://github.com/qtumproject/qtum-ios (open source, we are still working with Apple to get approval for their app store)
-
-### Ledger Chrome Wallet
-
-This light wallet runs in your Chrome browser as a browser extension. This wallet requires a Ledger device to use.
-
-How to install: https://ledger.zendesk.com/hc/en-us/articles/115003776913-How-to-install-and-use-Qtum-with-Ledger
-
-
 Building LockTrip 
 ----------
 
 ### Build on Ubuntu
 
     # This is a quick start script for compiling LockTrip on  Ubuntu
-
 
     sudo apt-get install build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils git cmake libboost-all-dev
     sudo apt-get install software-properties-common
@@ -119,7 +47,7 @@ Building LockTrip
     # If you want to build the Qt GUI:
     sudo apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler qrencode
 
-    git clone https://gitlab.com/LockTrip-Dev-Team/LockTrip.git --recursive
+    git clone https://github.com/LockTrip/Blockchain-Core.git --recursive
     cd LockTrip
 
     # Note autogen will prompt to install some more dependencies if needed
@@ -129,7 +57,7 @@ Building LockTrip
     
 ### Build on CentOS
 
-Here is a brief description for compiling LockTrip on CentOS, for more details please refer to [the specific document](https://github.com/qtumproject/qtum/blob/master/doc/build-unix.md)
+Here is a brief description for compiling LockTrip on CentOS
 
     # Compiling boost manually
     sudo yum install python-devel bzip2-devel
@@ -149,7 +77,7 @@ Here is a brief description for compiling LockTrip on CentOS, for more details p
     sudo yum install qt5-qttools-devel protobuf-devel qrencode-devel
     
     # Building LockTrip
-    git clone --recursive https://gitlab.com/LockTrip-Dev-Team/LockTrip.git
+    git clone --recursive https://github.com/LockTrip/Blockchain-Core.git
     cd LockTrip
     ./autogen.sh
     ./configure
@@ -180,7 +108,7 @@ NOTE: Building with Qt4 is still supported, however, could result in a broken UI
 
 1. Clone the LockTrip source code and cd into `LockTrip`
 
-        git clone --recursive https://gitlab.com/LockTrip-Dev-Team/LockTrip.git
+        git clone --recursive https://github.com/LockTrip/Blockchain-Core.git
         cd LockTrip
 
 2.  Build LockTrip:
@@ -208,16 +136,6 @@ License
 
 LockTrip is GPLv3 licensed.
 
-Development Process
--------------------
-
-The `master` branch is regularly built and tested, but is not guaranteed to be
-completely stable. [Tags](https://github.com/qtumproject/qtum/tags) are created
-regularly to indicate new official, stable release versions of LockTrip.
-
-The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
-
-Developer IRC can be found on Freenode at #qtum-dev.
 
 Testing
 -------
