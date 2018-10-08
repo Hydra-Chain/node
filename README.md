@@ -1,35 +1,20 @@
 What is LockTrip?
 -------------
+LockTrip is a decentralized open source bookings ecosystem for renting hotel rooms, private properties or accommodation. LockTrip will be the first system which allows end customers and property owners to deal with each other on the platform without any fee or commission.
 
-LockTrip is a decentralized blockchain project built on Bitcoin's UTXO model, with support for Ethereum Virtual Machine based smart contracts, and secured by a proof of stake consensus model. It achieves this through the revolutionary Account Abstraction Layer which allows the EVM to communicate with LockTrip's Bitcoin-like UTXO blockchain. For more general information about LockTrip as well as links to join our community, go to https://locktrip.com/
-
-Welcome to the LockTrip Main Network. This is the main network where the tokens hold value and should be guarded very carefully. If you are testing the network, or developing unstable software on LockTrip, we highly recommend using either testnet or regtest mode. 
-
-The major features of the LockTrip network include:
-
-1. Compatibility with the Ethereum Virtual Machine, which allows for compatibility with most existing Solidity based smart contracts. No special solidity compiler is required to deploy your smart contract to LockTrip. 
-2. A Proof of Stake consensus system which is optimized for LockTrip's contract model. Any user can stake and help to secure the network. There is no voting, master nodes, or minimum amount required. There have been transactions as small as 2 LockTrip that have created blocks in the past. 
-3. The Decentralized Governance Protocol is completely implemented and functional, which allows certain network parameters to be modified without a fork or other network disruption. This currently controls parameters like block size, gas prices, etc. 
-4. Uses the UTXO transaction model and is compatible with Bitcoin, allowing for existing tooling and workflows to be used with LockTrip. This allows for the infamous SPV protocol to be used which is ideal for light wallets on mobile phones and IoT devices.
-
-Note: LockTrip is considered beta software. We make no warranties or guarantees of its security or stability.
+The LockTrip Blockchain is a hybrid utilizing the transaction model of Bitcoin and employing the powerful virtual machine of Ethereum. It is based on the Bitcoin Core, Ethereum and Qtum.
+It features a Proof of Stake consensus mechanism, high transaction throughput, democratic governance of key parameters, predictable network fees and a unique profit-sharing system.
 
 
-What is LockTrip?
-------------------
+License
+-------
+LockTrip is [GPLv3 licensed](https://www.gnu.org/licenses/gpl-3.0.html)
 
-LockTrip is our primary mainnet wallet. It implements a full node and is capable of storing, validating, and distributing all history of the LockTrip network. LockTrip is considered the reference implementation for the LockTrip network. 
-
-LockTrip currently implements the following:
-
-* Sending/Receiving LockTrip
-* Sending/Receiving LRC20 tokens on the LockTrip network
-* Staking and creating blocks for the LockTrip network
-* Creating and interacting with smart contracts
-* Running a full node for distributing the blockchain to other users
-* "Prune" mode, which minimizes disk usage
-* Regtest mode, which enables developers to very quickly build their own private LockTrip network for Dapp testing
-* Compatibility with the Bitcoin Core set of RPC commands and APIs
+Resources
+----------
+Devnet explorer: http://explorer.locktrip.com/
+Devnet faucet: http://faucet.locktrip.com
+Wallet downloads: https://github.com/LockTrip/Blockchain/releases
 
 Building LockTrip 
 ----------
@@ -47,7 +32,7 @@ Building LockTrip
     # If you want to build the Qt GUI:
     sudo apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler qrencode
 
-    git clone https://github.com/LockTrip/Blockchain-Core.git --recursive
+    git clone https://github.com/LockTrip/Blockchain.git --recursive
     cd LockTrip
 
     # Note autogen will prompt to install some more dependencies if needed
@@ -77,7 +62,7 @@ Here is a brief description for compiling LockTrip on CentOS
     sudo yum install qt5-qttools-devel protobuf-devel qrencode-devel
     
     # Building LockTrip
-    git clone --recursive https://github.com/LockTrip/Blockchain-Core.git
+    git clone --recursive https://github.com/LockTrip/Blockchain.git
     cd LockTrip
     ./autogen.sh
     ./configure
@@ -108,7 +93,7 @@ NOTE: Building with Qt4 is still supported, however, could result in a broken UI
 
 1. Clone the LockTrip source code and cd into `LockTrip`
 
-        git clone --recursive https://github.com/LockTrip/Blockchain-Core.git
+        git clone --recursive https://github.com/LockTrip/Blockchain.git
         cd LockTrip
 
 2.  Build LockTrip:
@@ -130,35 +115,3 @@ NOTE: Building with Qt4 is still supported, however, could result in a broken UI
 Then you can either run the command-line daemon using `src/locktripd` and `src/locktrip-cli`, or you can run the Qt GUI using `src/qt/locktrip-qt`
 
 For in-depth description of Sparknet and how to use LockTrip for interacting with contracts, please see [sparknet-guide](doc/sparknet-guide.md).
-
-License
--------
-
-LockTrip is GPLv3 licensed.
-
-
-Testing
--------
-
-Testing and code review is the bottleneck for development; we get more pull
-requests than we can review and test on short notice. Please be patient and help out by testing
-other people's pull requests, and remember this is a security-critical project where any mistake might cost people
-lots of money.
-
-### Automated Testing
-
-Developers are strongly encouraged to write [unit tests](src/test/README.md) for new code, and to
-submit new unit tests for old code. Unit tests can be compiled and run
-(assuming they weren't disabled in configure) with: `make check`. Further details on running
-and extending unit tests can be found in [/src/test/README.md](/src/test/README.md).
-
-There are also [regression and integration tests](/test), written
-in Python, that are run automatically on the build server.
-These tests can be run (if the [test dependencies](/test) are installed) with: `test/functional/test_runner.py`
-
-### Manual Quality Assurance (QA) Testing
-
-Changes should be tested by somebody other than the developer who wrote the
-code. This is especially important for large or high-risk changes. It is useful
-to add a test plan to the pull request description if testing the changes is
-not straightforward.
