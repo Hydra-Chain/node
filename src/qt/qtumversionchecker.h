@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#define QTUM_RELEASES "https://github.com/RosenKrumov/test-rel/releases" //TODO: Add releases link
+#define QTUM_RELEASES "https://github.com/LockTrip/Blockchain/releases"
 
 class Version {
 
