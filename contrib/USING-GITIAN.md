@@ -70,14 +70,14 @@ Output will look something like:
     Running build script (log in var/build.log)
 
 
-Binaries will be in qtum-binaries/ . Signatures will appear in gitian.sigs/ . Signatures will be committed and you should push it manually. Sigs haven't committed with ```--no-commit```.
+Binaries will be in locktrip-binaries/ . Signatures will appear in gitian.sigs/ . Signatures will be committed and you should push it manually. Sigs haven't committed with ```--no-commit```.
 
 Build output expected:
 
-  1. source tarball (`qtum-${VERSION}.tar.gz`)
-  2. linux 32-bit and 64-bit dist tarballs (`qtum-${VERSION}-linux[32|64].tar.gz`)
-  3. windows 32-bit and 64-bit unsigned installers and dist zips (`qtum-${VERSION}-win[32|64]-setup-unsigned.exe`, `qtum-${VERSION}-win[32|64].zip`)
-  4. OS X unsigned installer and dist tarball (`qtum-${VERSION}-osx-unsigned.dmg`, `qtum-${VERSION}-osx64.tar.gz`)
+  1. source tarball (`locktrip-${VERSION}.tar.gz`)
+  2. linux 32-bit and 64-bit dist tarballs (`locktrip-${VERSION}-linux[32|64].tar.gz`)
+  3. windows 32-bit and 64-bit unsigned installers and dist zips (`locktrip-${VERSION}-win[32|64]-setup-unsigned.exe`, `locktrip-${VERSION}-win[32|64].zip`)
+  4. OS X unsigned installer and dist tarball (`locktrip-${VERSION}-osx-unsigned.dmg`, `locktrip-${VERSION}-osx64.tar.gz`)
   5. Gitian signatures (in `gitian.sigs/${VERSION}-<linux|{win,osx}-unsigned>/(your Gitian key)/`)
 
 ### Verify other gitian builders signatures to your own. (Optional)
@@ -99,15 +99,15 @@ Verify the signatures
 
 Codesigner only: Sign the osx binary:
 
-    transfer qtum-osx-unsigned.tar.gz to osx for signing
-    tar xf qtum-osx-unsigned.tar.gz
+    transfer locktrip-osx-unsigned.tar.gz to osx for signing
+    tar xf locktrip-osx-unsigned.tar.gz
     ./detached-sig-create.sh -s "Key ID"
     Enter the keychain password and authorize the signature
     Move signature-osx.tar.gz back to the gitian host
 
 Codesigner only: Sign the windows binaries:
 
-    tar xf qtum-win-unsigned.tar.gz
+    tar xf locktrip-win-unsigned.tar.gz
     ./detached-sig-create.sh -key /path/to/codesign.key
     Enter the passphrase for the key when prompted
     signature-win.tar.gz will be created
