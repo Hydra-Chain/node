@@ -1,23 +1,20 @@
-What is LockTrip?
--------------
+
+# What is LockTrip?
+
 LockTrip is a decentralized open source bookings ecosystem for renting hotel rooms, private properties or accommodation. LockTrip will be the first system which allows end customers and property owners to deal with each other on the platform without any fee or commission.
 
 The LockTrip Blockchain is a hybrid utilizing the transaction model of Bitcoin and employing the powerful virtual machine of Ethereum. It is based on the Bitcoin Core, Ethereum and Qtum.
 It features a Proof of Stake consensus mechanism, high transaction throughput, democratic governance of key parameters, predictable network fees and a unique profit-sharing system.
 
-
-License
--------
+# License
 LockTrip is [GPLv3 licensed](https://www.gnu.org/licenses/gpl-3.0.html)
 
-Resources
-----------
+# Resources
 Devnet explorer: http://explorer.locktrip.com/
 Devnet faucet: http://faucet.locktrip.com
 Wallet downloads: https://github.com/LockTrip/Blockchain/releases
 
-Building LockTrip 
-----------
+# Building LockTrip Blockchain
 
 ### Build on Ubuntu
 
@@ -113,5 +110,3 @@ NOTE: Building with Qt4 is still supported, however, could result in a broken UI
 ### Run
 
 Then you can either run the command-line daemon using `src/locktripd` and `src/locktrip-cli`, or you can run the Qt GUI using `src/qt/locktrip-qt`
-
-For in-depth description of Sparknet and how to use LockTrip for interacting with contracts, please see [sparknet-guide](doc/sparknet-guide.md).

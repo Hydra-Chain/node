@@ -1,7 +1,7 @@
 WINDOWS BUILD NOTES
 ====================
 
-Below are some notes on how to build Qtum Core for Windows.
+Below are some notes on how to build LockTrip Blockchain for Windows.
 
 Most developers use cross-compilation from Ubuntu to build executables for
 Windows. Cross-compilation is also used to build the release binaries.
@@ -113,6 +113,6 @@ Installation
 After building using the Windows subsystem it can be useful to copy the compiled
 executables to a directory on the windows drive in the same directory structure
 as they appear in the release `.zip` archive. This can be done in the following
-way. This will install to `c:\workspace\qtum`, for example:
+way. This will install to `c:\workspace\LockTrip`, for example:
 
-    make install DESTDIR=/mnt/c/workspace/qtum
+    make install DESTDIR=/mnt/c/workspace/LockTrip
