@@ -33,9 +33,9 @@ packages:
 - "libmicrohttpd-dev"
 - "libminiupnpc-dev"
 remotes:
-- "url": "https://gitlab.com/LockTrip-Dev-Team/LockTrip.git"
+- "url": "https://github.com/LockTrip/Blockchain.git"
   "dir": "LockTrip"
-- "url": "https://gitlab.com/LockTrip-Dev-Team/cpp-ethereum.git"
+- "url": "https://github.com/LockTrip/Ethereum-CPP.git"
   "dir": "cpp-ethereum"
 files: []
 script: |

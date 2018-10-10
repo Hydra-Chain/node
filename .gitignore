@@ -113,12 +113,12 @@ contrib/devtools/split-debug.sh
 src/locktrip-cli
 src/locktrip-tx
 src/locktripd
-src/bench/bench_qtum
+src/bench/bench_locktrip
 src/qt/locktrip-qt
 src/qt/test/test_locktrip-qt
 src/test/buildenv.py
-src/test/test_qtum
-src/test/test_qtum_fuzzy
+src/test/test_locktrip
+src/test/test_locktrip_fuzzy
 
 #CLion Ignore
 .idea/
