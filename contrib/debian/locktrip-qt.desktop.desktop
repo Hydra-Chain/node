@@ -8,3 +8,4 @@ Type=Application
 Icon=qtum128
 MimeType=x-scheme-handler/qtum;
 Categories=Office;Finance;
+Name[en_US]=locktrip-qt.desktop

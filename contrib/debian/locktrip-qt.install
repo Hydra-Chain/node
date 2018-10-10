@@ -1,0 +1,6 @@
+usr/local/bin/locktrip-qt usr/bin
+share/pixmaps/locktrip32.xpm usr/share/pixmaps
+share/pixmaps/locktrip16.xpm usr/share/pixmaps
+share/pixmaps/locktrip128.png usr/share/pixmaps
+debian/locktrip-qt.desktop usr/share/applications
+debian/locktrip-qt.protocol usr/share/kde4/services/

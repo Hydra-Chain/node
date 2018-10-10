@@ -1,15 +1,15 @@
-# bash programmable completion for qtumd(1) and qtum-qt(1)
+# bash programmable completion for locktripd(1) and locktrip-qt(1)
 # Copyright (c) 2012-2016 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-_qtumd() {
+_locktripd() {
     local cur prev words=() cword
-    local qtumd
+    local locktripd
 
-    # save and use original argument to invoke qtumd for -help
+    # save and use original argument to invoke locktripd for -help
     # it might not be in $PATH
-    qtumd="$1"
+    locktripd="$1"
 
     COMPREPLY=()
     _get_comp_words_by_ref -n = cur prev words cword
@@ -33,7 +33,7 @@ _qtumd() {
             # only parse -help if senseful
             if [[ -z "$cur" || "$cur" =~ ^- ]]; then
                 local helpopts
-                helpopts=$($qtumd -help 2>&1 | awk '$1 ~ /^-/ { sub(/=.*/, "="); print $1 }' )
+                helpopts=$($locktripd -help 2>&1 | awk '$1 ~ /^-/ { sub(/=.*/, "="); print $1 }' )
                 COMPREPLY=( $( compgen -W "$helpopts" -- "$cur" ) )
             fi
 
@@ -45,7 +45,7 @@ _qtumd() {
             ;;
     esac
 } &&
-complete -F _qtumd qtumd qtum-qt
+complete -F _locktripd locktripd locktrip-qt
 
 # Local variables:
 # mode: shell-script
