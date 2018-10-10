@@ -10,11 +10,11 @@ for Debian-based Linux systems. If you compile locktripd/locktrip-qt yourself, t
 locktrip-qt.desktop  (Gnome / Open Desktop)
 To install:
 
-	sudo desktop-file-install qtum-qt.desktop
+	sudo desktop-file-install locktrip-qt.desktop
 	sudo update-desktop-database
 
 If you build yourself, you will either need to modify the paths in
-the .desktop file or copy or symlink your qtum-qt binary to `/usr/bin`
+the .desktop file or copy or symlink your locktrip-qt binary to `/usr/bin`
 and the `../../share/pixmaps/bitcoin128.png` to `/usr/share/pixmaps`
 
 locktrip-qt.protocol (KDE)
