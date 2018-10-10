@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*- 
 # Copyright (c) 2014-2016 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -13,7 +14,6 @@ For a description of arguments recognized by test scripts, see
 `test/functional/test_framework/test_framework.py:BitcoinTestFramework.main`.
 
 """
-
 import argparse
 import configparser
 import datetime
@@ -471,7 +471,7 @@ class TestHandler:
                     self.jobs.remove(j)
 
                     return TestResult(name, status, int(time.time() - time0)), stdout, stderr
-            print('.', end='', flush=True)
+            """print('.', end='', flush=True)"""
 
 class TestResult():
     def __init__(self, name, status, time):
