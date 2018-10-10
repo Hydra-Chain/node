@@ -1,2 +1,2 @@
-usr/local/bin/qtumd usr/bin
-usr/local/bin/qtum-cli usr/bin
+usr/local/bin/locktripd usr/bin
+usr/local/bin/locktrip-cli usr/bin
