@@ -542,22 +542,26 @@ std::string HelpMessage(HelpMessageMode mode)
 
 std::string LicenseInfo()
 {
-    const std::string URL_SOURCE_CODE = "<https://gitlab.com/LockTrip-Dev-Team/LockTrip>";
+    const std::string URL_SOURCE_CODE = "<https://github.com/LockTrip/Blockchain>";
     const std::string URL_WEBSITE = "<https://locktrip.com>";
 
     return CopyrightHolders(strprintf(_("Copyright (C) %i"), COPYRIGHT_YEAR) + " ") + "\n" +
            "\n" +
-           strprintf(_("Please contribute if you find %s useful. "
-                       "Visit %s for further information about the software."),
-               PACKAGE_NAME, URL_WEBSITE) +
+           strprintf(_("This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.")) +
            "\n" +
+           strprintf("This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.") +
+           "\n" +
+		   strprintf("You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.") +
+		   "\n" +
+		   strprintf(_("Please contribute if you find %s useful. "
+		                         "Visit %s for further information about the software."),
+		                 PACKAGE_NAME, URL_WEBSITE) +
+		             "\n" +
            strprintf(_("The source code is available from %s."),
                URL_SOURCE_CODE) +
            "\n" +
            "\n" +
-           _("This is experimental software.") + "\n" +
-           strprintf(_("Distributed under the MIT software license, see the accompanying file %s or %s"), "COPYING", "<https://opensource.org/licenses/MIT>") + "\n" +
-           "\n" +
+           _("This software is based on the projects Qtum https://github.com/qtumproject/qtum and Bitcoin https://github.com/bitcoin/bitcoin.") + "\n" +
            strprintf(_("This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit %s and cryptographic software written by Eric Young and UPnP software written by Thomas Bernard."), "<https://www.openssl.org>") +
            "\n";
 }
