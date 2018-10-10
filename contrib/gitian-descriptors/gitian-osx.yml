@@ -28,9 +28,9 @@ packages:
 - "python-setuptools"
 - "fonts-tuffy"
 remotes:
-- "url": "https://gitlab.com/LockTrip-Dev-Team/LockTrip.git"
+- "url": "https://github.com/LockTrip/Blockchain.git"
   "dir": "LockTrip"
-- "url": "https://gitlab.com/LockTrip-Dev-Team/cpp-ethereum.git"
+- "url": "https://github.com/LockTrip/Ethereum-CPP.git"
   "dir": "cpp-ethereum"
 files:
 - "MacOSX10.11.sdk.tar.gz"
