@@ -1,0 +1,2 @@
+contrib/locktripd.bash-completion	locktripd
+contrib/locktrip-cli.bash-completion	locktrip-cli

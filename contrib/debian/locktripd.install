@@ -1,0 +1,2 @@
+usr/local/bin/locktripd usr/bin
+usr/local/bin/locktrip-cli usr/bin
