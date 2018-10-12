@@ -13,6 +13,7 @@ build_and_test_job:
     - release
     - master
     - github_master
+    - features/ci_test
   variables:
      GIT_SUBMODULE_STRATEGY: recursive
   before_script:
@@ -42,6 +43,7 @@ build_and_test_job:
     - ./test_runner.py receivedby.py
     - ./test_runner.py listtransactions.py
     - ./test_runner.py
+    - ./test_runner.py pruning.py
 
 cleanup_build_on_failure_job:
   stage: cleanup_build
