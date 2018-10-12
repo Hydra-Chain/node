@@ -14,8 +14,8 @@ RPCs tested are:
 """
 
 from test_framework.test_framework import BitcoinTestFramework
-from test_framework.util import assert_equal
-from test_framework.qtumconfig import COINBASE_MATURITY, INITIAL_BLOCK_REWARD
+from test_framework.util import *
+from test_framework.qtumconfig import COINBASE_MATURITY, INITIAL_WALLET_BALANCE
 
 class WalletAccountsTest(BitcoinTestFramework):
     def set_test_params(self):
@@ -32,7 +32,7 @@ class WalletAccountsTest(BitcoinTestFramework):
         # the same address, so we call twice to get two addresses w/50 each
         node.generate(1)
         node.generate(COINBASE_MATURITY+1)
-        assert_equal(node.getbalance(), 2*INITIAL_BLOCK_REWARD)
+        assert_equal(node.getbalance(), 2*Decimal(INITIAL_WALLET_BALANCE))
 
         # there should be 2 address groups
         # each with 1 address with a balance of 50 Bitcoins
@@ -44,7 +44,7 @@ class WalletAccountsTest(BitcoinTestFramework):
         for address_group in address_groups:
             assert_equal(len(address_group), 1)
             assert_equal(len(address_group[0]), 2)
-            assert_equal(address_group[0][1], INITIAL_BLOCK_REWARD)
+            assert_equal(address_group[0][1], Decimal(INITIAL_WALLET_BALANCE))
             linked_addresses.add(address_group[0][0])
 
         # send 50 from each address to a third address not in this wallet
@@ -53,7 +53,7 @@ class WalletAccountsTest(BitcoinTestFramework):
         common_address = "qRHRiarHKXvLmpLzggX1AFvBYDtBEUioCh"
         txid = node.sendmany(
             fromaccount="",
-            amounts={common_address: 2*INITIAL_BLOCK_REWARD},
+            amounts={common_address: 2*Decimal(INITIAL_WALLET_BALANCE)},
             subtractfeefrom=[common_address],
             minconf=1,
         )
@@ -104,13 +104,13 @@ class WalletAccountsTest(BitcoinTestFramework):
 
         node.generate(COINBASE_MATURITY+1)
         
-        expected_account_balances = {"": (COINBASE_MATURITY+4)*INITIAL_BLOCK_REWARD}
+        expected_account_balances = {"": (COINBASE_MATURITY+4)*Decimal(INITIAL_WALLET_BALANCE)}
         for account in accounts:
             expected_account_balances[account] = 0
         
         assert_equal(node.listaccounts(), expected_account_balances)
         
-        assert_equal(node.getbalance(""), (COINBASE_MATURITY+4)*INITIAL_BLOCK_REWARD)
+        assert_equal(node.getbalance(""), (COINBASE_MATURITY+4)*Decimal(INITIAL_WALLET_BALANCE))
         
         for account in accounts:
             address = node.getaccountaddress("")

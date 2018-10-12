@@ -21,7 +21,8 @@ class GetChainTipsTest (BitcoinTestFramework):
         tips = self.nodes[0].getchaintips ()
         assert_equal (len (tips), 1)
         assert_equal (tips[0]['branchlen'], 0)
-        assert_equal (tips[0]['height'], 600)
+        self.log.info('tips[0][height]=%s' % (tips[0]['height']))
+        assert_equal (tips[0]['height'], 1600)
         assert_equal (tips[0]['status'], 'active')
 
         # Split the network and build two chains of different lengths.
@@ -34,14 +35,16 @@ class GetChainTipsTest (BitcoinTestFramework):
         assert_equal (len (tips), 1)
         shortTip = tips[0]
         assert_equal (shortTip['branchlen'], 0)
-        assert_equal (shortTip['height'], 610)
+        self.log.info('shortTip[height]=%s' % (shortTip['height']))        
+        assert_equal (shortTip['height'], 1610)
         assert_equal (tips[0]['status'], 'active')
 
         tips = self.nodes[3].getchaintips ()
         assert_equal (len (tips), 1)
         longTip = tips[0]
         assert_equal (longTip['branchlen'], 0)
-        assert_equal (longTip['height'], 620)
+        self.log.info('longTip[height]=%s' % (longTip['height']))
+        assert_equal (longTip['height'], 1620)
         assert_equal (tips[0]['status'], 'active')
 
         # Join the network halves and check that we now have two tips

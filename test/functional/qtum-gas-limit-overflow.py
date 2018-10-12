@@ -10,6 +10,7 @@ import sys
 import random
 import time
 import io
+from test_framework.qtumconfig import INITIAL_WALLET_BALANCE
 
 class QtumGasLimitOverflowTest(BitcoinTestFramework):
     def set_test_params(self):
@@ -21,7 +22,7 @@ class QtumGasLimitOverflowTest(BitcoinTestFramework):
         self.node = self.nodes[0]
         self.node.setmocktime(int(time.time()) - 1000000)
         self.node.generate(200 + COINBASE_MATURITY)
-        unspents = [unspent for unspent in self.node.listunspent() if unspent['amount'] == 20000]
+        unspents = [unspent for unspent in self.node.listunspent() if unspent['amount'] == Decimal(INITIAL_WALLET_BALANCE)]
         unspent = unspents.pop(0)
 
         tx = CTransaction()

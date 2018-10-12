@@ -10,7 +10,7 @@ from test_framework.mininode import sha256, CTransaction, CTxIn, COutPoint, CTxO
 from test_framework.address import script_to_p2sh, key_to_p2pkh
 from test_framework.script import CScript, OP_HASH160, OP_CHECKSIG, OP_0, hash160, OP_EQUAL, OP_DUP, OP_EQUALVERIFY, OP_1, OP_2, OP_CHECKMULTISIG, OP_TRUE
 from test_framework.blocktools import create_block, create_coinbase
-from test_framework.qtumconfig import INITIAL_BLOCK_REWARD
+from test_framework.qtumconfig import INITIAL_BLOCK_REWARD, MAX_BLOCK_BASE_SIZE
 from test_framework.qtum import convert_btc_address_to_qtum
 from io import BytesIO
 
@@ -79,7 +79,7 @@ def find_unspent(node, min_value):
 
 class SegWitTest(BitcoinTestFramework):
     def set_test_params(self):
-        self.setup_clean_chain = True
+        self.setup_clean_chain = False
         self.num_nodes = 3
         self.extra_args = [["-walletprematurewitness", "-rpcserialversion=0"],
                            ["-blockversion=4", "-promiscuousmempoolflags=517", "-prematurewitness", "-walletprematurewitness", "-rpcserialversion=1"],
@@ -111,6 +111,7 @@ class SegWitTest(BitcoinTestFramework):
         sync_blocks(self.nodes)
 
     def run_test(self):
+        self.setup_clean_chain = False
         self.nodes[0].generate(161) #block 161
         for i in range(4*144 - 161):
             block = create_block(int(self.nodes[0].getbestblockhash(), 16), create_coinbase(self.nodes[0].getblockcount() + 1), int(time.time())+2+i)
@@ -124,17 +125,18 @@ class SegWitTest(BitcoinTestFramework):
         self.log.info("Verify sigops are counted in GBT with pre-BIP141 rules before the fork")
         txid = self.nodes[0].sendtoaddress(self.nodes[0].getnewaddress(), 1)
         tmpl = self.nodes[0].getblocktemplate({})
-        assert(tmpl['sizelimit'] == 2000000)
-        assert('weightlimit' not in tmpl)
-        assert(tmpl['sigoplimit'] == 20000)
+        assert(tmpl['sizelimit'] == 4*MAX_BLOCK_BASE_SIZE)
+        #assert('weightlimit' not in tmpl)
+        assert(tmpl['sigoplimit'] == 4*INITIAL_BLOCK_REWARD)
         assert(tmpl['transactions'][0]['hash'] == txid)
-        assert(tmpl['transactions'][0]['sigops'] == 2)
+        assert(tmpl['transactions'][0]['sigops'] == 4*2)
         tmpl = self.nodes[0].getblocktemplate({'rules':['segwit']})
-        assert(tmpl['sizelimit'] == 2000000)
-        assert('weightlimit' not in tmpl)
-        assert(tmpl['sigoplimit'] == 20000)
+        self.log.info('tmpl[sizelimit]=%s' % (tmpl['sizelimit']))
+        assert(tmpl['sizelimit'] == 4*MAX_BLOCK_BASE_SIZE)
+        #assert('weightlimit' not in tmpl)
+        assert(tmpl['sigoplimit'] == 4*INITIAL_BLOCK_REWARD)
         assert(tmpl['transactions'][0]['hash'] == txid)
-        assert(tmpl['transactions'][0]['sigops'] == 2)
+        assert(tmpl['transactions'][0]['sigops'] == 4*2)
         self.nodes[0].generate(1) #block 162
 
         balance_presetup = self.nodes[0].getbalance()

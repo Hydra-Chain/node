@@ -35,6 +35,7 @@ class BlockchainTest(BitcoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
         self.extra_args = [['-stopatheight=607']]
+        #self.extra_args = [['-stopatheight=607']]
 
     def run_test(self):
         self._test_getchaintxstats()

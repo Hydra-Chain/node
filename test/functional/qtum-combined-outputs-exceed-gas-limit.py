@@ -10,10 +10,11 @@ import time
 
 class QtumCombinedOutputsExceedGasLimitTest(BitcoinTestFramework):
     def set_test_params(self):
-        self.setup_clean_chain = True
+        self.setup_clean_chain = False
         self.num_nodes = 1
 
     def run_test(self):
+        self.setup_clean_chain = False
         self.node = self.nodes[0]
         self.node.generate(10+COINBASE_MATURITY)
         """

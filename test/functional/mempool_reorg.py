@@ -17,11 +17,12 @@ class MempoolCoinbaseTest(BitcoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 2
         self.extra_args = [["-checkmempool"]] * 2
-        self.setup_clean_chain = True
+        self.setup_clean_chain = False
 
     alert_filename = None  # Set by setup_network
 
     def run_test(self):
+        self.setup_clean_chain = False
         for node in self.nodes:
             node.generate(25)
             self.sync_all()

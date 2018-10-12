@@ -12,10 +12,11 @@ import io
 
 class QtumSpendOpCallTest(BitcoinTestFramework):
     def set_test_params(self):
-        self.setup_clean_chain = True
+        self.setup_clean_chain = False
         self.num_nodes = 1
 
     def run_test(self):
+        self.setup_clean_chain = False
         self.nodes[0].generate(10+COINBASE_MATURITY)
 
         # Create a new contract that can receive funds
