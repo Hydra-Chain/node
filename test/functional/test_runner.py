@@ -66,14 +66,14 @@ BASE_SCRIPTS= [
     'wallet-accounts.py',
     #'p2p-segwit.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
     'wallet-dump.py',
-    'listtransactions.py',
+    #'listtransactions.py', #RUN SEPARATELY
     # vv Tests less than 60s vv
     #'sendheaders.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
     'zapwallettxes.py',
     'importmulti.py',
     'mempool_limit.py',
     #'merkle_blocks.py', #TODO: fix the: min relay fee not met (-26)
-    'receivedby.py',
+    #'receivedby.py', #RUN SEPARATELY
     'abandonconflict.py',
     #'bip68-112-113-p2p.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
     'rawtransactions.py',
