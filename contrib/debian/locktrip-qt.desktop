@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=LockTrip
+Comment=Connect to the LockTrip P2P Network
+Exec=locktrip-qt %u
+Terminal=false
+Type=Application
+Icon=bitcoin128
+MimeType=x-scheme-handler/locktrip;
+Categories=Office;Finance;
