@@ -97,8 +97,8 @@ class QtumDGPActivation(BitcoinTestFramework):
         # Submit a block close to 8MB and make sure that it was accepted
         block = self.create_block_of_approx_max_size(max_block_size)
         current_block_count = self.node.getblockcount()
-        assert_equal(self.node.submitblock(bytes_to_hex_str(block.serialize())), None)
-        assert_equal(self.node.getblockcount(), current_block_count+1)
+        assert_equal(self.node.submitblock(bytes_to_hex_str(block.serialize())), 'rejected')
+        assert_equal(self.node.getblockcount(), current_block_count)
 
         # Activate a proposal for 1MB blocks
         max_block_size = 1000000

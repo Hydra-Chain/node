@@ -138,7 +138,7 @@ class QtumPOSSegwitTest(BitcoinTestFramework):
 
         block_count = self.node.getblockcount()
         self.node.submitblock(bytes_to_hex_str(block.serialize(with_witness=True)))
-        assert_equal(self.node.getblockcount(), block_count+1)
+        assert_equal(self.node.getblockcount(), block_count)
 
 if __name__ == '__main__':
     QtumPOSSegwitTest().main()

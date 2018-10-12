@@ -14,7 +14,7 @@ Test the following RPCs:
 
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
-from test_framework.qtumconfig import INITIAL_BLOCK_REWARD, COINBASE_MATURITY
+from test_framework.qtumconfig import INITIAL_BLOCK_REWARD, COINBASE_MATURITY, INITIAL_WALLET_BALANCE
 
 # Create one-input, one-output, no-fee transaction:
 class RawTransactionsTest(BitcoinTestFramework):
@@ -121,7 +121,9 @@ class RawTransactionsTest(BitcoinTestFramework):
         self.sync_all()
         self.nodes[0].generate(1)
         self.sync_all()
-        assert_equal(self.nodes[0].getbalance(), bal+INITIAL_BLOCK_REWARD+Decimal('2.19000000')) #block reward + tx
+        self.log.info('self.nodes[0].getbalance()=%s' % (self.nodes[0].getbalance()))
+        self.log.info('bal=%s' % (bal))
+        assert_equal(self.nodes[0].getbalance(), bal+Decimal(INITIAL_WALLET_BALANCE)+Decimal('2.19000000')) #block reward + tx
 
         # 2of2 test for combining transactions
         bal = self.nodes[2].getbalance()
@@ -170,7 +172,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         self.sync_all()
         self.nodes[0].generate(1)
         self.sync_all()
-        assert_equal(self.nodes[0].getbalance(), bal+INITIAL_BLOCK_REWARD+Decimal('2.19000000')) #block reward + tx
+        assert_equal(self.nodes[0].getbalance(), bal+Decimal(INITIAL_WALLET_BALANCE)+Decimal('2.19000000')) #block reward + tx
 
         # getrawtransaction tests
         # 1. valid parameters - only supply txid

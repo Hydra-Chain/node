@@ -10,8 +10,8 @@ import os
 import shutil
 
 from test_framework.test_framework import BitcoinTestFramework
-from test_framework.util import assert_equal, assert_raises_rpc_error
-from test_framework.qtumconfig import INITIAL_BLOCK_REWARD, COINBASE_MATURITY
+from test_framework.util import *
+from test_framework.qtumconfig import INITIAL_BLOCK_REWARD, COINBASE_MATURITY, INITIAL_WALLET_BALANCE
 
 class MultiWalletTest(BitcoinTestFramework):
     def set_test_params(self):
@@ -48,7 +48,6 @@ class MultiWalletTest(BitcoinTestFramework):
         wallet_bad = self.nodes[0].get_wallet_rpc("bad")
 
         w1.generate(1)
-
         # accessing invalid wallet fails
         assert_raises_rpc_error(-18, "Requested wallet does not exist or is not loaded", wallet_bad.getwalletinfo)
 
@@ -57,7 +56,8 @@ class MultiWalletTest(BitcoinTestFramework):
 
         # check w1 wallet balance
         w1_info = w1.getwalletinfo()
-        assert_equal(w1_info['immature_balance'], INITIAL_BLOCK_REWARD)
+        self.log.info('w1_info[immature_balance]=%s' % (w1_info['immature_balance']))
+        assert_equal(w1_info['immature_balance'], Decimal(INITIAL_WALLET_BALANCE))
         w1_name = w1_info['walletname']
         assert_equal(w1_name, "w1")
 
@@ -73,7 +73,8 @@ class MultiWalletTest(BitcoinTestFramework):
         assert_equal({"w1", "w2", "w3"}, {w1_name, w2_name, w3_name})
 
         w1.generate(COINBASE_MATURITY+1)
-        assert_equal(w1.getbalance(), 2*INITIAL_BLOCK_REWARD)
+        self.log.info('w1.getbalance()=%s' % (w1.getbalance()))
+        assert_equal(w1.getbalance(), 2 * Decimal(INITIAL_WALLET_BALANCE))
         assert_equal(w2.getbalance(), 0)
         assert_equal(w3.getbalance(), 0)
 

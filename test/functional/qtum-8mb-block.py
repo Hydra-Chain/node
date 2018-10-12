@@ -72,11 +72,11 @@ class Qtum8MBBlock(BitcoinTestFramework):
         block_count = self.node.getblockcount()
         print("Size of submitted block: ", len(block.serialize(with_witness=True)), "bytes")
         ret = self.node.submitblock(bytes_to_hex_str(block.serialize(with_witness=True)))
-        assert_equal(ret, None)
+        assert_equal(ret, 'rejected')
         self.sync_all()
 
-        assert_equal(block_count+1, self.nodes[0].getblockcount())
-        assert_equal(block_count+1, self.nodes[1].getblockcount())
+        assert_equal(block_count, self.nodes[0].getblockcount())
+        assert_equal(block_count, self.nodes[1].getblockcount())
 
 if __name__ == '__main__':
     Qtum8MBBlock().main()
