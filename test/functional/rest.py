@@ -12,7 +12,7 @@ from codecs import encode
 
 import http.client
 import urllib.parse
-from test_framework.qtumconfig import COINBASE_MATURITY, INITIAL_BLOCK_REWARD
+from test_framework.qtumconfig import COINBASE_MATURITY, INITIAL_BLOCK_REWARD, INITIAL_WALLET_BALANCE
 
 def deser_uint256(f):
     r = 0
@@ -61,7 +61,7 @@ class RESTTest (BitcoinTestFramework):
         self.nodes[2].generate(COINBASE_MATURITY)
         self.sync_all()
 
-        assert_equal(self.nodes[0].getbalance(), INITIAL_BLOCK_REWARD)
+        assert_equal(self.nodes[0].getbalance(), Decimal(INITIAL_WALLET_BALANCE))
 
         txid = self.nodes[0].sendtoaddress(self.nodes[1].getnewaddress(), 0.1)
         self.sync_all()

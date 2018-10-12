@@ -9,6 +9,7 @@ from test_framework.qtum import *
 import sys
 import random
 import time
+from test_framework.qtumconfig import INITIAL_WALLET_BALANCE
 
 class QtumTransactionPrioritizationTest(BitcoinTestFramework):
     def set_test_params(self):
@@ -79,7 +80,7 @@ class QtumTransactionPrioritizationTest(BitcoinTestFramework):
         gas_limit = 100000
         if not spends_txid:
             for unspent in self.node.listunspent():
-                if unspent['amount'] == 20000:
+                if unspent['amount'] == Decimal(INITIAL_WALLET_BALANCE):
                     spends_txid = unspent['txid']
                     spends_vout = unspent['vout']
                     break

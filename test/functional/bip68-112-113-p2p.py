@@ -95,8 +95,8 @@ def all_rlt_txs(txarray):
 class BIP68_112_113Test(ComparisonTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
-        self.setup_clean_chain = True
-        self.extra_args = [['-whitelist=127.0.0.1', '-blockversion=4']]
+        self.setup_clean_chain = False
+        self.extra_args = [['-debug','-whitelist=127.0.0.1', '-blockversion=4']]
 
     def run_test(self):
         test = TestManager(self, self.options.tmpdir)

@@ -35,7 +35,7 @@ import shutil
 
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
-from test_framework.qtumconfig import COINBASE_MATURITY, INITIAL_BLOCK_REWARD
+from test_framework.qtumconfig import COINBASE_MATURITY, INITIAL_WALLET_BALANCE
 
 class WalletBackupTest(BitcoinTestFramework):
     def set_test_params(self):
@@ -106,9 +106,9 @@ class WalletBackupTest(BitcoinTestFramework):
         self.nodes[3].generate(COINBASE_MATURITY)
         sync_blocks(self.nodes)
 
-        assert_equal(self.nodes[0].getbalance(), INITIAL_BLOCK_REWARD)
-        assert_equal(self.nodes[1].getbalance(), INITIAL_BLOCK_REWARD)
-        assert_equal(self.nodes[2].getbalance(), INITIAL_BLOCK_REWARD)
+        assert_equal(self.nodes[0].getbalance(), Decimal(INITIAL_WALLET_BALANCE))
+        assert_equal(self.nodes[1].getbalance(), Decimal(INITIAL_WALLET_BALANCE))
+        assert_equal(self.nodes[2].getbalance(), Decimal(INITIAL_WALLET_BALANCE))
         assert_equal(self.nodes[3].getbalance(), 0)
 
         self.log.info("Creating transactions")
@@ -141,7 +141,7 @@ class WalletBackupTest(BitcoinTestFramework):
 
         # At this point, there are 214 blocks (103 for setup, then 10 rounds, then 101.)
         # 114 are mature, so the sum of all wallets should be 114 * 50 = 5700.
-        assert_equal(total, 514*INITIAL_BLOCK_REWARD)
+        assert_equal(total, 1514*Decimal(INITIAL_WALLET_BALANCE))
 
         ##
         # Test restoring spender wallets from backups

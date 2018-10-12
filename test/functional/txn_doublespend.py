@@ -6,7 +6,7 @@
 
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import *
-from test_framework.qtumconfig import INITIAL_BLOCK_REWARD
+from test_framework.qtumconfig import INITIAL_WALLET_BALANCE
 
 class TxnMallTest(BitcoinTestFramework):
     def set_test_params(self):
@@ -24,13 +24,13 @@ class TxnMallTest(BitcoinTestFramework):
 
     def run_test(self):
         # All nodes should start with 1,250 BTC:
-        starting_balance = 25*INITIAL_BLOCK_REWARD
+        starting_balance = 25*Decimal(INITIAL_WALLET_BALANCE)
         for i in range(4):
             assert_equal(self.nodes[i].getbalance(), starting_balance)
             self.nodes[i].getnewaddress("")  # bug workaround, coins generated assigned to first getnewaddress!
         
-        spend_from_foo = starting_balance - INITIAL_BLOCK_REWARD*5
-        spend_from_bar = INITIAL_BLOCK_REWARD*5 - 100
+        spend_from_foo = starting_balance - Decimal(INITIAL_WALLET_BALANCE)*5
+        spend_from_bar = Decimal(INITIAL_WALLET_BALANCE)*5 - 100
         spend_from_doublespend = spend_from_foo + spend_from_bar - 8
 
         # Assign coins to foo and bar accounts:
@@ -67,8 +67,9 @@ class TxnMallTest(BitcoinTestFramework):
         assert_equal(doublespend["complete"], True)
 
         # Create two spends using 1 50 BTC coin each
-        txid1 = self.nodes[0].sendfrom("foo", node1_address, (INITIAL_BLOCK_REWARD/5) * 4, 0)
-        txid2 = self.nodes[0].sendfrom("bar", node1_address, (INITIAL_BLOCK_REWARD/5) * 2, 0)
+        #TODO: No float allowed ??? round down(INITIAL_WALLET_BALANCE)
+        txid1 = self.nodes[0].sendfrom("foo", node1_address, (round(Decimal(INITIAL_WALLET_BALANCE), -1)/5) * 4, 0)
+        txid2 = self.nodes[0].sendfrom("bar", node1_address, (round(Decimal(INITIAL_WALLET_BALANCE), -1)/5) * 2, 0)
         
         # Have node0 mine a block:
         if (self.options.mine_block):
@@ -81,7 +82,7 @@ class TxnMallTest(BitcoinTestFramework):
         # Node0's balance should be starting balance, plus 50BTC for another
         # matured block, minus 40, minus 20, and minus transaction fees:
         expected = starting_balance + fund_foo_tx["fee"] + fund_bar_tx["fee"]
-        if self.options.mine_block: expected += INITIAL_BLOCK_REWARD
+        if self.options.mine_block: expected += Decimal(INITIAL_WALLET_BALANCE)
         expected += tx1["amount"] + tx1["fee"]
         expected += tx2["amount"] + tx2["fee"]
         assert_equal(self.nodes[0].getbalance(), expected)
@@ -123,7 +124,7 @@ class TxnMallTest(BitcoinTestFramework):
         # Node0's total balance should be starting balance, plus 100BTC for 
         # two more matured blocks, minus 1240 for the double-spend, plus fees (which are
         # negative):
-        expected = starting_balance + 2*INITIAL_BLOCK_REWARD - spend_from_doublespend + fund_foo_tx["fee"] + fund_bar_tx["fee"] + doublespend_fee
+        expected = starting_balance + 2*Decimal(INITIAL_WALLET_BALANCE) - spend_from_doublespend + fund_foo_tx["fee"] + fund_bar_tx["fee"] + doublespend_fee
         assert_equal(self.nodes[0].getbalance(), expected)
         assert_equal(self.nodes[0].getbalance("*"), expected)
 
@@ -135,7 +136,7 @@ class TxnMallTest(BitcoinTestFramework):
                                                               -spend_from_foo
                                                               -  spend_from_bar
                                                               -spend_from_doublespend
-                                                              + 2*INITIAL_BLOCK_REWARD
+                                                              + 2*Decimal(INITIAL_WALLET_BALANCE)
                                                               + fund_foo_tx["fee"]
                                                               + fund_bar_tx["fee"]
                                                               + doublespend_fee)

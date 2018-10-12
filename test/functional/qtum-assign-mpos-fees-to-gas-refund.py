@@ -32,6 +32,7 @@ class QtumAssignMPoSFeesToGasRefundTest(BitcoinTestFramework):
         tip = self.node.getblock(self.node.getbestblockhash())
         t = (tip['time'] + 0x30) & 0xfffffff0
         self.node.setmocktime(t)
+        self.log.info('staking_prevouts=%s' % (staking_prevouts))
         block, block_sig_key = create_unsigned_mpos_block(self.node, staking_prevouts, nTime=t, block_fees=2102200000)
         block.hashUTXORoot = int(tip['hashUTXORoot'], 16)
         block.hashStateRoot = int(tip['hashStateRoot'], 16)

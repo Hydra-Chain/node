@@ -6,7 +6,7 @@ from test_framework.script import *
 from test_framework.mininode import *
 from test_framework.qtum import *
 from test_framework.address import *
-
+from test_framework.qtumconfig import INITIAL_WALLET_BALANCE
 
 class QtumCreateEthOpCodeTest(BitcoinTestFramework):
     def set_test_params(self):
@@ -60,7 +60,8 @@ class QtumCreateEthOpCodeTest(BitcoinTestFramework):
         # The total gas is equal to 1 qtum (10^6 * 10^2) + a minor txfee
         block = self.node.getblock(blockhash)
         coinbase_tx = self.node.getrawtransaction(block['tx'][0], True)
-        assert(coinbase_tx['vout'][0]['value'] >= 20000+1)
+        self.log.info('coinbase_tx[vout][0][value]=%s' % (coinbase_tx['vout'][0]['value']))
+        assert(coinbase_tx['vout'][0]['value'] >= Decimal(INITIAL_WALLET_BALANCE)+1)
         
         # Since the call to the contract threw an out of gas exception the origin contract should have a zero balance
         assert_equal(deployed_contracts[factory_with_value_contract_address], 0)
