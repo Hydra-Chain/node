@@ -24,7 +24,7 @@ build_and_test_job:
     - echo "rpcpassword=password" >> locktrip.conf
     - echo "rpcport=13389" >> locktrip.conf
     - echo "rpccallowip=127.0.0.1" >> locktrip.conf
-    - cat /.locktrip/locktrip.conf
+    - cat /root/.locktrip/locktrip.conf
 
     - cd /builds/LockTrip-Dev-Team/LockTrip
     - git submodule update --init --recursive
