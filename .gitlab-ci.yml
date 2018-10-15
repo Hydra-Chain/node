@@ -39,11 +39,17 @@ build_and_test_job:
     - ./autogen.sh
     - ./configure
     - make -j2
-    - cd test/functional/
+    - cd ~
+    - mkdir .locktrip
+    - cd .locktrip
+    - echo "rpcuser=user" >> locktrip.conf
+    - echo "rpcpassword=password" >> locktrip.conf
+    - echo "rpcport=13389" >> locktrip.conf
+    - echo "rpccallowip=127.0.0.1" >> locktrip.conf
+    - cd /builds/LockTrip-Dev-Team/LockTrip/test/functional/
     - ./test_runner.py receivedby.py
     - ./test_runner.py listtransactions.py
     - ./test_runner.py
-    - ./test_runner.py pruning.py
 
 cleanup_build_on_failure_job:
   stage: cleanup_build
