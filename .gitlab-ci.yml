@@ -17,6 +17,15 @@ build_and_test_job:
   variables:
      GIT_SUBMODULE_STRATEGY: recursive
   before_script:
+    - cd ~
+    - mkdir .locktrip
+    - cd .locktrip
+    - echo "rpcuser=user" >> locktrip.conf
+    - echo "rpcpassword=password" >> locktrip.conf
+    - echo "rpcport=13389" >> locktrip.conf
+    - echo "rpccallowip=127.0.0.1" >> locktrip.conf
+    - cat ~/.locktrip/locktrip.conf
+
     - cd /builds/LockTrip-Dev-Team/LockTrip
     - git submodule update --init --recursive
     - apt-get update --yes
@@ -39,13 +48,7 @@ build_and_test_job:
     - ./autogen.sh
     - ./configure
     - make -j2
-    - cd ~
-    - mkdir .locktrip
-    - cd .locktrip
-    - echo "rpcuser=user" >> locktrip.conf
-    - echo "rpcpassword=password" >> locktrip.conf
-    - echo "rpcport=13389" >> locktrip.conf
-    - echo "rpccallowip=127.0.0.1" >> locktrip.conf
+
     - cd /builds/LockTrip-Dev-Team/LockTrip/test/functional/
     - ./test_runner.py receivedby.py
     - ./test_runner.py listtransactions.py
