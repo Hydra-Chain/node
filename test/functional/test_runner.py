@@ -99,7 +99,7 @@ BASE_SCRIPTS= [
     'disablewallet.py',
     'net.py',
     'keypool.py',
-    'p2p-mempool.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
+    'p2p-mempool.py',
     'prioritise_transaction.py',
     #'invalidblockrequest.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
     #'invalidtxrequest.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
@@ -113,7 +113,7 @@ BASE_SCRIPTS= [
     'bumpfee.py',
     'rpcnamedargs.py',
     'listsinceblock.py',
-    #'p2p-leaktests.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
+    'p2p-leaktests.py',
     'wallet-encryption.py',
     'uptime.py',
     'resendwallettransactions.py',
@@ -121,7 +121,7 @@ BASE_SCRIPTS= [
 
     # qtum
     'qtum-dgp.py',
-    #'qtum-pos.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
+    'qtum-pos.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
     'qtum-opcall.py',
     'qtum-opcreate.py',
     'qtum-gas-limit.py',
