@@ -17,15 +17,15 @@ build_and_test_job:
   variables:
      GIT_SUBMODULE_STRATEGY: recursive
   before_script:
-    - cd ~
+    - cd /
     - mkdir .locktrip
     - cd .locktrip
     - echo "rpcuser=user" >> locktrip.conf
     - echo "rpcpassword=password" >> locktrip.conf
     - echo "rpcport=13389" >> locktrip.conf
     - echo "rpccallowip=127.0.0.1" >> locktrip.conf
-    - cat ~/.locktrip/locktrip.conf
-
+    - cat /.locktrip/locktrip.conf
+    - echo $HOME
     - cd /builds/LockTrip-Dev-Team/LockTrip
     - git submodule update --init --recursive
     - apt-get update --yes
