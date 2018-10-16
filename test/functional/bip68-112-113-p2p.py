@@ -219,7 +219,7 @@ class BIP68_112_113Test(ComparisonTestFramework):
         self.tip = int("0x" + self.nodes[0].getbestblockhash(), 0)
         self.nodeaddress = self.nodes[0].getnewaddress()
 
-        assert_equal(get_bip9_status(self.nodes[0], 'csv')['status'], 'defined')
+        assert_equal(get_bip9_status(self.nodes[0], 'csv')['status'], 'active')
         test_blocks = self.generate_blocks(61, 4)
 
         # Fail to achieve LOCKED_IN 100 out of 144 signal bit 0
