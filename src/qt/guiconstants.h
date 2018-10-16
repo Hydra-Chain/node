@@ -49,7 +49,7 @@ static const int MAX_URI_LENGTH = 255;
 #define SPINNER_FRAMES 36
 
 #define QAPP_ORG_NAME "LockTrip"
-#define QAPP_ORG_DOMAIN "qtum.org"
+#define QAPP_ORG_DOMAIN "locktrip.com"
 #define QAPP_APP_NAME_DEFAULT "LockTrip-Qt"
 #define QAPP_APP_NAME_TESTNET "Locktrip-Qt-testnet"
 

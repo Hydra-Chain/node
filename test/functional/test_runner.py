@@ -66,14 +66,12 @@ BASE_SCRIPTS= [
     'wallet-accounts.py',
     #'p2p-segwit.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
     'wallet-dump.py',
-    #'listtransactions.py', #RUN SEPARATELY
     # vv Tests less than 60s vv
     #'sendheaders.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
     'zapwallettxes.py',
     'importmulti.py',
     'mempool_limit.py',
     #'merkle_blocks.py', #TODO: fix the: min relay fee not met (-26)
-    #'receivedby.py', #RUN SEPARATELY
     'abandonconflict.py',
     #'bip68-112-113-p2p.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
     'rawtransactions.py',
@@ -179,6 +177,8 @@ BASE_SCRIPTS= [
 EXTENDED_SCRIPTS = [
     # These tests are not run by the travis build process.
     # Longest test should go first, to favor running tests in parallel
+    'receivedby.py',
+    'listtransactions.py',
     'pruning.py',
     # vv Tests less than 20m vv
     'smartfees.py',

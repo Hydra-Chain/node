@@ -78,7 +78,7 @@ public:
     const ChainTxData& TxData() const { return chainTxData; }
     void UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout);
 protected:
-    CChainParams() {}
+    CChainParams();
 
     Consensus::Params consensus;
     CMessageHeader::MessageStartChars pchMessageStart;
