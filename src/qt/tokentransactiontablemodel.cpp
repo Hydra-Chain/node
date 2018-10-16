@@ -562,7 +562,7 @@ QVariant TokenTransactionTableModel::data(const QModelIndex &index, int role) co
         }
         if(index.column() == Amount && (rec->credit+rec->debit) < 0)
         {
-            return COLOR_NEGATIVE;
+            return COLOR_BAREADDRESS;
         }
         if(index.column() == ToAddress)
         {
