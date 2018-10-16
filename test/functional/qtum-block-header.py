@@ -52,16 +52,18 @@ class QtumBlockHeaderTest(ComparisonTestFramework):
         #mocktime = 1490247077
         #node.setmocktime(mocktime)
 
-        node.generate(10)
+        node.generate(1)
         self.block_time = int(time.time())+20
         for i in range(500):
             self.tip = create_block(int(node.getbestblockhash(), 16), create_coinbase(node.getblockcount()+1), self.block_time+i)
             self.tip.solve()
             yield accepted()
 
-        #node.generate(COINBASE_MATURITY+50)
+        node.generate(COINBASE_MATURITY)
         mocktime = COINBASE_MATURITY+50
+        self.sync_all()
         spendable_addresses = []
+        self.log.info('node.listunspent()=%s' % (node.listunspent()))
         # store some addresses to use later
         for unspent in node.listunspent():
             spendable_addresses.append(unspent['address'])

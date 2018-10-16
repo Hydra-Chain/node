@@ -354,7 +354,7 @@ class TestManager(object):
                             self.wait_for_pings(self.ping_counter)
                             self.ping_counter += 1
                         #if (not self.check_results(tip, outcome)):
-                            #raise AssertionError("Test failed at test %d" % test_number)
+                        #    raise AssertionError("Test failed at test %d" % test_number)
                     else:
                         invqueue.append(CInv(2, block.sha256))
                 elif isinstance(b_or_t, CBlockHeader):

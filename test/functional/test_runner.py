@@ -66,6 +66,7 @@ BASE_SCRIPTS= [
     'wallet-accounts.py',
     #'p2p-segwit.py', #test_non_witness_transaction fails. Check the windess BIP.
     'wallet-dump.py',
+    #'listtransactions.py', #RUN SEPARATELY
     # vv Tests less than 60s vv
     'sendheaders.py', #getdata command fails
     'zapwallettxes.py',
@@ -121,7 +122,7 @@ BASE_SCRIPTS= [
 
     # qtum
     'qtum-dgp.py',
-    'qtum-pos.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
+    'qtum-pos.py', #the blocks are no synced still
     'qtum-opcall.py',
     'qtum-opcreate.py',
     'qtum-gas-limit.py',
@@ -131,7 +132,7 @@ BASE_SCRIPTS= [
 
     'qtum-null-sender.py',
     'qtum-waitforlogs.py',
-    #'qtum-block-header.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
+    #'qtum-block-header.py', #Connection refused on createcontract()
     'qtum-callcontract.py',
 
     'qtum-condensing-txs.py',
