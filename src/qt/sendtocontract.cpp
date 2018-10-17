@@ -69,7 +69,7 @@ SendToContract::SendToContract(const PlatformStyle *platformStyle, QWidget *pare
     ui->lineEditAmount->setEnabled(true);
     ui->labelContractAddress->setToolTip(tr("The contract address that will receive the funds and data."));
     ui->labelAmount->setToolTip(tr("The amount in LOC to send. Default = 0."));
-    ui->labelSenderAddress->setToolTip(tr("The quantum address that will be used as sender."));
+    ui->labelSenderAddress->setToolTip(tr("The locktrip address that will be used as sender."));
 
     m_tabInfo = new TabBarInfo(ui->stackedWidget);
     m_tabInfo->addTab(0, tr("Send To Contract"));
