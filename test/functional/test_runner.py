@@ -55,25 +55,26 @@ BASE_SCRIPTS= [
     # Scripts that are run by the travis build process.
     # Longest test should go first, to favor running tests in parallel
     'wallet-hd.py',
-    'walletbackup.py',
-    # vv Tests less than 5m vv, #Timeout TODO: fix mininode -> MAGIC_BYTES
-    #'p2p-fullblocktest.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
-    'fundrawtransaction.py',
+
+    # vv Tests less than 5m vv
+    'p2p-fullblocktest.py', #getrawmempool() returns empty collection
+
     #'p2p-compactblocks.py',
     #'segwit.py', #TODO: Research why : create_witnessprogram failed due to append vin and vout in a Transaction
     # vv Tests less than 2m vv
-    'wallet.py',
+
     'wallet-accounts.py',
-    #'p2p-segwit.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
+    #'p2p-segwit.py', #test_non_witness_transaction fails. Check the windess BIP.
     'wallet-dump.py',
+    #'listtransactions.py', #RUN SEPARATELY
     # vv Tests less than 60s vv
-    #'sendheaders.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
+    'sendheaders.py', #getdata command fails
     'zapwallettxes.py',
     'importmulti.py',
     'mempool_limit.py',
     #'merkle_blocks.py', #TODO: fix the: min relay fee not met (-26)
-    'abandonconflict.py',
-    #'bip68-112-113-p2p.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
+
+    'bip68-112-113-p2p.py', #TODO: BIP9 failed. 
     'rawtransactions.py',
     'reindex.py',
     # vv Tests less than 30s vv
@@ -99,11 +100,11 @@ BASE_SCRIPTS= [
     'disablewallet.py',
     'net.py',
     'keypool.py',
-    #'p2p-mempool.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
+    'p2p-mempool.py',
     'prioritise_transaction.py',
-    #'invalidblockrequest.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
-    #'invalidtxrequest.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
-    #'p2p-versionbits-warning.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
+    'invalidblockrequest.py', 
+    'invalidtxrequest.py', #sync_transaction() fails to synchronize. Mempool test failed.
+    'p2p-versionbits-warning.py', #sync_with_ping() fails with Timeout error.
     'preciousblock.py',
     'importprunedfunds.py',
     'signmessages.py',
@@ -113,7 +114,7 @@ BASE_SCRIPTS= [
     'bumpfee.py',
     'rpcnamedargs.py',
     'listsinceblock.py',
-    #'p2p-leaktests.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
+    'p2p-leaktests.py',
     'wallet-encryption.py',
     'uptime.py',
     'resendwallettransactions.py',
@@ -121,33 +122,31 @@ BASE_SCRIPTS= [
 
     # qtum
     'qtum-dgp.py',
-    #'qtum-pos.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
+    'qtum-pos.py', #the blocks are no synced still
     'qtum-opcall.py',
     'qtum-opcreate.py',
-    'qtum-8mb-block.py', #TODO: revert block submission: rejected to None once we normalize the coinbase payment
     'qtum-gas-limit.py',
     'qtum-searchlog.py',
     'qtum-pos-segwit.py', #TODO: revert block submission: rejected to None once we normalize the coinbase payment
     'qtum-state-root.py',
-    'qtum-evm-globals.py',
+
     'qtum-null-sender.py',
     'qtum-waitforlogs.py',
-    #'qtum-block-header.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
+    #'qtum-block-header.py', #Connection refused on createcontract()
     'qtum-callcontract.py',
-    'qtum-spend-op-call.py',
+
     'qtum-condensing-txs.py',
     #'qtum-createcontract.py', TODO research: find the qtum network common_adresses that have any unspent outputs
     'qtum-sendtocontract.py',
     'qtum-identical-refunds.py',
     'qtum-create-eth-op-code.py',
     'qtum-gas-limit-overflow.py',
-    'qtum-call-empty-contract.py',
+
     #'qtum-dgp-block-size-sync.py', #TODO: revert block submission: rejected to None once we normalize the coinbase payment
     #'qtum-pos-conflicting-txs.py', #TODO:RUNS TOO LONG. Needs rework
     'qtum-globals-state-changer.py',
     'qtum-no-exec-call-disabled.py',
-    'qtum-soft-block-gas-limits.py',
-    'qtum-dgp-block-size-restart.py', #TODO: revert block submission: rejected to None once we normalize the coinbase payment
+
     'qtum-searchlog-restart-node.py',
     #'qtum-immature-coinstake-spend.py', #activate_mpos failed due to rejecting bloick submission.
     #'qtum-transaction-prioritization.py', #TODO:RUNS TOO LONG. Needs rework
@@ -177,8 +176,19 @@ BASE_SCRIPTS= [
 EXTENDED_SCRIPTS = [
     # These tests are not run by the travis build process.
     # Longest test should go first, to favor running tests in parallel
-    'receivedby.py',
+    'receivedby.py',     
     'listtransactions.py',
+    'abandonconflict.py',
+    'fundrawtransaction.py',    
+    'qtum-8mb-block.py', #TODO: revert block submission: rejected to None once we normalize the coinbase payment 
+    'qtum-call-empty-contract.py',
+    'qtum-dgp-block-size-restart.py', #TODO: revert block submission: rejected to None once we normalize the coinbase payment
+    'qtum-evm-globals.py',
+    'qtum-soft-block-gas-limits.py',
+    'qtum-spend-op-call.py',
+    'wallet.py',
+    'walletbackup.py',
+    
     'pruning.py',
     # vv Tests less than 20m vv
     'smartfees.py',
