@@ -54,7 +54,7 @@ CallContract::CallContract(const PlatformStyle *platformStyle, QWidget *parent) 
     m_ABIFunctionField = new ABIFunctionField(platformStyle, ABIFunctionField::Call, ui->scrollAreaFunction);
     ui->scrollAreaFunction->setWidget(m_ABIFunctionField);
 
-    ui->labelContractAddress->setToolTip(tr("The account address."));
+    ui->labelContractAddress->setToolTip(tr("The contract address."));
     ui->labelSenderAddress->setToolTip(tr("The sender address hex string."));
     ui->pushButtonCallContract->setEnabled(false);
     ui->lineEditSenderAddress->setComboBoxEditable(true);

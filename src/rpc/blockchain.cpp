@@ -1016,7 +1016,7 @@ UniValue callcontract(const JSONRPCRequest& request)
         throw std::runtime_error(
              "callcontract \"address\" \"data\" ( address )\n"
              "\nArgument:\n"
-             "1. \"address\"          (string, required) The account address\n"
+             "1. \"address\"          (string, required) The contract address\n"
              "2. \"data\"             (string, required) The data hex string\n"
              "3. address              (string, optional) The sender address hex string\n"
              "4. gasLimit             (string, optional) The gas limit for executing the contract\n"
