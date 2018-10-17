@@ -102,9 +102,9 @@ BASE_SCRIPTS= [
     'keypool.py',
     'p2p-mempool.py',
     'prioritise_transaction.py',
-    #'invalidblockrequest.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
-    #'invalidtxrequest.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
-    #'p2p-versionbits-warning.py', #Timeout TODO: fix mininode -> MAGIC_BYTES
+    'invalidblockrequest.py', 
+    'invalidtxrequest.py', #sync_transaction() fails to synchronize. Mempool test failed.
+    'p2p-versionbits-warning.py', #sync_with_ping() fails with Timeout error.
     'preciousblock.py',
     'importprunedfunds.py',
     'signmessages.py',
