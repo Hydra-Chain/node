@@ -1,0 +1,22 @@
+[Unit]
+Description=LockTrip's distributed currency daemon
+After=network.target
+
+[Service]
+User=locktrip
+Group=locktrip
+
+Type=forking
+PIDFile=/var/lib/locktripd/locktripd.pid
+ExecStart=/usr/bin/locktripd -daemon -pid=/var/lib/locktripd/locktripd.pid \
+-conf=/etc/locktrip/locktrip.conf -datadir=/var/lib/locktripd -disablewallet
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
