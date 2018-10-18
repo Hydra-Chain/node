@@ -258,7 +258,7 @@ then
 	mkdir -p inputs
 	wget -N -P inputs $osslPatchUrl
 	wget -N -P inputs $osslTarUrl
-	make -C ../LockTrip/depends download SOURCES_PATH=`pwd`/cache/common
+	make -C ../Blockchain/depends download SOURCES_PATH=`pwd`/cache/common
 
 	# Linux
 	if [[ $linux = true ]]
@@ -268,8 +268,8 @@ then
 	    echo ""
 	    pwd
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit LockTrip=${COMMIT},cpp-ethereum=0.2 --url LockTrip=${url},cpp-ethereum=${ethurl} ../LockTrip/contrib/gitian-descriptors/gitian-linux.yml
-	    ./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../LockTrip/contrib/gitian-descriptors/gitian-linux.yml
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit LockTrip=${COMMIT},cpp-ethereum=0.2 --url LockTrip=${url},cpp-ethereum=${ethurl} ../Blockchain/contrib/gitian-descriptors/gitian-linux.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../Blockchain/contrib/gitian-descriptors/gitian-linux.yml
 	    mv build/out/locktrip-*.tar.gz build/out/src/locktrip-*.tar.gz ../locktrip-binaries/${VERSION}
 	fi
 	# Windows
@@ -278,8 +278,8 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} Windows"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit LockTrip=${COMMIT},cpp-ethereum=0.2 --url LockTrip=${url},cpp-ethereum=${ethurl} ../LockTrip/contrib/gitian-descriptors/gitian-win.yml
-	    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../LockTrip/contrib/gitian-descriptors/gitian-win.yml
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit LockTrip=${COMMIT},cpp-ethereum=0.2 --url LockTrip=${url},cpp-ethereum=${ethurl} ../Blockchain/contrib/gitian-descriptors/gitian-win.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../Blockchain/contrib/gitian-descriptors/gitian-win.yml
 	    mv build/out/locktrip-*-win-unsigned.tar.gz inputs/locktrip-win-unsigned.tar.gz
 	    mv build/out/locktrip-*.zip build/out/locktrip-*.exe ../locktrip-binaries/${VERSION}
 	fi
@@ -289,8 +289,8 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} Mac OSX"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit LockTrip=${COMMIT},cpp-ethereum=0.2 --url LockTrip=${url},cpp-ethereum=${ethurl} ../LockTrip/contrib/gitian-descriptors/gitian-osx.yml
-	    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../LockTrip/contrib/gitian-descriptors/gitian-osx.yml
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit LockTrip=${COMMIT},cpp-ethereum=0.2 --url LockTrip=${url},cpp-ethereum=${ethurl} ../Blockchain/contrib/gitian-descriptors/gitian-osx.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../Blockchain/contrib/gitian-descriptors/gitian-osx.yml
 	    mv build/out/locktrip-*-osx-unsigned.tar.gz inputs/locktrip-osx-unsigned.tar.gz
 	    mv build/out/locktrip-*.tar.gz build/out/locktrip-*.dmg ../locktrip-binaries/${VERSION}
 	fi
@@ -319,27 +319,27 @@ then
 	echo ""
 	echo "Verifying ${VERSION} Linux"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../LockTrip/contrib/gitian-descriptors/gitian-linux.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../Blockchain/contrib/gitian-descriptors/gitian-linux.yml
 	# Windows
 	echo ""
 	echo "Verifying ${VERSION} Windows"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../LockTrip/contrib/gitian-descriptors/gitian-win.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../Blockchain/contrib/gitian-descriptors/gitian-win.yml
 	# Mac OSX
 	echo ""
 	echo "Verifying ${VERSION} Mac OSX"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../LockTrip/contrib/gitian-descriptors/gitian-osx.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../Blockchain/contrib/gitian-descriptors/gitian-osx.yml
 	# Signed Windows
 	echo ""
 	echo "Verifying ${VERSION} Signed Windows"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../LockTrip/contrib/gitian-descriptors/gitian-osx-signer.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../Blockchain/contrib/gitian-descriptors/gitian-osx-signer.yml
 	# Signed Mac OSX
 	echo ""
 	echo "Verifying ${VERSION} Signed Mac OSX"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../LockTrip/contrib/gitian-descriptors/gitian-osx-signer.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../Blockchain/contrib/gitian-descriptors/gitian-osx-signer.yml
 	popd
 fi
 
@@ -359,8 +359,8 @@ then
 	    echo ""
 	    echo "Signing ${VERSION} Windows"
 	    echo ""
-	    ./bin/gbuild -i --commit signature=${COMMIT} ../LockTrip/contrib/gitian-descriptors/gitian-win-signer.yml
-	    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../LockTrip/contrib/gitian-descriptors/gitian-win-signer.yml
+	    ./bin/gbuild -i --commit signature=${COMMIT} ../Blockchain/contrib/gitian-descriptors/gitian-win-signer.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../Blockchain/contrib/gitian-descriptors/gitian-win-signer.yml
 	    mv build/out/locktrip-*win64-setup.exe ../locktrip-binaries/${VERSION}
 	    mv build/out/locktrip-*win32-setup.exe ../locktrip-binaries/${VERSION}
 	fi
@@ -370,8 +370,8 @@ then
 	    echo ""
 	    echo "Signing ${VERSION} Mac OSX"
 	    echo ""
-	    ./bin/gbuild -i --commit signature=master ../LockTrip/contrib/gitian-descriptors/gitian-osx-signer.yml
-	    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../LockTrip/contrib/gitian-descriptors/gitian-osx-signer.yml
+	    ./bin/gbuild -i --commit signature=master ../Blockchain/contrib/gitian-descriptors/gitian-osx-signer.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../Blockchain/contrib/gitian-descriptors/gitian-osx-signer.yml
 	    mv build/out/locktrip-osx-signed.dmg ../locktrip-binaries/${VERSION}/locktrip-${VERSION}-osx.dmg
 	fi
 	popd
