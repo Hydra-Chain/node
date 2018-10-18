@@ -14,9 +14,12 @@ build_and_test_job:
     - master
     - github_master
     - features/ci_test
-  variables:
-     GIT_SUBMODULE_STRATEGY: recursive
   before_script:
+    - cd /builds/locktrip.gcloud/LockTrip-Dev-Team-CI-CD
+    - head -n -1 .gitmodules > gitmodules.txt.new && mv gitmodules.txt.new .gitmodules
+    - echo -e "\turl = ../cpp-ethereum.git" | tee -a .gitmodules
+    #- git clone https://github.com/LockTrip/Blockchain.git --recursive
+    - git submodule update --init --recursive
     - cd ~
     - mkdir .locktrip
     - cd .locktrip
@@ -29,7 +32,7 @@ build_and_test_job:
     - echo $LD_LIBRARY_PATH
     - export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
     - echo $LD_LIBRARY_PATH
-    - cd /builds/LockTrip-Dev-Team/LockTrip
+    - cd /builds/locktrip.gcloud/LockTrip-Dev-Team-CI-CD
     - git submodule update --init --recursive
     - apt-get update --yes
     - apt-get install --yes cmake
@@ -47,12 +50,12 @@ build_and_test_job:
     # Qt GUI - Commented for CI/CD
     # apt-get --yes install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler qrencode
   script:
-    - cd /builds/LockTrip-Dev-Team/LockTrip
+    - cd /builds/locktrip.gcloud/LockTrip-Dev-Team-CI-CD
     - ./autogen.sh
     - ./configure
     - make -j2
 
-    - cd /builds/LockTrip-Dev-Team/LockTrip/test/functional/
+    - cd /builds/locktrip.gcloud/LockTrip-Dev-Team-CI-CD/test/functional/
     - ./test_runner.py qtum-8mb-block.py
     - ./test_runner.py receivedby.py
     - ./test_runner.py listtransactions.py
@@ -78,12 +81,15 @@ cleanup_build_on_failure_job:
 gcloud_ubuntu_1_deploy_job:
   stage: deploy
   only:
+    - develop 
     - release
     - master
+    - github_master
+    - features/ci_test
   variables:
      GIT_SUBMODULE_STRATEGY: recursive
   before_script:
-    - cd /builds/LockTrip-Dev-Team/LockTrip
+    - cd /builds/locktrip.gcloud/LockTrip-Dev-Team-CI-CD
     - git submodule update --init --recursive
     - cd -
   script:
@@ -125,12 +131,15 @@ gcloud_ubuntu_1_deploy_job:
 gcloud_ubuntu_2_deploy_job:
   stage: deploy
   only:
+    - develop 
     - release
     - master
+    - github_master
+    - features/ci_test
   variables:
      GIT_SUBMODULE_STRATEGY: recursive
   before_script:
-    - cd /builds/LockTrip-Dev-Team/LockTrip
+    - cd /builds/locktrip.gcloud/LockTrip-Dev-Team-CI-CD
     - git submodule update --init --recursive
     - cd -
   script:
@@ -171,12 +180,15 @@ gcloud_ubuntu_2_deploy_job:
 gcloud_ubuntu_3_deploy_job:
   stage: deploy
   only:
+    - develop 
     - release
     - master
+    - github_master
+    - features/ci_test
   variables:
      GIT_SUBMODULE_STRATEGY: recursive
   before_script:
-    - cd /builds/LockTrip-Dev-Team/LockTrip
+    - cd /builds/locktrip.gcloud/LockTrip-Dev-Team-CI-CD
     - git submodule update --init --recursive
     - cd -
   script:
@@ -218,12 +230,15 @@ gcloud_ubuntu_3_deploy_job:
 gcloud_ubuntu_4_deploy_job:
   stage: deploy
   only:
+    - develop 
     - release
     - master
+    - github_master
+    - features/ci_test
   variables:
      GIT_SUBMODULE_STRATEGY: recursive
   before_script:
-    - cd /builds/LockTrip-Dev-Team/LockTrip
+    - cd /builds/locktrip.gcloud/LockTrip-Dev-Team-CI-CD
     - git submodule update --init --recursive
     - cd -
   script:
@@ -265,12 +280,15 @@ gcloud_ubuntu_4_deploy_job:
 gcloud_ubuntu_5_deploy_job:
   stage: deploy
   only:
+    - develop 
     - release
     - master
+    - github_master
+    - features/ci_test
   variables:
      GIT_SUBMODULE_STRATEGY: recursive
   before_script:
-    - cd /builds/LockTrip-Dev-Team/LockTrip
+    - cd /builds/locktrip.gcloud/LockTrip-Dev-Team-CI-CD
     - git submodule update --init --recursive
     - cd -
   script:
@@ -312,12 +330,15 @@ gcloud_ubuntu_5_deploy_job:
 gcloud_ubuntu_6_deploy_job:
   stage: deploy
   only:
+    - develop 
     - release
     - master
+    - github_master
+    - features/ci_test
   variables:
      GIT_SUBMODULE_STRATEGY: recursive
   before_script:
-    - cd /builds/LockTrip-Dev-Team/LockTrip
+    - cd /builds/locktrip.gcloud/LockTrip-Dev-Team-CI-CD
     - git submodule update --init --recursive
     - cd -
   script:
