@@ -357,18 +357,19 @@ def collect_prevouts(node, amount=None):
     return staking_prevouts
 
 
-def create_unsigned_pos_block(node, staking_prevouts, nTime=None):
+def create_unsigned_pos_block(node, staking_prevouts, nTime=None, nCounter=0):
     tip = node.getblock(node.getbestblockhash())
     if not nTime:
         current_time = int(time.time()) + 16
         nTime = current_time & 0xfffffff0
 
+    print('node.getbestblockhash node=%s' % (tip))
     parent_block_stake_modifier = int(tip['modifier'], 16)
     coinbase = create_coinbase(tip['height']+1)
     coinbase.vout[0].nValue = 0
     coinbase.vout[0].scriptPubKey = b""
     coinbase.rehash()
-    block = create_block(int(tip['hash'], 16), coinbase, nTime)
+    block = create_block(int(tip['hash'], 16), coinbase, nTime, nCounter=nCounter)
     block.hashStateRoot = int(tip['hashStateRoot'], 16)
     block.hashUTXORoot = int(tip['hashUTXORoot'], 16)
 
@@ -377,7 +378,7 @@ def create_unsigned_pos_block(node, staking_prevouts, nTime=None):
 
     txout = node.gettxout(hex(block.prevoutStake.hash)[2:], block.prevoutStake.n)
     # input value + block reward
-    out_value = int((float(str(txout['value'])) + INITIAL_BLOCK_REWARD) * COIN) // 2
+    out_value = int((float(str(txout['value'])) * COIN + INITIAL_BLOCK_REWARD * COIN)) // 2
 
     # create a new private key used for block signing.
     block_sig_key = CECKey()
@@ -388,12 +389,13 @@ def create_unsigned_pos_block(node, staking_prevouts, nTime=None):
 
     stake_tx_unsigned.vin.append(CTxIn(block.prevoutStake))
     stake_tx_unsigned.vout.append(CTxOut())
-
+    
     # Split the output value into two separate txs
     stake_tx_unsigned.vout.append(CTxOut(int(out_value), scriptPubKey))
     stake_tx_unsigned.vout.append(CTxOut(int(out_value), scriptPubKey))
 
     stake_tx_signed_raw_hex = node.signrawtransaction(bytes_to_hex_str(stake_tx_unsigned.serialize()))['hex']
+    print('stake_tx_unsigned.vout=%s' % (stake_tx_unsigned.vout))
     f = io.BytesIO(hex_str_to_bytes(stake_tx_signed_raw_hex))
     stake_tx_signed = CTransaction()
     stake_tx_signed.deserialize(f)
@@ -437,16 +439,18 @@ def create_unsigned_mpos_block(node, staking_prevouts, nTime=None, block_fees=0)
 def activate_mpos(node, use_cache=True):
     if not node.getblockcount():
         node.setmocktime(int(time.time()) - 1000000)
+
     node.generate(4490-node.getblockcount())
     staking_prevouts = collect_prevouts(node)
 
-    for i in range(510):
+    for i in range(COINBASE_MATURITY + 10):
         nTime = (node.getblock(node.getbestblockhash())['time']+45) & 0xfffffff0
         node.setmocktime(nTime)
-        block, block_sig_key = create_unsigned_pos_block(node, staking_prevouts, nTime=nTime)
+        block, block_sig_key = create_unsigned_pos_block(node, staking_prevouts, nTime=nTime, nCounter=i)
         block.sign_block(block_sig_key)
         block.rehash()
         block_count = node.getblockcount()
+        print('bytes_to_hex_str(block.serialize()=%s' % (block))
         assert_equal(node.submitblock(bytes_to_hex_str(block.serialize())), None)
         assert_equal(node.getblockcount(), block_count+1)
 

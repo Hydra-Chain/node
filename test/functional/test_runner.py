@@ -59,7 +59,7 @@ BASE_SCRIPTS= [
     # vv Tests less than 5m vv
     'p2p-fullblocktest.py', #getrawmempool() returns empty collection
 
-    #'p2p-compactblocks.py',
+    #'p2p-compactblocks.py', #TODO: too many errors, caused by the fact that the "sync" is not working properly.
     #'segwit.py', #TODO: Research why : create_witnessprogram failed due to append vin and vout in a Transaction
     # vv Tests less than 2m vv
 
@@ -148,7 +148,7 @@ BASE_SCRIPTS= [
     'qtum-no-exec-call-disabled.py',
 
     'qtum-searchlog-restart-node.py',
-    #'qtum-immature-coinstake-spend.py', #activate_mpos failed due to rejecting bloick submission.
+    'qtum-immature-coinstake-spend.py', #activate_mpos failed due to rejecting bloick submission.
     #'qtum-transaction-prioritization.py', #TODO:RUNS TOO LONG. Needs rework
     #'qtum-assign-mpos-fees-to-gas-refund.py', #activate_mpos failed due to rejecting bloick submission.
     #'qtum-ignore-mpos-participant-reward.py', #activate_mpos failed due to rejecting bloick submission.

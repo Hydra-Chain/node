@@ -355,6 +355,7 @@ class CTxOut(object):
     def serialize(self):
         r = b""
         r += struct.pack("<q", self.nValue)
+        r += struct.pack("<q", int(self.nValue))
         r += ser_string(self.scriptPubKey)
         return r
 
