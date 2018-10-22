@@ -25,7 +25,7 @@ class QtumIgnoreMPOSParticipantRewardTest(BitcoinTestFramework):
     def run_test(self):
         self.node = self.nodes[0]
         self.node.setmocktime(int(time.time()) - 1000000)
-        self.node.generate(10 + COINBASE_MATURITY)
+        self.node.generate(10 + COINBASE_MATURITY*2)
         # These are the privkeys that corresponds to the pubkeys in the pos outputs
         # These are used by default by create_pos_block
         for i in range(0xff+1):
@@ -49,7 +49,7 @@ class QtumIgnoreMPOSParticipantRewardTest(BitcoinTestFramework):
         # Since the rest of the code relies on this
         i = 0
         while i < len(self.staking_prevouts):
-            if self.staking_prevouts[i][1] != 20000*COIN:
+            if self.staking_prevouts[i][1] != INITIAL_BLOCK_REWARD*COIN:
                 self.staking_prevouts.pop(i)
             i += 1
 
@@ -69,6 +69,8 @@ class QtumIgnoreMPOSParticipantRewardTest(BitcoinTestFramework):
         tx = CTransaction()
         tx.vin = [make_vin_from_unspent(self.node, address=mpos_participant_addr)]
         tx.vout = [CTxOut(0, scriptPubKey=CScript([b"\x04", CScriptNum(4000000), CScriptNum(100000), b"\x00", hex_str_to_bytes(contract_address), OP_CALL]))]
+        
+        self.log.info('tx=%s' % (tx))
         tx = rpc_sign_transaction(self.node, tx)
         self.remove_from_staking_prevouts(tx.vin[0].prevout)
 

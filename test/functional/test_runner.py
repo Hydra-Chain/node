@@ -148,10 +148,10 @@ BASE_SCRIPTS= [
     'qtum-no-exec-call-disabled.py',
 
     'qtum-searchlog-restart-node.py',
-    'qtum-immature-coinstake-spend.py', #activate_mpos failed due to rejecting bloick submission.
+    'qtum-immature-coinstake-spend.py',
     #'qtum-transaction-prioritization.py', #TODO:RUNS TOO LONG. Needs rework
-    #'qtum-assign-mpos-fees-to-gas-refund.py', #activate_mpos failed due to rejecting bloick submission.
-    #'qtum-ignore-mpos-participant-reward.py', #activate_mpos failed due to rejecting bloick submission.
+    'qtum-assign-mpos-fees-to-gas-refund.py',
+    'qtum-ignore-mpos-participant-reward.py',
     'qtum-many-value-refunds-from-same-tx.py',
     'qtum-combined-outputs-exceed-gas-limit.py',
     'qtum-dgp-gas-price-lingering-mempool-tx.py',

@@ -96,12 +96,14 @@ def rpc_sign_transaction(node, tx):
     tx_signed.deserialize(f)
     return tx_signed
 
-def make_vin_from_unspent(node, unspents=None, value=2000000000000, address=None):
+def make_vin_from_unspent(node, unspents=None, value=INITIAL_BLOCK_REWARD, address=None):
     if not unspents:
         unspents = node.listunspent()
     for i in range(len(unspents)):
         unspent = unspents[i]
-        if unspent['amount'] == value/COIN and (not address or address == unspent['address']):
+        print('make_vin_from_unspent->unspent[address]=%s' % (unspent['address']))
+        print('make_vin_from_unspent->address=%s' % (address))
+        if int(unspent['amount']*COIN) == int(value*COIN): #and (not address or address == unspent['address']):
             unspents.pop(i)
             return CTxIn(COutPoint(int(unspent['txid'], 16), unspent['vout']), nSequence=0)
     return None
@@ -351,8 +353,10 @@ def collect_prevouts(node, amount=None):
                 break
         else:
             assert(False)
-
-        if unspent['confirmations'] > COINBASE_MATURITY and (not amount or amount == unspent['amount']):
+        #print('collect_prevouts->amount=%s' % (amount))
+        #print('collect_prevouts->unspent[amount]=%s' % (unspent['amount']))
+        #print('collect_prevouts->unspent[confirmations]=%s' % (unspent['confirmations']))
+        if unspent['confirmations'] > COINBASE_MATURITY and (not amount or int(amount) == int(unspent['amount'])):
             staking_prevouts.append((COutPoint(int(unspent['txid'], 16), unspent['vout']), int(unspent['amount']*COIN), tx_block_time))
     return staking_prevouts
 
