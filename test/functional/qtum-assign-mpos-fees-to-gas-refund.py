@@ -28,7 +28,7 @@ class QtumAssignMPoSFeesToGasRefundTest(BitcoinTestFramework):
         address = self.node.createcontract(bytecode)['address']
         self.node.generate(1)
 
-        staking_prevouts = collect_prevouts(self.node, amount=20000)
+        staking_prevouts = collect_prevouts(self.node, amount=INITIAL_BLOCK_REWARD)
         tip = self.node.getblock(self.node.getbestblockhash())
         t = (tip['time'] + 0x30) & 0xfffffff0
         self.node.setmocktime(t)
@@ -37,7 +37,8 @@ class QtumAssignMPoSFeesToGasRefundTest(BitcoinTestFramework):
         block.hashUTXORoot = int(tip['hashUTXORoot'], 16)
         block.hashStateRoot = int(tip['hashStateRoot'], 16)
 
-        unspents = [unspent for unspent in self.node.listunspent()[::-1] if unspent['amount'] == 20000]
+        self.log.info('self.node.listunspent()[::-1]=%s' % (self.node.listunspent()[::-1]))
+        unspents = [unspent for unspent in self.node.listunspent()[::-1] if unspent['amount'] == Decimal(INITIAL_WALLET_BALANCE)]
         unspent = unspents.pop(0)
 
         tx_all_fees = CTransaction()

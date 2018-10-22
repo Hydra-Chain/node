@@ -16,7 +16,7 @@ class Qtum8MBBlock(BitcoinTestFramework):
         self.node = self.nodes[0]
         connect_nodes_bi(self.nodes, 0, 1)
         # Make sure that segwit is activated
-        self.node.generate(10+COINBASE_MATURITY*4)
+        self.node.generate(10+COINBASE_MATURITY)
         self.sync_all()
 
         tx = CTransaction()
