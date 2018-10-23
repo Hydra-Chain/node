@@ -42,7 +42,7 @@ class MiningTest(BitcoinTestFramework):
         assert_equal(mining_info['currentblockweight'], 0)
         assert_equal(mining_info['difficulty']['proof-of-work'], Decimal('4.656542373906925E-10'))
         self.log.info('mining_info[networkhashps]=%s' % (mining_info['networkhashps']))
-        #assert_equal(mining_info['networkhashps'], 12)
+        assert_equal(mining_info['networkhashps'], 12)
         assert_equal(mining_info['pooledtx'], 0)
 
         # Mine a block to leave initial block download
@@ -66,7 +66,7 @@ class MiningTest(BitcoinTestFramework):
         block.vtx = [coinbase_tx]
 
         self.log.info("getblocktemplate: Test valid block")
-        assert_template(node, block, 'rejected')
+        assert_template(node, block, None)
 
         self.log.info("submitblock: Test block decode failure")
         assert_raises_rpc_error(-22, "Block decode failed", node.submitblock, b2x(block.serialize()[:-15]))
@@ -119,14 +119,6 @@ class MiningTest(BitcoinTestFramework):
         bad_block = copy.deepcopy(block)
         bad_block.hashMerkleRoot += 1
         assert_template(node, bad_block, 'bad-txnmrklroot', False)
-
-        # These tests do not apply to qtum since the timestamps are only checked for PoS blocks.
-        #self.log.info("getblocktemplate: Test bad timestamps")
-        #bad_block = copy.deepcopy(block)
-        #bad_block.nTime = 2 ** 31 - 1
-        #assert_template(node, bad_block, 'time-too-new')
-        #bad_block.nTime = 0
-        #assert_template(node, bad_block, 'time-too-old')
 
         self.log.info("getblocktemplate: Test not best block")
         bad_block = copy.deepcopy(block)

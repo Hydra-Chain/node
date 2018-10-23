@@ -38,8 +38,9 @@ class OpCreateTest(BitcoinTestFramework):
         node.sendrawtransaction(tx)
         node.generate(1)
         sync_blocks(self.nodes)
-        # for i in range(2):
-        #     assert(len(self.nodes[i].listcontracts()) == 1)
+        for i in range(2):
+            self.log.info('len(self.nodes[i].listcontracts())=%s' % (len(self.nodes[i].listcontracts())))
+            assert(len(self.nodes[i].listcontracts()) == 7)
 
     # Verifies that large contracts can be deployed
     def large_contract_creation_test(self):

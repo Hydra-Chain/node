@@ -533,6 +533,7 @@ def create_tx(node, coinbase, to_address, amount):
     outputs = {to_address: amount}
     rawtx = node.createrawtransaction(inputs, outputs)
     signresult = node.signrawtransaction(rawtx)
+    print('signresult=%s' % (signresult))
     assert_equal(signresult["complete"], True)
     return signresult["hex"]
 

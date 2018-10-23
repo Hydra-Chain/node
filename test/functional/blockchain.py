@@ -10,7 +10,7 @@ Test the following RPCs:
     - getbestblockhash
     - getblockhash
     - getblockheader
-    - getchaintxstats
+    - getchaintxstats -- IRRELEVANT
     - getnetworkhashps
     - verifychain
 
@@ -38,7 +38,7 @@ class BlockchainTest(BitcoinTestFramework):
         #self.extra_args = [['-stopatheight=607']]
 
     def run_test(self):
-        self._test_getchaintxstats()
+        #self._test_getchaintxstats() #irrelevant in our case. We have no initial TXes.
         self._test_gettxoutsetinfo()
         self._test_getblockheader()
         self._test_getdifficulty()
@@ -58,15 +58,15 @@ class BlockchainTest(BitcoinTestFramework):
         node = self.nodes[0]
         res = node.gettxoutsetinfo()
 
-        assert_equal(res['total_amount'], Decimal('12000000.00000000'))
-        assert_equal(res['transactions'], 600)
-        assert_equal(res['height'], 600)
-        assert_equal(res['txouts'], 600)
-        assert_equal(res['bogosize'], 51000),
-        assert_equal(res['bestblock'], node.getblockhash(600))
+        assert_equal(res['total_amount'], Decimal('1954499.49241600'))
+        assert_equal(res['transactions'], 1600)
+        assert_equal(res['height'], 1600)
+        assert_equal(res['txouts'], 1600)
+        assert_equal(res['bogosize'], 136000),
+        assert_equal(res['bestblock'], node.getblockhash(1600))
         size = res['disk_size']
-        assert size > 6400
-        assert size < 64000
+        assert size > 16400
+        assert size < 164000
         assert_equal(len(res['bestblock']), 64)
         assert_equal(len(res['hash_serialized_2']), 64)
 
@@ -76,7 +76,7 @@ class BlockchainTest(BitcoinTestFramework):
 
         res2 = node.gettxoutsetinfo()
         assert_equal(res2['transactions'], 500)
-        assert_equal(res2['total_amount'], Decimal('10000000'))
+        assert_equal(res2['total_amount'], Decimal('610781.09138000'))
         assert_equal(res2['height'], 500)
         assert_equal(res2['txouts'], 500)
         assert_equal(res2['bogosize'], 42500),
@@ -85,6 +85,7 @@ class BlockchainTest(BitcoinTestFramework):
 
         self.log.info("Test that gettxoutsetinfo() returns the same result after invalidate/reconsider block")
         node.reconsiderblock(b1hash)
+        self.sync_all()
 
         res3 = node.gettxoutsetinfo()
         assert_equal(res['height'], res3['height'])

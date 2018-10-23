@@ -55,13 +55,13 @@ class VersionBitsWarningTest(BitcoinTestFramework):
             block_time += 1
             height += 1
             tip = block.sha256
-        #peer.sync_with_ping()
+        peer.sync_with_ping()
 
     def test_versionbits_in_alert_file(self):
         with open(self.alert_filename, 'r', encoding='utf8') as f:
             alert_text = f.read()
         self.log.info('alert_text=%s' % (alert_text))
-        #assert(VB_PATTERN.match(alert_text))
+        assert(VB_PATTERN.match(alert_text))
 
     def run_test(self):
         # Setup the p2p connection and start up the network thread.
@@ -103,9 +103,9 @@ class VersionBitsWarningTest(BitcoinTestFramework):
         self.log.info('self.nodes[0].getinfo()=%s' % (self.nodes[0].getinfo()))
         self.log.info('self.nodes[0].getmininginfo()=%s' % (self.nodes[0].getmininginfo()))
         self.log.info('self.nodes[0].getnetworkinfo()=%s' % (self.nodes[0].getnetworkinfo()))
-        #assert(WARN_UNKNOWN_RULES_MINED in self.nodes[0].getinfo()["errors"])
-        #assert(WARN_UNKNOWN_RULES_MINED in self.nodes[0].getmininginfo()["errors"])
-        #assert(WARN_UNKNOWN_RULES_MINED in self.nodes[0].getnetworkinfo()["warnings"])
+        assert(WARN_UNKNOWN_RULES_MINED in self.nodes[0].getinfo()["errors"])
+        assert(WARN_UNKNOWN_RULES_MINED in self.nodes[0].getmininginfo()["errors"])
+        assert(WARN_UNKNOWN_RULES_MINED in self.nodes[0].getnetworkinfo()["warnings"])
 
         # Mine a period worth of expected blocks so the generic block-version warning
         # is cleared, and restart the node. This should move the versionbit state
@@ -122,9 +122,9 @@ class VersionBitsWarningTest(BitcoinTestFramework):
         self.log.info('self.nodes[0].getinfo()=%s' % (self.nodes[0].getinfo()))
         self.log.info('self.nodes[0].getmininginfo()=%s' % (self.nodes[0].getmininginfo()))
         self.log.info('self.nodes[0].getnetworkinfo()=%s' % (self.nodes[0].getnetworkinfo()))
-        #assert(WARN_UNKNOWN_RULES_MINED in self.nodes[0].getinfo()["errors"])
-        #assert(WARN_UNKNOWN_RULES_MINED in self.nodes[0].getmininginfo()["errors"])
-        #assert(WARN_UNKNOWN_RULES_MINED in self.nodes[0].getnetworkinfo()["warnings"])
+        assert(WARN_UNKNOWN_RULES_ACTIVE in self.nodes[0].getinfo()["errors"])
+        assert(WARN_UNKNOWN_RULES_ACTIVE in self.nodes[0].getmininginfo()["errors"])
+        assert(WARN_UNKNOWN_RULES_ACTIVE in self.nodes[0].getnetworkinfo()["warnings"])
         self.stop_nodes()
         self.test_versionbits_in_alert_file()
 

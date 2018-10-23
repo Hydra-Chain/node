@@ -17,12 +17,11 @@ class MempoolCoinbaseTest(BitcoinTestFramework):
     def set_test_params(self):
         self.num_nodes = 2
         self.extra_args = [["-checkmempool"]] * 2
-        self.setup_clean_chain = False
+        self.setup_clean_chain = True
 
     alert_filename = None  # Set by setup_network
 
     def run_test(self):
-        self.setup_clean_chain = False
         for node in self.nodes:
             node.generate(25)
             self.sync_all()
@@ -68,8 +67,8 @@ class MempoolCoinbaseTest(BitcoinTestFramework):
         assert_raises_rpc_error(-26,'non-final', self.nodes[0].sendrawtransaction, timelock_tx)
 
         # Create 102_1 and 103_1:
-        spend_102_1_raw = create_tx(self.nodes[0], spend_102_id, node1_address, INITIAL_BLOCK_REWARD-Decimal('0.02'))
-        spend_103_1_raw = create_tx(self.nodes[0], spend_103_id, node1_address, INITIAL_BLOCK_REWARD-Decimal('0.02'))
+        spend_102_1_raw = create_tx(self.nodes[0], spend_102_id, node1_address, INITIAL_BLOCK_REWARD-0.02)
+        spend_103_1_raw = create_tx(self.nodes[0], spend_103_id, node1_address, INITIAL_BLOCK_REWARD-0.02)
 
         # Broadcast and mine 103_1:
         spend_103_1_id = self.nodes[0].sendrawtransaction(spend_103_1_raw)
