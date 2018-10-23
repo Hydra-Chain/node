@@ -66,13 +66,12 @@ BASE_SCRIPTS= [
     'wallet-accounts.py',
     #'p2p-segwit.py', #test_non_witness_transaction fails. Check the windess BIP.
     'wallet-dump.py',
-    #'listtransactions.py', #RUN SEPARATELY
     # vv Tests less than 60s vv
     'sendheaders.py', #getdata command fails
     'zapwallettxes.py',
     'importmulti.py',
     'mempool_limit.py',
-    #'merkle_blocks.py', #TODO: fix the: min relay fee not met (-26)
+    'merkle_blocks.py',
 
     'bip68-112-113-p2p.py', #TODO: BIP9 failed. 
     'rawtransactions.py',
@@ -81,13 +80,13 @@ BASE_SCRIPTS= [
     'keypool-topup.py',
     #'zmq_test.py', #missing env
     'bitcoin_cli.py',
-    #'mempool_resurrect_test.py', #TODO: fix the: min relay fee not met (-26)
+    'mempool_resurrect_test.py',
     'txn_doublespend.py --mineblock',
     'txn_clone.py',
     'getchaintips.py',
     'rest.py',
-    #'mempool_spendcoinbase.py', #TODO: fix the: min relay fee not met (-26)
-    #'mempool_reorg.py', #create_tx fails to signrawtransaction
+    'mempool_spendcoinbase.py',
+    'mempool_reorg.py',
     'mempool_persist.py',
     'multiwallet.py',
     'httpbasics.py',
@@ -96,19 +95,19 @@ BASE_SCRIPTS= [
     'signrawtransactions.py',
     'disconnect_ban.py',
     'decodescript.py',
-    #'blockchain.py', #TODO: getchaintxstats fails JSONDecodeError
+    #'blockchain.py', #TODO: Test that gettxoutsetinfo() returns the same result after invalidate/reconsider block
     'disablewallet.py',
     'net.py',
     'keypool.py',
     'p2p-mempool.py',
     'prioritise_transaction.py',
     'invalidblockrequest.py', 
-    'invalidtxrequest.py', #sync_transaction() fails to synchronize. Mempool test failed.
-    'p2p-versionbits-warning.py', #sync_with_ping() fails with Timeout error.
+    'invalidtxrequest.py',
+    'p2p-versionbits-warning.py',
     'preciousblock.py',
     'importprunedfunds.py',
     'signmessages.py',
-    #'nulldummy.py', #TODO: fix the: min relay fee not met (-26)
+    'nulldummy.py', #TODO: fix the skipped Test 6 issue: 64: no-witness-yet
     'import-rescan.py',
     'mining.py',
     'bumpfee.py',
@@ -122,17 +121,17 @@ BASE_SCRIPTS= [
 
     # qtum
     'qtum-dgp.py',
-    'qtum-pos.py', #the blocks are no synced still
+    'qtum-pos.py', #the blocks are no synced still. Uncomment comptool.py:sync_blocks(): wait_until
     'qtum-opcall.py',
     'qtum-opcreate.py',
     'qtum-gas-limit.py',
     'qtum-searchlog.py',
-    'qtum-pos-segwit.py', #TODO: revert block submission: rejected to None once we normalize the coinbase payment
+    'qtum-pos-segwit.py', 
     'qtum-state-root.py',
 
     'qtum-null-sender.py',
     'qtum-waitforlogs.py',
-    #'qtum-block-header.py', #Connection refused on createcontract()
+    #'qtum-block-header.py', #TODO fix the following: comptool: wait_for_pings() failed
     'qtum-callcontract.py',
 
     'qtum-condensing-txs.py',
@@ -142,7 +141,7 @@ BASE_SCRIPTS= [
     'qtum-create-eth-op-code.py',
     'qtum-gas-limit-overflow.py',
 
-    #'qtum-dgp-block-size-sync.py', #TODO: revert block submission: rejected to None once we normalize the coinbase payment
+    'qtum-dgp-block-size-sync.py', #TODO: Block sync to height 2526 timed out
     #'qtum-pos-conflicting-txs.py', #TODO:RUNS TOO LONG. Needs rework
     'qtum-globals-state-changer.py',
     'qtum-no-exec-call-disabled.py',
@@ -180,9 +179,9 @@ EXTENDED_SCRIPTS = [
     'listtransactions.py',
     'abandonconflict.py',
     'fundrawtransaction.py',    
-    'qtum-8mb-block.py', #TODO: revert block submission: rejected to None once we normalize the coinbase payment 
+    'qtum-8mb-block.py', 
     'qtum-call-empty-contract.py',
-    'qtum-dgp-block-size-restart.py', #TODO: revert block submission: rejected to None once we normalize the coinbase payment
+    'qtum-dgp-block-size-restart.py', 
     'qtum-evm-globals.py',
     'qtum-soft-block-gas-limits.py',
     'qtum-spend-op-call.py',

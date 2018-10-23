@@ -118,7 +118,7 @@ class TestNode(NodeConnCB):
     # This assumes BIP31
     def send_ping(self, nonce):
         self.pingMap[nonce] = True
-        self.conn.send_message(msg_ping(nonce))
+        self.conn.send_message(msg_ping(nonce), True)
 
     def received_ping_response(self, nonce):
         return nonce not in self.pingMap
@@ -230,7 +230,7 @@ class TestManager(object):
             )
 
         # --> error if not requested
-        #wait_until(transaction_requested, attempts=20*num_events, lock=mininode_lock)
+        wait_until(transaction_requested, attempts=20*num_events, lock=mininode_lock)
 
         # Get the mempool
         [ c.cb.send_mempool() for c in self.connections ]

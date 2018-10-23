@@ -54,7 +54,7 @@ class QtumBlockHeaderTest(ComparisonTestFramework):
 
         node.generate(1)
         self.block_time = int(time.time())+20
-        for i in range(500):
+        for i in range(50):
             self.tip = create_block(int(node.getbestblockhash(), 16), create_coinbase(node.getblockcount()+1), self.block_time+i)
             self.tip.solve()
             yield accepted()
