@@ -67,13 +67,13 @@ BASE_SCRIPTS= [
     #'p2p-segwit.py', #test_non_witness_transaction fails. Check the windess BIP.
     'wallet-dump.py',
     # vv Tests less than 60s vv
-    'sendheaders.py', #getdata command fails
+    'sendheaders.py', #getdata command manipulation fails
     'zapwallettxes.py',
     'importmulti.py',
     'mempool_limit.py',
     'merkle_blocks.py',
 
-    'bip68-112-113-p2p.py', #TODO: BIP9 failed. 
+    'bip68-112-113-p2p.py', #TODO: send_ping() commented. BIP9 failed -> Wrong calclulations
     'rawtransactions.py',
     'reindex.py',
     # vv Tests less than 30s vv
@@ -187,7 +187,7 @@ EXTENDED_SCRIPTS = [
     'qtum-spend-op-call.py',
     'wallet.py',
     'walletbackup.py',
-    
+    ################### untouched extended scripts
     'pruning.py',
     # vv Tests less than 20m vv
     'smartfees.py',

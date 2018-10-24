@@ -55,7 +55,7 @@ class QtumPrematureCoinstakeSpendTest(BitcoinTestFramework):
     def run_test(self):
         self.node = self.nodes[0]
         self.node.setmocktime(int(time.time()) - 1000000)
-        self.node.generate(10 + COINBASE_MATURITY)
+        #self.node.generate(10 + COINBASE_MATURITY)
         # These are the privkeys that corresponds to the pubkeys in the pos outputs
         # These are used by default by create_pos_block
         for i in range(0xff+1):
