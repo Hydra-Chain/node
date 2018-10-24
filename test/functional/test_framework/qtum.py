@@ -378,7 +378,8 @@ def create_unsigned_pos_block(node, staking_prevouts, nTime=None, nCounter=0):
     block.hashUTXORoot = int(tip['hashUTXORoot'], 16)
 
     if not block.solve_stake(parent_block_stake_modifier, staking_prevouts):
-        return None
+        print('create_unsigned_pos_block->block.solve_stake()->None')
+        return (None, None)
 
     txout = node.gettxout(hex(block.prevoutStake.hash)[2:], block.prevoutStake.n)
     # input value + block reward
@@ -451,6 +452,8 @@ def activate_mpos(node, use_cache=True):
         nTime = (node.getblock(node.getbestblockhash())['time']+45) & 0xfffffff0
         node.setmocktime(nTime)
         block, block_sig_key = create_unsigned_pos_block(node, staking_prevouts, nTime=nTime, nCounter=i)
+        if block == None:
+            break
         block.sign_block(block_sig_key)
         block.rehash()
         block_count = node.getblockcount()

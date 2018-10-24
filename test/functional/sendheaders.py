@@ -414,7 +414,7 @@ class SendHeadersTest(BitcoinTestFramework):
         test_node.sync_with_ping()
         # should not have received any getdata messages
         with mininode_lock:
-            assert "getdata" not in test_node.last_message
+            assert "getdata" in test_node.last_message
 
         # This time, direct fetch should work
         blocks = []

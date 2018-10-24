@@ -20,7 +20,7 @@ class QtumAssignMPoSFeesToGasRefundTest(BitcoinTestFramework):
     def run_test(self):
         self.node = self.nodes[0]
         self.node.setmocktime(int(time.time()) - 1000000)
-        self.node.generate(200 + COINBASE_MATURITY)
+        #self.node.generate(200 + COINBASE_MATURITY)
 
         activate_mpos(self.node)
         # First setup a dummy contract
