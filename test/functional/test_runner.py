@@ -175,6 +175,7 @@ BASE_SCRIPTS= [
 EXTENDED_SCRIPTS = [
     # These tests are not run by the travis build process.
     # Longest test should go first, to favor running tests in parallel
+    'qtum-evm-globals.py',
     'receivedby.py',     
     'listtransactions.py',
     'abandonconflict.py',
@@ -182,7 +183,6 @@ EXTENDED_SCRIPTS = [
     'qtum-8mb-block.py', 
     'qtum-call-empty-contract.py',
     'qtum-dgp-block-size-restart.py', 
-    'qtum-evm-globals.py',
     'qtum-soft-block-gas-limits.py',
     'qtum-spend-op-call.py',
     'wallet.py',

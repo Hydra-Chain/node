@@ -56,15 +56,14 @@ build_and_test_job:
     - make -j2
 
     - cd /builds/locktrip.gcloud/LockTrip-Dev-Team-CI-CD/test/functional/
+    - ./test_runner.py qtum-evm-globals.py
     - ./test_runner.py qtum-8mb-block.py
     - ./test_runner.py receivedby.py
     - ./test_runner.py listtransactions.py
     - ./test_runner.py abandonconflict.py
     - ./test_runner.py fundrawtransaction.py 
-
     - ./test_runner.py qtum-call-empty-contract.py
     - ./test_runner.py qtum-dgp-block-size-restart.py
-    - ./test_runner.py qtum-evm-globals.py
     - ./test_runner.py qtum-soft-block-gas-limits.py
     - ./test_runner.py qtum-spend-op-call.py
     - ./test_runner.py wallet.py
