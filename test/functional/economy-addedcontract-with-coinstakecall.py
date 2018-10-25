@@ -83,6 +83,7 @@ class EconomyTest(BitcoinTestFramework):
         block_sig_key = CECKey()
         block_sig_key.set_secretbytes(hash256(struct.pack('<I', 0xffff)))
         pubkey = block_sig_key.get_pubkey()
+        block_sig_key.set_pubkey(pubkey)
         scriptPubKey = CScript([pubkey, OP_CHECKSIG])
         stake_tx_unsigned = CTransaction()
         coinstake_prevout = block.prevoutStake
@@ -93,9 +94,10 @@ class EconomyTest(BitcoinTestFramework):
 
         stake_tx_unsigned.vin.append(CTxIn(coinstake_prevout))
         stake_tx_unsigned.vout.append(CTxOut())
-        stake_tx_unsigned.vout.append(CTxOut(int(10002*COIN), scriptPubKey))
-        stake_tx_unsigned.vout.append(CTxOut(int(10002*COIN), scriptPubKey))
-        stake_tx_unsigned.vout.append(CTxOut(int(0), script))
+        #stake_tx_unsigned.vin = [make_vin(self.nodes[0], int(2*(COIN + QTUM_MIN_GAS_PRICE*100000)))]
+        stake_tx_unsigned.vout.append(CTxOut(int(96268640), scriptPubKey))
+        stake_tx_unsigned.vout.append(CTxOut(int(96268640), scriptPubKey))
+        #stake_tx_unsigned.vout.append(CTxOut(int(0), script))
 
         stake_tx_signed_raw_hex = self.nodes[0].signrawtransaction(bytes_to_hex_str(stake_tx_unsigned.serialize()))['hex']
         f = io.BytesIO(hex_str_to_bytes(stake_tx_signed_raw_hex))
@@ -158,10 +160,10 @@ class EconomyTest(BitcoinTestFramework):
         block.hashMerkleRoot = block.calc_merkle_root()
         block.sign_block(block_sig_key)
         block.rehash()
-
+        self.sync_all()
         block_count = self.nodes[0].getblockcount()
         res = self.nodes[0].submitblock(bytes_to_hex_str(block.serialize()))
-        self.sync_all()
+
         print(res)
 
         # The block shall not be accepted

@@ -128,7 +128,7 @@ BASE_SCRIPTS= [
     'qtum-searchlog.py',
     'qtum-pos-segwit.py', 
     'qtum-state-root.py',
-
+    'qtum-evm-globals.py',
     'qtum-null-sender.py',
     'qtum-waitforlogs.py',
     #'qtum-block-header.py', #TODO fix the following: comptool: wait_for_pings() failed
@@ -175,8 +175,7 @@ BASE_SCRIPTS= [
 EXTENDED_SCRIPTS = [
     # These tests are not run by the travis build process.
     # Longest test should go first, to favor running tests in parallel
-    'qtum-evm-globals.py',
-    'receivedby.py',     
+    'receivedby.py',
     'listtransactions.py',
     'abandonconflict.py',
     'fundrawtransaction.py',    

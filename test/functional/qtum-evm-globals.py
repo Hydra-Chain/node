@@ -207,7 +207,7 @@ class QtumEVMGlobalsTest(BitcoinTestFramework):
         self.sync_all()
 
         print('verify globals in MPoS blocks')
-        self.node.generate(4999 - self.node.getblockcount())
+        self.node.generate(257)
         self.sync_all()
 
         for n in self.nodes:
