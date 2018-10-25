@@ -147,16 +147,16 @@ BASE_SCRIPTS= [
     'qtum-no-exec-call-disabled.py',
 
     'qtum-searchlog-restart-node.py',
-    'qtum-immature-coinstake-spend.py',
+
     #'qtum-transaction-prioritization.py', #TODO:RUNS TOO LONG. Needs rework
-    'qtum-assign-mpos-fees-to-gas-refund.py',
+
     'qtum-ignore-mpos-participant-reward.py',
     'qtum-many-value-refunds-from-same-tx.py',
     'qtum-combined-outputs-exceed-gas-limit.py',
     'qtum-dgp-gas-price-lingering-mempool-tx.py',
 
     # LockTrip
-    #economy-addcontract-outside-coinstake.py',
+    'economy-addcontract-outside-coinstake.py',
     #'economy-addedcontract-with-coinstakecall.py',
     #'economy-addedcontract-without-coinstakecall.py',
     #'economy-block-with-required-dividend.py',
@@ -187,6 +187,8 @@ EXTENDED_SCRIPTS = [
     'qtum-spend-op-call.py',
     'wallet.py',
     'walletbackup.py',
+    'qtum-immature-coinstake-spend.py',
+    'qtum-assign-mpos-fees-to-gas-refund.py',
     ################### untouched extended scripts
     'pruning.py',
     # vv Tests less than 20m vv

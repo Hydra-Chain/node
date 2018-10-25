@@ -161,7 +161,7 @@ class EconomyTest(BitcoinTestFramework):
 
         block_count = self.nodes[0].getblockcount()
         res = self.nodes[0].submitblock(bytes_to_hex_str(block.serialize()))
-
+        self.sync_all()
         print(res)
 
         # The block shall not be accepted
