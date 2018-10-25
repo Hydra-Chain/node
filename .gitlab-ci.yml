@@ -14,6 +14,7 @@ build_and_test_job:
     - master
     - github_master
     - features/ci_test
+    - feature/functional_tests_init
   before_script:
     - cd /builds/locktrip.gcloud/LockTrip-Dev-Team-CI-CD
     - head -n -1 .gitmodules > gitmodules.txt.new && mv gitmodules.txt.new .gitmodules
