@@ -74,6 +74,12 @@ build_and_test_job:
 
 cleanup_build_on_failure_job:
   stage: cleanup_build
+  only:
+    - develop 
+    - release
+    - master
+    - github_master
+    - features/ci_test
   script:
     - rm -rf
   when: on_failure
@@ -381,6 +387,12 @@ gcloud_ubuntu_6_deploy_job:
 
 cleanup_job:
   stage: cleanup
+  only:
+    - develop 
+    - release
+    - master
+    - github_master
+    - features/ci_test
   script:
     - rm -rf tmp/*
   when: always
