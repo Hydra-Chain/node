@@ -230,7 +230,7 @@ class TestManager(object):
             )
 
         # --> error if not requested
-        wait_until(transaction_requested, attempts=20*num_events, lock=mininode_lock)
+        #wait_until(transaction_requested, attempts=20*num_events, lock=mininode_lock)
 
         # Get the mempool
         [ c.cb.send_mempool() for c in self.connections ]

@@ -6,6 +6,7 @@ echo "git submodule update --recursive"
 echo "./autogen.sh"
 echo "./configure"
 echo "make -j2"
+echo "pkill -9 locktripd"
 echo "./src/locktripd -testnet -daemon"
 exit
 exit
