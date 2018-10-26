@@ -67,7 +67,8 @@ class QtumPrematureCoinstakeSpendTest(BitcoinTestFramework):
         last_height = self.node.getblock(self.node.getbestblockhash())['height']
         self.log.info('last_height=%s' % (last_height))
         self.assert_spend_of_coinstake_at_height(height=last_height, should_accept=False)
-        self.assert_spend_of_coinstake_at_height(height=last_height - COINBASE_MATURITY - 1, should_accept=True)
+        if last_height > COINBASE_MATURITY + 1:
+            self.assert_spend_of_coinstake_at_height(height=last_height - COINBASE_MATURITY - 1, should_accept=True)
         # Invalidate the last block and make sure that the previous rejection of the premature coinstake spends fails
         self.node.invalidateblock(self.node.getbestblockhash())
         assert_equal(last_height, self.node.getblock(self.node.getbestblockhash())['height'] + 1)

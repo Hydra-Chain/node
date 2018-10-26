@@ -157,8 +157,8 @@ BASE_SCRIPTS= [
 
     # LockTrip
     'economy-addcontract-outside-coinstake.py',
-    #'economy-addedcontract-with-coinstakecall.py',
-    #'economy-addedcontract-without-coinstakecall.py',
+    'economy-addedcontract-with-coinstakecall.py',
+    'economy-addedcontract-without-coinstakecall.py',
     #'economy-block-with-required-dividend.py',
     #'economy-block-without-required-dividend.py',
     #'economy-dividend-systemcontract.py',
