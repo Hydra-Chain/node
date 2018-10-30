@@ -1175,6 +1175,12 @@ bool CWallet::AddToWallet(const CWalletTx& wtxIn, bool fFlushOnClose)
         {
             wtx.hashBlock = wtxIn.hashBlock;
             fUpdated = true;
+
+            // Update the time for coinstake transaction
+            if(wtx.tx->IsCoinStake() || wtx.tx->IsCoinBase()){
+                wtx.nTimeReceived = GetAdjustedTime();
+                wtx.nTimeSmart = ComputeTimeSmart(wtx);
+            }
         }
         if (wtxIn.nIndex != -1 && (wtxIn.nIndex != wtx.nIndex))
         {
