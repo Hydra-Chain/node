@@ -457,7 +457,7 @@ def activate_mpos(node, use_cache=True):
         block.sign_block(block_sig_key)
         block.rehash()
         block_count = node.getblockcount()
-        print('bytes_to_hex_str(block.serialize()=%s' % (block))
+        #print('bytes_to_hex_str(block.serialize()=%s' % (block))
         assert_equal(node.submitblock(bytes_to_hex_str(block.serialize())), None)
         assert_equal(node.getblockcount(), block_count+1)
 
