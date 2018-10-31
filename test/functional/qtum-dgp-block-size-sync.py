@@ -115,7 +115,7 @@ class QtumDGPBlockSizeSyncTest(BitcoinTestFramework):
             self.stop_node(i)
         # Generate some blocks to make sure we have enough spendable outputs
         self.node = self.nodes[0]
-        self.node.generate(1000 + COINBASE_MATURITY)
+        self.node.generate(200 + COINBASE_MATURITY)
         self.BLOCK_SIZE_DGP = DGPState(self.node, "0000000000000000000000000000000000000081")
         self.is_network_split = False
         connect_nodes_bi(self.nodes, 0, 1)

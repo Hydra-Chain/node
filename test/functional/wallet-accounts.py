@@ -125,7 +125,7 @@ class WalletAccountsTest(BitcoinTestFramework):
             multisig_address = node.addmultisigaddress(5, addresses, account)
             node.sendfrom("", multisig_address, 50)
         
-        node.generate(COINBASE_MATURITY+1)
+        node.generate(10)
         
         for account in accounts:
             assert_equal(node.getbalance(account), 50)

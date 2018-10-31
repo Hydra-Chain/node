@@ -400,7 +400,7 @@ def create_unsigned_pos_block(node, staking_prevouts, nTime=None, nCounter=0):
     stake_tx_unsigned.vout.append(CTxOut(int(out_value), scriptPubKey))
 
     stake_tx_signed_raw_hex = node.signrawtransaction(bytes_to_hex_str(stake_tx_unsigned.serialize()))['hex']
-    print('stake_tx_unsigned.vout=%s' % (stake_tx_unsigned.vout))
+    #print('stake_tx_unsigned.vout=%s' % (stake_tx_unsigned.vout))
     f = io.BytesIO(hex_str_to_bytes(stake_tx_signed_raw_hex))
     stake_tx_signed = CTransaction()
     stake_tx_signed.deserialize(f)

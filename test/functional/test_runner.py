@@ -128,7 +128,7 @@ BASE_SCRIPTS= [
     'qtum-searchlog.py',
     'qtum-pos-segwit.py', 
     'qtum-state-root.py',
-
+    'qtum-evm-globals.py',
     'qtum-null-sender.py',
     'qtum-waitforlogs.py',
     #'qtum-block-header.py', #TODO fix the following: comptool: wait_for_pings() failed
@@ -157,8 +157,8 @@ BASE_SCRIPTS= [
 
     # LockTrip
     'economy-addcontract-outside-coinstake.py',
-    #'economy-addedcontract-with-coinstakecall.py',
-    #'economy-addedcontract-without-coinstakecall.py',
+    'economy-addedcontract-with-coinstakecall.py',
+    'economy-addedcontract-without-coinstakecall.py',
     #'economy-block-with-required-dividend.py',
     #'economy-block-without-required-dividend.py',
     #'economy-dividend-systemcontract.py',
@@ -175,14 +175,13 @@ BASE_SCRIPTS= [
 EXTENDED_SCRIPTS = [
     # These tests are not run by the travis build process.
     # Longest test should go first, to favor running tests in parallel
-    'receivedby.py',     
+    'receivedby.py',
     'listtransactions.py',
     'abandonconflict.py',
     'fundrawtransaction.py',    
     'qtum-8mb-block.py', 
     'qtum-call-empty-contract.py',
     'qtum-dgp-block-size-restart.py', 
-    'qtum-evm-globals.py',
     'qtum-soft-block-gas-limits.py',
     'qtum-spend-op-call.py',
     'wallet.py',
