@@ -467,3 +467,5 @@ def activate_mpos(node, use_cache=True):
             if prevout[0].serialize() == block.prevoutStake.serialize():
                 staking_prevouts.pop(j)
                 break
+            
+    return i
