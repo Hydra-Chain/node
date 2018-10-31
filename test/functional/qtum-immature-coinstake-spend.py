@@ -62,13 +62,13 @@ class QtumPrematureCoinstakeSpendTest(BitcoinTestFramework):
             privkey = byte_to_base58(hash256(struct.pack('<I', i)), 239)
             self.node.importprivkey(privkey)
 
-        activate_mpos(self.node)
+        generatedMpos = activate_mpos(self.node)
         self.staking_prevouts = collect_prevouts(self.node)
         last_height = self.node.getblock(self.node.getbestblockhash())['height']
         self.log.info('last_height=%s' % (last_height))
         self.assert_spend_of_coinstake_at_height(height=last_height, should_accept=False)
         if last_height > COINBASE_MATURITY + 1:
-            self.assert_spend_of_coinstake_at_height(height=last_height - COINBASE_MATURITY - 1, should_accept=True)
+            self.assert_spend_of_coinstake_at_height(last_height - generatedMpos + 1, should_accept=True)
         # Invalidate the last block and make sure that the previous rejection of the premature coinstake spends fails
         self.node.invalidateblock(self.node.getbestblockhash())
         assert_equal(last_height, self.node.getblock(self.node.getbestblockhash())['height'] + 1)
