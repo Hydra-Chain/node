@@ -12,11 +12,11 @@ import io
 
 class QtumSpendOpCallTest(BitcoinTestFramework):
     def set_test_params(self):
-        self.setup_clean_chain = False
+        self.setup_clean_chain = True
         self.num_nodes = 1
 
     def run_test(self):
-        self.setup_clean_chain = False
+        self.setup_clean_chain = True
         self.nodes[0].generate(10+COINBASE_MATURITY)
 
         # Create a new contract that can receive funds
@@ -32,7 +32,7 @@ class QtumSpendOpCallTest(BitcoinTestFramework):
         self.nodes[0].generate(1)
 
         # Send 100000 qtum to the contract
-        self.nodes[0].sendtocontract(first_contract_address, "00", 100000)['txid']
+        self.nodes[0].sendtocontract(first_contract_address, "00", 1000)['txid']
         blockhash = self.nodes[0].generate(1)[0]
         prev_block = self.nodes[0].getblock(blockhash)
 
@@ -45,8 +45,8 @@ class QtumSpendOpCallTest(BitcoinTestFramework):
 
         tx = CTransaction()
         #tx.vin = [CTxIn(COutPoint(int(op_call_txid, 16), 0), scriptSig=CScript([]))]
-        tx.vin = [make_vin(self.nodes[0], int(2*(COIN + QTUM_MIN_GAS_PRICE*100000)))]
-        tx.vout = [CTxOut(int(100000*COIN), scriptPubKey=CScript([OP_TRUE]))]
+        tx.vin = [make_vin(self.nodes[0], int(2*(COIN + QTUM_MIN_GAS_PRICE*1000)))]
+        tx.vout = [CTxOut(int(1000*COIN), scriptPubKey=CScript([OP_TRUE]))]
         block.vtx.append(tx)
 
         block.hashMerkleRoot = block.calc_merkle_root()
