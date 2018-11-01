@@ -11,15 +11,15 @@ import sys
 
 class QtumCallContractStateNotRevertedTest(BitcoinTestFramework):
     def set_test_params(self):
-        self.setup_clean_chain = False
+        self.setup_clean_chain = True
         self.num_nodes = 2
 
     def run_test(self):
-        self.setup_clean_chain = False
+        self.setup_clean_chain = True
         connect_nodes_bi(self.nodes, 0, 1)
-        self.nodes[0].generate(600)
+        self.nodes[0].generate(1600)
         self.sync_all()
-        self.nodes[1].generate(600)
+        self.nodes[1].generate(1600)
         self.sync_all()
         contract_address = self.nodes[0].createcontract("00")['address']
         self.nodes[0].generate(1)

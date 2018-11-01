@@ -10,11 +10,11 @@ import time
 
 class QtumCombinedOutputsExceedGasLimitTest(BitcoinTestFramework):
     def set_test_params(self):
-        self.setup_clean_chain = False
+        self.setup_clean_chain = True
         self.num_nodes = 1
 
     def run_test(self):
-        self.setup_clean_chain = False
+        self.setup_clean_chain = True
         self.node = self.nodes[0]
         self.node.generate(10+COINBASE_MATURITY)
         """
@@ -32,7 +32,7 @@ class QtumCombinedOutputsExceedGasLimitTest(BitcoinTestFramework):
         contract_address = self.node.createcontract(contract_bytecode)['address']
         self.node.generate(1)
         tx = CTransaction()
-        tx.vin = [make_vin(self.node, int(20000*COIN))]
+        tx.vin = [make_vin(self.node, int(2000*COIN))]
         tx.vout = [
             CTxOut(0, CScript([b"\x04", CScriptNum(19998999), CScriptNum(QTUM_MIN_GAS_PRICE), hex_str_to_bytes("00"), hex_str_to_bytes(contract_address), OP_CALL])),
             CTxOut(0, CScript([b"\x04", CScriptNum(19998999), CScriptNum(QTUM_MIN_GAS_PRICE), hex_str_to_bytes("00"), hex_str_to_bytes(contract_address), OP_CALL])),
