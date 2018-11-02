@@ -270,7 +270,8 @@ class BIP68_112_113Test(ComparisonTestFramework):
 
         yield TestInstance(test_blocks[61+144:61+144+144], sync_every_block=True) # 3
         # Advanced from STARTED to LOCKED_IN, height = 431
-        assert_equal(get_bip9_status(self.nodes[0], 'csv')['status'], 'started')
+        time.sleep(.5)
+        assert_equal(get_bip9_status(self.nodes[0], 'csv')['status'], 'locked_in')
 
         yield TestInstance(test_blocks[61+144+144:61+144+144+130], sync_every_block=True) # 4
 
