@@ -367,7 +367,7 @@ def create_unsigned_pos_block(node, staking_prevouts, nTime=None, nCounter=0):
         current_time = int(time.time()) + 16
         nTime = current_time & 0xfffffff0
 
-    print('node.getbestblockhash node=%s' % (tip))
+    #print('node.getbestblockhash node=%s' % (tip))
     parent_block_stake_modifier = int(tip['modifier'], 16)
     coinbase = create_coinbase(tip['height']+1)
     coinbase.vout[0].nValue = 0
