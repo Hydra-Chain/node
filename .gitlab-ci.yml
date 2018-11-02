@@ -70,6 +70,7 @@ build_and_test_job:
     - ./test_runner.py walletbackup.py
     - ./test_runner.py qtum-assign-mpos-fees-to-gas-refund.py
     - ./test_runner.py qtum-immature-coinstake-spend.py
+    - ./test_runner.py wallet-accounts.py
     - ./test_runner.py
 
 cleanup_build_on_failure_job:

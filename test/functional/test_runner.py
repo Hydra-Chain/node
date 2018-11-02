@@ -63,7 +63,6 @@ BASE_SCRIPTS= [
     #'segwit.py', #TODO: Research why : create_witnessprogram failed due to append vin and vout in a Transaction
     # vv Tests less than 2m vv
 
-    'wallet-accounts.py',
     #'p2p-segwit.py', #test_non_witness_transaction fails. Check the windess BIP.
     'wallet-dump.py',
     # vv Tests less than 60s vv
@@ -188,6 +187,7 @@ EXTENDED_SCRIPTS = [
     'walletbackup.py',
     'qtum-immature-coinstake-spend.py',
     'qtum-assign-mpos-fees-to-gas-refund.py',
+    'wallet-accounts.py',
     ################### untouched extended scripts
     'pruning.py',
     # vv Tests less than 20m vv
