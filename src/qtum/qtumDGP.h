@@ -43,25 +43,17 @@ private:
 
     void initDataEIP158();
 
-    bool checkLimitSchedule(const std::vector<uint32_t>& defaultData, const std::vector<uint32_t>& checkData);
-
     void createParamsInstance();
 
     dev::Address getAddressForBlock(unsigned int blockHeight);
 
     uint64_t getUint64FromDGP(unsigned int blockHeight, const dev::Address& contract, std::vector<unsigned char> data);
 
-    void parseStorageScheduleContract(std::vector<uint32_t>& uint32Values);
-    
-    void parseDataScheduleContract(std::vector<uint32_t>& uint32Values);
-
     void parseStorageOneUint64(uint64_t& blockSize);
 
     void parseDataOneUint64(uint64_t& value);
 
-    dev::eth::EVMSchedule createEVMSchedule();
-
-    void clear();    
+    void clear();
 
 
 
