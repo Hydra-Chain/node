@@ -431,13 +431,13 @@ BOOST_AUTO_TEST_CASE(gas_schedule_passage_from_130_to_0_three_paramsInstance_tes
             EVMScheduleContractGasSchedule2, EVMScheduleContractGasSchedule3, i, func);
     }
 }
-
+/*
 BOOST_AUTO_TEST_CASE(block_size_default_state_test1){
     initState();
     contractLoading();
     QtumDGP qtumDGP(globalState.get());
     uint32_t blockSize = qtumDGP.getBlockSize(100);
-    BOOST_CHECK(blockSize == DEFAULT_BLOCK_SIZE_DGP);
+    BOOST_CHECK(blockSize == BLOCK_SIZE);
 }
 
 BOOST_AUTO_TEST_CASE(block_size_default_state_test2){
@@ -445,7 +445,7 @@ BOOST_AUTO_TEST_CASE(block_size_default_state_test2){
     contractLoading();
     QtumDGP qtumDGP(globalState.get());
     uint32_t blockSize = qtumDGP.getBlockSize(0);
-    BOOST_CHECK(blockSize == DEFAULT_BLOCK_SIZE_DGP);
+    BOOST_CHECK(blockSize == BLOCK_SIZE);
 }
 
 BOOST_AUTO_TEST_CASE(block_size_one_paramsInstance_introductory_block_1_test1){
@@ -461,7 +461,7 @@ BOOST_AUTO_TEST_CASE(block_size_one_paramsInstance_introductory_block_1_test1){
 
     QtumDGP qtumDGP(globalState.get());
     uint32_t blockSize = qtumDGP.getBlockSize(0);
-    BOOST_CHECK(blockSize == DEFAULT_BLOCK_SIZE_DGP);
+    BOOST_CHECK(blockSize == BLOCK_SIZE);
 }
 
 BOOST_AUTO_TEST_CASE(block_size_one_paramsInstance_introductory_block_1_test2){
@@ -489,7 +489,7 @@ BOOST_AUTO_TEST_CASE(block_size_passage_from_0_to_130_three_paramsInstance_test)
     for(size_t i = 0; i < 1300; i++){
         uint32_t blockSize = qtumDGP.getBlockSize(i);
         std::function<bool(const uint64_t&, const uint64_t&)> func = compareUint64;
-        checkValue<uint64_t>(blockSize, DEFAULT_BLOCK_SIZE_DGP, 1000000, 2000000, 500123, i, func);
+        checkValue<uint64_t>(blockSize, BLOCK_SIZE, 1000000, 2000000, 500123, i, func);
     }
 }
 
@@ -502,10 +502,10 @@ BOOST_AUTO_TEST_CASE(block_size_passage_from_130_to_0_three_paramsInstance_test)
     for(size_t i = 1300; i > 0; i--){
         uint32_t blockSize = qtumDGP.getBlockSize(i);
         std::function<bool(const uint64_t&, const uint64_t&)> func = compareUint64;
-        checkValue<uint32_t>(blockSize, DEFAULT_BLOCK_SIZE_DGP, 1000000, 2000000, 500123, i, func);
+        checkValue<uint32_t>(blockSize, BLOCK_SIZE, 1000000, 2000000, 500123, i, func);
     }
 }
-
+*/
 BOOST_AUTO_TEST_CASE(min_gas_price_default_state_test1){
     initState();
     contractLoading();
