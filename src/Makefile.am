@@ -115,6 +115,7 @@ BITCOIN_CORE_H = \
   memusage.h \
   merkleblock.h \
   miner.h \
+  ministun.h \
   net.h \
   net_processing.h \
   netaddress.h \
@@ -149,6 +150,7 @@ BITCOIN_CORE_H = \
   support/events.h \
   support/lockedpool.h \
   sync.h \
+  telemetry.h \
   threadsafety.h \
   threadinterrupt.h \
   timedata.h \
@@ -168,6 +170,7 @@ BITCOIN_CORE_H = \
   wallet/db.h \
   wallet/feebumper.h \
   wallet/rpcwallet.h \
+  wallet/telemetry_wallet.h \
   wallet/wallet.h \
   wallet/walletdb.h \
   warnings.h \
@@ -206,6 +209,7 @@ libbitcoin_server_a_SOURCES = \
   dbwrapper.cpp \
   merkleblock.cpp \
   miner.cpp \
+  ministun.cpp \
   net.cpp \
   net_processing.cpp \
   noui.cpp \
@@ -260,6 +264,7 @@ libbitcoin_wallet_a_SOURCES = \
   wallet/feebumper.cpp \
   wallet/rpcdump.cpp \
   wallet/rpcwallet.cpp \
+  wallet/telemetry_wallet.cpp \
   wallet/wallet.cpp \
   wallet/walletdb.cpp \
   pos.cpp \
@@ -564,6 +569,7 @@ libbitcoin_util_a_SOURCES = \
   rpc/protocol.cpp \
   support/cleanse.cpp \
   sync.cpp \
+  telemetry.cpp \
   threadinterrupt.cpp \
   util.cpp \
   utilmoneystr.cpp \
@@ -610,7 +616,7 @@ locktripd_LDADD = \
   $(LIBCRYPTOPP) \
   $(LIBSECP256K1)
 
-locktripd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+locktripd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(Z_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 
 # bitcoin-cli binary #
 locktrip_cli_SOURCES = bitcoin-cli.cpp
@@ -633,7 +639,7 @@ locktrip_cli_LDADD = \
   $(LIBCRYPTOPP) \
   $(LIBSECP256K1)
 
-locktrip_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+locktrip_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(Z_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
 # bitcoin-tx binary #

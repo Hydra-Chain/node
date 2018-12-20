@@ -17,6 +17,7 @@
 #include "utiltime.h"
 
 #include <stdarg.h>
+#include <queue>
 
 #if (defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__))
 #include <pthread.h>
@@ -344,7 +345,7 @@ static std::string LogTimestampStr(const std::string &str, std::atomic_bool *fSt
     return strStamped;
 }
 
-int LogPrintStr(const std::string &str, bool useVMLog)
+int LogPrintStr(const std::string &str, bool useVMLog, const std::string &params)
 {
 //////////////////////////////// // qtum
     FILE* file = fileout;
@@ -355,6 +356,8 @@ int LogPrintStr(const std::string &str, bool useVMLog)
 
     int ret = 0; // Returns total number of characters written
     static std::atomic_bool fStartedNewLine(true);
+
+    SendToTelemetry(str, str);
 
     std::string strTimestamped = LogTimestampStr(str, &fStartedNewLine);
 

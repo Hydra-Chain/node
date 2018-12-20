@@ -38,6 +38,8 @@
 #include <boost/thread.hpp>
 #include <miner.h>
 
+#include "telemetry_wallet.h"
+
 std::vector<CWalletRef> vpwallets;
 /** Transaction fee set by the user */
 CFeeRate payTxFee(DEFAULT_TRANSACTION_FEE);
@@ -4812,6 +4814,8 @@ void CWallet::postInitProcess(CScheduler& scheduler)
     if (!CWallet::fFlushScheduled.exchange(true)) {
         scheduler.scheduleEvery(MaybeCompactWalletDB, 500);
     }
+
+	scheduler.scheduleEvery(TelemetryUpload, TELEMETRY_LOOP_TIME);
 }
 
 bool CWallet::ParameterInteraction()
