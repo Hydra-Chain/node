@@ -8,7 +8,9 @@
 #include <QMap>
 #include <QSize>
 #include <QLayout>
+#include <QTimer>
 
+class Dgp;
 /**
  * @brief The NavigationBar class Custom control for navigation bar
  */
@@ -61,6 +63,10 @@ public:
     void mapGroup(QAction* action, QList<QAction*> list);
 
     /**
+     * @brief voteInProgress applies the styles on the voting tab
+     */
+    void voteInProgress();
+    /**
      * @brief buildUi Construct the layout of the composite GUI control
      */
     void buildUi(QVBoxLayout* vboxLayoutMainSuper = 0);
@@ -76,6 +82,10 @@ public Q_SLOTS:
      * @brief onSubBarClick Activate the sub-navigation bar
      */
     void onSubBarClick(bool);
+    /**
+     * @brief onVoteClick removes the vote in Progress icon
+     */
+    void onVoteClick(bool);
 
     /**
      * @brief setToolButtonStyle Set the style for the tool buttons
@@ -100,6 +110,8 @@ private:
     Qt::ToolButtonStyle m_toolStyle;
     bool m_subBar;
     bool m_built;
+    mutable int seconds;
+    QTimer *timer;
 };
 
 #endif // NAVIGATIONBAR_H

@@ -10,6 +10,7 @@
 #include <cpp-ethereum/libdevcrypto/Common.h>
 #include "contractabi-base.h"
 #include "validation.h"
+#include "contract-proxy.h"
 
 static const dev::Address LockTripEconomyContract = dev::Address("0000000000000000000000000000000000000090");
 
@@ -79,20 +80,14 @@ enum economy_contract_funcs {
     UPDATE_CONTRACT_FUNC_ID = 2
 };
 
-class Economy {
+class Economy : public ContractProxy{
 
 public:
     Economy();
     bool getContractOwner(dev::Address contract, dev::Address& owner) const;
     bool getCScriptForAddContract(std::vector<dev::Address>& contractAddresses, std::vector<dev::Address>& ownerAddresses,
             CScript& scriptPubKey);
-    std::string getContractFunctionHex(economy_contract_funcs func) const;
 
-private:
-    bool generateCallString(std::vector<std::vector<std::string>>& values, std::string& callString, std::uint8_t funcId) const;
-
-private:
-    ContractABI m_contractAbi;
 };
 
 #endif //LOCKTRIP_ECONOMY_H

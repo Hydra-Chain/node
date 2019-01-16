@@ -133,6 +133,7 @@ QT_FORMS_UI = \
   qt/forms/restoredialog.ui \
   qt/forms/debugwindow.ui \
   qt/forms/sendcoinsdialog.ui \
+  qt/forms/votingpage.ui \
   qt/forms/sendcoinsentry.ui \
   qt/forms/sendtocontract.ui \
   qt/forms/sendtokenpage.ui \
@@ -192,6 +193,7 @@ QT_MOC_CPP = \
   qt/moc_restoredialog.cpp \
   qt/moc_rpcconsole.cpp \
   qt/moc_sendcoinsdialog.cpp \
+  qt/moc_votingpage.cpp \
   qt/moc_sendcoinsentry.cpp \
   qt/moc_sendtocontract.cpp \
   qt/moc_sendtokenpage.cpp \
@@ -299,6 +301,7 @@ BITCOIN_QT_H = \
   qt/restoredialog.h \
   qt/rpcconsole.h \
   qt/sendcoinsdialog.h \
+  qt/votingpage.h \
   qt/sendcoinsentry.h \
   qt/sendtocontract.h \
   qt/sendtokenpage.h \
@@ -402,6 +405,7 @@ RES_ICONS = \
   qt/res/icons/request_payment.png \
   qt/res/icons/restore.png \
   qt/res/icons/send_to.png \
+  qt/res/icons/voting.png \
   qt/res/icons/show.png \
   qt/res/icons/token.png
 
@@ -473,6 +477,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/recentrequeststablemodel.cpp \
   qt/restoredialog.cpp \
   qt/sendcoinsdialog.cpp \
+  qt/votingpage.cpp \
   qt/sendcoinsentry.cpp \
   qt/sendtocontract.cpp \
   qt/sendtokenpage.cpp \

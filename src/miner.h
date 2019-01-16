@@ -265,9 +265,13 @@ private:
       * statistics from the package selection (for logging statistics). */
     void addPackageTxs(int &nPackagesSelected, int &nDescendantsUpdated, uint64_t minGasPrice);
 
+    void BurnMinerFees();
+
     void AddDividentsToCoinstakeTransaction();
 
     void CalculateRewardWithoutDividents();
+
+    void AddTransactionForFinishingVote();
 
     void AddTransactionForSavingContractOwners();
 

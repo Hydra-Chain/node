@@ -162,6 +162,26 @@ void WalletFrame::gotoSendCoinsPage(QString addr)
         i.value()->gotoSendCoinsPage(addr);
 }
 
+bool WalletFrame::isVoteInProgress()
+{
+	bool inProgress = false;
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+    {
+    	inProgress = i.value()->isVoteInProgress();
+        if(inProgress)
+        	break;
+    }
+    return inProgress;
+}
+
+void WalletFrame::gotoVotingPage(QString addr)
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoVotingPage(addr);
+}
+
 void WalletFrame::gotoCreateContractPage()
 {
     QMap<QString, WalletView*>::const_iterator i;

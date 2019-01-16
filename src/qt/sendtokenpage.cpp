@@ -15,8 +15,9 @@
 #include "bitcoinaddressvalidator.h"
 #include "uint256.h"
 #include "styleSheet.h"
+#include "guiconstants.h"
 
-static const CAmount SINGLE_STEP = 0.00000001*COIN;
+//static const CAmount SINGLE_STEP = 0.00000001*COIN;
 
 struct SelectedToken{
     std::string address;
@@ -49,9 +50,12 @@ SendTokenPage::SendTokenPage(QWidget *parent) :
     m_tokenABI = new Token();
     m_selectedToken = new SelectedToken();
 
+    uint64_t blockGasLimit = 0;
+    uint64_t minGasPrice = 0;
+    uint64_t nGasPrice = 0;
+    m_clientModel->getGasInfo(blockGasLimit, minGasPrice, nGasPrice);
     // Set defaults
-    ui->lineEditGasPrice->setValue(DEFAULT_GAS_PRICE);
-    ui->lineEditGasPrice->setSingleStep(SINGLE_STEP);
+    ui->lineEditGasPrice->setText(QString::number((double)(nGasPrice / LOC_GRANULARITY), 'f', 8));
     ui->lineEditGasLimit->setMaximum(DEFAULT_GAS_LIMIT_OP_SEND);
     ui->lineEditGasLimit->setValue(DEFAULT_GAS_LIMIT_OP_SEND);
     ui->confirmButton->setEnabled(false);
@@ -95,7 +99,6 @@ void SendTokenPage::clearAll()
     ui->lineEditAmount->clear();
     ui->lineEditDescription->setText("");
     ui->lineEditGasLimit->setValue(DEFAULT_GAS_LIMIT_OP_SEND);
-    ui->lineEditGasPrice->setValue(DEFAULT_GAS_PRICE);
 }
 
 bool SendTokenPage::isValidAddress()
@@ -136,7 +139,7 @@ void SendTokenPage::on_numBlocksChanged()
 
         ui->labelGasLimit->setToolTip(tr("Gas limit: Default = %1, Max = %2.").arg(DEFAULT_GAS_LIMIT_OP_SEND).arg(blockGasLimit));
         ui->labelGasPrice->setToolTip(tr("Gas price: LOC price per gas unit. Default = %1, Min = %2.").arg(QString::fromStdString(FormatMoney(DEFAULT_GAS_PRICE))).arg(QString::fromStdString(FormatMoney(minGasPrice))));
-        ui->lineEditGasPrice->setMinimum(minGasPrice);
+        ui->lineEditGasPrice->setText(QString::number((double)(nGasPrice / LOC_GRANULARITY), 'f', 8));
         ui->lineEditGasLimit->setMaximum(blockGasLimit);
     }
 }
@@ -167,7 +170,7 @@ void SendTokenPage::on_confirmClicked()
     {
         int unit = m_model->getOptionsModel()->getDisplayUnit();
         uint64_t gasLimit = ui->lineEditGasLimit->value();
-        CAmount gasPrice = ui->lineEditGasPrice->value();
+        CAmount gasPrice = 666;
         std::string label = ui->lineEditDescription->text().trimmed().toStdString();
 
         m_tokenABI->setAddress(m_selectedToken->address);

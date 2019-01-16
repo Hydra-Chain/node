@@ -78,11 +78,18 @@ public:
     opcodetype getQtumType(){
         return qtumType;
     }
+
+    void setTransactionFee(uint64_t transactionFee){
+        nTransactionFee = transactionFee;
+    }
+    uint64_t getTransactionFee(){
+        return nTransactionFee;
+    }
 private:
 
     uint32_t nVout;
     VersionVM version;
     opcodetype qtumType;
-
+    uint64_t nTransactionFee;
 };
 #endif

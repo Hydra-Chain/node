@@ -188,7 +188,6 @@ enum opcodetype
     OP_COINSTAKE_CALL = 0xc4,
 
     // template matching params
-    OP_GAS_PRICE = 0xf5,
     OP_VERSION = 0xf6,
     OP_GAS_LIMIT = 0xf7,
     OP_DATA = 0xf8,

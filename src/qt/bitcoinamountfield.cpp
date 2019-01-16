@@ -217,10 +217,11 @@ BitcoinAmountField::BitcoinAmountField(QWidget *parent) :
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(amount);
-    unit = new QValueComboBox(this);
-    unit->setModel(new BitcoinUnits(this));
-    unit->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    unit->setMinimumWidth(120);
+    unit = new QLabel(this);
+    //unit->setModel(new BitcoinUnits(this));
+    //unit->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    //unit->setMinimumWidth(120);
+    unit->setText("LOCs");
     layout->addWidget(unit);
     layout->setContentsMargins(0,0,0,0);
 
@@ -231,16 +232,12 @@ BitcoinAmountField::BitcoinAmountField(QWidget *parent) :
 
     // If one if the widgets changes, the combined content changes as well
     connect(amount, SIGNAL(valueChanged()), this, SIGNAL(valueChanged()));
-    connect(unit, SIGNAL(currentIndexChanged(int)), this, SLOT(unitChanged(int)));
 
-    // Set default based on configuration
-    unitChanged(unit->currentIndex());
 }
 
 void BitcoinAmountField::clear()
 {
     amount->clear();
-    unit->setCurrentIndex(0);
 }
 
 void BitcoinAmountField::setEnabled(bool fEnabled)
@@ -300,17 +297,17 @@ void BitcoinAmountField::setReadOnly(bool fReadOnly)
 void BitcoinAmountField::unitChanged(int idx)
 {
     // Use description tooltip for current unit for the combobox
-    unit->setToolTip(unit->itemData(idx, Qt::ToolTipRole).toString());
+    //unit->setToolTip(unit->itemData(idx, Qt::ToolTipRole).toString());
 
     // Determine new unit ID
-    int newUnit = unit->itemData(idx, BitcoinUnits::UnitRole).toInt();
+    //int newUnit = unit->itemData(idx, BitcoinUnits::UnitRole).toInt();
 
-    amount->setDisplayUnit(newUnit);
+    amount->setDisplayUnit(0);
 }
 
 void BitcoinAmountField::setDisplayUnit(int newUnit)
 {
-    unit->setValue(newUnit);
+    //unit->setValue(newUnit);
 }
 
 void BitcoinAmountField::setSingleStep(const CAmount& step)
