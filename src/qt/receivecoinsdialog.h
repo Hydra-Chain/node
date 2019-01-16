@@ -78,6 +78,11 @@ private Q_SLOTS:
     void copyLabel();
     void copyMessage();
     void copyAmount();
+    void on_changeDefaultAddressButton_clicked();
+    void on_chooseReuseAddressButton_clicked();
+    void on_reuseExistingAddress_clicked();
+    void on_generateNewAddress_clicked();
+    void on_reuseDefaultAddress_clicked();
 };
 
 #endif // BITCOIN_QT_RECEIVECOINSDIALOG_H

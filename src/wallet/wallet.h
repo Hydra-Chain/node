@@ -81,7 +81,7 @@ extern const char * DEFAULT_WALLET_DAT;
 
 static const int64_t TIMESTAMP_MIN = 0;
 
-static const bool DEFAULT_NOT_USE_CHANGE_ADDRESS = false;
+static const bool DEFAULT_NOT_USE_CHANGE_ADDRESS = true;
 
 static const bool DEFAULT_CHECK_FOR_UPDATES = true;
 

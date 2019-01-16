@@ -298,6 +298,7 @@ BITCOIN_QT_H = \
   qt/recentrequeststablemodel.h \
   qt/restoredialog.h \
   qt/rpcconsole.h \
+  qt/runguard.h \
   qt/sendcoinsdialog.h \
   qt/sendcoinsentry.h \
   qt/sendtocontract.h \
@@ -423,6 +424,7 @@ BITCOIN_QT_BASE_CPP = \
   qt/optionsmodel.cpp \
   qt/peertablemodel.cpp \
   qt/platformstyle.cpp \
+  qt/runguard.cpp \
   qt/qvalidatedlineedit.cpp \
   qt/qvalidatedtextedit.cpp \
   qt/qvaluecombobox.cpp \
