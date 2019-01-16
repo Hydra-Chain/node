@@ -180,6 +180,9 @@ BITCOIN_CORE_H = \
   qtum/qtumDGP.h \
   qtum/storageresults.h \
   locktrip/economy.h \
+  locktrip/contract-proxy.h \
+  locktrip/dgp.h \
+  locktrip/price-oracle.h \
   locktrip/contractabi-base.h
 
 
@@ -236,6 +239,9 @@ libbitcoin_server_a_SOURCES = \
   qtum/qtumDGP.cpp \
   locktrip/contractabi-base.cpp \
   locktrip/economy.cpp \
+  locktrip/contract-proxy.cpp \
+  locktrip/dgp.cpp \
+  locktrip/price-oracle.cpp \
   consensus/consensus.cpp \
   qtum/storageresults.cpp \
   $(BITCOIN_CORE_H)
@@ -262,6 +268,7 @@ libbitcoin_wallet_a_SOURCES = \
   wallet/rpcwallet.cpp \
   wallet/wallet.cpp \
   wallet/walletdb.cpp \
+  locktrip/price-oracle.cpp \
   pos.cpp \
   $(BITCOIN_CORE_H)
 
@@ -346,8 +353,10 @@ libbitcoin_consensus_a_SOURCES = \
 libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) -DQTUM_BUILD
 libbitcoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_common_a_CFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) -std=c99
+libbitcoin_common_a_LIBADD = $(LIBBITCOIN_SERVER)
 libbitcoin_common_a_SOURCES = \
   base58.cpp \
+  pow.cpp \
   chainparams.cpp \
   coins.cpp \
   compressor.cpp \

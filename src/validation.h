@@ -518,6 +518,7 @@ bool CheckIndexProof(const CBlockIndex& block, const Consensus::Params& consensu
 
 /** Context-independent validity checks */
 bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true, bool fCheckMerkleRoot = true, bool fCheckSig=true);
+bool CheckDgp(std::vector<QtumTransaction> qtumTransactions, CValidationState& state, CBlockIndex* pindex);
 bool GetBlockPublicKey(const CBlock& block, std::vector<unsigned char>& vchPubKey);
 bool SignBlock(std::shared_ptr<CBlock> pblock, CWallet& wallet, const CAmount& nTotalFees, uint32_t nTime);
 bool CheckCanonicalBlockSignature(const std::shared_ptr<const CBlock> pblock);
@@ -608,7 +609,7 @@ bool LoadMempool();
 bool CheckReward(const CBlock& block, CValidationState& state, int nHeight, const Consensus::Params& consensusParams, CAmount nFees, CAmount gasRefunds, CAmount nActualStakeReward, const std::vector<CTxOut>& vouts);
 
 //////////////////////////////////////////////////////// qtum
-std::vector<ResultExecute> CallContract(const dev::Address& addrContract, std::vector<unsigned char> opcode, const dev::Address& sender = dev::Address(), uint64_t gasLimit=0);
+std::vector<ResultExecute> CallContract(const dev::Address& addrContract, std::vector<unsigned char> opcode, const dev::Address& sender = dev::Address(), uint64_t gasLimit=0, uint64_t blockGasLimit = 0);
 
 bool CheckSenderScript(const CCoinsViewCache& view, const CTransaction& tx);
 

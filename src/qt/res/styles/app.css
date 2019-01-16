@@ -112,7 +112,7 @@ QAbstractItemView#autoCompleterPopup::item{
     padding-left: 10px;
 }
 QAbstractItemView#autoCompleterPopup::item:selected {
-    background-color: #ffffff;
+    background-color: #ebd2b1;
     color: #1f2427;
     padding: 4px;
 }

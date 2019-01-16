@@ -35,8 +35,7 @@ bool Economy::getContractOwner(const dev::Address contract, dev::Address &owner)
     }
 }
 
-bool
-Economy::getCScriptForAddContract(std::vector<dev::Address> &contractAddresses, std::vector<dev::Address> &ownerAddresses,
+bool Economy::getCScriptForAddContract(std::vector<dev::Address> &contractAddresses, std::vector<dev::Address> &ownerAddresses,
                               CScript &scriptPubKey) {
     scriptPubKey = CScript();
 
@@ -62,19 +61,4 @@ Economy::getCScriptForAddContract(std::vector<dev::Address> &contractAddresses, 
     } else {
         return false;
     }
-}
-
-std::string Economy::getContractFunctionHex(economy_contract_funcs func) const{
-    FunctionABI function = this->m_contractAbi.functions[func];
-
-    return function.selector();
-}
-
-
-bool Economy::generateCallString(std::vector<std::vector<std::string>> &values, std::string &callString,
-                                 const std::uint8_t funcId) const {
-    FunctionABI function = this->m_contractAbi.functions[funcId];
-    std::vector<ParameterABI::ErrorType> errors;
-
-    return function.abiIn(values, callString, errors);
 }

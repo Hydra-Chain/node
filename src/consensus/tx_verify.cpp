@@ -4,6 +4,7 @@
 
 #include <validation.h>
 #include <locktrip/economy.h>
+#include <locktrip/dgp.h>
 #include "tx_verify.h"
 
 #include "consensus.h"
@@ -217,7 +218,10 @@ bool CheckTransaction(const CTransaction &tx, CValidationState &state, bool fChe
 bool CheckQtumTransaction(const ExtractQtumTX & extractQtumTxResult, CValidationState& state){
     std::vector<QtumTransaction> qtumTransactions = extractQtumTxResult.first;
     Economy e;
+    Dgp d;
 
+    bool hasEconomyCall = false;
+    bool hasDGPCall = false;
     for (QtumTransaction qtumTransaction : qtumTransactions) {
         if (qtumTransaction.getQtumType() == OP_CALL && qtumTransaction.receiveAddress() == LockTripEconomyContract) {
             std::string hex = dev::toHex(qtumTransaction.data());
@@ -227,15 +231,38 @@ bool CheckQtumTransaction(const ExtractQtumTX & extractQtumTxResult, CValidation
             }
         }
 
-        if (qtumTransaction.getQtumType() == OP_COINSTAKE_CALL) {
-            if (qtumTransactions.size() > 1) {
+        if(qtumTransaction.getQtumType() == OP_CALL && qtumTransaction.receiveAddress() == LockTripDgpContract) {
+            std::string hex = dev::toHex(qtumTransaction.data());
+            if (hex.substr(0, 8).compare(d.getContractFunctionHex(FINISH_VOTE)) == 0) {
                 return state.DoS(100, false, REJECT_INVALID,
-                                 "bad-txns-cannot-have-coinstakecall-more-than-once");
+                                 "bad-txns-cannot-call-finish-vote-outside-coinstake");
             }
+        }
 
-            if (qtumTransactions.size() == 1 && qtumTransactions[0].receiveAddress() != LockTripEconomyContract) {
+        if (qtumTransaction.getQtumType() == OP_COINSTAKE_CALL) {
+            if(qtumTransaction.receiveAddress() == LockTripEconomyContract){
+                if(hasEconomyCall){
+                    return state.DoS(100, false, REJECT_INVALID,
+                                     "bad-txns-coinstake-call-calling-economy-more-than-once");
+                }
+                hasEconomyCall = true;
+            }
+            else if(qtumTransaction.receiveAddress() == LockTripDgpContract){
+                std::string hex = dev::toHex(qtumTransaction.data());
+                if (!hex.substr(0, 8).compare(d.getContractFunctionHex(FINISH_VOTE)) == 0) {
+                    return state.DoS(100, false, REJECT_INVALID,
+                                     "bad-txns-coinstake-can-call-only-finish-vote-inside-coinstake");
+                }
+
+                if(hasDGPCall){
+                    return state.DoS(100, false, REJECT_INVALID,
+                                     "bad-txns-coinstake-call-calling-dgp-more-than-once");
+                }
+                hasDGPCall = true;
+            }
+            else {
                 return state.DoS(100, false, REJECT_INVALID,
-                                 "bad-txns-coinstake-call-on-different-than-economy-contract");
+                                 "bad-txns-coinstake-call-on-different-than-economy-dgp-contract");
             }
         }
     }

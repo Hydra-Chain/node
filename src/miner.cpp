@@ -29,6 +29,7 @@
 #include "validationinterface.h"
 #include "wallet/wallet.h"
 #include "locktrip/economy.h"
+#include "locktrip/dgp.h"
 
 #include <algorithm>
 #include <queue>
@@ -112,6 +113,24 @@ void BlockAssembler::resetBlock()
     nFees = 0;
 }
 
+void BlockAssembler::BurnMinerFees(){
+    Dgp dgp;
+    uint64_t coinBurnPercentage;
+    dgp.getDgpParam(BURN_RATE, coinBurnPercentage);
+    if(coinBurnPercentage > MAX_BURN_RATE_PERCENTAGE || coinBurnPercentage < MIN_BURN_RATE_PERCENTAGE ){
+        coinBurnPercentage = DEFAULT_BURN_RATE_PERCENTAGE;
+    }
+
+    int refundtx=0; //0 for coinbase in PoW
+    if(pblock->IsProofOfStake()){
+        refundtx=1; //1 for coinstake in PoS
+    }
+
+    auto coinAmountThatSouldBeBurned =  ((nFees - bceResult.refundSender) / 100) * coinBurnPercentage;
+    originalRewardTx.vout[refundtx].nValue -= coinAmountThatSouldBeBurned;
+    nFees -= coinAmountThatSouldBeBurned;
+}
+
 void BlockAssembler::AddDividentsToCoinstakeTransaction(){
     int refundtx=0; //0 for coinbase in PoW
     if(pblock->IsProofOfStake()){
@@ -127,10 +146,11 @@ void BlockAssembler::AddDividentsToCoinstakeTransaction(){
         if(contractOwner != dev::Address("0"))
         {
             originalRewardTx.vout[refundtx].nValue -= pair.second; // Remove the dividents from miner fee and reward.
+            nFees -= pair.second;
+
             CScript script(CScript() << OP_DUP << OP_HASH160 << contractOwner.asBytes() << OP_EQUALVERIFY << OP_CHECKSIG);
             CTxOut dividend(pair.second, script);
             dividends.push_back(dividend);
-            nFees -= pair.second;
         }
     }
 
@@ -154,6 +174,17 @@ void BlockAssembler::AddRefundTransactions(){
         originalRewardTx.vout[i]=vout;
         i++;
     }
+}
+
+void BlockAssembler::AddTransactionForFinishingVote(){
+    Dgp d;
+    CScript scriptPubKey;
+    d.finishVote(scriptPubKey);
+
+    originalRewardTx.vout.resize(originalRewardTx.vout.size() + 1);
+    int lastElementIndex = originalRewardTx.vout.size() - 1;
+    originalRewardTx.vout[lastElementIndex].scriptPubKey = scriptPubKey;
+    originalRewardTx.vout[lastElementIndex].nValue = 0;
 }
 
 void BlockAssembler::AddTransactionForSavingContractOwners(){
@@ -350,6 +381,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
     CalculateRewardWithoutDividents();
     AddRefundTransactions();
+    bool hasCoinstakeCall = false;
     if(fProofOfStake) {
         if(bceResult.contractAddresses.size() != bceResult.contractOwners.size())
         {
@@ -362,7 +394,23 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
         AddDividentsToCoinstakeTransaction();
         if(bceResult.contractAddresses.size() != 0) {
             AddTransactionForSavingContractOwners();
+            hasCoinstakeCall = true;
         }
+
+        Dgp dgp;
+        bool voteInProgress;
+        dgp.hasVoteInProgress(voteInProgress);
+        if(voteInProgress) {
+            uint64_t expiration;
+            dgp.getVoteBlockExpiration(expiration);
+
+            if (nHeight >= expiration) {
+                AddTransactionForFinishingVote();
+                hasCoinstakeCall = true;
+            }
+        }
+
+        BurnMinerFees();
     }
 
     ReplaceRewardTransaction();
@@ -381,7 +429,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     pblock->nNonce         = 0;
     pblocktemplate->vTxSigOpsCost[0] = WITNESS_SCALE_FACTOR * GetLegacySigOpCount(*pblock->vtx[0]);
 
-    if(fProofOfStake && bceResult.contractAddresses.size() != 0) {
+    if(fProofOfStake && hasCoinstakeCall) {
         if(!ExecuteCoinstakeContractCalls(*wallet, pTotalFees, txProofTime)) {
             globalState->setRoot(oldHashStateRoot);
             globalState->setRootUTXO(oldHashUTXORoot);
@@ -582,7 +630,6 @@ bool BlockAssembler::AttemptToAddContractToBlock(CTxMemPool::txiter iter, uint64
     // operate on local vars first, then later apply to `this`
     uint64_t nBlockWeight = this->nBlockWeight;
     uint64_t nBlockSigOpsCost = this->nBlockSigOpsCost;
-
     QtumTxConverter convert(iter->GetTx(), NULL, &pblock->vtx);
 
     ExtractQtumTX resultConverter;
@@ -593,7 +640,9 @@ bool BlockAssembler::AttemptToAddContractToBlock(CTxMemPool::txiter iter, uint64
     }
     std::vector<QtumTransaction> qtumTransactions = resultConverter.first;
     dev::u256 txGas = 0;
-    for(QtumTransaction qtumTransaction : qtumTransactions){
+    for(QtumTransaction &qtumTransaction : qtumTransactions){
+        qtumTransaction.setTransactionFee(iter->GetFee());
+
         txGas += qtumTransaction.gas();
         if(txGas > txGasLimit) {
             // Limit the tx gas limit by the soft limit if such a limit has been specified.
@@ -609,6 +658,7 @@ bool BlockAssembler::AttemptToAddContractToBlock(CTxMemPool::txiter iter, uint64
             return false;
         }
     }
+
     // We need to pass the DGP's block gas limit (not the soft limit) since it is consensus critical.
     ByteCodeExec exec(*pblock, qtumTransactions, hardBlockGasLimit);
     if(!exec.performByteCode()){

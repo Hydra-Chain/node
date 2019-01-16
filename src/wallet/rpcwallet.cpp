@@ -26,6 +26,8 @@
 #include "wallet/feebumper.h"
 #include "wallet/wallet.h"
 #include "wallet/walletdb.h"
+#include "locktrip/dgp.h"
+#include "locktrip/price-oracle.h"
 
 #include <stdint.h>
 
@@ -569,21 +571,28 @@ UniValue createcontract(const JSONRPCRequest& request){
     LOCK2(cs_main, pwallet->cs_wallet);
     QtumDGP qtumDGP(globalState.get(), fGettingValuesDGP);
     uint64_t blockGasLimit = qtumDGP.getBlockGasLimit(chainActive.Height());
+
     uint64_t minGasPrice = CAmount(qtumDGP.getMinGasPrice(chainActive.Height()));
-    CAmount nGasPrice = (minGasPrice>DEFAULT_GAS_PRICE)?minGasPrice:DEFAULT_GAS_PRICE;
+    PriceOracle oracle;
+    uint64_t oracleGasPrice;
+    oracle.getPrice(oracleGasPrice);
+    CAmount defaultGasPrice = (minGasPrice>DEFAULT_GAS_PRICE)?minGasPrice:oracleGasPrice;
+    Dgp dgp;
+    CAmount gasPriceBuffer;
+    dgp.calculateGasPriceBuffer(defaultGasPrice, gasPriceBuffer);
+    CAmount nGasPrice = gasPriceBuffer + defaultGasPrice;
 
     if (request.fHelp || request.params.size() < 1 || request.params.size() > 6)
         throw std::runtime_error(
-                "createcontract \"bytecode\" (gaslimit gasprice \"senderaddress\" broadcast)"
+                "createcontract \"bytecode\" (gaslimit \"senderaddress\" broadcast)"
                 "\nCreate a contract with bytcode.\n"
                 + HelpRequiringPassphrase(pwallet) +
                 "\nArguments:\n"
                 "1. \"bytecode\"  (string, required) contract bytcode.\n"
                 "2. gasLimit  (numeric or string, optional) gasLimit, default: "+i64tostr(DEFAULT_GAS_LIMIT_OP_CREATE)+", max: "+i64tostr(blockGasLimit)+"\n"
-                "3. gasPrice  (numeric or string, optional) gasPrice LOC price per gas unit, default: "+FormatMoney(nGasPrice)+", min:"+FormatMoney(minGasPrice)+"\n"
-                "4. \"senderaddress\" (string, optional) The locktrip address that will be used to create the contract.\n"
-                "5. \"broadcast\" (bool, optional, default=true) Whether to broadcast the transaction or not.\n"
-                "6. \"changeToSender\" (bool, optional, default=true) Return the change to the sender.\n"
+                "3. \"senderaddress\" (string, optional) The locktrip address that will be used to create the contract.\n"
+                "4. \"broadcast\" (bool, optional, default=true) Whether to broadcast the transaction or not.\n"
+                "5. \"changeToSender\" (bool, optional, default=true) Return the change to the sender.\n"
                 "\nResult:\n"
                 "[\n"
                 "  {\n"
@@ -595,7 +604,7 @@ UniValue createcontract(const JSONRPCRequest& request){
                 "]\n"
                 "\nExamples:\n"
                 + HelpExampleCli("createcontract", "\"60606040525b33600060006101000a81548173ffffffffffffffffffffffffffffffffffffffff02191690836c010000000000000000000000009081020402179055506103786001600050819055505b600c80605b6000396000f360606040526008565b600256\"")
-                + HelpExampleCli("createcontract", "\"60606040525b33600060006101000a81548173ffffffffffffffffffffffffffffffffffffffff02191690836c010000000000000000000000009081020402179055506103786001600050819055505b600c80605b6000396000f360606040526008565b600256\" 6000000 "+FormatMoney(minGasPrice)+" \"LM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" true")
+                + HelpExampleCli("createcontract", "\"60606040525b33600060006101000a81548173ffffffffffffffffffffffffffffffffffffffff02191690836c010000000000000000000000009081020402179055506103786001600050819055505b600c80605b6000396000f360606040526008565b600256\" 6000000 \"LM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" true")
                 );
 
 
@@ -615,21 +624,10 @@ UniValue createcontract(const JSONRPCRequest& request){
             throw JSONRPCError(RPC_TYPE_ERROR, "Invalid value for gasLimit");
     }
 
-    if (request.params.size() > 2){
-        nGasPrice = AmountFromValue(request.params[2]);
-        if (nGasPrice <= 0)
-            throw JSONRPCError(RPC_TYPE_ERROR, "Invalid value for gasPrice");
-        CAmount maxRpcGasPrice = gArgs.GetArg("-rpcmaxgasprice", MAX_RPC_GAS_PRICE);
-        if (nGasPrice > (int64_t)maxRpcGasPrice)
-            throw JSONRPCError(RPC_TYPE_ERROR, "Invalid value for gasPrice, Maximum allowed in RPC calls is: "+FormatMoney(maxRpcGasPrice)+" (use -rpcmaxgasprice to change it)");
-        if (nGasPrice < (int64_t)minGasPrice)
-            throw JSONRPCError(RPC_TYPE_ERROR, "Invalid value for gasPrice (Minimum is: "+FormatMoney(minGasPrice)+")");
-    }
-
     bool fHasSender=false;
     CBitcoinAddress senderAddress;
-    if (request.params.size() > 3){
-    senderAddress.SetString(request.params[3].get_str());
+    if (request.params.size() > 2){
+    senderAddress.SetString(request.params[2].get_str());
         if (!senderAddress.IsValid())
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid LockTrip address to send from");
         else
@@ -637,13 +635,13 @@ UniValue createcontract(const JSONRPCRequest& request){
     }
 
     bool fBroadcast=true;
-    if (request.params.size() > 4){
-        fBroadcast=request.params[4].get_bool();
+    if (request.params.size() > 3){
+        fBroadcast=request.params[3].get_bool();
     }
 
     bool fChangeToSender=true;
-    if (request.params.size() > 5){
-        fChangeToSender=request.params[5].get_bool();
+    if (request.params.size() > 4){
+        fChangeToSender=request.params[4].get_bool();
     }
 
     CCoinControl coinControl;
@@ -700,7 +698,7 @@ UniValue createcontract(const JSONRPCRequest& request){
         throw JSONRPCError(RPC_WALLET_INSUFFICIENT_FUNDS, "Insufficient funds");
 
     // Build OP_EXEC script
-    CScript scriptPubKey = CScript() << CScriptNum(VersionVM::GetEVMDefault().toRaw()) << CScriptNum(nGasLimit) << CScriptNum(nGasPrice) << ParseHex(bytecode) << OP_CREATE;
+    CScript scriptPubKey = CScript() << CScriptNum(VersionVM::GetEVMDefault().toRaw()) << CScriptNum(nGasLimit) << ParseHex(bytecode) << OP_CREATE;
 
     // Create and send the transaction
     CReserveKey reservekey(pwallet);
@@ -773,12 +771,20 @@ UniValue sendtocontract(const JSONRPCRequest& request){
     LOCK2(cs_main, pwallet->cs_wallet);
     QtumDGP qtumDGP(globalState.get(), fGettingValuesDGP);
     uint64_t blockGasLimit = qtumDGP.getBlockGasLimit(chainActive.Height());
+
     uint64_t minGasPrice = CAmount(qtumDGP.getMinGasPrice(chainActive.Height()));
-    CAmount nGasPrice = (minGasPrice>DEFAULT_GAS_PRICE)?minGasPrice:DEFAULT_GAS_PRICE;
+    PriceOracle oracle;
+    uint64_t oracleGasPrice;
+    oracle.getPrice(oracleGasPrice);
+    CAmount defaultGasPrice = (minGasPrice>DEFAULT_GAS_PRICE)?minGasPrice:oracleGasPrice;
+    Dgp dgp;
+    CAmount gasPriceBuffer;
+    dgp.calculateGasPriceBuffer(defaultGasPrice, gasPriceBuffer);
+    CAmount nGasPrice = gasPriceBuffer + defaultGasPrice;
 
     if (request.fHelp || request.params.size() < 2 || request.params.size() > 8)
         throw std::runtime_error(
-                "sendtocontract \"contractaddress\" \"data\" (amount gaslimit gasprice senderaddress broadcast)"
+                "sendtocontract \"contractaddress\" \"data\" (amount gaslimit senderaddress broadcast)"
                 "\nSend funds and data to a contract.\n"
                 + HelpRequiringPassphrase(pwallet) +
                 "\nArguments:\n"
@@ -786,10 +792,9 @@ UniValue sendtocontract(const JSONRPCRequest& request){
                 "2. \"datahex\"  (string, required) data to send.\n"
                 "3. \"amount\"      (numeric or string, optional) The amount in " + CURRENCY_UNIT + " to send. eg 0.1, default: 0\n"
                 "4. gasLimit  (numeric or string, optional) gasLimit, default: "+i64tostr(DEFAULT_GAS_LIMIT_OP_SEND)+", max: "+i64tostr(blockGasLimit)+"\n"
-                "5. gasPrice  (numeric or string, optional) gasPrice LockTrip price per gas unit, default: "+FormatMoney(nGasPrice)+", min:"+FormatMoney(minGasPrice)+"\n"
-                "6. \"senderaddress\" (string, optional) The locktrip address that will be used as sender.\n"
-                "7. \"broadcast\" (bool, optional, default=true) Whether to broadcast the transaction or not.\n"
-                "8. \"changeToSender\" (bool, optional, default=true) Return the change to the sender.\n"
+                "5. \"senderaddress\" (string, optional) The locktrip address that will be used as sender.\n"
+                "6. \"broadcast\" (bool, optional, default=true) Whether to broadcast the transaction or not.\n"
+                "7. \"changeToSender\" (bool, optional, default=true) Return the change to the sender.\n"
                 "\nResult:\n"
                 "[\n"
                 "  {\n"
@@ -800,7 +805,7 @@ UniValue sendtocontract(const JSONRPCRequest& request){
                 "]\n"
                 "\nExamples:\n"
                 + HelpExampleCli("sendtocontract", "\"c6ca2697719d00446d4ea51f6fac8fd1e9310214\" \"54f6127f\"")
-                + HelpExampleCli("sendtocontract", "\"c6ca2697719d00446d4ea51f6fac8fd1e9310214\" \"54f6127f\" 12.0015 6000000 "+FormatMoney(minGasPrice)+" \"LM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\"")
+                + HelpExampleCli("sendtocontract", "\"c6ca2697719d00446d4ea51f6fac8fd1e9310214\" \"54f6127f\" 12.0015 6000000 \"LM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\"")
         );
 
 
@@ -834,7 +839,7 @@ UniValue sendtocontract(const JSONRPCRequest& request){
             throw JSONRPCError(RPC_TYPE_ERROR, "Invalid value for gasLimit");
     }
 
-    if (request.params.size() > 4){
+    /*if (request.params.size() > 4){
         nGasPrice = AmountFromValue(request.params[4]);
         if (nGasPrice <= 0)
             throw JSONRPCError(RPC_TYPE_ERROR, "Invalid value for gasPrice");
@@ -843,12 +848,12 @@ UniValue sendtocontract(const JSONRPCRequest& request){
             throw JSONRPCError(RPC_TYPE_ERROR, "Invalid value for gasPrice, Maximum allowed in RPC calls is: "+FormatMoney(maxRpcGasPrice)+" (use -rpcmaxgasprice to change it)");
         if (nGasPrice < (int64_t)minGasPrice)
             throw JSONRPCError(RPC_TYPE_ERROR, "Invalid value for gasPrice (Minimum is: "+FormatMoney(minGasPrice)+")");
-    }
+    }*/
 
     bool fHasSender=false;
     CBitcoinAddress senderAddress;
-    if (request.params.size() > 5){
-        senderAddress.SetString(request.params[5].get_str());
+    if (request.params.size() > 4){
+        senderAddress.SetString(request.params[4].get_str());
         if (!senderAddress.IsValid())
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid LockTrip address to send from");
         else
@@ -856,13 +861,13 @@ UniValue sendtocontract(const JSONRPCRequest& request){
     }
 
     bool fBroadcast=true;
-    if (request.params.size() > 6){
-        fBroadcast=request.params[6].get_bool();
+    if (request.params.size() > 5){
+        fBroadcast=request.params[5].get_bool();
     }
 
     bool fChangeToSender=true;
-    if (request.params.size() > 7){
-        fChangeToSender=request.params[7].get_bool();
+    if (request.params.size() > 6){
+        fChangeToSender=request.params[6].get_bool();
     }
 
     CCoinControl coinControl;
@@ -920,7 +925,7 @@ UniValue sendtocontract(const JSONRPCRequest& request){
         throw JSONRPCError(RPC_WALLET_INSUFFICIENT_FUNDS, "Insufficient funds");
 
     // Build OP_EXEC_ASSIGN script
-    CScript scriptPubKey = CScript() << CScriptNum(VersionVM::GetEVMDefault().toRaw()) << CScriptNum(nGasLimit) << CScriptNum(nGasPrice) << ParseHex(datahex) << ParseHex(contractaddress) << OP_CALL;
+    CScript scriptPubKey = CScript() << CScriptNum(VersionVM::GetEVMDefault().toRaw()) << CScriptNum(nGasLimit) << ParseHex(datahex) << ParseHex(contractaddress) << OP_CALL;
 
     // Create and send the transaction
     CReserveKey reservekey(pwallet);
@@ -3887,8 +3892,8 @@ static const CRPCCommand commands[] =
     { "wallet",             "walletpassphrasechange",   &walletpassphrasechange,   true,   {"oldpassphrase","newpassphrase"} },
     { "wallet",             "walletpassphrase",         &walletpassphrase,         true,   {"passphrase","timeout", "stakingonly"} },
     { "wallet",             "removeprunedfunds",        &removeprunedfunds,        true,   {"txid"} },
-    { "wallet",             "createcontract",           &createcontract,           false,  {"bytecode", "gasLimit", "gasPrice", "senderAddress", "broadcast", "changeToSender"} },
-    { "wallet",             "sendtocontract",           &sendtocontract,           false,  {"contractaddress", "bytecode", "amount", "gasLimit", "gasPrice", "senderAddress", "broadcast", "changeToSender"} },
+    { "wallet",             "createcontract",           &createcontract,           false,  {"bytecode", "gasLimit", "senderAddress", "broadcast", "changeToSender"} },
+    { "wallet",             "sendtocontract",           &sendtocontract,           false,  {"contractaddress", "bytecode", "amount", "gasLimit", "senderAddress", "broadcast", "changeToSender"} },
 
     { "generating",         "generate",                 &generate,                 true,   {"nblocks","maxtries"} },
 };

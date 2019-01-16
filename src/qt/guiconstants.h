@@ -42,6 +42,8 @@ static const int TOOLTIP_WRAP_THRESHOLD = 80;
 /* Maximum allowed URI length */
 static const int MAX_URI_LENGTH = 255;
 
+static const double LOC_GRANULARITY = 100000000;
+
 /* QRCodeDialog -- size of exported QR Code image */
 #define QR_IMAGE_SIZE 300
 

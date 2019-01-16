@@ -13,6 +13,7 @@ FORMS += \
     ../src/qt/forms/receiverequestdialog.ui \
     ../src/qt/forms/debugwindow.ui \
     ../src/qt/forms/sendcoinsdialog.ui \
+    ../src/qt/forms/votingpage.ui \
     ../src/qt/forms/sendcoinsentry.ui \
     ../src/qt/forms/signverifymessagedialog.ui \
     ../src/qt/forms/transactiondescdialog.ui \

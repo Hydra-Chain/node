@@ -125,6 +125,7 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     historyAction(0),
     quitAction(0),
     sendCoinsAction(0),
+	votingAction(0),
     sendCoinsMenuAction(0),
     usedSendingAddressesAction(0),
     usedReceivingAddressesAction(0),
@@ -253,7 +254,9 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *_platformStyle, const NetworkStyle *
     QHBoxLayout *frameBlocksLayout = new QHBoxLayout(frameBlocks);
     frameBlocksLayout->setContentsMargins(3,0,0,0);
     frameBlocksLayout->setSpacing(3);
-    unitDisplayControl = new UnitDisplayStatusBarControl(platformStyle);
+    unitDisplayControl = new QLabel();
+    unitDisplayControl->setText("Status:");
+    unitDisplayControl->setStyleSheet("QLabel {color: white}");
     labelWalletEncryptionIcon = new QLabel();
     labelWalletHDStatusIcon = new QLabel();
     connectionsControl = new GUIUtil::ClickableLabel();
@@ -419,6 +422,14 @@ void BitcoinGUI::createActions()
     QRCTokenAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
     tabGroup->addAction(QRCTokenAction);
 
+    votingAction = new QAction(platformStyle->MultiStatesIcon(":/icons/voting"), tr("&Vote"), this);
+    votingAction->setStatusTip(tr("Vote for burn rate"));
+    votingAction->setToolTip(votingAction->statusTip());
+    votingAction->setCheckable(true);
+    votingAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
+    tabGroup->addAction(votingAction);
+
+
     sendTokenAction = new QAction(tr("Send"), this);
     receiveTokenAction = new QAction(tr("Receive"), this);
     addTokenAction = new QAction(tr("Add Token"), this);
@@ -430,6 +441,8 @@ void BitcoinGUI::createActions()
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
     connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(gotoSendCoinsPage()));
+    connect(votingAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(votingAction, SIGNAL(triggered()), this, SLOT(gotoVotingPage()));
     connect(sendCoinsMenuAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(sendCoinsMenuAction, SIGNAL(triggered()), this, SLOT(gotoSendCoinsPage()));
     connect(receiveCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -608,6 +621,7 @@ void BitcoinGUI::createToolBars()
         tokenActions.append(receiveTokenAction);
         tokenActions.append(addTokenAction);
         appNavigationBar->mapGroup(QRCTokenAction, tokenActions);
+        appNavigationBar->addAction(votingAction);
         appNavigationBar->buildUi();
         overviewAction->setChecked(true);
     }
@@ -655,7 +669,7 @@ void BitcoinGUI::setClientModel(ClientModel *_clientModel)
             walletFrame->setClientModel(_clientModel);
         }
 #endif // ENABLE_WALLET
-        unitDisplayControl->setOptionsModel(_clientModel->getOptionsModel());
+        //unitDisplayControl->setOptionsModel(_clientModel->getOptionsModel());
         
         OptionsModel* optionsModel = _clientModel->getOptionsModel();
         if(optionsModel)
@@ -684,7 +698,7 @@ void BitcoinGUI::setClientModel(ClientModel *_clientModel)
             walletFrame->setClientModel(nullptr);
         }
 #endif // ENABLE_WALLET
-        unitDisplayControl->setOptionsModel(nullptr);
+        //unitDisplayControl->setOptionsModel(nullptr);
     }
 }
 
@@ -699,7 +713,12 @@ bool BitcoinGUI::addWallet(const QString& name, WalletModel *walletModel)
     {
         showModalBackupOverlay();
     }
-    return walletFrame->addWallet(name, walletModel);
+    bool res = walletFrame->addWallet(name, walletModel);
+    if(walletFrame->isVoteInProgress())
+    {
+    	appNavigationBar->voteInProgress();
+    }
+    return res;
 }
 
 bool BitcoinGUI::setCurrentWallet(const QString& name)
@@ -722,6 +741,7 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
 {
     overviewAction->setEnabled(enabled);
     sendCoinsAction->setEnabled(enabled);
+    votingAction->setEnabled(enabled);
     sendCoinsMenuAction->setEnabled(enabled);
     receiveCoinsAction->setEnabled(enabled);
     receiveCoinsMenuAction->setEnabled(enabled);
@@ -888,6 +908,12 @@ void BitcoinGUI::gotoSendCoinsPage(QString addr)
 {
     sendCoinsAction->setChecked(true);
     if (walletFrame) walletFrame->gotoSendCoinsPage(addr);
+}
+
+void BitcoinGUI::gotoVotingPage(QString addr)
+{
+    votingAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoVotingPage(addr);
 }
 
 void BitcoinGUI::gotoCreateContractPage()

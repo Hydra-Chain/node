@@ -14,6 +14,7 @@
 #include "platformstyle.h"
 #include "receivecoinsdialog.h"
 #include "sendcoinsdialog.h"
+#include "votingpage.h"
 #include "signverifymessagedialog.h"
 #include "transactiontablemodel.h"
 #include "tokentransactiontablemodel.h"
@@ -62,6 +63,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 
     receiveCoinsPage = new ReceiveCoinsDialog(platformStyle);
     sendCoinsPage = new SendCoinsDialog(platformStyle);
+    votingPage = new VotingPage(platformStyle);
 
     usedSendingAddressesPage = new AddressBookPage(platformStyle, AddressBookPage::ForEditing, AddressBookPage::SendingTab, this);
     usedReceivingAddressesPage = new AddressBookPage(platformStyle, AddressBookPage::ForEditing, AddressBookPage::ReceivingTab, this);
@@ -80,6 +82,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(sendToContractPage);
     addWidget(callContractPage);
     addWidget(QRCTokenPage);
+    addWidget(votingPage);
 
     connect(overviewPage, SIGNAL(outOfSyncWarningClicked()), this, SLOT(requestedSyncWarningInfo()));
 
@@ -91,6 +94,8 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 
     // Pass through messages from sendCoinsPage
     connect(sendCoinsPage, SIGNAL(message(QString,QString,unsigned int)), this, SIGNAL(message(QString,QString,unsigned int)));
+    // Pass through messages from votingPage
+    connect(votingPage, SIGNAL(message(QString,QString,unsigned int)), this, SIGNAL(message(QString,QString,unsigned int)));
     // Pass through messages from transactionView
     connect(transactionView, SIGNAL(message(QString,QString,unsigned int)), this, SIGNAL(message(QString,QString,unsigned int)));
 }
@@ -132,6 +137,7 @@ void WalletView::setClientModel(ClientModel *_clientModel)
 
     overviewPage->setClientModel(_clientModel);
     sendCoinsPage->setClientModel(_clientModel);
+    votingPage->setClientModel(_clientModel);
     createContractPage->setClientModel(_clientModel);
     sendToContractPage->setClientModel(_clientModel);
     callContractPage->setClientModel(_clientModel);
@@ -147,6 +153,7 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
     overviewPage->setWalletModel(_walletModel);
     receiveCoinsPage->setModel(_walletModel);
     sendCoinsPage->setModel(_walletModel);
+    votingPage->setModel(_walletModel);
     createContractPage->setModel(_walletModel);
     sendToContractPage->setModel(_walletModel);
     callContractPage->setModel(_walletModel);
@@ -254,6 +261,19 @@ void WalletView::gotoSendCoinsPage(QString addr)
 
     if (!addr.isEmpty())
         sendCoinsPage->setAddress(addr);
+}
+
+void WalletView::gotoVotingPage(QString addr)
+{
+    setCurrentWidget(votingPage);
+    votingPage->updateVoteInfo();
+    if (!addr.isEmpty())
+    	votingPage->checkInProgress();
+}
+
+bool WalletView::isVoteInProgress()
+{
+	return votingPage->checkInProgress();
 }
 
 void WalletView::gotoCreateContractPage()

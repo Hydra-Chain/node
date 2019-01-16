@@ -41,7 +41,7 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
     genesis.vtx.push_back(MakeTransactionRef(std::move(txNew)));
     genesis.hashPrevBlock.SetNull();
     genesis.hashMerkleRoot = BlockMerkleRoot(genesis);
-    genesis.hashStateRoot = uint256(h256Touint(dev::h256("b8101f72d2e3260e2a65ee2d3e815d00dc170c009d15f7a9b6dfc9ec1b4aea68"))); // qtum
+    genesis.hashStateRoot = uint256(h256Touint(dev::h256("00fb6496553b88351714743f6d9b155d9e3d50ebba3c7f2986946e5c89cb0818"))); // qtum
     genesis.hashUTXORoot = uint256(h256Touint(dev::sha3(dev::rlp("")))); // qtum
     return genesis;
 }
@@ -59,8 +59,8 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "Sep 02, 2017 Bitcoin breaks $5,000 in latest price frenzy";
-    const CScript genesisOutputScript = CScript() << ParseHex("033a537fcd935fba9f532ef78bb97154b5ea7b8dfd8b74facc36f7193e9d5b1cab") << OP_CHECKSIG;
+    const char* pszTimestamp = "Sep 29, 2018 LockTrip Publishes its own Blockchain Manifest – And it is Amazing";
+     const CScript genesisOutputScript = CScript() << ParseHex("033a537fcd935fba9f532ef78bb97154b5ea7b8dfd8b74facc36f7193e9d5b1cab") << OP_CHECKSIG;
 
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
@@ -105,11 +105,11 @@ CChainParams::CChainParams()
 
 
     chainTxData = ChainTxData{
-        // Data as of block a1bab8db27f26952ce94fff6563931943554e36fc3a23f99cc8513270d685b2c (height 92662)
-        0, // * UNIX timestamp of last known number of transactions
-        0, // * total number of transactions between genesis and that timestamp
-                        //   (the tx=... number in the SetBestChain debug.log lines)
-        0 // * estimated number of transactions per second after that timestamp
+            // Data as of block a1bab8db27f26952ce94fff6563931943554e36fc3a23f99cc8513270d685b2c (height 92662)
+            0, // * UNIX timestamp of last known number of transactions
+            0, // * total number of transactions between genesis and that timestamp
+            //   (the tx=... number in the SetBestChain debug.log lines)
+            0 // * estimated number of transactions per second after that timestamp
     };
 
     consensus.nLastPOWBlock = 15000;
@@ -148,10 +148,10 @@ public:
         nDefaultPort = 3338;
         nPruneAfterHeight = 100000;
 
-        genesis = CreateGenesisBlock(1535988275, 8112333, 0x1f00ffff, 1, 0 * COIN);
+        genesis = CreateGenesisBlock(1535988275, 8142217, 0x1f00ffff, 1, 0 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x0000c17ded4782ba51571d262b55d66f68972325c5c20b408a436890a44cc3b4"));
-        assert(genesis.hashMerkleRoot == uint256S("0xf5e84d19570e92a7d3f3d06e048ebf5cb71c55b9ef99d012edd7f7b0cd904d58"));
+        assert(consensus.hashGenesisBlock == uint256S("0x0000f9100b349a6ec197dac773790fc001e7121bc7c40da17ea08aba77604886"));
+        assert(genesis.hashMerkleRoot == uint256S("0xbc4480addd2d1c0bf7ff88574831c52cd472c7f1caf1427d082b4e974748e8eb"));
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
@@ -160,9 +160,9 @@ public:
         fMineBlocksOnDemand = false;
 
         checkpointData = (CCheckpointData) {
-            {
-                { 0, uint256S("0x0000c17ded4782ba51571d262b55d66f68972325c5c20b408a436890a44cc3b4")},
-            }
+                {
+                        { 0, uint256S("0x0000f9100b349a6ec197dac773790fc001e7121bc7c40da17ea08aba77604886")},
+                }
         };
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,48);
@@ -171,7 +171,7 @@ public:
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E};
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
 
-        consensus.BIP34Hash = uint256S("0x0000c17ded4782ba51571d262b55d66f68972325c5c20b408a436890a44cc3b4");
+        consensus.BIP34Hash = uint256S("0x0000f9100b349a6ec197dac773790fc001e7121bc7c40da17ea08aba77604886");
         // consensus.BIP65Height: 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
         // consensus.BIP66Height: 00000000000000000379eaa19dce8c9b722d46ae6a57c2f1a988119488b50931
 
@@ -201,10 +201,10 @@ public:
         nDefaultPort = 1338;
         nPruneAfterHeight = 1000;
 
-       genesis = CreateGenesisBlock(1535988275, 7482752, 0x1f00ffff, 1, 0 * COIN);
-       consensus.hashGenesisBlock = genesis.GetHash();
-       assert(consensus.hashGenesisBlock == uint256S("0x00009ce775d9ccdfcb001a73edfd42471009ae8a453bdfb53a8c715bd53977f6"));
-       assert(genesis.hashMerkleRoot == uint256S("0xf5e84d19570e92a7d3f3d06e048ebf5cb71c55b9ef99d012edd7f7b0cd904d58"));
+        genesis = CreateGenesisBlock(1535988275, 7397628, 0x1f00ffff, 1, 0 * COIN);
+        consensus.hashGenesisBlock = genesis.GetHash();
+        assert(consensus.hashGenesisBlock == uint256S("0x000089ba8f1f1fecbd78f82981b574a4a3463774e69ce834e4d00c765ee15fb9"));
+        assert(genesis.hashMerkleRoot == uint256S("0xbc4480addd2d1c0bf7ff88574831c52cd472c7f1caf1427d082b4e974748e8eb"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -218,9 +218,9 @@ public:
 
 
         checkpointData = (CCheckpointData) {
-            {
-                {0, uint256S("0x00009ce775d9ccdfcb001a73edfd42471009ae8a453bdfb53a8c715bd53977f6")}
-            }
+                {
+                        {0, uint256S("0x000089ba8f1f1fecbd78f82981b574a4a3463774e69ce834e4d00c765ee15fb9")}
+                }
         };
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,66);
@@ -231,7 +231,7 @@ public:
 
         // consensus.BIP65Height - 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
         // consensus.BIP66Height - 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
-        consensus.BIP34Hash = uint256S("0x00009ce775d9ccdfcb001a73edfd42471009ae8a453bdfb53a8c715bd53977f6");
+        consensus.BIP34Hash = uint256S("0x000089ba8f1f1fecbd78f82981b574a4a3463774e69ce834e4d00c765ee15fb9");
         consensus.posLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
@@ -259,10 +259,10 @@ public:
         nDefaultPort = 2338;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1535988275, 19, 0x207fffff, 1, 0 * COIN);
+        genesis = CreateGenesisBlock(1535988275, 20, 0x207fffff, 1, 0 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x368538fb6fe495e4b03a2b104af38b82c6f0fc8d6546f98c72255ca3a06a9ecd"));
-        assert(genesis.hashMerkleRoot == uint256S("0xf5e84d19570e92a7d3f3d06e048ebf5cb71c55b9ef99d012edd7f7b0cd904d58"));
+        assert(consensus.hashGenesisBlock == uint256S("0x533f3849760602b6204d4af8d133530388d298550a2bb6245ddae37b86c8738c"));
+        assert(genesis.hashMerkleRoot == uint256S("0xbc4480addd2d1c0bf7ff88574831c52cd472c7f1caf1427d082b4e974748e8eb"));
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();      //!< Regtest mode doesn't have any DNS seeds.
@@ -272,18 +272,18 @@ public:
         fMineBlocksOnDemand = true;
 
         checkpointData = (CCheckpointData) {
-            {
-                {0, uint256S("0x368538fb6fe495e4b03a2b104af38b82c6f0fc8d6546f98c72255ca3a06a9ecd")},
-            }
+                {
+                        {0, uint256S("0x533f3849760602b6204d4af8d133530388d298550a2bb6245ddae37b86c8738c")},
+                }
         };
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,120);
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,61); 
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,110);
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
 
-        consensus.BIP34Hash = uint256S("0x368538fb6fe495e4b03a2b104af38b82c6f0fc8d6546f98c72255ca3a06a9ecd");
+        consensus.BIP34Hash = uint256S("0x533f3849760602b6204d4af8d133530388d298550a2bb6245ddae37b86c8738c");
         // consensus.BIP65Height:BIP65 activated on regtest (Used in rpc activation tests)
         // consensus.BIP66Height:BIP66 activated on regtest (Used in rpc activation tests)
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -313,7 +313,7 @@ public:
         consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
 
         // LOC have 500 blocks of maturity, increased values for regtest in unit tests in order to correspond with it
-		consensus.nBlockRewardChangeInterval = 750;
+        consensus.nBlockRewardChangeInterval = 750;
         consensus.blockRewardPerInterval = {10000000, 7500000, 5000000, 2500000, 1250000};
         consensus.totalCoinsSupply = 1858593274150085 ; // locktrip contract coin suply
         consensus.nRuleChangeActivationThreshold = 558; // 75% for testchains
@@ -345,7 +345,7 @@ void SelectParams(const std::string& network)
 {
     SelectBaseParams(network);
     globalChainParams = CreateChainParams(network);
-//
+
 //    std::unique_ptr<CChainParams> testChainParams = std::unique_ptr<CChainParams>(new CMainParams());
 //    std::cout<<"Po4vame" << std::endl;
 //    auto genesis = CreateGenesisBlock(1535988275, 8109746, 0x1f00ffff, 1, 0 * COIN);;
@@ -358,7 +358,7 @@ void SelectParams(const std::string& network)
 //
 //    }
 //
-//    std::cout << "DOne " << genesis.nNonce << "Hash block" << genesis.GetHash().ToString()<< std::endl;
+//    std::cout << "Nonce " << genesis.nNonce << " Hash block " << genesis.GetHash().ToString() << std::endl;
 //
 //    LogPrintf("nNonce : %s \n", genesis.nNonce);
 //
@@ -376,7 +376,7 @@ void SelectParams(const std::string& network)
 //
 //    }
 //
-//    std::cout << "DOne " << genesis.nNonce << "Hash block" << genesis.GetHash().ToString()<< std::endl;
+//    std::cout << "Nonce " << genesis.nNonce << " Hash block " << genesis.GetHash().ToString()<< std::endl;
 //
 //    LogPrintf("nNonce : %s \n", genesis.nNonce);
 //
@@ -394,7 +394,7 @@ void SelectParams(const std::string& network)
 //
 //    }
 //
-//    std::cout << "DOne " << genesis.nNonce << "Hash block" << genesis.GetHash().ToString()<< std::endl;
+//    std::cout << "Nonce " << genesis.nNonce << " Hash block " << genesis.GetHash().ToString()<< std::endl;
 //
 //    LogPrintf("nNonce : %s \n", genesis.nNonce);
 //

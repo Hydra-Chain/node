@@ -13,6 +13,7 @@
 #include <qtum/qtumstate.h>
 #include <qtum/qtumtransaction.h>
 #include <validation.h>
+#include "locktrip/dgp.h"
 
 typedef std::vector<unsigned char> valtype;
 
@@ -66,10 +67,10 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::v
         mTemplates.insert(std::make_pair(TX_COINSTAKE_CALL, CScript() << OP_VERSION << OP_DATA << OP_PUBKEYHASH << OP_COINSTAKE_CALL));
 
         // Contract creation tx
-        mTemplates.insert(std::make_pair(TX_CREATE, CScript() << OP_VERSION << OP_GAS_LIMIT << OP_GAS_PRICE << OP_DATA << OP_CREATE));
+        mTemplates.insert(std::make_pair(TX_CREATE, CScript() << OP_VERSION << OP_GAS_LIMIT << OP_DATA << OP_CREATE));
 
         // Call contract tx
-        mTemplates.insert(std::make_pair(TX_CALL, CScript() << OP_VERSION << OP_GAS_LIMIT << OP_GAS_PRICE << OP_DATA << OP_PUBKEYHASH << OP_CALL));
+        mTemplates.insert(std::make_pair(TX_CALL, CScript() << OP_VERSION << OP_GAS_LIMIT << OP_DATA << OP_PUBKEYHASH << OP_CALL));
     }
 
     vSolutionsRet.clear();
@@ -211,7 +212,7 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::v
                         if (version.rootVM != 0 && val < 1) {
                             return false;
                         }
-                        if (val > BLOCK_GAS_LIMIT) {
+                        if (val > MAX_BLOCK_GAS_LIMIT_DGP) {
 
                             //do not allow transactions that could use more gas than is in a block
                             return false;
@@ -222,30 +223,11 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::v
                         if (version.rootVM != 0 && val < STANDARD_MINIMUM_GAS_LIMIT) {
                             return false;
                         }
-                        if (val > BLOCK_GAS_LIMIT / 2) {
+                        if (val > DEFAULT_BLOCK_GAS_LIMIT_DGP  / 2) {
                             //don't allow transactions that use more than 1/2 block of gas to be broadcast on the mempool
                             return false;
                         }
 
-                    }
-                }
-                catch (const scriptnum_error &err) {
-                    return false;
-                }
-            }
-            else if(opcode2 == OP_GAS_PRICE) {
-                try {
-                    uint64_t val = CScriptNum::vch_to_uint64(vch1);
-                    if(contractConsensus) {
-                        //consensus rules (this is checked more in depth later using DGP)
-                        if (version.rootVM != 0 && val < 1) {
-                            return false;
-                        }
-                    }else{
-                        //standard mempool rules
-                        if (version.rootVM != 0 && val < STANDARD_MINIMUM_GAS_PRICE) {
-                            return false;
-                        }
                     }
                 }
                 catch (const scriptnum_error &err) {

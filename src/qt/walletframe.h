@@ -44,6 +44,7 @@ public:
     bool handlePaymentRequest(const SendCoinsRecipient& recipient);
 
     void showOutOfSyncWarning(bool fShow);
+    bool isVoteInProgress();
 
 Q_SIGNALS:
     /** Notify that the user has requested more information about the out-of-sync warning */
@@ -70,6 +71,8 @@ public Q_SLOTS:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
+    /** Switch to voting page */
+    void gotoVotingPage(QString addr = "");
     /** Switch to create contract page */
     void gotoCreateContractPage();
     /** Switch to send contract page */

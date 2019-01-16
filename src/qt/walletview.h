@@ -15,6 +15,7 @@ class OverviewPage;
 class PlatformStyle;
 class ReceiveCoinsDialog;
 class SendCoinsDialog;
+class VotingPage;
 class SendCoinsRecipient;
 class TransactionView;
 class WalletModel;
@@ -58,6 +59,8 @@ public:
 
     void showOutOfSyncWarning(bool fShow);
 
+    bool isVoteInProgress();
+
 private:
     ClientModel *clientModel;
     WalletModel *walletModel;
@@ -66,6 +69,7 @@ private:
     QWidget *transactionsPage;
     ReceiveCoinsDialog *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
+    VotingPage *votingPage;
     AddressBookPage *usedSendingAddressesPage;
     AddressBookPage *usedReceivingAddressesPage;
     CreateContract* createContractPage;
@@ -87,6 +91,8 @@ public Q_SLOTS:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage(QString addr = "");
+    /** Switch to send coins page */
+    void gotoVotingPage(QString addr = "");
     /** Switch to create contract page */
     void gotoCreateContractPage();
     /** Switch to send contract page */

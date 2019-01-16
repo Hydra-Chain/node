@@ -6,10 +6,11 @@
 #include <QStyleOptionToolButton>
 #include <QStyle>
 #include "styleSheet.h"
+#include <locktrip/dgp.h>
 
 namespace NavigationBar_NS
 {
-static const int ToolButtonWidth = 185;
+static const int ToolButtonWidth = 150;
 //static const int ToolButtonHeight = 54;
 static const int ToolButtonIconSize = 32;
 static const int MarginLeft = 6;
@@ -143,8 +144,10 @@ NavigationBar::NavigationBar(QWidget *parent) :
     QWidget(parent),
     m_toolStyle(Qt::ToolButtonTextBesideIcon),
     m_subBar(false),
-    m_built(false)
+    m_built(false),
+	seconds(0)
 {
+	timer = new QTimer(this);
 }
 
 void NavigationBar::addAction(QAction *action)
@@ -225,12 +228,21 @@ void NavigationBar::buildUi(QVBoxLayout* vboxLayoutMainSuper)
                 SetObjectStyleSheet(toolButton, StyleSheetNames::ToolBlack);
             }
 
+      		if(action->text() == tr("&Vote"))
+			{
+      			connect(action, SIGNAL(toggled(bool)), this, SLOT(onVoteClick(bool)));
+			}
+
             if(m_groups.contains(action))
             {
                 // Add the tool button
                 if(!m_subBar)
 				{
                 	toolButton->setMinimumWidth(defButtonWidth);
+              		if(action->text() == tr("Smart &Contracts"))
+					{
+						toolButton->setMinimumWidth(185);
+					}
 				}
                 vboxLayout->addWidget(toolButton);
                 //vboxLayout2->setSpacing(0);
@@ -310,6 +322,62 @@ void NavigationBar::onSubBarClick(bool clicked)
         if(!haveChecked)
         {
             m_actions[0]->trigger();
+        }
+    }
+}
+
+void NavigationBar::onVoteClick(bool clicked)
+{
+    if(clicked && m_actions.count() > 0)
+    {
+        for(int i = 0; i < m_actions.count(); i++)
+        {
+            QAction* action = m_actions[i];
+            if(action->isChecked())
+            {
+            	timer->stop();
+                SetObjectStyleSheet(m_ActionToolbars[action], StyleSheetNames::ToolBlack);
+            }
+        }
+    }
+}
+
+void NavigationBar::voteInProgress()
+{
+    if(m_actions.count() > 0)
+    {
+        for(int i = 0; i < m_actions.count(); i++)
+        {
+            QAction* action = m_actions[i];
+            if(action->text() == tr("&Vote"))
+            {
+				timer->stop();
+				timer = new QTimer(this);
+				connect(timer, &QTimer::timeout, this,[=]() {
+					seconds++;
+			    	QString stylesheet = QString(m_ActionToolbars[action]->styleSheet() + tr("\
+							QToolButton{ \
+								border: 4px solid;\
+		            			border-color: %1;\
+								position: fixed ;\
+								top: 10px ;\
+									left: 10px ;\
+								text-align:center ;\
+								font-family: monospace ;\
+							}")
+						);
+				    if(seconds % 2)
+				    {
+		            	m_ActionToolbars[action]->setStyleSheet(stylesheet.arg(tr("red")));
+				    }
+				    else {
+		            	m_ActionToolbars[action]->setStyleSheet(stylesheet.arg(tr("yellow")));
+				    }
+				   });
+				   timer->start(500);
+
+
+            }
         }
     }
 }

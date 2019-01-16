@@ -33,6 +33,7 @@ struct ResultExecute{
     dev::eth::ExecutionResult execRes;
     dev::eth::TransactionReceipt txRec;
     CTransaction tx;
+    bool contractSendsMoney;
 };
 
 namespace qtum{
