@@ -1563,8 +1563,8 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
                 globalState = std::unique_ptr<QtumState>(new QtumState(dev::u256(0), QtumState::openDB(dirQtum, hashDB, dev::WithExisting::Trust), dirQtum, existsQtumstate));
                 dev::eth::ChainParams cp((dev::eth::genesisInfo(dev::eth::Network::qtumMainNetwork)));
 
-//                std::cout << "State root " << cp.calculateStateRoot(true) << std::endl;
-//                LogPrintf("State root %s\n", cp.calculateStateRoot(true));
+                std::cout << "State root " << cp.calculateStateRoot(true) << std::endl;
+                LogPrintf("State root %s\n", cp.calculateStateRoot(true));
 
                 globalSealEngine = std::unique_ptr<dev::eth::SealEngineFace>(cp.createSealEngine());
 
