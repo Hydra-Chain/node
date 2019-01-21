@@ -63,7 +63,9 @@ void VotingPage::updateVoteInfo() {
 		ui->labelVoteEndsValue->setText(QString::number(endBlock));
 		ui->labelVoteDurationValue->setText(QString::number(gdpCurrentVote.blocksExpiration));
 		LogPrintf("threshold: %ld\n", gdpCurrentVote.threshold);
-		ui->labelThresholdValue->setText(QString::number(gdpCurrentVote.threshold) + " votes");
+		uint64_t locTresholdInSatoshis;
+		dgp->convertFiatThresholdToLoc(gdpCurrentVote.threshold, locTresholdInSatoshis);
+		ui->labelThresholdValue->setText(QString::number(locTresholdInSatoshis) + " votes");
 		if(gdpCurrentVote.param == dgp_params::REMOVE_ADMIN_VOTE || gdpCurrentVote.param == dgp_params::ADMIN_VOTE) {
 			ui->labelBurnRate->setText(QString::fromStdString(gdpCurrentVote.newAdmin.hex()));
 		}

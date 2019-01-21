@@ -159,6 +159,29 @@ bool Dgp::getDgpParam(dgp_params param, uint64_t& value) {
     }
 }
 
+bool Dgp::convertFiatThresholdToLoc(uint64_t& fiatThresholdInCents, uint64_t& locContainer) {
+    LOCK(cs_main);
+    std::vector<std::string> params {std::to_string(fiatThresholdInCents * ONE_CENT_EQUAL)};
+    std::string callString {};
+    std::vector<std::vector<std::string>> values{params};
+    bool status = this->generateCallString(values, callString, CONVERT_FIAT_THRESHOLD_TO_LOC);
+
+    if (status) {
+        std::vector<ResultExecute> result = CallContract(LockTripDgpContract, ParseHex(callString), dev::Address(), 0, DEFAULT_BLOCK_GAS_LIMIT_DGP);
+
+        if (!result.empty()) {
+            dev::bytesConstRef o(&result[0].execRes.output);
+            dev::u256 data = dev::eth::ABIDeserialiser<dev::u256>::deserialise(o);
+            locContainer = uint64_t(dev::u256(dev::h256(data)));
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
 bool Dgp::finishVote(CScript& scriptPubKey) {
     scriptPubKey = CScript();
 

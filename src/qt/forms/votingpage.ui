@@ -185,6 +185,7 @@
                <property name="font">
                 <font>
                  <pointsize>14</pointsize>
+                 <italic>true</italic>
                 </font>
                </property>
                <property name="text">
@@ -467,10 +468,11 @@
                <property name="font">
                 <font>
                  <pointsize>14</pointsize>
+                 <italic>true</italic>
                 </font>
                </property>
                <property name="text">
-                <string>Threshold : </string>
+                <string>Vote threshold : </string>
                </property>
               </widget>
              </item>
@@ -752,6 +754,11 @@
               </item>
               <item>
                <widget class="QLabel" name="labelNoCount">
+                <property name="font">
+                 <font>
+                  <italic>true</italic>
+                 </font>
+                </property>
                 <property name="text">
                  <string>No Vote count: </string>
                 </property>
