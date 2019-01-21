@@ -62,6 +62,8 @@ void VotingPage::updateVoteInfo() {
 		int64_t endBlock = gdpCurrentVote.start_block + gdpCurrentVote.blocksExpiration;
 		ui->labelVoteEndsValue->setText(QString::number(endBlock));
 		ui->labelVoteDurationValue->setText(QString::number(gdpCurrentVote.blocksExpiration));
+		LogPrintf("threshold: %ld\n", gdpCurrentVote.threshold);
+		ui->labelThresholdValue->setText(QString::number(gdpCurrentVote.threshold) + " votes");
 		if(gdpCurrentVote.param == dgp_params::REMOVE_ADMIN_VOTE || gdpCurrentVote.param == dgp_params::ADMIN_VOTE) {
 			ui->labelBurnRate->setText(QString::fromStdString(gdpCurrentVote.newAdmin.hex()));
 		}
@@ -131,6 +133,7 @@ void VotingPage::updateVoteInfo() {
 				ui->labelVoteEndsValue->setText(VOTE_FINISHED);
 				ui->CurrentBlockValue->setText(VOTE_FINISHED);
 				ui->labelTimeLeft->setText(VOTE_FINISHED);
+				ui->labelThresholdValue->setText(VOTE_FINISHED);
 			}
 		});
 		LogPrintf("voteForAgainst Timer restarted\n");

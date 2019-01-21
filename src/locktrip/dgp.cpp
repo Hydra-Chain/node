@@ -43,7 +43,8 @@ bool Dgp::getCurrentVote(dgp_currentVote& currentVote) {
             this->fillCurrentVoteUintInfo(CURRENT_VOTE_STARTBLOCK, currentVote.start_block) &&
             this->fillCurrentVoteUintInfo(CURRENT_VOTE_BLOCKSEXPIRATION, currentVote.blocksExpiration) &&
             this->fillCurrentVoteUintInfo(CURRENT_VOTE_PARAM, currentVote.param) &&
-            this->fillCurrentVoteUintInfo(CURRENT_VOTE_VALUE, currentVote.param_value);
+            this->fillCurrentVoteUintInfo(CURRENT_VOTE_VALUE, currentVote.param_value) &&
+            this->fillCurrentVoteUintInfo(CURRENT_VOTE_THRESHOLD, currentVote.threshold);
 }
 
 bool Dgp::fillCurrentVoteUintInfo(dgp_contract_funcs func, uint64_t& container) {

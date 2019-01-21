@@ -212,7 +212,49 @@ static const std::string DGP_CONTRACT_ABI = "[\n"
                                             "\t{\n"
                                             "\t\t\"constant\": true,\n"
                                             "\t\t\"inputs\": [],\n"
+                                            "\t\t\"name\": \"ONE_CENT_EQUAL\",\n"
+                                            "\t\t\"outputs\": [\n"
+                                            "\t\t\t{\n"
+                                            "\t\t\t\t\"name\": \"\",\n"
+                                            "\t\t\t\t\"type\": \"uint256\"\n"
+                                            "\t\t\t}\n"
+                                            "\t\t],\n"
+                                            "\t\t\"payable\": false,\n"
+                                            "\t\t\"type\": \"function\",\n"
+                                            "\t\t\"stateMutability\": \"view\"\n"
+                                            "\t},\n"
+                                            "\t{\n"
+                                            "\t\t\"constant\": true,\n"
+                                            "\t\t\"inputs\": [],\n"
                                             "\t\t\"name\": \"getVoteExpiration\",\n"
+                                            "\t\t\"outputs\": [\n"
+                                            "\t\t\t{\n"
+                                            "\t\t\t\t\"name\": \"\",\n"
+                                            "\t\t\t\t\"type\": \"uint256\"\n"
+                                            "\t\t\t}\n"
+                                            "\t\t],\n"
+                                            "\t\t\"payable\": false,\n"
+                                            "\t\t\"type\": \"function\",\n"
+                                            "\t\t\"stateMutability\": \"view\"\n"
+                                            "\t},\n"
+                                            "\t{\n"
+                                            "\t\t\"constant\": true,\n"
+                                            "\t\t\"inputs\": [],\n"
+                                            "\t\t\"name\": \"getCurrentVoteTreshold\",\n"
+                                            "\t\t\"outputs\": [\n"
+                                            "\t\t\t{\n"
+                                            "\t\t\t\t\"name\": \"\",\n"
+                                            "\t\t\t\t\"type\": \"uint256\"\n"
+                                            "\t\t\t}\n"
+                                            "\t\t],\n"
+                                            "\t\t\"payable\": false,\n"
+                                            "\t\t\"type\": \"function\",\n"
+                                            "\t\t\"stateMutability\": \"view\"\n"
+                                            "\t},\n"
+                                            "\t{\n"
+                                            "\t\t\"constant\": true,\n"
+                                            "\t\t\"inputs\": [],\n"
+                                            "\t\t\"name\": \"REMOVE_ADMIN_VOTE_TRESHOLD\",\n"
                                             "\t\t\"outputs\": [\n"
                                             "\t\t\t{\n"
                                             "\t\t\t\t\"name\": \"\",\n"
@@ -263,6 +305,20 @@ static const std::string DGP_CONTRACT_ABI = "[\n"
                                             "\t\t\"payable\": false,\n"
                                             "\t\t\"type\": \"function\",\n"
                                             "\t\t\"stateMutability\": \"nonpayable\"\n"
+                                            "\t},\n"
+                                            "\t{\n"
+                                            "\t\t\"constant\": true,\n"
+                                            "\t\t\"inputs\": [],\n"
+                                            "\t\t\"name\": \"STANDARD_VOTE_TRESHOLD\",\n"
+                                            "\t\t\"outputs\": [\n"
+                                            "\t\t\t{\n"
+                                            "\t\t\t\t\"name\": \"\",\n"
+                                            "\t\t\t\t\"type\": \"uint256\"\n"
+                                            "\t\t\t}\n"
+                                            "\t\t],\n"
+                                            "\t\t\"payable\": false,\n"
+                                            "\t\t\"type\": \"function\",\n"
+                                            "\t\t\"stateMutability\": \"view\"\n"
                                             "\t},\n"
                                             "\t{\n"
                                             "\t\t\"constant\": true,\n"
@@ -484,6 +540,10 @@ static const std::string DGP_CONTRACT_ABI = "[\n"
                                             "\t\t\t\t\"type\": \"uint256\"\n"
                                             "\t\t\t},\n"
                                             "\t\t\t{\n"
+                                            "\t\t\t\t\"name\": \"treshold\",\n"
+                                            "\t\t\t\t\"type\": \"uint256\"\n"
+                                            "\t\t\t},\n"
+                                            "\t\t\t{\n"
                                             "\t\t\t\t\"name\": \"adminAddress\",\n"
                                             "\t\t\t\t\"type\": \"address\"\n"
                                             "\t\t\t},\n"
@@ -511,19 +571,20 @@ enum dgp_params {
 enum dgp_contract_funcs {
     FINISH_VOTE = 1,
     GET_DGP_PARAM = 2,
-    HAS_VOTE_IN_PROGRESS = 14,
-    GET_VOTE_EXPIRATION = 11,
-    PARAM_VOTED = 12,
+    HAS_VOTE_IN_PROGRESS = 18,
+    GET_VOTE_EXPIRATION = 12,
+    PARAM_VOTED = 15,
     VOTE = 7,
     ///////////////
     CURRENT_VOTE_NEWADMIN = 6,
-    CURRENT_VOTE_VOTESFOR = 21,
-    CURRENT_VOTE_VOTESAGAINST = 15,
+    CURRENT_VOTE_VOTESFOR = 25,
+    CURRENT_VOTE_VOTESAGAINST = 19,
     CURRENT_VOTE_STARTBLOCK = 8,
     CURRENT_VOTE_BLOCKSEXPIRATION = 9,
     CURRENT_VOTE_PARAM = 10,
-    CURRENT_VOTE_VALUE = 22,
-    CURRENT_VOTE_CREATOR = 18
+    CURRENT_VOTE_VALUE = 26,
+    CURRENT_VOTE_CREATOR = 22,
+    CURRENT_VOTE_THRESHOLD = 13
 };
 
 struct dgp_currentVote {
@@ -533,6 +594,7 @@ struct dgp_currentVote {
     uint64_t blocksExpiration;
     uint64_t param;
     uint64_t param_value;
+    uint64_t threshold;
     dev::Address newAdmin;
     dev::Address vote_creator;
 };
