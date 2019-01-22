@@ -183,6 +183,7 @@ static const int DEFAULT_STOPATHEIGHT = 0;
 static const uint64_t DEFAULT_GAS_LIMIT_OP_CREATE=2500000;
 static const uint64_t DEFAULT_GAS_LIMIT_OP_SEND=250000;
 static const CAmount DEFAULT_GAS_PRICE=0.00000040*COIN;
+static const CAmount DEFAULT_BYTE_PRICE=0.00004000*COIN;
 static const CAmount MAX_RPC_GAS_PRICE=0.00000100*COIN;
 
 static const size_t MAX_CONTRACT_VOUTS = 1000; // qtum
