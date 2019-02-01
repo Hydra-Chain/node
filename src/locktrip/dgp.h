@@ -21,6 +21,9 @@ static const uint64_t DEFAULT_ECONOMY_DIVIDEND_PERCENTAGE = 50;
 static const uint64_t MIN_ECONOMY_DIVIDEND_PERCENTAGE = 0;
 static const uint64_t MAX_ECONOMY_DIVIDEND_PERCENTAGE = 50;
 
+static const uint64_t MIN_BLOCK_TIME = 32;
+static const uint64_t MAX_BLOCK_TIME = 1200;
+
 static const uint32_t MIN_BLOCK_SIZE_DGP = 500000;
 static const uint32_t MAX_BLOCK_SIZE_DGP = 32000000;
 static const uint32_t DEFAULT_BLOCK_SIZE_DGP = 2000000;
@@ -28,6 +31,8 @@ static const uint32_t DEFAULT_BLOCK_SIZE_DGP = 2000000;
 static const uint64_t DEFAULT_MIN_GAS_PRICE_DGP = 1;
 
 static const uint64_t DEFAULT_MIN_BYTE_PRICE_DGP = 1;
+
+static const uint64_t DEFAULT_BLOCK_TIME = 32;
 
 static const uint64_t MIN_BLOCK_GAS_LIMIT_DGP = 1000000;
 static const uint64_t MAX_BLOCK_GAS_LIMIT_DGP = 1000000000;
@@ -44,7 +49,8 @@ const auto VOTE_HEADLINES = {
     "Vote for economy dividend % change",
     "Vote for block size change",
     "Vote for block gas limit change",
-    "Vote for fiat transaction byte price change"
+    "Vote for fiat transaction byte price change",
+    "Vote for block time change"
 };
 
 static const dev::Address LockTripDgpContract = dev::Address("0000000000000000000000000000000000000091");
@@ -82,6 +88,20 @@ static const std::string DGP_CONTRACT_ABI = "[\n"
                                             "\t\t\t}\n"
                                             "\t\t],\n"
                                             "\t\t\"name\": \"getDgpParams\",\n"
+                                            "\t\t\"outputs\": [\n"
+                                            "\t\t\t{\n"
+                                            "\t\t\t\t\"name\": \"\",\n"
+                                            "\t\t\t\t\"type\": \"uint256\"\n"
+                                            "\t\t\t}\n"
+                                            "\t\t],\n"
+                                            "\t\t\"payable\": false,\n"
+                                            "\t\t\"type\": \"function\",\n"
+                                            "\t\t\"stateMutability\": \"view\"\n"
+                                            "\t},\n"
+                                            "\t{\n"
+                                            "\t\t\"constant\": true,\n"
+                                            "\t\t\"inputs\": [],\n"
+                                            "\t\t\"name\": \"BLOCK_TIME_MIN_ALLOWED_VALUE\",\n"
                                             "\t\t\"outputs\": [\n"
                                             "\t\t\t{\n"
                                             "\t\t\t\t\"name\": \"\",\n"
@@ -537,6 +557,34 @@ static const std::string DGP_CONTRACT_ABI = "[\n"
                                             "\t{\n"
                                             "\t\t\"constant\": true,\n"
                                             "\t\t\"inputs\": [],\n"
+                                            "\t\t\"name\": \"BLOCK_TIME_MAX_STEP\",\n"
+                                            "\t\t\"outputs\": [\n"
+                                            "\t\t\t{\n"
+                                            "\t\t\t\t\"name\": \"\",\n"
+                                            "\t\t\t\t\"type\": \"uint256\"\n"
+                                            "\t\t\t}\n"
+                                            "\t\t],\n"
+                                            "\t\t\"payable\": false,\n"
+                                            "\t\t\"type\": \"function\",\n"
+                                            "\t\t\"stateMutability\": \"view\"\n"
+                                            "\t},\n"
+                                            "\t{\n"
+                                            "\t\t\"constant\": true,\n"
+                                            "\t\t\"inputs\": [],\n"
+                                            "\t\t\"name\": \"BLOCK_TIME_MAX_ALLOWED_VALUE\",\n"
+                                            "\t\t\"outputs\": [\n"
+                                            "\t\t\t{\n"
+                                            "\t\t\t\t\"name\": \"\",\n"
+                                            "\t\t\t\t\"type\": \"uint256\"\n"
+                                            "\t\t\t}\n"
+                                            "\t\t],\n"
+                                            "\t\t\"payable\": false,\n"
+                                            "\t\t\"type\": \"function\",\n"
+                                            "\t\t\"stateMutability\": \"view\"\n"
+                                            "\t},\n"
+                                            "\t{\n"
+                                            "\t\t\"constant\": true,\n"
+                                            "\t\t\"inputs\": [],\n"
                                             "\t\t\"name\": \"currentVote\",\n"
                                             "\t\t\"outputs\": [\n"
                                             "\t\t\t{\n"
@@ -590,27 +638,28 @@ enum dgp_params {
     ECONOMY_DIVIDEND = 4,
     BLOCK_SIZE_DGP_PARAM = 5,
     BLOCK_GAS_LIMIT_DGP_PARAM = 6,
-    FIAT_BYTE_PRICE = 7
+    FIAT_BYTE_PRICE = 7,
+    BLOCK_TIME = 8
 };
 
 enum dgp_contract_funcs {
     FINISH_VOTE = 1,
     GET_DGP_PARAM = 2,
-    HAS_VOTE_IN_PROGRESS = 18,
-    GET_VOTE_EXPIRATION = 12,
-    PARAM_VOTED = 15,
-    VOTE = 7,
-    CONVERT_FIAT_THRESHOLD_TO_LOC = 23,
+    HAS_VOTE_IN_PROGRESS = 19,
+    GET_VOTE_EXPIRATION = 13,
+    PARAM_VOTED = 16,
+    VOTE = 8,
+    CONVERT_FIAT_THRESHOLD_TO_LOC = 24,
     ///////////////
-    CURRENT_VOTE_NEWADMIN = 6,
-    CURRENT_VOTE_VOTESFOR = 26,
-    CURRENT_VOTE_VOTESAGAINST = 19,
-    CURRENT_VOTE_STARTBLOCK = 8,
-    CURRENT_VOTE_BLOCKSEXPIRATION = 9,
-    CURRENT_VOTE_PARAM = 10,
-    CURRENT_VOTE_VALUE = 27,
-    CURRENT_VOTE_CREATOR = 22,
-    CURRENT_VOTE_THRESHOLD = 13
+    CURRENT_VOTE_NEWADMIN = 7,
+    CURRENT_VOTE_VOTESFOR = 27,
+    CURRENT_VOTE_VOTESAGAINST = 20,
+    CURRENT_VOTE_STARTBLOCK = 9,
+    CURRENT_VOTE_BLOCKSEXPIRATION = 10,
+    CURRENT_VOTE_PARAM = 11,
+    CURRENT_VOTE_VALUE = 28,
+    CURRENT_VOTE_CREATOR = 23,
+    CURRENT_VOTE_THRESHOLD = 14
 };
 
 struct dgp_currentVote {
@@ -639,6 +688,7 @@ public:
     bool fillCurrentVoteAddressInfo(dgp_contract_funcs func, dev::Address& container);
     void calculateGasPriceBuffer(CAmount gasPrice, CAmount& gasPriceBuffer);
     bool convertFiatThresholdToLoc(uint64_t& fiatThresholdInCents, uint64_t& locContainer);
+    bool getBlockTime(const Consensus::Params& params, int64_t& nPowTargetSpacing);
 };
 
 #endif //LOCKTRIP_DGP_H

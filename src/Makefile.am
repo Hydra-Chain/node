@@ -356,6 +356,9 @@ libbitcoin_common_a_CFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) -std=c99
 libbitcoin_common_a_LIBADD = $(LIBBITCOIN_SERVER)
 libbitcoin_common_a_SOURCES = \
   base58.cpp \
+  locktrip/dgp.cpp \
+  locktrip/contract-proxy.cpp \
+  locktrip/contractabi-base.cpp \
   pow.cpp \
   chainparams.cpp \
   coins.cpp \

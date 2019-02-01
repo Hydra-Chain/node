@@ -9,6 +9,7 @@
 #include "chain.h"
 #include "primitives/block.h"
 #include "uint256.h"
+#include "locktrip/dgp.h"
 
 // ppcoin: find last block index up to pindex
 const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfStake)
@@ -49,7 +50,10 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         // Special difficulty rule for testnet:
         // If the new block's timestamp is more than 2* 10 minutes
         // then allow mining of a min-difficulty block.
-        if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2)
+        Dgp dgp;
+        int64_t nPowTargetSpacing;
+        dgp.getBlockTime(params, nPowTargetSpacing);
+        if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + nPowTargetSpacing*2)
             return nTargetLimit;
         else
         {
@@ -75,7 +79,9 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
             return pindexLast->nBits;
     }
     // Limit adjustment step
-    int64_t nTargetSpacing = params.nPowTargetSpacing;
+    Dgp dgp;
+    int64_t nTargetSpacing;
+    dgp.getBlockTime(params, nTargetSpacing);
     int64_t nActualSpacing = pindexLast->GetBlockTime() - nFirstBlockTime;
     if (nActualSpacing < 0)
         nActualSpacing = nTargetSpacing;

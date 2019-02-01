@@ -26,6 +26,7 @@
 #include "utilstrencodings.h"
 #include "validationinterface.h"
 #include "warnings.h"
+#include "locktrip/dgp.h"
 
 #include "timedata.h"
 #ifdef ENABLE_WALLET
@@ -288,7 +289,9 @@ UniValue getstakinginfo(const JSONRPCRequest& request)
     uint64_t nNetworkWeight = GetPoSKernelPS();
     bool staking = nLastCoinStakeSearchInterval && nWeight;
     const Consensus::Params& consensusParams = Params().GetConsensus();
-    int64_t nTargetSpacing = consensusParams.nPowTargetSpacing;
+    Dgp dgp;
+    int64_t nTargetSpacing;
+    dgp.getBlockTime(consensusParams, nTargetSpacing);
     uint64_t nExpectedTime = staking ? (nTargetSpacing * nNetworkWeight / nWeight) : 0;
 
     UniValue obj(UniValue::VOBJ);

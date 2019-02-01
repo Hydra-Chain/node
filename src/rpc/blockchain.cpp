@@ -28,6 +28,7 @@
 #include "libdevcore/CommonData.h"
 #include "pos.h"
 #include "txdb.h"
+#include "locktrip/dgp.h"
 
 #include <stdint.h>
 
@@ -2330,7 +2331,10 @@ UniValue getchaintxstats(const JSONRPCRequest& request)
         );
 
     const CBlockIndex* pindex;
-    int blockcount = 30 * 24 * 60 * 60 / Params().GetConsensus().nPowTargetSpacing; // By default: 1 month
+    Dgp dgp;
+    int64_t nPowTargetSpacing;
+    dgp.getBlockTime(Params().GetConsensus(), nPowTargetSpacing);
+    int blockcount = 30 * 24 * 60 * 60 / nPowTargetSpacing; // By default: 1 month
 
     if (request.params.size() > 0 && !request.params[0].isNull()) {
         blockcount = request.params[0].get_int();
