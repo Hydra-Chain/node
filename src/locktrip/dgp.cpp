@@ -199,6 +199,20 @@ bool Dgp::finishVote(CScript& scriptPubKey) {
     }
 }
 
+bool Dgp::getBlockTime(const Consensus::Params& params, int64_t& nPowTargetSpacing) {
+    uint64_t blockTime;
+    bool isSuccessful = this->getDgpParam(BLOCK_TIME, blockTime);
+    if ((blockTime > MAX_BLOCK_TIME ||
+            blockTime < MIN_BLOCK_TIME) && isSuccessful) {
+        nPowTargetSpacing = params.nPowTargetSpacing;
+    }
+    else {
+        nPowTargetSpacing = blockTime;
+    }
+
+    return true;
+}
+
 void Dgp::calculateGasPriceBuffer(CAmount gasPrice, CAmount& gasPriceBuffer) {
     gasPriceBuffer = gasPrice / 5 + gasPrice % 5;
 }

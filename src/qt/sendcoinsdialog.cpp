@@ -16,6 +16,7 @@
 #include "walletmodel.h"
 #include "guiconstants.h"
 #include "styleSheet.h"
+#include "locktrip/dgp.h"
 
 #include "base58.h"
 #include "chainparams.h"
@@ -166,7 +167,10 @@ void SendCoinsDialog::setModel(WalletModel *_model)
 
         // fee section
         for (const int &n : confTargets) {
-            ui->confTargetSelector->addItem(tr("%1 (%2 blocks)").arg(GUIUtil::formatNiceTimeOffset(n*Params().GetConsensus().nPowTargetSpacing)).arg(n));
+            Dgp dgp;
+            int64_t nPowTargetSpacing;
+            dgp.getBlockTime(Params().GetConsensus(), nPowTargetSpacing);
+            ui->confTargetSelector->addItem(tr("%1 (%2 blocks)").arg(GUIUtil::formatNiceTimeOffset(n*nPowTargetSpacing)).arg(n));
         }
         connect(ui->confTargetSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSmartFeeLabel()));
         connect(ui->confTargetSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(coinControlUpdateLabels()));

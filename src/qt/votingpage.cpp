@@ -81,6 +81,9 @@ void VotingPage::updateVoteInfo() {
 		else if(gdpCurrentVote.param == dgp_params::BLOCK_GAS_LIMIT_DGP_PARAM) {
 			ui->labelBurnRate->setText(QString::number(gdpCurrentVote.param_value) + ' gas');
 		}
+		else if(gdpCurrentVote.param == dgp_params::BLOCK_TIME) {
+			ui->labelBurnRate->setText(QString::number(gdpCurrentVote.param_value) + ' seconds');
+		}
 
 		LogPrintf("coinBurnPercentage: %ld ; param_value: %ld ; param: %ld\n", coinBurnPercentage, gdpCurrentVote.param_value, gdpCurrentVote.param);
 		ui->labelVotetoBurnStatic->setText(QString(VOTE_HEADLINES.begin()[gdpCurrentVote.param]));
