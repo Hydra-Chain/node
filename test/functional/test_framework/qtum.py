@@ -32,20 +32,18 @@ def make_vin(node, value):
 
     return CTxIn(COutPoint(txid, vout_index), nSequence=0)
 
-def make_op_create_output(node, value, version, gas_limit, gas_price, data):
+def make_op_create_output(node, value, version, gas_limit, data):
     scriptPubKey = CScript()
     scriptPubKey += version
     scriptPubKey += gas_limit
-    scriptPubKey += gas_price
     scriptPubKey += data
     scriptPubKey += OP_CREATE
     return CTxOut(value, scriptPubKey)
 
-def make_op_call_output(value, version, gas_limit, gas_price, data, contract):
+def make_op_call_output(value, version, gas_limit, data, contract):
     scriptPubKey = CScript()
     scriptPubKey += version
     scriptPubKey += gas_limit
-    scriptPubKey += gas_price
     scriptPubKey += data
     scriptPubKey += contract
     scriptPubKey += OP_CALL

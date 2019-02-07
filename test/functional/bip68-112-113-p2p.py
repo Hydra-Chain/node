@@ -266,6 +266,7 @@ class BIP68_112_113Test(ComparisonTestFramework):
 
         yield TestInstance(test_blocks[61:61+144], sync_every_block=True) # 2
         # Failed to advance past STARTED, height = 287
+        print(get_bip9_status(self.nodes[0], 'csv')['status'])
         assert_equal(get_bip9_status(self.nodes[0], 'csv')['status'], 'started')
 
         yield TestInstance(test_blocks[61+144:61+144+144], sync_every_block=True) # 3

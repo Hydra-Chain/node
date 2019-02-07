@@ -119,7 +119,7 @@ BASE_SCRIPTS= [
     'minchainwork.py',
 
     # qtum
-    'qtum-dgp.py',
+    #'qtum-dgp.py',
     'qtum-pos.py', #the blocks are no synced still. Uncomment comptool.py:sync_blocks(): wait_until
     'qtum-opcall.py',
     'qtum-opcreate.py',
@@ -140,7 +140,7 @@ BASE_SCRIPTS= [
     'qtum-create-eth-op-code.py',
     'qtum-gas-limit-overflow.py',
 
-    'qtum-dgp-block-size-sync.py', #TODO: Block sync to height 2526 timed out
+    #'qtum-dgp-block-size-sync.py', #TODO: Block sync to height 2526 timed out
     #'qtum-pos-conflicting-txs.py', #TODO:RUNS TOO LONG. Needs rework
     'qtum-globals-state-changer.py',
     'qtum-no-exec-call-disabled.py',
@@ -152,7 +152,7 @@ BASE_SCRIPTS= [
     'qtum-ignore-mpos-participant-reward.py',
     'qtum-many-value-refunds-from-same-tx.py',
     'qtum-combined-outputs-exceed-gas-limit.py',
-    'qtum-dgp-gas-price-lingering-mempool-tx.py',
+    #'qtum-dgp-gas-price-lingering-mempool-tx.py',
 
     # LockTrip
     'economy-addcontract-outside-coinstake.py',
@@ -180,7 +180,7 @@ EXTENDED_SCRIPTS = [
     'fundrawtransaction.py',    
     'qtum-8mb-block.py', 
     'qtum-call-empty-contract.py',
-    'qtum-dgp-block-size-restart.py', 
+    #'qtum-dgp-block-size-restart.py',
     'qtum-soft-block-gas-limits.py',
     'qtum-spend-op-call.py',
     'wallet.py',

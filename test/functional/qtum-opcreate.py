@@ -20,7 +20,7 @@ class OpCreateTest(BitcoinTestFramework):
     # Creates a simple contract via a raw tx
     def basic_contract_is_created_raw_tx_test(self):
         for i in range(2):
-            assert(len(self.nodes[i].listcontracts()) == 1+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 1 new economy contract in genesis
+            assert(len(self.nodes[i].listcontracts()) == 3+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 1 new economy contract in genesis
         node = self.nodes[0]
         amount = 10*COIN
 
@@ -32,7 +32,7 @@ class OpCreateTest(BitcoinTestFramework):
         """
         tx = make_transaction(node,
             [make_vin(node, 500000*QTUM_MIN_GAS_PRICE)],
-            [make_op_create_output(node, 0, 4, CScriptNum(500000), CScriptNum(QTUM_MIN_GAS_PRICE), bytes.fromhex("60606040523415600b57fe5b5b60398060196000396000f30060606040525b600b5b5b565b0000a165627a7a72305820e3bed070fd3a81dd00e02efd22d18a3b47b70860155d6063e47e1e2674fc5acb0029"))]
+            [make_op_create_output(node, 0, 4, CScriptNum(500000), bytes.fromhex("60606040523415600b57fe5b5b60398060196000396000f30060606040525b600b5b5b565b0000a165627a7a72305820e3bed070fd3a81dd00e02efd22d18a3b47b70860155d6063e47e1e2674fc5acb0029"))]
         )
         #node.createcontract("60606040523415600b57fe5b5b60398060196000396000f30060606040525b600b5b5b565b0000a165627a7a72305820e3bed070fd3a81dd00e02efd22d18a3b47b70860155d6063e47e1e2674fc5acb0029");
         node.sendrawtransaction(tx)
@@ -40,7 +40,7 @@ class OpCreateTest(BitcoinTestFramework):
         sync_blocks(self.nodes)
         for i in range(2):
             self.log.info('len(self.nodes[i].listcontracts())=%s' % (len(self.nodes[i].listcontracts())))
-            assert(len(self.nodes[i].listcontracts()) == 7)
+            assert(len(self.nodes[i].listcontracts()) == 4)
 
     # Verifies that large contracts can be deployed
     def large_contract_creation_test(self):
@@ -72,7 +72,7 @@ class OpCreateTest(BitcoinTestFramework):
         sync_blocks(self.nodes)
         for i in range(2):
             assert(self.nodes[i].getblockcount() == block_height+1)
-            assert(len(self.nodes[i].listcontracts()) == 2+1+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 1 new economy contract in genesis
+            assert(len(self.nodes[i].listcontracts()) == 2+3+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 1 new economy contract in genesis
 
 
     # Tests mining many contracts in one block
@@ -93,7 +93,7 @@ class OpCreateTest(BitcoinTestFramework):
         sync_blocks(self.nodes)
         for i in range(2):
             assert(self.nodes[i].getblockcount() == block_height+1)
-            assert(len(self.nodes[i].listcontracts(1, 10000)) == 2+num_new_contracts+1+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 1 new economy contract in genesis
+            assert(len(self.nodes[i].listcontracts(1, 10000)) == 2+num_new_contracts+3+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 1 new economy contract in genesis
 
     # Checks that contracts are removed if the block it was mined in was invalidated
     def contract_reorg_test(self):
@@ -127,7 +127,7 @@ class OpCreateTest(BitcoinTestFramework):
         tx = make_transaction(node,
             [make_vin(node, 0xffff*1000)],
             # changing the gas limit \xff\xff -> \xff\xff\x00 results in success.
-            [make_op_create_output(node, 0, b"\x04", b"\xff\xff", 1000, bytes.fromhex("60606040523415600b57fe5b5b60398060196000396000f30060606040525b600b5b5b565b0000a165627a7a7230582092926a9814888ff08700cbd86cf4ff8c50052f5fd894e794570d9551733591d60029"))]
+            [make_op_create_output(node, 0, b"\x04", b"\xff\xff", bytes.fromhex("60606040523415600b57fe5b5b60398060196000396000f30060606040525b600b5b5b565b0000a165627a7a7230582092926a9814888ff08700cbd86cf4ff8c50052f5fd894e794570d9551733591d60029"))]
         )
         try:
             node.sendrawtransaction(tx)
@@ -149,8 +149,8 @@ class OpCreateTest(BitcoinTestFramework):
         tx = make_transaction(node,
             [make_vin(node, 2*0xffff*1000)],
             # changing the gas limit \xff\xff -> \xff\xff\x00 results in success.
-            [make_op_create_output(node, 0, b"\x04", b"\xff\x4f", 1000, bytes.fromhex("60606040523415600b57fe5b5b60398060196000396000f30060606040525b600b5b5b565b0000a165627a7a7230582092926a9814888ff08700cbd86cf4ff8c50052f5fd894e794570d9551733591d60029")),
-            make_op_create_output(node, 0, b"\x04", b"\xff\xff", 1000, bytes.fromhex("60606040523415600b57fe5b5b60398060196000396000f30060606040525b600b5b5b565b0000a165627a7a7230582092926a9814888ff08700cbd86cf4ff8c50052f5fd894e794570d9551733591d60029"))]
+            [make_op_create_output(node, 0, b"\x04", b"\xff\x4f", bytes.fromhex("60606040523415600b57fe5b5b60398060196000396000f30060606040525b600b5b5b565b0000a165627a7a7230582092926a9814888ff08700cbd86cf4ff8c50052f5fd894e794570d9551733591d60029")),
+            make_op_create_output(node, 0, b"\x04", b"\xff\xff", bytes.fromhex("60606040523415600b57fe5b5b60398060196000396000f30060606040525b600b5b5b565b0000a165627a7a7230582092926a9814888ff08700cbd86cf4ff8c50052f5fd894e794570d9551733591d60029"))]
         )
         try:
             node.sendrawtransaction(tx)

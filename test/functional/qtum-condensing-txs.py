@@ -114,7 +114,7 @@ class CondensingTxsTest(BitcoinTestFramework):
         self.sender3 = self.node.createcontract(sender3_bytecode, 1000000)['address']
 
         self.node.generate(1)
-        assert(len(self.node.listcontracts()) == 3+1+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 1 new economy contract in genesis
+        assert(len(self.node.listcontracts()) == 3+3+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 3 new contract in genesis
 
         self.keep_abi = "e4d06d82"
         self.sendAll_abi = "e14f680f"
@@ -173,7 +173,7 @@ class CondensingTxsTest(BitcoinTestFramework):
         assert("vin" in self.node.getaccountinfo(self.sender3))
 
         # We set the tx fee of T2 to a higher value such that it will be prioritized (be at index 1 in the block)
-        T2_id = self.node.sendtocontract(self.sender1, self.keep_abi, 2, 50000, 0.0001)['txid']
+        T2_id = self.node.sendtocontract(self.sender1, self.keep_abi, 2, 50000)['txid']
         T3_id = self.node.sendtocontract(self.sender1, self.sendAll_abi, 2)['txid']
         B3_id = self.node.generate(1)[0]
         B3 = self.node.getblock(B3_id)
@@ -195,9 +195,9 @@ class CondensingTxsTest(BitcoinTestFramework):
 
         # We need the txfee to be higher than T5 so that T4 tx is prioritized over T5.
         # We set the gas such that the the tx will run but not immediately throw a out of gas exception
-        T4_raw = make_transaction(self.node, [make_vin(self.node, 3*COIN)], [make_op_call_output(2*COIN, b"\x04", 22000, CScriptNum(QTUM_MIN_GAS_PRICE), hex_str_to_bytes(self.share_abi), hex_str_to_bytes(self.sender2))])
+        T4_raw = make_transaction(self.node, [make_vin(self.node, 3*COIN)], [make_op_call_output(2*COIN, b"\x04", 22000, hex_str_to_bytes(self.share_abi), hex_str_to_bytes(self.sender2))])
         T4_id = self.node.sendrawtransaction(T4_raw)
-        T5_id = self.node.sendtocontract(self.sender2, self.withdrawAll_abi, 0, 1000000, QTUM_MIN_GAS_PRICE_STR, A1)['txid']
+        T5_id = self.node.sendtocontract(self.sender2, self.withdrawAll_abi, 0, 1000000, A1)['txid']
         B4_id = self.node.generate(1)[0]
         B4 = self.node.getblock(B4_id)
 
