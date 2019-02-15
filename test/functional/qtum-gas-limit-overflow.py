@@ -22,12 +22,21 @@ class QtumGasLimitOverflowTest(BitcoinTestFramework):
         self.node = self.nodes[0]
         self.node.setmocktime(int(time.time()) - 1000000)
         self.node.generate(200 + COINBASE_MATURITY)
+        """
+        pragma solidity ^0.4.12;
+
+        contract Test {
+            function () {}
+        }
+        """
+        contract_bytecode = "60606040523415600e57600080fd5b5b603f80601c6000396000f30060606040525b3415600f57600080fd5b5b5b0000a165627a7a7230582058c936974fe6daaa8267ff5da1c805b0e7442b9cc687162114dfb1cb6d6f62bd0029"
+
         unspents = [unspent for unspent in self.node.listunspent() if unspent['amount'] == Decimal(INITIAL_WALLET_BALANCE)]
         unspent = unspents.pop(0)
 
         tx = CTransaction()
         tx.vin = [CTxIn(COutPoint(int(unspent['txid'], 16), unspent['vout']))]
-        tx.vout = [CTxOut(0, scriptPubKey=CScript([b"\x04", CScriptNum(0x10000), CScriptNum(0x100000000000), b"\x00", OP_CREATE])) for i in range(0x10)]
+        tx.vout = [CTxOut(0, scriptPubKey=CScript([b"\x04", CScriptNum(0x100000000000), hex_str_to_bytes(contract_bytecode), OP_CREATE])) for i in range(0x10)]
         tx = rpc_sign_transaction(self.node, tx)
         assert_raises_rpc_error(-26, "bad-txns-fee-notenough", self.node.sendrawtransaction, bytes_to_hex_str(tx.serialize()))
         self.node.generate(1)

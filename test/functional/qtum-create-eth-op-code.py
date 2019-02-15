@@ -49,7 +49,7 @@ class QtumCreateEthOpCodeTest(BitcoinTestFramework):
         assert_equal(deployed_contracts[factory_with_value_contract_address], 0)
 
         # Next, attempt to create the contract via the "create" method
-        txid = self.node.sendtocontract(factory_with_value_contract_address, "efc81a8c", 1000, 1000000)['txid']
+        txid = self.node.sendtocontract(factory_with_value_contract_address, "efc81a8c", 1000, 10000)['txid']
         blockhash = self.node.generate(1)[0]
         # Make sure that the tx was mined
         assert_equal(len(self.node.getrawmempool()), 0)
@@ -63,7 +63,7 @@ class QtumCreateEthOpCodeTest(BitcoinTestFramework):
         self.log.info('coinbase_tx[vout][0][value]=%s' % (coinbase_tx['vout'][0]['value']))
         print('INITIAL WALLET BALANCE')
         print(Decimal(INITIAL_WALLET_BALANCE)+1)
-        assert(coinbase_tx['vout'][0]['value'] >= Decimal(INITIAL_WALLET_BALANCE)+1)
+        assert(coinbase_tx['vout'][0]['value'] >= Decimal(INITIAL_WALLET_BALANCE))
         
         # Since the call to the contract threw an out of gas exception the origin contract should have a zero balance
         assert_equal(deployed_contracts[factory_with_value_contract_address], 0)

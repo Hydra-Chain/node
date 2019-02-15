@@ -154,6 +154,8 @@ BASE_SCRIPTS= [
     'qtum-combined-outputs-exceed-gas-limit.py',
     #'qtum-dgp-gas-price-lingering-mempool-tx.py',
 
+    'qtum_header_spam.py',
+
     # LockTrip
     'economy-addcontract-outside-coinstake.py',
     'economy-addedcontract-with-coinstakecall.py',
@@ -169,6 +171,14 @@ BASE_SCRIPTS= [
     #'economy-opcoinstake-txinblock.py',
     #'economy-updatecontract-right.py',
     #'economy-updatecontract-wrong.py'
+
+    'dgp-setinitial-admin-dgp-correct-data.py',
+    'dgp-setinitial-admin-oracle-correct-data.py',
+    'dgp-createvote-burnrate.py',
+    'dgp-createvote-admin.py',
+    'dgp-vote.py',
+    'dgp-vote-finish-without-coinstakecall.py',
+    'dgp-vote-finish-outside-coinstaketx.py'
 ]
 
 EXTENDED_SCRIPTS = [
