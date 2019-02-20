@@ -2193,7 +2193,7 @@ bool ByteCodeExec::processingResults(ByteCodeExecResult &resultBCE) {
 
             resultBCE.usedGas += gasUsed;
             int64_t amount = txs[i].getTransactionFee() - (gasUsed * gasPrice);
-            if (!result[i].contractSendsMoney) {
+            if (result[i].tx == CTransaction()) {
                 Dgp dgp;
                 uint64_t dividendPercentage;
                 dgp.getDgpParam(ECONOMY_DIVIDEND, dividendPercentage);

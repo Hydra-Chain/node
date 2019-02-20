@@ -66,13 +66,6 @@ ResultExecute QtumState::execute(EnvInfo const& _envInfo, SealEngineFace const& 
         } else {
             deleteAccounts(_sealEngine.deleteAddresses);
             if(res.excepted == TransactionException::None){
-                for(const auto & transfer : transfers ){
-                    if(transfer.from == _t.receiveAddress() && transfer.value > 0){
-                        contractSendsMoney = true;
-                        break;
-                   }
-                }
-
                 CondensingTX ctx(this, transfers, _t, _sealEngine.deleteAddresses);
                 tx = MakeTransactionRef(ctx.createCondensingTX());
                 if(ctx.reachedVoutLimit()){
@@ -129,9 +122,9 @@ ResultExecute QtumState::execute(EnvInfo const& _envInfo, SealEngineFace const& 
             refund.vout.push_back(CTxOut(CAmount(_t.value().convert_to<uint64_t>()), script));
         }
         //make sure to use empty transaction if no vouts made
-        return ResultExecute{ex, dev::eth::TransactionReceipt(oldStateRoot, gas, e.logs()), refund.vout.empty() ? CTransaction() : CTransaction(refund), contractSendsMoney};
+        return ResultExecute{ex, dev::eth::TransactionReceipt(oldStateRoot, gas, e.logs()), refund.vout.empty() ? CTransaction() : CTransaction(refund)};
     }else{
-        return ResultExecute{res, dev::eth::TransactionReceipt(rootHash(), startGasUsed + e.gasUsed(), e.logs()), tx ? *tx : CTransaction(), contractSendsMoney};
+        return ResultExecute{res, dev::eth::TransactionReceipt(rootHash(), startGasUsed + e.gasUsed(), e.logs()), tx ? *tx : CTransaction()};
     }
 }
 
