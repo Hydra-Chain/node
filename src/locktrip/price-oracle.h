@@ -376,8 +376,9 @@ static const std::string PRICE_ORACLE_CONTRACT_ABI = "[\n"
                                                      "]";
 
 enum price_oracle_contract_funcs {
-    GET_PRICE = 14,
-    GET_BYTE_PRICE = 15
+    GET_EXCHANGE_PRICE = 15,
+    GET_PRICE = 16,
+    GET_BYTE_PRICE = 17
 };
 
 class PriceOracle : public ContractProxy {
