@@ -61,14 +61,14 @@ class QtumPOSConflictingStakingMempoolTxTest(BitcoinTestFramework):
         # Therefore we send the tx spending the block's staking tx
         for tx in txs:
             self.nodes[0].sendrawtransaction(bytes_to_hex_str(tx.serialize()))
-        
+
         # Advance the time so that the block can be published
         # Wait for 10 seconds so that the staker has time to attempt to publish the block
         self.nodes[0].setmocktime(time_until_next_valid_block+48)
         time.sleep(10)
 
         print('Checking node %d; blockcount=%d' % (0, self.nodes[0].getblockcount()))
-        
+
         # Allow node#1 to stake two blocks, which will orphan any (potentially) staked block in node#0
         while self.nodes[1].getblockcount() < 525:
             time.sleep(0.1)
@@ -85,10 +85,10 @@ class QtumPOSConflictingStakingMempoolTxTest(BitcoinTestFramework):
                 break
             time.sleep(0.01)
             self.nodes[0].setmocktime(int(time.time()))
-        
+
         print('node#0 %d; blockcount=%d' % (0, self.nodes[0].getblockcount()))
         print('node#1 %d; blockcount=%d' % (0, self.nodes[1].getblockcount()))
-        
+
         best_chain_height = self.nodes[1].getblockcount()
         assert_equal(self.nodes[0].getblockcount(), best_chain_height)
 

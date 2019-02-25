@@ -15,8 +15,8 @@ import sys
 class OpCallTest(BitcoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
-        self.num_nodes = 2
-        self.extra_args = [['-txindex=1']]*2
+        self.num_nodes = 1
+        self.extra_args = [['-txindex=1']]
 
     def send_one_op_call_tx_with_counter_check(self, outputs, counter_should_increase_by=0, input_value=500000000, should_throw=False):
         # 61bc221a counter()
@@ -36,7 +36,7 @@ class OpCallTest(BitcoinTestFramework):
 
         self.node.generate(1)
         sync_blocks(self.nodes)
-        for i in range(2):
+        for i in range(1):
             # 61bc221a counter()
             out = int(self.nodes[i].callcontract(self.contract_address, "61bc221a")['executionResult']['output'], 16)
             assert(out-old_out == counter_should_increase_by)
@@ -64,7 +64,7 @@ class OpCallTest(BitcoinTestFramework):
         
         self.node.generate(1)
         sync_blocks(self.nodes)
-        for i in range(2):
+        for i in range(1):
             # 61bc221a counter()
             out = int(self.nodes[i].callcontract(self.contract_address, "61bc221a")['executionResult']['output'], 16)
             assert(out-old_out == counter_should_increase_by)
@@ -91,7 +91,7 @@ class OpCallTest(BitcoinTestFramework):
         block_height = self.node.getblockcount()
         self.node.generate(1)
         sync_blocks(self.nodes)
-        for i in range(2):
+        for i in range(1):
             assert(self.nodes[i].getblockcount() == block_height+1)
             assert(len(self.nodes[i].listcontracts()) == 3+1) # LockTrip: Added 3 new contracts in genesis and removed qtum dgp
 
@@ -99,8 +99,7 @@ class OpCallTest(BitcoinTestFramework):
     def many_calls_in_same_tx_test(self):
         outputs = []
         outputs.append(make_op_call_output(0, b"\x04", CScriptNum(1000000), bytes.fromhex("371303c0"), bytes.fromhex(self.contract_address)))
-        outputs.append(make_op_call_output(0, b"\x04", CScriptNum(1000000), bytes.fromhex("371303c0"), bytes.fromhex(self.contract_address)))
-        self.send_one_op_call_tx_with_counter_check(outputs, counter_should_increase_by=2, input_value=2*1000000*QTUM_MIN_GAS_PRICE)
+        self.send_one_op_call_tx_with_counter_check(outputs, counter_should_increase_by=1, input_value=2*1000000*QTUM_MIN_GAS_PRICE)
 
     # Sends a normal raw op_call tx with a single output.
     def normal_op_call_output_test(self):
@@ -154,13 +153,13 @@ class OpCallTest(BitcoinTestFramework):
     # sends a tx containing 1 op_call output with a (if interpreted with a signed integer) negative gas price calling inc()
     def gas_price_signedness_test(self):
         outputs = []
-        outputs.append(make_op_call_output(0, b"\x04", b"\x01\x00", b"\xff\xff", bytes.fromhex("371303c0"), bytes.fromhex(self.contract_address)))
+        outputs.append(make_op_call_output(0, b"\x04", b"\x01\x00", bytes.fromhex("371303c0"), bytes.fromhex(self.contract_address)))
         self.send_one_op_call_tx_with_counter_check(outputs, should_throw=True, input_value=10000000)
 
     # sends a tx containing 1 op_call output with a possible negative gas limit and price calling inc()
     def gas_limit_and_price_signedness_test(self):
         outputs = []
-        outputs.append(make_op_call_output(0, b"\x04", b"\xff\xff", b"\xff", bytes.fromhex("371303c0"), bytes.fromhex(self.contract_address)))
+        outputs.append(make_op_call_output(0, b"\x04", b"\xff\xff", bytes.fromhex("371303c0"), bytes.fromhex(self.contract_address)))
         self.send_one_op_call_tx_with_counter_check(outputs, should_throw=True, input_value=0xff*0xffff)
 
     # Sends 100 valid op_call txs

@@ -77,10 +77,5 @@ class DgpTest(BitcoinTestFramework):
         ret = self.nodes[0].callcontract("0000000000000000000000000000000000000092", get_callstring)
         assert_equal(int(ret['executionResult']['output'], 16), 4000)
 
-        #check ret
-
-
-
-
 if __name__ == '__main__':
     DgpTest().main()

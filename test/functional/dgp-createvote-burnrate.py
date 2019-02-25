@@ -79,15 +79,25 @@ class DgpTest(BitcoinTestFramework):
         self.nodes[0].sendtocontract("0000000000000000000000000000000000000091", callstring)
         self.nodes[0].sendtocontract("0000000000000000000000000000000000000092", callstring)
 
+        # 3. Set oracle address in DGP
+
+        callstring = ("7adbf973" + "000000000000000000000000" + "0000000000000000000000000000000000000092")
+        self.nodes[0].sendtocontract("0000000000000000000000000000000000000091", callstring, 0, 2500000, main_address)
+
+        # 4. Set DGP address in oracle
+
+        callstring = ("85d5f882" + "000000000000000000000000" + "0000000000000000000000000000000000000091")
+        self.nodes[0].sendtocontract("0000000000000000000000000000000000000092", callstring, 0, 2500000, main_address)
+
         self.nodes[0].generate(1)
 
-        # 3. Create some sample vote callstring
+        # 4. Create some sample vote callstring
         createvote_callstring = ("70eb3901" +
                                 "0" * (CALLSTRING_CHAR_COUNT - len(format(3, 'x'))) + format(3, 'x') +   # Burn rate param
                                 "0" * (CALLSTRING_CHAR_COUNT - len(format(33, 'x'))) + format(33, 'x') + # Param value
                                 "0" * (CALLSTRING_CHAR_COUNT - len(format(13, 'x'))) + format(13, 'x'))  # Vote duration
 
-        # 4. Create vote
+        # 5. Create vote
         self.nodes[0].sendtocontract("0000000000000000000000000000000000000091", createvote_callstring, 0, 2500000, main_address)
 
         self.nodes[0].generate(1)

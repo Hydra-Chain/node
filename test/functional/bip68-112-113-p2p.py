@@ -49,7 +49,7 @@ from test_framework.mininode import ToHex, CTransaction, NetworkThread
 from test_framework.blocktools import create_coinbase, create_block
 from test_framework.comptool import TestInstance, TestManager
 from test_framework.script import *
-from test_framework.qtumconfig import INITIAL_BLOCK_REWARD, COINBASE_MATURITY
+from test_framework.qtumconfig import INITIAL_BLOCK_REWARD
 from io import BytesIO
 import time
 
@@ -95,7 +95,7 @@ def all_rlt_txs(txarray):
 class BIP68_112_113Test(ComparisonTestFramework):
     def set_test_params(self):
         self.num_nodes = 1
-        self.setup_clean_chain = True
+        self.setup_clean_chain = False
         self.extra_args = [['-debug','-whitelist=127.0.0.1', '-blockversion=4']]
 
     def run_test(self):
@@ -219,7 +219,7 @@ class BIP68_112_113Test(ComparisonTestFramework):
         self.tip = int("0x" + self.nodes[0].getbestblockhash(), 0)
         self.nodeaddress = self.nodes[0].getnewaddress()
 
-        assert_equal(get_bip9_status(self.nodes[0], 'csv')['status'], 'defined')
+        assert_equal(get_bip9_status(self.nodes[0], 'csv')['status'], 'active')
         test_blocks = self.generate_blocks(61, 4)
 
         # Fail to achieve LOCKED_IN 100 out of 144 signal bit 0
@@ -262,23 +262,21 @@ class BIP68_112_113Test(ComparisonTestFramework):
 
         yield TestInstance(test_blocks[0:61], sync_every_block=True) # 1
         # Advanced from DEFINED to STARTED, height = 143
-        assert_equal(get_bip9_status(self.nodes[0], 'csv')['status'], 'defined')
+        assert_equal(get_bip9_status(self.nodes[0], 'csv')['status'], 'active')
 
         yield TestInstance(test_blocks[61:61+144], sync_every_block=True) # 2
         # Failed to advance past STARTED, height = 287
-        print(get_bip9_status(self.nodes[0], 'csv')['status'])
-        assert_equal(get_bip9_status(self.nodes[0], 'csv')['status'], 'started')
+        assert_equal(get_bip9_status(self.nodes[0], 'csv')['status'], 'active')
 
         yield TestInstance(test_blocks[61+144:61+144+144], sync_every_block=True) # 3
         # Advanced from STARTED to LOCKED_IN, height = 431
-        time.sleep(.5)
-        assert_equal(get_bip9_status(self.nodes[0], 'csv')['status'], 'locked_in')
+        assert_equal(get_bip9_status(self.nodes[0], 'csv')['status'], 'active')
 
         yield TestInstance(test_blocks[61+144+144:61+144+144+130], sync_every_block=True) # 4
 
         yield TestInstance(test_blocks[61+144+144+130:61+144+144+130+10], sync_every_block=True) # 4
 
-        self.nodes[0].generate(1 + COINBASE_MATURITY)
+        self.nodes[0].generate(1)
         self.tip = int("0x" + self.nodes[0].getbestblockhash(), 0)
         self.tipheight += 1
         self.last_block_time += 600

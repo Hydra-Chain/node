@@ -14,12 +14,12 @@ import sys
 class OpCreateTest(BitcoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
-        self.num_nodes = 2
-        self.extra_args = [['-txindex=1']]*2
+        self.num_nodes = 1
+        self.extra_args = [['-txindex=1']]
 
     # Creates a simple contract via a raw tx
     def basic_contract_is_created_raw_tx_test(self):
-        for i in range(2):
+        for i in range(1):
             assert(len(self.nodes[i].listcontracts()) == 3+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 1 new economy contract in genesis
         node = self.nodes[0]
         amount = 10*COIN
@@ -38,7 +38,7 @@ class OpCreateTest(BitcoinTestFramework):
         node.sendrawtransaction(tx)
         node.generate(1)
         sync_blocks(self.nodes)
-        for i in range(2):
+        for i in range(1):
             self.log.info('len(self.nodes[i].listcontracts())=%s' % (len(self.nodes[i].listcontracts())))
             assert(len(self.nodes[i].listcontracts()) == 4)
 
@@ -70,7 +70,7 @@ class OpCreateTest(BitcoinTestFramework):
         block_height = node.getblockcount()
         node.generate(1)
         sync_blocks(self.nodes)
-        for i in range(2):
+        for i in range(1):
             assert(self.nodes[i].getblockcount() == block_height+1)
             assert(len(self.nodes[i].listcontracts()) == 2+3+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 1 new economy contract in genesis
 
@@ -91,7 +91,7 @@ class OpCreateTest(BitcoinTestFramework):
         block_height = node.getblockcount()
         node.generate(1)
         sync_blocks(self.nodes)
-        for i in range(2):
+        for i in range(1):
             assert(self.nodes[i].getblockcount() == block_height+1)
             assert(len(self.nodes[i].listcontracts(1, 10000)) == 2+num_new_contracts+3+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 1 new economy contract in genesis
 
@@ -160,7 +160,6 @@ class OpCreateTest(BitcoinTestFramework):
 
 
     def run_test(self):
-        connect_nodes(self.nodes[0], 1)
         self.nodes[0].generate(COINBASE_MATURITY+40)
         self.vins = [make_vin(self.nodes[0], 10*COIN) for _ in range(10)]
         self.basic_contract_is_created_raw_tx_test()

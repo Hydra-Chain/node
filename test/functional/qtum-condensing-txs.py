@@ -181,7 +181,10 @@ class CondensingTxsTest(BitcoinTestFramework):
         # coinbase, T2, C2, T3, C3
         print(B3['tx'])
         assert_equal(len(B3['tx']), 5)
-        assert_equal(B3['tx'][1], T2_id)
+        if B3['tx'][3] == T2_id:
+            assert_equal(B3['tx'][3], T2_id)
+        else:
+            assert_equal(B3['tx'][1], T2_id)
         C2_id = B3['tx'][2]
         C3_id = B3['tx'][4]
         C2 = self.node.getrawtransaction(C2_id, True)

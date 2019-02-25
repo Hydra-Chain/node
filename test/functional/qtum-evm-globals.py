@@ -17,10 +17,8 @@ import time
 class QtumEVMGlobalsTest(BitcoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
-        self.num_nodes = 2
-        self.extra_args = [['-staking=1'], []]
-
-
+        self.num_nodes = 1
+        self.extra_args = [['-staking=1']]
 
     def get_contract_call_output(self, abi_param):
         out = self.node.callcontract(self.contract_address, abi_param)
@@ -134,7 +132,6 @@ class QtumEVMGlobalsTest(BitcoinTestFramework):
 
     def run_test(self):
         self.node = self.nodes[0]
-        connect_nodes_bi(self.nodes, 0, 1)
 
         self.node.generate(10 + COINBASE_MATURITY)
 

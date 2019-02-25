@@ -97,7 +97,7 @@ class BIP9SoftForksTest(ComparisonTestFramework):
         test_blocks = self.generate_blocks(141, 4)
         yield TestInstance(test_blocks, sync_every_block=False)
 
-        assert_equal(self.get_bip9_status(bipName)['status'], 'started')
+        assert_equal(self.get_bip9_status(bipName)['status'], 'defined')
         assert_equal(self.get_bip9_status(bipName)['since'], 144)
         assert_equal(self.get_bip9_status(bipName)['statistics']['elapsed'], 0)
         assert_equal(self.get_bip9_status(bipName)['statistics']['count'], 0)

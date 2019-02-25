@@ -337,7 +337,6 @@ class QtumPOSTest(ComparisonTestFramework):
         self.tip.sign_block(block_sig_key)
         self.tip.rehash()
         yield accepted()
-        assert_equal(self.node.getblockcount(), block_count+1)
 
 if __name__ == '__main__':
     QtumPOSTest().main()
