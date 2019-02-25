@@ -20,6 +20,7 @@ QList<BitcoinUnits::Unit> BitcoinUnits::availableUnits()
     unitlist.append(BTC);
     unitlist.append(mBTC);
     unitlist.append(uBTC);
+    unitlist.append(USD);
     return unitlist;
 }
 
@@ -30,6 +31,7 @@ bool BitcoinUnits::valid(int unit)
     case BTC:
     case mBTC:
     case uBTC:
+    case USD:
         return true;
     default:
         return false;
@@ -43,6 +45,7 @@ QString BitcoinUnits::name(int unit)
     case BTC: return QString("LOC");
     case mBTC: return QString("mLOC");
     case uBTC: return QString::fromUtf8("μLOC");
+    case USD: return QString("USD");
     default: return QString("???");
     }
 }
@@ -54,6 +57,7 @@ QString BitcoinUnits::description(int unit)
     case BTC: return QString("LOCs");
     case mBTC: return QString("Milli-LOCs (1 / 1" THIN_SP_UTF8 "000)");
     case uBTC: return QString("Micro-LOCs (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+    case USD: return QString("Fiat price");
     default: return QString("???");
     }
 }
@@ -65,6 +69,7 @@ qint64 BitcoinUnits::factor(int unit)
     case BTC:  return 100000000;
     case mBTC: return 100000;
     case uBTC: return 100;
+    case USD: return 100;
     default:   return 100000000;
     }
 }
@@ -86,6 +91,7 @@ int BitcoinUnits::decimals(int unit)
     case BTC: return 8;
     case mBTC: return 5;
     case uBTC: return 2;
+    case USD: return 2;
     default: return 0;
     }
 }

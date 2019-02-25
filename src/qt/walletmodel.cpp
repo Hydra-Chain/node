@@ -41,6 +41,8 @@
 #include <QFile>
 #include <QSettings>
 
+#include "locktrip/price-oracle.h"
+
 
 WalletModel::WalletModel(const PlatformStyle *platformStyle, CWallet *_wallet, OptionsModel *_optionsModel, QObject *parent) :
     QObject(parent), wallet(_wallet), optionsModel(_optionsModel), addressTableModel(0),
@@ -58,7 +60,8 @@ WalletModel::WalletModel(const PlatformStyle *platformStyle, CWallet *_wallet, O
     cachedWatchImmatureBalance(0), 
     cachedWatchOnlyStake(0),
     cachedEncryptionStatus(Unencrypted),
-    cachedNumBlocks(0)
+    cachedNumBlocks(0),
+	cachedGasPrice(0)
 {
     fHaveWatchOnly = wallet->HaveWatchOnly();
     fForceCheckBalanceChanged = false;
@@ -190,6 +193,10 @@ void WalletModel::checkBalanceChanged()
     CAmount newWatchUnconfBalance = 0;
     CAmount newWatchImmatureBalance = 0;
     CAmount newWatchOnlyStake = 0;
+    uint64_t GasPrice;
+    PriceOracle oracle;
+    oracle.getPrice(GasPrice);
+
     if (haveWatchOnly())
     {
         newWatchOnlyBalance = getWatchBalance();
@@ -199,7 +206,8 @@ void WalletModel::checkBalanceChanged()
     }
 
     if(cachedBalance != newBalance || cachedUnconfirmedBalance != newUnconfirmedBalance || cachedImmatureBalance != newImmatureBalance ||
-        cachedWatchOnlyBalance != newWatchOnlyBalance || cachedWatchUnconfBalance != newWatchUnconfBalance || cachedWatchImmatureBalance != newWatchImmatureBalance || cachedStake != newStake || cachedWatchOnlyStake != newWatchOnlyStake)
+        cachedWatchOnlyBalance != newWatchOnlyBalance || cachedWatchUnconfBalance != newWatchUnconfBalance || cachedWatchImmatureBalance != newWatchImmatureBalance || cachedStake != newStake || cachedWatchOnlyStake != newWatchOnlyStake ||
+		cachedGasPrice != (CAmount)GasPrice)
     {
         cachedBalance = newBalance;
         cachedUnconfirmedBalance = newUnconfirmedBalance;
@@ -209,6 +217,7 @@ void WalletModel::checkBalanceChanged()
         cachedWatchUnconfBalance = newWatchUnconfBalance;
         cachedWatchImmatureBalance = newWatchImmatureBalance;
         cachedWatchOnlyStake = newWatchOnlyStake;
+        cachedGasPrice = GasPrice;
         Q_EMIT balanceChanged(newBalance, newUnconfirmedBalance, newImmatureBalance, newStake,
                             newWatchOnlyBalance, newWatchUnconfBalance, newWatchImmatureBalance, newWatchOnlyStake);
     }

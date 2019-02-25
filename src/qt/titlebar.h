@@ -6,6 +6,7 @@
 #include <QTabBar>
 #include <QIcon>
 #include "walletmodel.h"
+#include <locktrip/dgp.h>
 
 namespace Ui {
 class TitleBar;
@@ -70,6 +71,7 @@ private:
     WalletModel *model;
     TabBarInfo* m_tab;
     QIcon m_iconCloseTab;
+    Dgp* dgp;
 };
 
 #endif // TITLEBAR_H
