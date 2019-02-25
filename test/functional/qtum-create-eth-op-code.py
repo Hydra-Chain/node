@@ -49,7 +49,7 @@ class QtumCreateEthOpCodeTest(BitcoinTestFramework):
         assert_equal(deployed_contracts[factory_with_value_contract_address], 0)
 
         # Next, attempt to create the contract via the "create" method
-        txid = self.node.sendtocontract(factory_with_value_contract_address, "efc81a8c", 1000, 1000000, "0.000001")['txid']
+        txid = self.node.sendtocontract(factory_with_value_contract_address, "efc81a8c", 1000, 10000)['txid']
         blockhash = self.node.generate(1)[0]
         # Make sure that the tx was mined
         assert_equal(len(self.node.getrawmempool()), 0)
@@ -61,7 +61,9 @@ class QtumCreateEthOpCodeTest(BitcoinTestFramework):
         block = self.node.getblock(blockhash)
         coinbase_tx = self.node.getrawtransaction(block['tx'][0], True)
         self.log.info('coinbase_tx[vout][0][value]=%s' % (coinbase_tx['vout'][0]['value']))
-        assert(coinbase_tx['vout'][0]['value'] >= Decimal(INITIAL_WALLET_BALANCE)+1)
+        print('INITIAL WALLET BALANCE')
+        print(Decimal(INITIAL_WALLET_BALANCE)+1)
+        assert(coinbase_tx['vout'][0]['value'] >= Decimal(INITIAL_WALLET_BALANCE))
         
         # Since the call to the contract threw an out of gas exception the origin contract should have a zero balance
         assert_equal(deployed_contracts[factory_with_value_contract_address], 0)
@@ -111,7 +113,7 @@ class QtumCreateEthOpCodeTest(BitcoinTestFramework):
         assert_equal(self.node.listcontracts()[self.factory_contract_address], 0)
 
         # Call create(), creating the Test contract
-        self.node.sendtocontract(self.factory_contract_address, "efc81a8c", 0, 1000000, "0.000001")
+        self.node.sendtocontract(self.factory_contract_address, "efc81a8c", 0, 1000000)
         self.node.generate(1)
 
         # Fetch the address of the newly created contract via calling the newAddress() method
@@ -159,7 +161,7 @@ class QtumCreateEthOpCodeTest(BitcoinTestFramework):
         sender = self.node.getnewaddress()
         self.node.sendtoaddress(sender, 1)
         self.node.generate(1)
-        self.node.sendtocontract(self.test_contract_address, "83197ef0", 0, 1000000, "0.000001", sender)
+        self.node.sendtocontract(self.test_contract_address, "83197ef0", 0, 1000000, sender)
         self.node.generate(1)
         # Make sure that the contract is no longer calleable, i.e., does not exist.
         assert_raises_rpc_error(-5, "contract address does not exist", self.node.sendtocontract, self.test_contract_address, "00")

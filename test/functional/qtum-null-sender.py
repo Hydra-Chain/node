@@ -24,7 +24,7 @@ class QtumNullSenderTest(BitcoinTestFramework):
 
         tx = CTransaction()
         tx.vin = [CTxIn(COutPoint(int(parent_tx_id, 16), 0), scriptSig=CScript([]), nSequence=0)]
-        tx.vout = [CTxOut(0, CScript([b"\x04", CScriptNum(1000000), CScriptNum(QTUM_MIN_GAS_PRICE), b"\x00", OP_CREATE]))]
+        tx.vout = [CTxOut(0, CScript([b"\x04", CScriptNum(1000000), b"\x00", OP_CREATE]))]
         tx_hex = bytes_to_hex_str(tx.serialize())
         assert_raises_rpc_error(-26, 'bad-txns-invalid-sender-script', self.node.sendrawtransaction, tx_hex)
         block_count = self.node.getblockcount()

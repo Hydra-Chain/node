@@ -41,11 +41,11 @@ class QtumNoExecCallDisabledTest(BitcoinTestFramework):
         tx = CTransaction()
         tx.vin = [make_vin(self.node, int(COIN+1000000))]
 
-        tx.vout = [CTxOut(int(COIN), scriptPubKey=CScript([b"\x00", CScriptNum(0), CScriptNum(0), b"\x00", hex_str_to_bytes(contract_address), OP_CALL]))]
+        tx.vout = [CTxOut(int(COIN), scriptPubKey=CScript([b"\x00", CScriptNum(0), b"\x00", hex_str_to_bytes(contract_address), OP_CALL]))]
         tx = rpc_sign_transaction(self.node, tx)
         assert_raises_rpc_error(-26, "bad-tx-version-rootvm", self.node.sendrawtransaction, bytes_to_hex_str(tx.serialize()))
 
-        tx.vout = [CTxOut(int(COIN - 10000000), scriptPubKey=CScript([b"\x00", CScriptNum(100000), CScriptNum(QTUM_MIN_GAS_PRICE), b"\x00", hex_str_to_bytes(contract_address), OP_CALL]))]
+        tx.vout = [CTxOut(int(COIN - 10000000), scriptPubKey=CScript([b"\x00", CScriptNum(100000), b"\x00", hex_str_to_bytes(contract_address), OP_CALL]))]
         tx = rpc_sign_transaction(self.node, tx)
         assert_raises_rpc_error(-26, "bad-tx-version-rootvm", self.node.sendrawtransaction, bytes_to_hex_str(tx.serialize()))
 
@@ -59,7 +59,7 @@ class QtumNoExecCallDisabledTest(BitcoinTestFramework):
         self.node.submitblock(bytes_to_hex_str(block.serialize()))
         assert_equal(self.node.getblockcount(), blockcount)
 
-        block.vtx[1].vout = [CTxOut(int(COIN), scriptPubKey=CScript([b"\x00", CScriptNum(0), CScriptNum(0), b"\x00", hex_str_to_bytes(contract_address), OP_CALL]))]
+        block.vtx[1].vout = [CTxOut(int(COIN), scriptPubKey=CScript([b"\x00", CScriptNum(0), b"\x00", hex_str_to_bytes(contract_address), OP_CALL]))]
         block.vtx[1] = rpc_sign_transaction(self.node, block.vtx[1])
         block.hashMerkleRoot = block.calc_merkle_root()
         block.solve()

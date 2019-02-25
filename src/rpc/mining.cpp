@@ -815,7 +815,6 @@ UniValue submitblock(const JSONRPCRequest& request)
     }
 
     uint256 hash = block.GetHash();
-    bool fBlockPresent = false;
     {
         LOCK(cs_main);
         BlockMap::iterator mi = mapBlockIndex.find(hash);
@@ -827,8 +826,6 @@ UniValue submitblock(const JSONRPCRequest& request)
             if (pindex->nStatus & BLOCK_FAILED_MASK) {
                 return "duplicate-invalid";
             }
-            // Otherwise, we might only have the header - process the block before returning
-            fBlockPresent = true;
         }
     }
 
@@ -836,23 +833,28 @@ UniValue submitblock(const JSONRPCRequest& request)
         LOCK(cs_main);
         BlockMap::iterator mi = mapBlockIndex.find(block.hashPrevBlock);
         if (mi != mapBlockIndex.end()) {
+            std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << std::endl;
             UpdateUncommittedBlockStructures(block, mi->second, Params().GetConsensus());
         }
     }
 
+    bool new_block;
     submitblock_StateCatcher sc(block.GetHash());
     RegisterValidationInterface(&sc);
-    bool fAccepted = ProcessNewBlock(Params(), blockptr, true, nullptr);
+    bool accepted = ProcessNewBlock(Params(), blockptr, /* fForceProcessing */ true, /* fNewBlock */ &new_block);
     UnregisterValidationInterface(&sc);
-    if (fBlockPresent) {
-        if (fAccepted && !sc.found) {
-            return "duplicate-inconclusive";
+
+    if (!new_block) {
+        if (!accepted) {
+            // TODO Maybe pass down fNewBlock to AcceptBlockHeader, so it is properly set to true in this case?
+            return "invalid";
         }
         return "duplicate";
     }
     if (!sc.found) {
         return "inconclusive";
     }
+
     return BIP22ValidationResult(sc.state);
 }
 

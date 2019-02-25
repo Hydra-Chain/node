@@ -27,9 +27,9 @@ class QtumGasLimitOverflowTest(BitcoinTestFramework):
 
         tx = CTransaction()
         tx.vin = [CTxIn(COutPoint(int(unspent['txid'], 16), unspent['vout']))]
-        tx.vout = [CTxOut(0, scriptPubKey=CScript([b"\x04", CScriptNum(0x10000), CScriptNum(0x100000000000), b"\x00", OP_CREATE])) for i in range(0x10)]
+        tx.vout = [CTxOut(0, scriptPubKey=CScript([b"\x04", CScriptNum(0x10000), b"\x00", OP_CREATE])) for i in range(0x10)]
         tx = rpc_sign_transaction(self.node, tx)
-        assert_raises_rpc_error(-26, "bad-txns-fee-notenough", self.node.sendrawtransaction, bytes_to_hex_str(tx.serialize()))
+        assert_raises_rpc_error(-26, "absurdly-high-fee", self.node.sendrawtransaction, bytes_to_hex_str(tx.serialize()))
         self.node.generate(1)
 
 if __name__ == '__main__':

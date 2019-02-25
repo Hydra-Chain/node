@@ -114,6 +114,20 @@ static const std::string DGP_CONTRACT_ABI = "[\n"
                                             "\t},\n"
                                             "\t{\n"
                                             "\t\t\"constant\": true,\n"
+                                            "\t\t\"inputs\": [],\n"
+                                            "\t\t\"name\": \"isOracleSet\",\n"
+                                            "\t\t\"outputs\": [\n"
+                                            "\t\t\t{\n"
+                                            "\t\t\t\t\"name\": \"\",\n"
+                                            "\t\t\t\t\"type\": \"bool\"\n"
+                                            "\t\t\t}\n"
+                                            "\t\t],\n"
+                                            "\t\t\"payable\": false,\n"
+                                            "\t\t\"type\": \"function\",\n"
+                                            "\t\t\"stateMutability\": \"view\"\n"
+                                            "\t},\n"
+                                            "\t{\n"
+                                            "\t\t\"constant\": true,\n"
                                             "\t\t\"inputs\": [\n"
                                             "\t\t\t{\n"
                                             "\t\t\t\t\"name\": \"\",\n"
@@ -358,6 +372,20 @@ static const std::string DGP_CONTRACT_ABI = "[\n"
                                             "\t\t\"payable\": false,\n"
                                             "\t\t\"type\": \"function\",\n"
                                             "\t\t\"stateMutability\": \"view\"\n"
+                                            "\t},\n"
+                                            "\t{\n"
+                                            "\t\t\"constant\": false,\n"
+                                            "\t\t\"inputs\": [\n"
+                                            "\t\t\t{\n"
+                                            "\t\t\t\t\"name\": \"a\",\n"
+                                            "\t\t\t\t\"type\": \"address\"\n"
+                                            "\t\t\t}\n"
+                                            "\t\t],\n"
+                                            "\t\t\"name\": \"setOracle\",\n"
+                                            "\t\t\"outputs\": [],\n"
+                                            "\t\t\"payable\": false,\n"
+                                            "\t\t\"type\": \"function\",\n"
+                                            "\t\t\"stateMutability\": \"nonpayable\"\n"
                                             "\t},\n"
                                             "\t{\n"
                                             "\t\t\"constant\": true,\n"
@@ -645,21 +673,21 @@ enum dgp_params {
 enum dgp_contract_funcs {
     FINISH_VOTE = 1,
     GET_DGP_PARAM = 2,
-    HAS_VOTE_IN_PROGRESS = 19,
-    GET_VOTE_EXPIRATION = 13,
-    PARAM_VOTED = 16,
-    VOTE = 8,
-    CONVERT_FIAT_THRESHOLD_TO_LOC = 24,
+    HAS_VOTE_IN_PROGRESS = 20,
+    GET_VOTE_EXPIRATION = 14,
+    PARAM_VOTED = 17,
+    VOTE = 9,
+    CONVERT_FIAT_THRESHOLD_TO_LOC = 26,
     ///////////////
-    CURRENT_VOTE_NEWADMIN = 7,
-    CURRENT_VOTE_VOTESFOR = 27,
-    CURRENT_VOTE_VOTESAGAINST = 20,
-    CURRENT_VOTE_STARTBLOCK = 9,
-    CURRENT_VOTE_BLOCKSEXPIRATION = 10,
-    CURRENT_VOTE_PARAM = 11,
-    CURRENT_VOTE_VALUE = 28,
-    CURRENT_VOTE_CREATOR = 23,
-    CURRENT_VOTE_THRESHOLD = 14
+    CURRENT_VOTE_NEWADMIN = 8,
+    CURRENT_VOTE_VOTESFOR = 29,
+    CURRENT_VOTE_VOTESAGAINST = 22,
+    CURRENT_VOTE_STARTBLOCK = 10,
+    CURRENT_VOTE_BLOCKSEXPIRATION = 11,
+    CURRENT_VOTE_PARAM = 12,
+    CURRENT_VOTE_VALUE = 30,
+    CURRENT_VOTE_CREATOR = 25,
+    CURRENT_VOTE_THRESHOLD = 15
 };
 
 struct dgp_currentVote {
