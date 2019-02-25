@@ -135,7 +135,6 @@ void ReceiveCoinsDialog::clear()
     ui->reqAmount->clear();
     ui->reqLabel->setText("");
     ui->reqMessage->setText("");
-    //ui->reuseAddress->setChecked(false);
     ui->leAddress->setText("");
     ui->copyAddressButton->setEnabled(false);
     QPixmap emptyPixmap;
@@ -169,33 +168,7 @@ void ReceiveCoinsDialog::on_receiveButton_clicked()
 
     QString address;
     QString label = ui->reqLabel->text();
-#if 0
-    if(ui->reuseAddress->isChecked())
-    {
-        /* Use selected address*/
-        if(ui->leAddress->text() != "")
-        {
-            address = ui->leAddress->text();
-        } else {
-            /* Choose existing receiving address */
-            AddressBookPage dlg(platformStyle, AddressBookPage::ForSelection, AddressBookPage::ReceivingTab, this);
-            dlg.setModel(model->getAddressTableModel());
-            if(dlg.exec())
-            {
-                address = dlg.getReturnValue();
-                if(label.isEmpty()) /* If no label provided, use the previously used label */
-                {
-                    label = model->getAddressTableModel()->labelForAddress(address);
-                }
-            } else {
-                return;
-            }
-        }
-    } else {
-        /* Generate new receiving address */
-        address = model->getAddressTableModel()->addRow(AddressTableModel::Receive, label, "");
-    }
-#else
+
     if(ui->reuseDefaultAddress->isChecked())
     {
     	address = ui->defaultAddress->text();
@@ -226,7 +199,7 @@ void ReceiveCoinsDialog::on_receiveButton_clicked()
         /* Generate new receiving address */
         address = model->getAddressTableModel()->addRow(AddressTableModel::Receive, label, "");
     }
-#endif
+
     SendCoinsRecipient info(address, label,
         ui->reqAmount->value(), ui->reqMessage->text());
     ReceiveRequestDialog *dialog = new ReceiveRequestDialog(this);
@@ -423,7 +396,6 @@ void ReceiveCoinsDialog::on_reuseExistingAddress_clicked()
 	if(ui->reuseExistingAddress->isChecked())
 	{
 		ui->chooseReuseAddressButton->setEnabled(true);
-		//ui->leAddress->setText("");
 	}
 }
 
@@ -432,7 +404,6 @@ void ReceiveCoinsDialog::on_generateNewAddress_clicked()
 	if(ui->generateNewAddress->isChecked())
 	{
 		ui->chooseReuseAddressButton->setEnabled(false);
-		//ui->leAddress->setText("");
 	}
 }
 

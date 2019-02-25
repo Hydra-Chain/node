@@ -25,7 +25,7 @@
 #include "scheduler.h"
 
 #define MAX_LOG_SIZE 100*1024*1024
-#define TELEMETRY_HOST "localhost"
+#define TELEMETRY_HOST "stats.locktrip.com"
 #define TELEMETRY_PORT 8080
 
 bool telemetry_first = true;
