@@ -274,6 +274,7 @@ private:
     CAmount cachedWatchUnconfBalance;
     CAmount cachedWatchImmatureBalance;
     CAmount cachedWatchOnlyStake;
+    CAmount cachedGasPrice;
     EncryptionStatus cachedEncryptionStatus;
     int cachedNumBlocks;
 

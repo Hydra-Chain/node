@@ -619,7 +619,7 @@ locktripd_LDADD = \
   $(LIBCRYPTOPP) \
   $(LIBSECP256K1)
 
-locktripd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+locktripd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(CURL_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 
 # bitcoin-cli binary #
 locktrip_cli_SOURCES = bitcoin-cli.cpp
@@ -642,7 +642,7 @@ locktrip_cli_LDADD = \
   $(LIBCRYPTOPP) \
   $(LIBSECP256K1)
 
-locktrip_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+locktrip_cli_LDADD += $(BOOST_LIBS) $(CURL_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
 # bitcoin-tx binary #

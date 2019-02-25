@@ -6,6 +6,8 @@
 
 #include <QPixmap>
 #include "platformstyle.h"
+#include "locktrip/price-oracle.h"
+#include "bitcoinunits.h"
 
 //namespace TitleBar_NS {
 //const int titleHeight = 50;
@@ -15,7 +17,8 @@
 TitleBar::TitleBar(const PlatformStyle *platformStyle, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TitleBar),
-    m_tab(0)
+    m_tab(0),
+	dgp(new Dgp())
 {
     ui->setupUi(this);
     // Set size policy
@@ -71,7 +74,20 @@ void TitleBar::setBalance(const CAmount& balance, const CAmount& unconfirmedBala
 
     if(model && model->getOptionsModel())
     {
-        ui->lblBalance->setText(BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), balance));
+    	uint64_t nPrice;
+    	PriceOracle oracle;
+   	    oracle.getBytePrice(nPrice);
+   	    uint64_t fiatPrice;
+	 	dgp->getDgpParam(FIAT_BYTE_PRICE, fiatPrice);
+	 	double rate = 0;
+	 	if(balance > 0)
+	 		rate = (double)nPrice / (double)fiatPrice;
+	 	uint64_t fiat_balance = (balance * rate) / 1000000;
+
+        //ui->lblBalance->setText(BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), balance));
+    	ui->lblBalance->setText( "<span style='font-size:15pt;'>" + BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), balance) +
+    			"<br /></span><span style='font-size:9pt;'>" + BitcoinUnits::formatWithUnit(BitcoinUnits::USD, fiat_balance) +
+				" - LOC/USD " + ((fiatPrice == 0) ? "N/A" : "1/" + QString::number(rate, 'f', 2).rightJustified(2, '0')) + "</span>" );
     }
 }
 

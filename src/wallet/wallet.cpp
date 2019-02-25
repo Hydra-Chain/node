@@ -38,6 +38,14 @@
 #include <boost/thread.hpp>
 #include <miner.h>
 
+#include "locktrip/price-oracle.h"
+#include <curl/curl.h>
+#include <regex>
+
+#define paternVersion "locktrip-([0-9]+\\.)?([0-9]+\\.)?([0-9]+)-"
+#define QTUM_RELEASES "https://github.com/LockTrip/Blockchain/releases"
+void CheckForUpdate();
+
 std::vector<CWalletRef> vpwallets;
 /** Transaction fee set by the user */
 CFeeRate payTxFee(DEFAULT_TRANSACTION_FEE);
@@ -64,6 +72,8 @@ struct ScriptsElement{
  * The max size of the map is 2 * nCacheScripts - nMPoSRewardRecipients, so in this case it is 20
  */
 std::map<int, ScriptsElement> scriptsMap;
+
+void UpdateOraclePrice();
 
 /**
  * Fees smaller than this (in satoshi) are considered zero fee (for transaction creation)
@@ -2969,6 +2979,7 @@ static CFeeRate GetDiscardRate(const CBlockPolicyEstimator& estimator)
 bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet,
                                 int& nChangePosInOut, std::string& strFailReason, const CCoinControl& coin_control, bool sign, CAmount nGasFee, bool hasSender)
 {
+	UpdateOraclePrice(); //Update fee price before proceed with transaction
     CAmount nValue = 0;
     int nChangePosRequest = nChangePosInOut;
     unsigned int nSubtractFeeFromAmount = 0;
@@ -3222,7 +3233,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
                     vin.scriptWitness.SetNull();
                 }
 
-                nFeeNeeded = GetMinimumFee(nBytes, coin_control, ::mempool, ::feeEstimator, &feeCalc)+nGasFee;
+                nFeeNeeded = GetMinimumFee(nBytes, coin_control, ::mempool, ::feeEstimator, &feeCalc)*1.2 + nGasFee; //Set 20% larger fee to avoid a transaction failure on oracle price change
 
                 // If we made it here and we aren't even able to meet the relay fee on the next pass, give up
                 // because we must be at the maximum allowed fee.
@@ -4556,10 +4567,10 @@ std::string CWallet::GetWalletHelpString(bool showDebug)
     strUsage += HelpMessageOpt("-discardfee=<amt>", strprintf(_("The fee rate (in %s/kB) that indicates your tolerance for discarding change by adding it to the fee (default: %s). "
                                                                 "Note: An output is discarded if it is dust at this rate, but we will always discard up to the dust relay fee and a discard fee above that is limited by the fee estimate for the longest target"),
                                                               CURRENCY_UNIT, FormatMoney(DEFAULT_DISCARD_FEE)));
-    strUsage += HelpMessageOpt("-mintxfee=<amt>", strprintf(_("Fees (in %s/kB) smaller than this are considered zero fee for transaction creation (default: %s)"),
-                                                            CURRENCY_UNIT, FormatMoney(DEFAULT_TRANSACTION_MINFEE)));
-    strUsage += HelpMessageOpt("-paytxfee=<amt>", strprintf(_("Fee (in %s/kB) to add to transactions you send (default: %s)"),
-                                                            CURRENCY_UNIT, FormatMoney(payTxFee.GetFeePerK())));
+    //strUsage += HelpMessageOpt("-mintxfee=<amt>", strprintf(_("Fees (in %s/kB) smaller than this are considered zero fee for transaction creation (default: %s)"),
+    //                                                        CURRENCY_UNIT, FormatMoney(DEFAULT_TRANSACTION_MINFEE)));
+    //strUsage += HelpMessageOpt("-paytxfee=<amt>", strprintf(_("Fee (in %s/kB) to add to transactions you send (default: %s)"),
+    //                                                        CURRENCY_UNIT, FormatMoney(payTxFee.GetFeePerK())));
     strUsage += HelpMessageOpt("-rescan", _("Rescan the block chain for missing wallet transactions on startup"));
     strUsage += HelpMessageOpt("-salvagewallet", _("Attempt to recover private keys from a corrupt wallet on startup"));
     strUsage += HelpMessageOpt("-spendzeroconfchange", strprintf(_("Spend unconfirmed change when sending transactions (default: %u)"), DEFAULT_SPEND_ZEROCONF_CHANGE));
@@ -4812,6 +4823,8 @@ void CWallet::postInitProcess(CScheduler& scheduler)
     if (!CWallet::fFlushScheduled.exchange(true)) {
         scheduler.scheduleEvery(MaybeCompactWalletDB, 500);
     }
+    scheduler.scheduleEvery(UpdateOraclePrice, 500);
+    scheduler.scheduleEvery(CheckForUpdate, 5*60*1000); //5 min
 }
 
 bool CWallet::ParameterInteraction()
@@ -4863,11 +4876,11 @@ bool CWallet::ParameterInteraction()
     if (gArgs.GetArg("-prune", 0) && gArgs.GetBoolArg("-rescan", false))
         return InitError(_("Rescans are not possible in pruned mode. You will need to use -reindex which will download the whole blockchain again."));
 
-    if (::minRelayTxFee.GetFeePerK() > HIGH_TX_FEE_PER_KB)
+    /*if (::minRelayTxFee.GetFeePerK() > HIGH_TX_FEE_PER_KB)
         InitWarning(AmountHighWarn("-minrelaytxfee") + " " +
-                    _("The wallet will avoid paying less than the minimum relay fee."));
+                    _("The wallet will avoid paying less than the minimum relay fee."));*/
 
-    if (gArgs.IsArgSet("-mintxfee"))
+    /*if (gArgs.IsArgSet("-mintxfee"))
     {
         CAmount n = 0;
         if (!ParseMoney(gArgs.GetArg("-mintxfee", ""), n) || 0 == n)
@@ -4876,7 +4889,7 @@ bool CWallet::ParameterInteraction()
             InitWarning(AmountHighWarn("-mintxfee") + " " +
                         _("This is the minimum transaction fee you pay on every transaction."));
         CWallet::minTxFee = CFeeRate(n);
-    }
+    }*/
     if (gArgs.IsArgSet("-fallbackfee"))
     {
         CAmount nFeePerK = 0;
@@ -4897,7 +4910,7 @@ bool CWallet::ParameterInteraction()
                         _("This is the transaction fee you may discard if change is smaller than dust at this level"));
         CWallet::m_discard_rate = CFeeRate(nFeePerK);
     }
-    if (gArgs.IsArgSet("-paytxfee"))
+    /*if (gArgs.IsArgSet("-paytxfee"))
     {
         CAmount nFeePerK = 0;
         if (!ParseMoney(gArgs.GetArg("-paytxfee", ""), nFeePerK))
@@ -4912,8 +4925,8 @@ bool CWallet::ParameterInteraction()
             return InitError(strprintf(_("Invalid amount for -paytxfee=<amount>: '%s' (must be at least %s)"),
                                        gArgs.GetArg("-paytxfee", ""), ::minRelayTxFee.ToString()));
         }
-    }
-    if (gArgs.IsArgSet("-maxtxfee"))
+    }*/
+    /*if (gArgs.IsArgSet("-maxtxfee"))
     {
         CAmount nMaxFee = 0;
         if (!ParseMoney(gArgs.GetArg("-maxtxfee", ""), nMaxFee))
@@ -4926,7 +4939,7 @@ bool CWallet::ParameterInteraction()
             return InitError(strprintf(_("Invalid amount for -maxtxfee=<amount>: '%s' (must be at least the minrelay fee of %s to prevent stuck transactions)"),
                                        gArgs.GetArg("-maxtxfee", ""), ::minRelayTxFee.ToString()));
         }
-    }
+    }*/
     nTxConfirmTarget = gArgs.GetArg("-txconfirmtarget", DEFAULT_TX_CONFIRM_TARGET);
     bSpendZeroConfChange = gArgs.GetBoolArg("-spendzeroconfchange", DEFAULT_SPEND_ZEROCONF_CHANGE);
     bZeroBalanceAddressToken = gArgs.GetBoolArg("-zerobalanceaddresstoken", DEFAULT_SPEND_ZEROCONF_CHANGE);
@@ -5253,4 +5266,73 @@ bool CWallet::LoadContractData(const std::string &address, const std::string &ke
         ret = false;
     }
     return ret;
+}
+
+void UpdateOraclePrice() {
+	uint64_t nGasPrice;
+	PriceOracle oracle;
+	oracle.getBytePrice(nGasPrice);
+
+	if(/*nGasPrice > 0 &&*/ nGasPrice != (uint64_t)CWallet::minTxFee.GetFeePerK()) {
+		CWallet::minTxFee = CFeeRate(nGasPrice);
+		::maxTxFee = CWallet::minTxFee.GetFeePerK();
+		::minRelayTxFee = CFeeRate(nGasPrice);
+	}
+}
+
+static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
+{
+    ((std::string*)userp)->append((char*)contents, size * nmemb);
+    return size * nmemb;
+}
+
+void CheckForUpdate() {
+	int max_major = CLIENT_VERSION_MAJOR;
+	int max_minor = CLIENT_VERSION_MINOR;
+	int max_revision = CLIENT_VERSION_REVISION;
+	CURL *curl;
+	std::string readBuffer;
+
+	curl = curl_easy_init();
+	if(curl) {
+	  curl_easy_setopt(curl, CURLOPT_URL, QTUM_RELEASES);
+	  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+	  curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+	  curl_easy_perform(curl);
+	  curl_easy_cleanup(curl);
+	  std::regex ver_regex(paternVersion);
+	  std::smatch sm;
+	  while (std::regex_search (readBuffer,sm,ver_regex)) {
+		  readBuffer = sm.suffix().str();
+		  int rex_major = std::stoi(sm.str(1));
+		  int rex_minor = std::stoi(sm.str(2));
+		  int rex_revision = std::stoi(sm.str(3));
+		  int compare = 0;
+		  int diff = rex_major - max_major;
+		  compare = (diff > 0 ? 1 : diff < 0 ? -1 : 0) * 4;
+		  diff = rex_minor - max_minor;
+		  compare += (diff > 0 ? 1 : diff < 0 ? -1 : 0) * 2;
+		  diff = rex_revision - max_revision;
+		  compare += (diff > 0 ? 1 : diff < 0 ? -1 : 0);
+		  if(compare > 0) {
+			  max_major = rex_major;
+			  max_minor = rex_minor;
+			  max_revision = rex_revision;
+		  }
+	  }
+
+	  if(max_major != CLIENT_VERSION_MAJOR || max_minor != CLIENT_VERSION_MINOR || max_revision != CLIENT_VERSION_REVISION) {
+		  printf("\n");
+		  printf("****************************************************************\n");
+		  printf("*                                                              *\n");
+		  printf("* New version of LockTrip wallet is available on the LockTrip  *\n");
+		  printf("* source code repository:                                      *\n");
+		  printf("* %s              *\n", QTUM_RELEASES);
+		  printf("* It is recommended to download it and update this application *\n");
+		  printf("*                                                              *\n");
+		  printf("****************************************************************\n");
+		  printf("\n");
+		  fflush(stdout);
+	  }
+	}
 }
