@@ -15,46 +15,6 @@ class QtumPOSSegwitTest(BitcoinTestFramework):
         self.setup_clean_chain = True
         self.num_nodes = 1
 
-    def create_unsigned_pos_block(self, staking_prevouts, nTime):
-
-        best_block_hash = self.node.getbestblockhash()
-        block_height = self.node.getblockcount()
-
-        parent_block_stake_modifier = int(self.node.getblock(best_block_hash)['modifier'], 16)
-        parent_block_raw_hex = self.node.getblock(best_block_hash, False)
-        f = io.BytesIO(hex_str_to_bytes(parent_block_raw_hex))
-        parent_block = CBlock()
-        parent_block.deserialize(f)
-        coinbase = create_coinbase(block_height+1)
-        coinbase.vout[0].nValue = 0
-        coinbase.vout[0].scriptPubKey = b""
-        coinbase.rehash()
-        block = create_block(int(best_block_hash, 16), coinbase, nTime)
-        block.hashPrevBlock = int(best_block_hash, 16)
-        if not block.solve_stake(parent_block_stake_modifier, staking_prevouts):
-            return None
-
-        # create a new private key used for block signing.
-        block_sig_key = CECKey()
-        block_sig_key.set_secretbytes(hash256(struct.pack('<I', 0xffff)))
-        pubkey = block_sig_key.get_pubkey()
-        scriptPubKey = CScript([pubkey, OP_CHECKSIG])
-        stake_tx_unsigned = CTransaction()
-        coinstake_prevout = block.prevoutStake
-
-        stake_tx_unsigned.vin.append(CTxIn(coinstake_prevout))
-        stake_tx_unsigned.vout.append(CTxOut())
-        stake_tx_unsigned.vout.append(CTxOut(int(10002*COIN), scriptPubKey))
-        stake_tx_unsigned.vout.append(CTxOut(int(10002*COIN), scriptPubKey))
-
-        stake_tx_signed_raw_hex = self.node.signrawtransaction(bytes_to_hex_str(stake_tx_unsigned.serialize()))['hex']
-        f = io.BytesIO(hex_str_to_bytes(stake_tx_signed_raw_hex))
-        stake_tx_signed = CTransaction()
-        stake_tx_signed.deserialize(f)
-        block.vtx.append(stake_tx_signed)
-
-        return (block, block_sig_key)
-
     def collect_staking_prevouts(self):
         blocks = []
         for block_number in range(self.node.getblockcount()):
@@ -126,7 +86,7 @@ class QtumPOSSegwitTest(BitcoinTestFramework):
 
 
         t = int(time.time()) & 0xfffffff0
-        (block, block_sig_key) = self.create_unsigned_pos_block(staking_prevouts, nTime=t)
+        (block, block_sig_key) = create_unsigned_pos_block(self.nodes[0], staking_prevouts, nTime=t)
         block.vtx.extend([parent_tx, child_tx])
 
         # Add the witness commitment to the coinbase,
@@ -137,8 +97,9 @@ class QtumPOSSegwitTest(BitcoinTestFramework):
         block.rehash()
 
         block_count = self.node.getblockcount()
-        self.node.submitblock(bytes_to_hex_str(block.serialize(with_witness=True)))
-        assert_equal(self.node.getblockcount(), block_count)
+
+        res = self.node.submitblock(bytes_to_hex_str(block.serialize(with_witness=True)))
+        assert_equal(self.node.getblockcount(), block_count+1)
 
 if __name__ == '__main__':
     QtumPOSSegwitTest().main()

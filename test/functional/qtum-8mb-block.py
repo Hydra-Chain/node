@@ -10,11 +10,10 @@ from test_framework.qtum import *
 class Qtum8MBBlock(BitcoinTestFramework):
     def set_test_params(self):
         self.setup_clean_chain = True
-        self.num_nodes = 2
+        self.num_nodes = 1
 
     def run_test(self):
         self.node = self.nodes[0]
-        connect_nodes_bi(self.nodes, 0, 1)
         # Make sure that segwit is activated
         self.node.generate(10+COINBASE_MATURITY)
         self.sync_all()
@@ -76,7 +75,6 @@ class Qtum8MBBlock(BitcoinTestFramework):
         self.sync_all()
 
         assert_equal(block_count + 1, self.nodes[0].getblockcount())
-        assert_equal(block_count + 1, self.nodes[1].getblockcount())
 
 if __name__ == '__main__':
     Qtum8MBBlock().main()

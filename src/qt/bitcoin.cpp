@@ -55,6 +55,8 @@
 #include <QFile>
 #include <QProcess>
 
+#include "runguard.h"
+
 #if defined(QT_STATICPLUGIN)
 #include <QtPlugin>
 #if QT_VERSION < 0x050000
@@ -686,11 +688,19 @@ int main(int argc, char *argv[])
                               QObject::tr("Error: Specified data directory \"%1\" does not exist.").arg(QString::fromStdString(gArgs.GetArg("-datadir", ""))));
         return EXIT_FAILURE;
     }
+
     try {
         gArgs.ReadConfigFile(gArgs.GetArg("-conf", BITCOIN_CONF_FILENAME));
     } catch (const std::exception& e) {
         QMessageBox::critical(0, QObject::tr(PACKAGE_NAME),
                               QObject::tr("Error: Cannot parse configuration file: %1. Only use key=value syntax.").arg(e.what()));
+        return EXIT_FAILURE;
+    }
+
+    RunGuard guard(GUIUtil::boostPathToQString(GetDataDir(false)));
+    if ( !guard.tryToRun() ) {
+    	QMessageBox::critical(0, QObject::tr(PACKAGE_NAME),
+        	                          QObject::tr("Error: Application already running with data directory \"%1\".").arg(GUIUtil::boostPathToQString(GetDataDir(false))));
         return EXIT_FAILURE;
     }
 

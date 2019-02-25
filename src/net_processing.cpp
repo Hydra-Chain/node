@@ -34,6 +34,7 @@
 #include "checkpoints.h"
 #include "clientversion.h"
 #include "consensus/merkle.h"
+#include "locktrip/dgp.h"
 
 #if defined(NDEBUG)
 # error "LockTrip cannot be compiled without assertions."
@@ -152,6 +153,93 @@ struct CBlockReject {
     uint256 hashBlock;
 };
 
+class CNodeHeaders
+{
+public:
+    CNodeHeaders():
+            maxSize(0),
+            maxAvg(0)
+    {
+        maxSize = gArgs.GetArg("-headerspamfiltermaxsize", DEFAULT_HEADER_SPAM_FILTER_MAX_SIZE);
+        maxAvg = gArgs.GetArg("-headerspamfiltermaxavg", DEFAULT_HEADER_SPAM_FILTER_MAX_AVG);
+    }
+
+    bool addHeaders(const CBlockIndex *pindexFirst, const CBlockIndex *pindexLast)
+    {
+        if(pindexFirst && pindexLast && maxSize && maxAvg)
+        {
+            // Get the begin block index
+            int nBegin = pindexFirst->nHeight;
+
+            // Get the end block index
+            int nEnd = pindexLast->nHeight;
+
+            for(int point = nBegin; point<= nEnd; point++)
+            {
+                addPoint(point);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    bool updateState(CValidationState& state, bool ret)
+    {
+        // No headers
+        size_t size = points.size();
+        if(size == 0)
+            return ret;
+
+        // Compute the number of the received headers
+        size_t nHeaders = 0;
+        for(auto point : points)
+        {
+            nHeaders += point.second;
+        }
+
+        // Compute the average value per height
+        double nAvgValue = (double)nHeaders / size;
+
+        // Ban the node if try to spam
+        bool banNode = (nAvgValue >= 1.5 * maxAvg && size >= maxAvg) ||
+                       (nAvgValue >= maxAvg && nHeaders >= maxSize) ||
+                       (nHeaders >= maxSize * 3);
+        if(banNode)
+        {
+            // Clear the points and ban the node
+            points.clear();
+            return state.DoS(100, false, REJECT_INVALID, "header-spam", false, "ban node for sending spam");
+        }
+
+        return ret;
+    }
+
+private:
+    void addPoint(int height)
+    {
+        // Erace the last element in the list
+        if(points.size() == maxSize)
+        {
+            points.erase(points.begin());
+        }
+
+        // Add the point to the list
+        int occurrence = 0;
+        auto mi = points.find(height);
+        if (mi != points.end())
+            occurrence = (*mi).second;
+        occurrence++;
+        points[height] = occurrence;
+    }
+
+private:
+    std::map<int,int> points;
+    size_t maxSize;
+    size_t maxAvg;
+};
+
 /**
  * Maintain validation-specific state about nodes, protected by cs_main, instead
  * by CNode's own locks. This simplifies asynchronous operation, where
@@ -241,6 +329,8 @@ struct CNodeState {
 
     ChainSyncTimeoutState m_chain_sync;
 
+    CNodeHeaders headers;
+
     //! Time of last new block announcement
     int64_t m_last_block_announcement;
 
@@ -280,6 +370,20 @@ CNodeState *State(NodeId pnode) {
     if (it == mapNodeState.end())
         return nullptr;
     return &it->second;
+}
+
+bool ProcessNetBlockHeaders(CNode* pfrom, const std::vector<CBlockHeader>& block, CValidationState& state, const CChainParams& chainparams,
+        const CBlockIndex** ppindex=nullptr, CBlockHeader *first_invalid=nullptr)
+{
+    const CBlockIndex *pindexFirst = nullptr;
+    bool ret = ProcessNewBlockHeaders(block, state, chainparams, ppindex, first_invalid, &pindexFirst);
+    if(gArgs.GetBoolArg("-headerspamfilter", DEFAULT_HEADER_SPAM_FILTER)) {
+        LOCK(cs_main);
+        CNodeState *nodestate = State(pfrom->GetId());
+        const CBlockIndex *pindexLast = ppindex == nullptr ? nullptr : *ppindex;
+        nodestate->headers.addHeaders(pindexFirst, pindexLast);
+        return nodestate->headers.updateState(state, ret);
+    }
 }
 
 void UpdatePreferredDownload(CNode* node, CNodeState* state)
@@ -448,13 +552,20 @@ bool TipMayBeStale(const Consensus::Params &consensusParams)
     if (g_last_tip_update == 0) {
         g_last_tip_update = GetTime();
     }
-    return g_last_tip_update < GetTime() - consensusParams.nPowTargetSpacing * 3 && mapBlocksInFlight.empty();
+
+    Dgp dgp;
+    int64_t nPowTargetSpacing;
+    dgp.getBlockTime(consensusParams, nPowTargetSpacing);
+    return g_last_tip_update < GetTime() - nPowTargetSpacing * 3 && mapBlocksInFlight.empty();
 }
 
 // Requires cs_main
 bool CanDirectFetch(const Consensus::Params &consensusParams)
 {
-    return chainActive.Tip()->GetBlockTime() > GetAdjustedTime() - consensusParams.nPowTargetSpacing * 20;
+    Dgp dgp;
+    int64_t nPowTargetSpacing;
+    dgp.getBlockTime(consensusParams, nPowTargetSpacing);
+    return chainActive.Tip()->GetBlockTime() > GetAdjustedTime() - nPowTargetSpacing * 20;
 }
 
 // Requires cs_main
@@ -480,7 +591,7 @@ void FindNextBlocksToDownload(NodeId nodeid, unsigned int count, std::vector<con
     // Make sure pindexBestKnownBlock is up to date, we'll need it.
     ProcessBlockAvailability(nodeid);
 
-    if (state->pindexBestKnownBlock == nullptr || state->pindexBestKnownBlock->nChainWork < chainActive.Tip()->nChainWork || state->pindexBestKnownBlock->nChainWork < nMinimumChainWork) {
+    if (state->pindexBestKnownBlock == nullptr || state->pindexBestKnownBlock->nChainWork <= chainActive.Tip()->nChainWork || state->pindexBestKnownBlock->nChainWork < nMinimumChainWork) {
         // This peer has nothing interesting.
         return;
     }
@@ -1304,7 +1415,7 @@ bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, const std::ve
 
     CValidationState state;
     CBlockHeader first_invalid_header;
-    if (!ProcessNewBlockHeaders(headers, state, chainparams, &pindexLast, &first_invalid_header)) {
+    if (!ProcessNetBlockHeaders(pfrom, headers, state, chainparams, &pindexLast, &first_invalid_header)) {
         int nDoS;
         if (state.IsInvalid(nDoS)) {
             LOCK(cs_main);
@@ -1372,7 +1483,7 @@ bool static ProcessHeadersMessage(CNode *pfrom, CConnman *connman, const std::ve
             // Headers message had its maximum size; the peer may have more headers.
             // TODO: optimize: if pindexLast is an ancestor of chainActive.Tip or pindexBestHeader, continue
             // from there instead.
-            LogPrint(BCLog::NET, "more getheaders (%d) to end to peer=%d (startheight:%d)\n", pindexLast->nHeight, pfrom->GetId(), pfrom->nStartingHeight);
+            LogPrint(BCLog::NET, "more getheaders (%d) to end to peer=%d (startheight:%d)\n", pindexLast->nHeight, pfrom->GetId(), (int)pfrom->nStartingHeight);
             connman->PushMessage(pfrom, msgMaker.Make(NetMsgType::GETHEADERS, chainActive.GetLocator(pindexLast), uint256()));
         }
 
@@ -1665,8 +1776,8 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             remoteAddr = ", peeraddr=" + pfrom->addr.ToString();
 
         LogPrintf("receive version message: %s: version %d, blocks=%d, us=%s, peer=%d%s\n",
-                  cleanSubVer, pfrom->nVersion,
-                  pfrom->nStartingHeight, addrMe.ToString(), pfrom->GetId(),
+                  cleanSubVer, (int)pfrom->nVersion,
+                  (int)pfrom->nStartingHeight, addrMe.ToString(), pfrom->GetId(),
                   remoteAddr);
 
         int64_t nTimeOffset = nTime - GetTime();
@@ -1942,7 +2053,10 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             }
             // If pruning, don't inv blocks unless we have on disk and are likely to still have
             // for some reasonable time window (1 hour) that block relay might require.
-            const int nPrunedBlocksLikelyToHave = MIN_BLOCKS_TO_KEEP - 3600 / chainparams.GetConsensus().nPowTargetSpacing;
+            Dgp dgp;
+            int64_t nPowTargetSpacing;
+            dgp.getBlockTime(chainparams.GetConsensus(), nPowTargetSpacing);
+            const int nPrunedBlocksLikelyToHave = MIN_BLOCKS_TO_KEEP - 3600 / nPowTargetSpacing;
             if (fPruneMode && (!(pindex->nStatus & BLOCK_HAVE_DATA) || pindex->nHeight <= chainActive.Tip()->nHeight - nPrunedBlocksLikelyToHave))
             {
                 LogPrint(BCLog::NET, " getblocks stopping, pruned or too old block at %d %s\n", pindex->nHeight, pindex->GetBlockHash().ToString());
@@ -2279,7 +2393,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
 
         const CBlockIndex *pindex = nullptr;
         CValidationState state;
-        if (!ProcessNewBlockHeaders({cmpctblock.header}, state, chainparams, &pindex)) {
+        if (!ProcessNetBlockHeaders(pfrom, {cmpctblock.header}, state, chainparams, &pindex)) {
             int nDoS;
             if (state.IsInvalid(nDoS)) {
                 if (nDoS > 0) {
@@ -2724,7 +2838,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             LogPrint(BCLog::NET, "pong peer=%d: %s, %x expected, %x received, %u bytes\n",
                 pfrom->GetId(),
                 sProblem,
-                pfrom->nPingNonceSent,
+                (int)pfrom->nPingNonceSent,
                 nonce,
                 nAvail);
         }
@@ -3206,7 +3320,10 @@ bool PeerLogicValidation::SendMessages(CNode* pto, std::atomic<bool>& interruptM
             // Only actively request headers from a single peer, unless we're close to today.
             if ((nSyncStarted == 0 && fFetch) || pindexBestHeader->GetBlockTime() > GetAdjustedTime() - 24 * 60 * 60) {
                 state.fSyncStarted = true;
-                state.nHeadersSyncTimeout = GetTimeMicros() + HEADERS_DOWNLOAD_TIMEOUT_BASE + HEADERS_DOWNLOAD_TIMEOUT_PER_HEADER * (GetAdjustedTime() - pindexBestHeader->GetBlockTime())/(consensusParams.nPowTargetSpacing);
+                Dgp dgp;
+                int64_t nPowTargetSpacing;
+                dgp.getBlockTime(consensusParams, nPowTargetSpacing);
+                state.nHeadersSyncTimeout = GetTimeMicros() + HEADERS_DOWNLOAD_TIMEOUT_BASE + HEADERS_DOWNLOAD_TIMEOUT_PER_HEADER * (GetAdjustedTime() - pindexBestHeader->GetBlockTime())/(nPowTargetSpacing);
                 nSyncStarted++;
                 const CBlockIndex *pindexStart = pindexBestHeader;
                 /* If possible, start at the block preceding the currently
@@ -3218,7 +3335,7 @@ bool PeerLogicValidation::SendMessages(CNode* pto, std::atomic<bool>& interruptM
                    got back an empty response.  */
                 if (pindexStart->pprev)
                     pindexStart = pindexStart->pprev;
-                LogPrint(BCLog::NET, "initial getheaders (%d) to peer=%d (startheight:%d)\n", pindexStart->nHeight, pto->GetId(), pto->nStartingHeight);
+                LogPrint(BCLog::NET, "initial getheaders (%d) to peer=%d (startheight:%d)\n", pindexStart->nHeight, pto->GetId(), (int)pto->nStartingHeight);
                 connman->PushMessage(pto, msgMaker.Make(NetMsgType::GETHEADERS, chainActive.GetLocator(pindexStart), uint256()));
             }
         }
@@ -3524,7 +3641,10 @@ bool PeerLogicValidation::SendMessages(CNode* pto, std::atomic<bool>& interruptM
         if (state.vBlocksInFlight.size() > 0) {
             QueuedBlock &queuedBlock = state.vBlocksInFlight.front();
             int nOtherPeersWithValidatedDownloads = nPeersWithValidatedDownloads - (state.nBlocksInFlightValidHeaders > 0);
-            if (nNow > state.nDownloadingSince + consensusParams.nPowTargetSpacing * (BLOCK_DOWNLOAD_TIMEOUT_BASE + BLOCK_DOWNLOAD_TIMEOUT_PER_PEER * nOtherPeersWithValidatedDownloads)) {
+            Dgp dgp;
+            int64_t nPowTargetSpacing;
+            dgp.getBlockTime(consensusParams, nPowTargetSpacing);
+            if (nNow > state.nDownloadingSince + nPowTargetSpacing * (BLOCK_DOWNLOAD_TIMEOUT_BASE + BLOCK_DOWNLOAD_TIMEOUT_PER_PEER * nOtherPeersWithValidatedDownloads)) {
                 LogPrintf("Timeout downloading block %s from peer=%d, disconnecting\n", queuedBlock.hash.ToString(), pto->GetId());
                 pto->fDisconnect = true;
                 return true;
@@ -3744,7 +3864,7 @@ bool ProcessNetBlock(const CChainParams& chainparams, const std::shared_ptr<cons
         }
 
         // Check for the signiture encoding
-        if (!CheckCanonicalBlockSignature(pblock)) 
+        if (!CheckCanonicalBlockSignature(pblock.get()))
         {
             if (pfrom)
                 Misbehaving(pfrom->GetId(), 100);

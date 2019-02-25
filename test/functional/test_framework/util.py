@@ -358,27 +358,17 @@ def connect_nodes_bi(nodes, a, b):
 def sync_blocks(rpc_connections, *, wait=1, timeout=60):
     """
     Wait until everybody has the same tip.
-
     sync_blocks needs to be called with an rpc_connections set that has least
     one node already synced to the latest, stable tip, otherwise there's a
     chance it might return before all nodes are stably synced.
     """
-    # Use getblockcount() instead of waitforblockheight() to determine the
-    # initial max height because the two RPCs look at different internal global
-    # variables (chainActive vs latestBlock) and the former gets updated
-    # earlier.
-    maxheight = max(x.getblockcount() for x in rpc_connections)
-    start_time = cur_time = time.time()
-    while cur_time <= start_time + timeout:
-        tips = [r.waitforblockheight(maxheight, int(wait * 1000)) for r in rpc_connections]
-        if all(t["height"] == maxheight for t in tips):
-            if all(t["hash"] == tips[0]["hash"] for t in tips):
-                return
-            raise AssertionError("Block sync failed, mismatched block hashes:{}".format(
-                                 "".join("\n  {!r}".format(tip) for tip in tips)))
-        cur_time = time.time()
-    raise AssertionError("Block sync to height {} timed out:{}".format(
-                         maxheight, "".join("\n  {!r}".format(tip) for tip in tips)))
+    stop_time = time.time() + timeout
+    while time.time() <= stop_time:
+        best_hash = [x.getbestblockhash() for x in rpc_connections]
+        if best_hash.count(best_hash[0]) == len(rpc_connections):
+            return
+        time.sleep(wait)
+    raise AssertionError("Block sync timed out:{}".format("".join("\n  {!r}".format(b) for b in best_hash)))
 
 def sync_chain(rpc_connections, *, wait=1, timeout=60):
     """
@@ -563,6 +553,7 @@ def mine_large_block(node, utxos=None):
     num = 14
     txouts = gen_return_txouts()
     utxos = utxos if utxos is not None else []
+    print("UTXOS LENGTH -> " + str(len(utxos)))
     if len(utxos) < num:
         utxos.clear()
         utxos.extend(node.listunspent())

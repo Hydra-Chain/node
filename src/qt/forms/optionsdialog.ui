@@ -32,7 +32,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabMain">
       <attribute name="title">
@@ -282,7 +282,10 @@
           <item>
            <widget class="QCheckBox" name="notUseChangeAddress">
             <property name="text">
-             <string>Don't use change &amp;address</string>
+             <string>Don't use change &amp;address (recommended)</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -985,6 +988,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>BitcoinAmountField</class>
+   <extends>QLineEdit</extends>
+   <header>bitcoinamountfield.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QValidatedLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qvalidatedlineedit.h</header>
@@ -993,11 +1002,6 @@
    <class>QValueComboBox</class>
    <extends>QComboBox</extends>
    <header>qvaluecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>BitcoinAmountField</class>
-   <extends>QSpinBox</extends>
-   <header>bitcoinamountfield.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

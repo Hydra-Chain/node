@@ -56,16 +56,16 @@ class NULLDUMMYTest(BitcoinTestFramework):
         for i in self.coinbase_blocks:
             coinbase_txid.append(self.nodes[0].getblock(i)['tx'][0])
 
-        for i in range(COINBASE_MATURITY):
-            block = create_block(int(self.nodes[0].getbestblockhash(), 16), create_coinbase(self.nodes[0].getblockcount()+1), int(time.time())+2+i)
-            block.nVersion = 4
-            block.hashMerkleRoot = block.calc_merkle_root()
-            block.rehash()
-            block.solve()
-            self.nodes[0].submitblock(bytes_to_hex_str(block.serialize()))
+        # for i in range(COINBASE_MATURITY):
+        #     block = create_block(int(self.nodes[0].getbestblockhash(), 16), create_coinbase(self.nodes[0].getblockcount()+1), int(time.time())+2+i)
+        #     block.nVersion = 4
+        #     block.hashMerkleRoot = block.calc_merkle_root()
+        #     block.rehash()
+        #     block.solve()
+        #     self.nodes[0].submitblock(bytes_to_hex_str(block.serialize()))
 
         # Generate the number blocks signalling  that the continuation of the test case expects
-        self.nodes[0].generate(863-COINBASE_MATURITY-2-2)
+        self.nodes[0].generate(COINBASE_MATURITY+1)
         self.lastblockhash = self.nodes[0].getbestblockhash()
         self.tip = int("0x" + self.lastblockhash, 0)
         self.lastblockheight = self.nodes[0].getblockcount()
@@ -131,6 +131,7 @@ class NULLDUMMYTest(BitcoinTestFramework):
         block.rehash()
         block.solve()
         node.submitblock(bytes_to_hex_str(block.serialize(True)))
+        self.log.info("STATE ROOT BLOCK -> " + hex(block.hashStateRoot))
         if (accept):
             assert_equal(node.getbestblockhash(), block.hash)
             self.tip = block.sha256

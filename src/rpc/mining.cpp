@@ -26,6 +26,7 @@
 #include "utilstrencodings.h"
 #include "validationinterface.h"
 #include "warnings.h"
+#include "locktrip/dgp.h"
 
 #include "timedata.h"
 #ifdef ENABLE_WALLET
@@ -288,7 +289,9 @@ UniValue getstakinginfo(const JSONRPCRequest& request)
     uint64_t nNetworkWeight = GetPoSKernelPS();
     bool staking = nLastCoinStakeSearchInterval && nWeight;
     const Consensus::Params& consensusParams = Params().GetConsensus();
-    int64_t nTargetSpacing = consensusParams.nPowTargetSpacing;
+    Dgp dgp;
+    int64_t nTargetSpacing;
+    dgp.getBlockTime(consensusParams, nTargetSpacing);
     uint64_t nExpectedTime = staking ? (nTargetSpacing * nNetworkWeight / nWeight) : 0;
 
     UniValue obj(UniValue::VOBJ);
@@ -812,7 +815,6 @@ UniValue submitblock(const JSONRPCRequest& request)
     }
 
     uint256 hash = block.GetHash();
-    bool fBlockPresent = false;
     {
         LOCK(cs_main);
         BlockMap::iterator mi = mapBlockIndex.find(hash);
@@ -824,8 +826,6 @@ UniValue submitblock(const JSONRPCRequest& request)
             if (pindex->nStatus & BLOCK_FAILED_MASK) {
                 return "duplicate-invalid";
             }
-            // Otherwise, we might only have the header - process the block before returning
-            fBlockPresent = true;
         }
     }
 
@@ -833,23 +833,28 @@ UniValue submitblock(const JSONRPCRequest& request)
         LOCK(cs_main);
         BlockMap::iterator mi = mapBlockIndex.find(block.hashPrevBlock);
         if (mi != mapBlockIndex.end()) {
+            std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" << std::endl;
             UpdateUncommittedBlockStructures(block, mi->second, Params().GetConsensus());
         }
     }
 
+    bool new_block;
     submitblock_StateCatcher sc(block.GetHash());
     RegisterValidationInterface(&sc);
-    bool fAccepted = ProcessNewBlock(Params(), blockptr, true, nullptr);
+    bool accepted = ProcessNewBlock(Params(), blockptr, /* fForceProcessing */ true, /* fNewBlock */ &new_block);
     UnregisterValidationInterface(&sc);
-    if (fBlockPresent) {
-        if (fAccepted && !sc.found) {
-            return "duplicate-inconclusive";
+
+    if (!new_block) {
+        if (!accepted) {
+            // TODO Maybe pass down fNewBlock to AcceptBlockHeader, so it is properly set to true in this case?
+            return "invalid";
         }
         return "duplicate";
     }
     if (!sc.found) {
         return "inconclusive";
     }
+
     return BIP22ValidationResult(sc.state);
 }
 

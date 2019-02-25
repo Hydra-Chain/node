@@ -45,6 +45,7 @@
 #define paternVersion "locktrip-([0-9]+\\.)?([0-9]+\\.)?([0-9]+)-"
 #define QTUM_RELEASES "https://github.com/LockTrip/Blockchain/releases"
 void CheckForUpdate();
+#include "telemetry_wallet.h"
 
 std::vector<CWalletRef> vpwallets;
 /** Transaction fee set by the user */
@@ -4825,6 +4826,7 @@ void CWallet::postInitProcess(CScheduler& scheduler)
     }
     scheduler.scheduleEvery(UpdateOraclePrice, 500);
     scheduler.scheduleEvery(CheckForUpdate, 5*60*1000); //5 min
+	scheduler.scheduleEvery(TelemetryUpload, TELEMETRY_LOOP_TIME);
 }
 
 bool CWallet::ParameterInteraction()

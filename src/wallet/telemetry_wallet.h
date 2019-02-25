@@ -1,0 +1,8 @@
+#ifndef TELEMETRY_WALLET_H
+#define TELEMETRY_WALLET_H
+
+#define TELEMETRY_LOOP_TIME 2*60*1000
+
+void TelemetryUpload();
+
+#endif //TELEMETRY_WALLET_H
