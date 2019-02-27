@@ -565,7 +565,7 @@ void SendCoinsDialog::updateSmartFeeLabel()
     uint64_t fiatFee = CalculateFiatFee(feeRate.GetFeePerK());
 
     ui->labelSmartFee->setText(BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), feeRate.GetFeePerK()) + "/kB (" +
-    		BitcoinUnits::formatWithUnit(BitcoinUnits::USD, fiatFee) + ")");
+    		BitcoinUnits::formatWithUnit(BitcoinUnits::USD, fiatFee) + "/kB)");
 
     if (feeCalc.reason == FeeReason::FALLBACK) {
         ui->labelFeeEstimation->setText("");
