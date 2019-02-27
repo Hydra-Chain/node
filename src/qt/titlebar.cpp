@@ -86,7 +86,7 @@ void TitleBar::setBalance(const CAmount& balance, const CAmount& unconfirmedBala
    	    {
    	    	oracle.getBytePrice(nPrice);
    	    	dgp->getDgpParam(FIAT_BYTE_PRICE, fiatPrice);
-   	    	if(balance > 0)
+   	    	if(fiatPrice > 0)
    	    		rate = (double)nPrice / (double)fiatPrice;
    	    	fiat_balance = (balance * rate);
    	    }
