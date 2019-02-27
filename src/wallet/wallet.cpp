@@ -3722,7 +3722,8 @@ CAmount CWallet::GetMinimumFee(unsigned int nTxBytes, const CCoinControl& coin_c
             if (feeCalc) feeCalc->reason = FeeReason::FALLBACK;
         }
         // Obey mempool min fee when using smart fee estimation
-        CAmount min_mempool_fee = pool.GetMinFee(gArgs.GetArg("-maxmempool", DEFAULT_MAX_MEMPOOL_SIZE) * 1000000).GetFee(nTxBytes);
+        //CAmount min_mempool_fee = pool.GetMinFee(gArgs.GetArg("-maxmempool", DEFAULT_MAX_MEMPOOL_SIZE) * 1000000).GetFee(nTxBytes);
+        CAmount min_mempool_fee = CWallet::minTxFee.GetFee(nTxBytes);
         if (fee_needed < min_mempool_fee) {
             fee_needed = min_mempool_fee;
             if (feeCalc) feeCalc->reason = FeeReason::MEMPOOL_MIN;
