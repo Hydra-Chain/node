@@ -5275,9 +5275,8 @@ void UpdateOraclePrice() {
 	PriceOracle oracle;
 	oracle.getBytePrice(nGasPrice);
 
-	if(/*nGasPrice > 0 &&*/ nGasPrice != (uint64_t)CWallet::minTxFee.GetFeePerK()) {
+	if(nGasPrice != (uint64_t)CWallet::minTxFee.GetFeePerK()) {
 		CWallet::minTxFee = CFeeRate(nGasPrice);
-		::maxTxFee = CWallet::minTxFee.GetFeePerK();
 		::minRelayTxFee = CFeeRate(nGasPrice);
 	}
 }

@@ -14,6 +14,7 @@ PriceOracle::PriceOracle() {
 }
 
 bool PriceOracle::getPrice(uint64_t &gasPrice) {
+	LOCK(cs_main);
     std::string callString {};
     std::vector<std::vector<std::string>> values{};
     bool status = this->generateCallString(values, callString, GET_PRICE);
@@ -40,6 +41,7 @@ bool PriceOracle::getPrice(uint64_t &gasPrice) {
 }
 
 bool PriceOracle::getBytePrice(uint64_t& bytePrice) {
+	LOCK(cs_main);
     std::string callString {};
     std::vector<std::vector<std::string>> values{};
     bool status = this->generateCallString(values, callString, GET_BYTE_PRICE);

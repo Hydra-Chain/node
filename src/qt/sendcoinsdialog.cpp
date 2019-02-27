@@ -174,8 +174,6 @@ void SendCoinsDialog::setModel(WalletModel *_model)
         }
         connect(ui->confTargetSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSmartFeeLabel()));
         connect(ui->confTargetSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(coinControlUpdateLabels()));*/
-        connect(ui->groupFee, SIGNAL(buttonClicked(int)), this, SLOT(updateFeeSectionControls()));
-        connect(ui->groupFee, SIGNAL(buttonClicked(int)), this, SLOT(coinControlUpdateLabels()));
         updateSmartFeeLabel();
 
         // set the smartfee-sliders default value (wallets default conf.target or last stored value)
@@ -316,7 +314,7 @@ void SendCoinsDialog::on_sendButton_clicked()
     QStringList alternativeUnits;
     for (BitcoinUnits::Unit u : BitcoinUnits::availableUnits())
     {
-        if(u != model->getOptionsModel()->getDisplayUnit())
+        if(u != model->getOptionsModel()->getDisplayUnit() && u != BitcoinUnits::USD)
             alternativeUnits.append(BitcoinUnits::formatHtmlWithUnit(u, totalAmount));
     }
     questionString.append(tr("Total Amount %1")
@@ -563,26 +561,18 @@ void SendCoinsDialog::updateSmartFeeLabel()
 
     coin_control.m_feerate.reset(); // Explicitly use only fee estimation rate for smart fee labels
     FeeCalculation feeCalc;
-    CFeeRate feeRate = CFeeRate(CWallet::GetMinimumFee(1000, coin_control, ::mempool, ::feeEstimator, &feeCalc));
+    CFeeRate feeRate = CFeeRate(CWallet::minTxFee);
     uint64_t fiatFee = CalculateFiatFee(feeRate.GetFeePerK());
 
     ui->labelSmartFee->setText(BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), feeRate.GetFeePerK()) + "/kB (" +
     		BitcoinUnits::formatWithUnit(BitcoinUnits::USD, fiatFee) + ")");
 
     if (feeCalc.reason == FeeReason::FALLBACK) {
-        ui->labelSmartFee2->show(); // (Smart fee not initialized yet. This usually takes a few blocks...)
         ui->labelFeeEstimation->setText("");
-        ui->fallbackFeeWarningLabel->setVisible(true);
-        int lightness = ui->fallbackFeeWarningLabel->palette().color(QPalette::WindowText).lightness();
-        QColor warning_colour(255 - (lightness / 5), 176 - (lightness / 3), 48 - (lightness / 14));
-        ui->fallbackFeeWarningLabel->setStyleSheet("QLabel { color: " + warning_colour.name() + "; }");
-        ui->fallbackFeeWarningLabel->setIndent(QFontMetrics(ui->fallbackFeeWarningLabel->font()).width("x"));
     }
     else
     {
-        ui->labelSmartFee2->hide();
         ui->labelFeeEstimation->setText(tr("Estimated to begin confirmation within %n block(s).", "", feeCalc.returnedTarget));
-        ui->fallbackFeeWarningLabel->setVisible(false);
     }
 }
 
@@ -801,6 +791,9 @@ void SendConfirmationDialog::updateYesButton()
 }
 
 uint64_t CalculateFiatFee(CAmount Fee) {
+	if(fBatchProcessingMode)
+		return 0;
+
 	uint64_t nPrice;
 	PriceOracle oracle;
 	oracle.getBytePrice(nPrice);
@@ -808,5 +801,5 @@ uint64_t CalculateFiatFee(CAmount Fee) {
 	Dgp* dgp = new Dgp();
 	dgp->getDgpParam(FIAT_BYTE_PRICE, fiatPrice);
 	double rate = (double)nPrice / (double)fiatPrice;
-	return (Fee * rate) / 1000000;
+	return (Fee * rate);
 }
