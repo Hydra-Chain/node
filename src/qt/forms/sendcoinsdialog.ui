@@ -621,7 +621,7 @@
            <x>0</x>
            <y>0</y>
            <width>834</width>
-           <height>254</height>
+           <height>256</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -729,25 +729,6 @@
       </layout>
      </item>
      <item>
-      <widget class="QLabel" name="fallbackFeeWarningLabel">
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>Using the fallbackfee can result in sending a transaction that will take several hours or days (or never) to confirm. Consider choosing your fee manually or wait until you have validated the complete chain.</string>
-       </property>
-       <property name="text">
-        <string>Warning: Fee estimation is currently not possible.</string>
-       </property>
-       <property name="wordWrap">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
       <spacer name="horizontalSpacer_4">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -839,16 +820,6 @@
                 <widget class="QLabel" name="labelFeeEstimation">
                  <property name="text">
                   <string/>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="labelSmartFee2">
-                 <property name="text">
-                  <string>(Smart fee not initialized yet. This usually takes a few blocks...)</string>
-                 </property>
-                 <property name="margin">
-                  <number>2</number>
                  </property>
                 </widget>
                </item>
@@ -1009,7 +980,4 @@
   <include location="../bitcoin.qrc"/>
  </resources>
  <connections/>
- <buttongroups>
-  <buttongroup name="groupFee"/>
- </buttongroups>
 </ui>

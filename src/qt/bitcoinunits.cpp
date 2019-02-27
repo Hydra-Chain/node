@@ -69,7 +69,7 @@ qint64 BitcoinUnits::factor(int unit)
     case BTC:  return 100000000;
     case mBTC: return 100000;
     case uBTC: return 100;
-    case USD: return 100;
+    case USD: return 100000000;
     default:   return 100000000;
     }
 }
@@ -91,7 +91,7 @@ int BitcoinUnits::decimals(int unit)
     case BTC: return 8;
     case mBTC: return 5;
     case uBTC: return 2;
-    case USD: return 2;
+    case USD: return 8;
     default: return 0;
     }
 }

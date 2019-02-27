@@ -8,6 +8,7 @@
 #include "platformstyle.h"
 #include "locktrip/price-oracle.h"
 #include "bitcoinunits.h"
+#include "wallet/wallet.h"
 
 //namespace TitleBar_NS {
 //const int titleHeight = 50;
@@ -74,15 +75,21 @@ void TitleBar::setBalance(const CAmount& balance, const CAmount& unconfirmedBala
 
     if(model && model->getOptionsModel())
     {
-    	uint64_t nPrice;
+
+    	uint64_t nPrice = 0;
     	PriceOracle oracle;
-   	    oracle.getBytePrice(nPrice);
-   	    uint64_t fiatPrice;
-	 	dgp->getDgpParam(FIAT_BYTE_PRICE, fiatPrice);
-	 	double rate = 0;
-	 	if(balance > 0)
-	 		rate = (double)nPrice / (double)fiatPrice;
-	 	uint64_t fiat_balance = (balance * rate) / 1000000;
+   	    uint64_t fiatPrice = 0;
+   	    uint64_t fiat_balance = 0;
+   	    double rate = 0;
+
+   	    if(!fBatchProcessingMode)
+   	    {
+   	    	oracle.getBytePrice(nPrice);
+   	    	dgp->getDgpParam(FIAT_BYTE_PRICE, fiatPrice);
+   	    	if(balance > 0)
+   	    		rate = (double)nPrice / (double)fiatPrice;
+   	    	fiat_balance = (balance * rate);
+   	    }
 
         //ui->lblBalance->setText(BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), balance));
     	ui->lblBalance->setText( "<span style='font-size:15pt;'>" + BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), balance) +
