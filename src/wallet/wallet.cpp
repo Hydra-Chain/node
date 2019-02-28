@@ -4826,7 +4826,6 @@ void CWallet::postInitProcess(CScheduler& scheduler)
         scheduler.scheduleEvery(MaybeCompactWalletDB, 500);
     }
     scheduler.scheduleEvery(UpdateOraclePrice, 500);
-    scheduler.scheduleEvery(CheckForUpdate, 5*60*1000); //5 min
 	scheduler.scheduleEvery(TelemetryUpload, TELEMETRY_LOOP_TIME);
 }
 
@@ -5286,55 +5285,4 @@ static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *use
 {
     ((std::string*)userp)->append((char*)contents, size * nmemb);
     return size * nmemb;
-}
-
-void CheckForUpdate() {
-	int max_major = CLIENT_VERSION_MAJOR;
-	int max_minor = CLIENT_VERSION_MINOR;
-	int max_revision = CLIENT_VERSION_REVISION;
-	CURL *curl;
-	std::string readBuffer;
-
-	curl = curl_easy_init();
-	if(curl) {
-	  curl_easy_setopt(curl, CURLOPT_URL, QTUM_RELEASES);
-	  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-	  curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-	  curl_easy_perform(curl);
-	  curl_easy_cleanup(curl);
-	  std::regex ver_regex(paternVersion);
-	  std::smatch sm;
-	  while (std::regex_search (readBuffer,sm,ver_regex)) {
-		  readBuffer = sm.suffix().str();
-		  int rex_major = std::stoi(sm.str(1));
-		  int rex_minor = std::stoi(sm.str(2));
-		  int rex_revision = std::stoi(sm.str(3));
-		  int compare = 0;
-		  int diff = rex_major - max_major;
-		  compare = (diff > 0 ? 1 : diff < 0 ? -1 : 0) * 4;
-		  diff = rex_minor - max_minor;
-		  compare += (diff > 0 ? 1 : diff < 0 ? -1 : 0) * 2;
-		  diff = rex_revision - max_revision;
-		  compare += (diff > 0 ? 1 : diff < 0 ? -1 : 0);
-		  if(compare > 0) {
-			  max_major = rex_major;
-			  max_minor = rex_minor;
-			  max_revision = rex_revision;
-		  }
-	  }
-
-	  if(max_major != CLIENT_VERSION_MAJOR || max_minor != CLIENT_VERSION_MINOR || max_revision != CLIENT_VERSION_REVISION) {
-		  printf("\n");
-		  printf("****************************************************************\n");
-		  printf("*                                                              *\n");
-		  printf("* New version of LockTrip wallet is available on the LockTrip  *\n");
-		  printf("* source code repository:                                      *\n");
-		  printf("* %s              *\n", QTUM_RELEASES);
-		  printf("* It is recommended to download it and update this application *\n");
-		  printf("*                                                              *\n");
-		  printf("****************************************************************\n");
-		  printf("\n");
-		  fflush(stdout);
-	  }
-	}
 }
