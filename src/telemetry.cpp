@@ -33,7 +33,7 @@ std::vector<std::string> telemerty_blacklist (telemerty_blacklist_arr, telemerty
 std::queue<std::string> telemetryQ;
 std::mutex telemetryMutex;
 
-std::string telemetry_adder(const char* format, ...) {
+std::string telemetry_adder(const char* format) {
 	std::string str = boost::lexical_cast<std::string>(format);
 	return str;
 }

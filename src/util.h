@@ -157,7 +157,7 @@ template<typename T, typename... Args> static inline void MarkUsed(const T& t, c
 		_log_msg_ = ": " + _log_msg_; \
 		_log_msg_ = __func__ + _log_msg_; \
 	} \
-	std::string _telemetry_params_ = telemetry_adder(__VA_ARGS__); \
+	std::string _telemetry_params_ = telemetry_adder(_log_msg_.c_str()); \
     LogPrintStr(_log_msg_, false, _telemetry_params_); /*add original formatStr for telemetry*/ \
 } while(0)
 
@@ -177,7 +177,7 @@ template<typename T, typename... Args> static inline void MarkUsed(const T& t, c
 			_log_msg_ = ": " + _log_msg_; \
 			_log_msg_ = __func__ + _log_msg_; \
 		} \
-		std::string _telemetry_params_ = telemetry_adder(__VA_ARGS__); \
+		std::string _telemetry_params_ = telemetry_adder(_log_msg_.c_str()); \
 		SendToTelemetry(_log_msg_, _telemetry_params_); \
 	} \
 } while(0)
