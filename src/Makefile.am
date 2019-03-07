@@ -115,7 +115,6 @@ BITCOIN_CORE_H = \
   memusage.h \
   merkleblock.h \
   miner.h \
-  ministun.h \
   net.h \
   net_processing.h \
   netaddress.h \
@@ -212,7 +211,6 @@ libbitcoin_server_a_SOURCES = \
   dbwrapper.cpp \
   merkleblock.cpp \
   miner.cpp \
-  ministun.cpp \
   net.cpp \
   net_processing.cpp \
   noui.cpp \

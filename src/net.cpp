@@ -21,7 +21,6 @@
 #include "scheduler.h"
 #include "ui_interface.h"
 #include "utilstrencodings.h"
-#include "ministun.h"
 
 #ifdef WIN32
 #include <string.h>
@@ -2290,9 +2289,6 @@ bool CConnman::Start(CScheduler& scheduler, const Options& connOptions)
     nTotalBytesSent = 0;
     nMaxOutboundTotalBytesSentInCycle = 0;
     nMaxOutboundCycleStartTime = 0;
-
-    if(fListen && fDiscover)
-    	GetSTUNAddress(GetListenPort());
 
     if (fListen && !InitBinds(connOptions.vBinds, connOptions.vWhiteBinds)) {
         if (clientInterface) {
