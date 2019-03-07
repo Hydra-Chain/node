@@ -50,6 +50,12 @@
 
 #undef STUN_BINDREQ_PROCESS
 
+#ifdef WIN32
+#define CLOSE closesocket
+#else
+#define CLOSE close
+#endif
+
 //char *stunserver = STUN_SERVER;
 int stunport = STUN_PORT;
 int stuncount = STUN_COUNT;
@@ -181,9 +187,15 @@ static int stun_send(int s, struct sockaddr_in *dst, struct stun_header *resp)
 static void stun_req_id(struct stun_header *req)
 {
 	int x;
+#ifdef WIN32
+	srand(time(0));
+	for (x = 0; x < 4; x++)
+		req->id.id[x] = rand();
+#else
 	srandom(time(0));
 	for (x = 0; x < 4; x++)
 		req->id.id[x] = random();
+#endif
 }
 
 /* callback type to be invoked on stun responses. */
@@ -223,7 +235,8 @@ static int stun_handle_packet(int s, struct sockaddr_in *src,
 		LogPrintf("Scrambled STUN packet length (got %d, expecting %d)\n", x, (int)len);
 	} else
 		len = x;
-	bzero(&st, sizeof(st));
+	//bzero(&st, sizeof(st));
+	memset(&st, 0x00, sizeof(st));
 	while (len) {
 		if (len < sizeof(struct stun_attr)) {
 			LogPrintf("Runt Attribute (got %d, expecting %d)\n", (int)len, (int) sizeof(struct stun_attr));
@@ -378,7 +391,8 @@ int stun_request(int s, struct sockaddr_in *dst,
 				retry, res);
 			continue;
 		}
-		bzero(&src, sizeof(src));
+		//bzero(&src, sizeof(src));
+		memset(&src, 0x00, sizeof(src));
 		srclen = sizeof(src);
 		/* XXX pass -1 in the size, because stun_handle_packet might
 		 * write past the end of the buffer.
@@ -390,7 +404,8 @@ int stun_request(int s, struct sockaddr_in *dst,
 				retry, res);
 			continue;
 		}
-		bzero(answer, sizeof(struct sockaddr_in));
+		//bzero(answer, sizeof(struct sockaddr_in));
+		memset (answer, 0x00, sizeof(struct sockaddr_in));
 		stun_handle_packet(s, &src, reply_buf, res, stun_get_mapped, answer);
 		return 0;
 	}
@@ -408,7 +423,8 @@ int GetSTUNAddress(int client_port)
 		LogPrintf("Error resolving host %s\n", STUN_SERVER);
 		return -1;
 	}
-	bzero(&server, sizeof(server));
+	//bzero(&server, sizeof(server));
+	memset(&server, 0x00, sizeof(server));
 	server.sin_family = AF_INET;
 	server.sin_addr = *(struct in_addr*) hostinfo->h_addr;
 	server.sin_port = htons(stunport);
@@ -419,13 +435,15 @@ int GetSTUNAddress(int client_port)
 		return -1;
 	}
 
-	bzero(&client, sizeof(client));
+	//bzero(&client, sizeof(client));
+	memset(&client, 0x00, sizeof(client));
 	client.sin_family = AF_INET;
 	client.sin_addr.s_addr = htonl(INADDR_ANY);
 	client.sin_port = htons(client_port);
         if (bind(sock, (struct sockaddr*)&client, sizeof(client)) < 0) {
         	LogPrintf("Error bind to socket\n");
-		close(sock);
+		//close(sock);
+		CLOSE(sock);
 		return -1;
 	}
 	res = stun_request(sock, &server, NULL, &mapped);
@@ -435,6 +453,7 @@ int GetSTUNAddress(int client_port)
 		AddLocal(CService(CNetAddr(mapped.sin_addr), htons(mapped.sin_port)), LOCAL_UPNP); //There is no STUN priority, but UPNP is close enough
 	}
 
-	close(sock);
+	//close(sock);
+	CLOSE(sock);
 	return res;
 }
