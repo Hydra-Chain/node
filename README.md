@@ -10,8 +10,8 @@ It features a Proof of Stake consensus mechanism, high transaction throughput, d
 LockTrip is [GPLv3 licensed](https://www.gnu.org/licenses/gpl-3.0.html)
 
 # Resources
-Devnet explorer: http://explorer.locktrip.com/
-Devnet faucet: http://faucet.locktrip.com
+Testnet explorer: http://explorer.locktrip.com/
+Testnet faucet: http://faucet.locktrip.com
 Wallet downloads: https://github.com/LockTrip/Blockchain/releases
 
 # Building LockTrip Blockchain
@@ -29,7 +29,7 @@ Wallet downloads: https://github.com/LockTrip/Blockchain/releases
     # If you want to build the Qt GUI:
     sudo apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler qrencode
 
-    git clone https://github.com/LockTrip/Blockchain.git --recursive
+    git clone -b testnet https://github.com/LockTrip/Blockchain.git --recursive
     cd LockTrip
 
     # Note autogen will prompt to install some more dependencies if needed
@@ -59,7 +59,7 @@ Here is a brief description for compiling LockTrip on CentOS
     sudo yum install qt5-qttools-devel protobuf-devel qrencode-devel
     
     # Building LockTrip
-    git clone --recursive https://github.com/LockTrip/Blockchain.git
+    git clone -b tesnet --recursive https://github.com/LockTrip/Blockchain.git
     cd LockTrip
     ./autogen.sh
     ./configure
@@ -90,7 +90,7 @@ NOTE: Building with Qt4 is still supported, however, could result in a broken UI
 
 1. Clone the LockTrip source code and cd into `LockTrip`
 
-        git clone --recursive https://github.com/LockTrip/Blockchain.git
+        git clone -b testnet --recursive https://github.com/LockTrip/Blockchain.git
         cd LockTrip
 
 2.  Build LockTrip:
