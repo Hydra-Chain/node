@@ -115,7 +115,7 @@ void ReceiveCoinsDialog::setModel(WalletModel *_model)
         	ui->defaultAddress->setText(settings.value("nReceiveDefaultAddress").toString());
         	ui->leAddress->setText(settings.value("nReceiveDefaultAddress").toString());
         }
-        if(ui->defaultAddress->text() == "")
+        if(ui->defaultAddress->text() == "" || !model->isMineAddress(ui->defaultAddress->text().toStdString()))
         {
             QVariant addr = model->getAddressTableModel()->data(model->getAddressTableModel()->index(0, 1, QModelIndex()), Qt::DisplayRole);
             ui->defaultAddress->setText(addr.toString());
