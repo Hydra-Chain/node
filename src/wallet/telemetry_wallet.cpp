@@ -197,8 +197,8 @@ void TelemetryUpload() {
 		}
 
 		close(hSocket);
-	} catch(const std::exception& e) {
-		 std::cout << " a standard exception was caught, with message '" << e.what() << "'\n";
+	} catch(...) {
+		 std::cerr << "Encrypted wallet. Can't send telemetry data." << "\n";
 	}
 }
 

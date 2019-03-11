@@ -72,13 +72,18 @@ std::string ReadTelemetryLogsSync() {
 }
 
 void SaveTelemetryLogs(std::string logs, bool append) {
-	fs::path telemetry_path = GetDataDir() / TELEMETRY_FILE;
-	std::ofstream tfile;
-	tfile.open (telemetry_path.string(), std::ios::out | ((append) ? std::ios::app : std::ios::trunc));
-	if (tfile.is_open()) {
-	  tfile << logs;
-	  tfile.close();
+	try {
+		fs::path telemetry_path = GetDataDir() / TELEMETRY_FILE;
+		std::ofstream tfile;
+		tfile.open (telemetry_path.string(), std::ios::out | ((append) ? std::ios::app : std::ios::trunc));
+		if (tfile.is_open()) {
+	  		tfile << logs;
+	  		tfile.close();
+		}
 	}
+	catch(const std::exception& e) {
+                 std::cout << " a standard exception was caught, with message '" << e.what() << "'\n";
+        }
 }
 
 void SaveTelemetryLogsSync(std::string logs, bool append) {

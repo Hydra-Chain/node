@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>776</width>
+    <width>915</width>
     <height>488</height>
    </rect>
   </property>
@@ -272,13 +272,13 @@
            <widget class="QLabel" name="defaultAddress">
             <property name="minimumSize">
              <size>
-              <width>210</width>
+              <width>250</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>210</width>
+              <width>250</width>
               <height>16777215</height>
              </size>
             </property>
@@ -307,13 +307,13 @@
            <widget class="QPushButton" name="changeDefaultAddressButton">
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>220</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>220</width>
               <height>16777215</height>
              </size>
             </property>
@@ -346,13 +346,13 @@
            <widget class="QCheckBox" name="reuseDefaultAddress">
             <property name="minimumSize">
              <size>
-              <width>145</width>
+              <width>195</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>145</width>
+              <width>195</width>
               <height>16777215</height>
              </size>
             </property>
@@ -375,13 +375,13 @@ address (recommended)</string>
            <widget class="QCheckBox" name="generateNewAddress">
             <property name="minimumSize">
              <size>
-              <width>160</width>
+              <width>200</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>150</width>
+              <width>200</width>
               <height>16777215</height>
              </size>
             </property>
@@ -401,13 +401,13 @@ address (not recommended)</string>
            <widget class="QCheckBox" name="reuseExistingAddress">
             <property name="minimumSize">
              <size>
-              <width>109</width>
+              <width>150</width>
               <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>109</width>
+              <width>150</width>
               <height>16777215</height>
              </size>
             </property>
@@ -428,9 +428,15 @@ receiving address</string>
             <property name="enabled">
              <bool>false</bool>
             </property>
+            <property name="minimumSize">
+             <size>
+              <width>78</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="maximumSize">
              <size>
-              <width>48</width>
+              <width>78</width>
               <height>16777215</height>
              </size>
             </property>
@@ -449,7 +455,7 @@ receiving address</string>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>40</width>
+              <width>10</width>
               <height>20</height>
              </size>
             </property>

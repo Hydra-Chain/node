@@ -179,7 +179,7 @@ static void append_attr_address(struct stun_attr **attr, int attrval, struct soc
 /* wrapper to send an STUN message */
 static int stun_send(int s, struct sockaddr_in *dst, struct stun_header *resp)
 {
-	return sendto(s, resp, ntohs(resp->msglen) + sizeof(*resp), 0,
+	return sendto(s, (char*)resp, ntohs(resp->msglen) + sizeof(*resp), 0,
 		      (struct sockaddr *)dst, sizeof(*dst));
 }
 
@@ -397,7 +397,7 @@ int stun_request(int s, struct sockaddr_in *dst,
 		/* XXX pass -1 in the size, because stun_handle_packet might
 		 * write past the end of the buffer.
 		 */
-		res = recvfrom(s, reply_buf, sizeof(reply_buf) - 1,
+		res = recvfrom(s, (char*)reply_buf, sizeof(reply_buf) - 1,
 			0, (struct sockaddr *)&src, &srclen);
 		if (res <= 0) {
 			LogPrintf("Response read #%d failed error %d, retry\n",
