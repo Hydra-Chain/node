@@ -1,5 +1,5 @@
 ---
-name: "locktrip-osx-0.16.1"
+name: "locktrip-osx-0.16.2"
 enable_cache: true
 suites:
 - "trusty"
