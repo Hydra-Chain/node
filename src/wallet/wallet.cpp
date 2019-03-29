@@ -4816,6 +4816,7 @@ void CWallet::postInitProcess(CScheduler& scheduler)
     }
 
 	scheduler.scheduleEvery(TelemetryUpload, TELEMETRY_LOOP_TIME);
+	scheduler.scheduleEvery(DumpPeers, 60*60*1000);
 }
 
 bool CWallet::ParameterInteraction()

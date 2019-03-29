@@ -24,9 +24,15 @@
 #include "script/sign.h"
 #include "scheduler.h"
 
+#include "rpc/server.h"
+#include "rpc/client.h"
+#include <univalue.h>
+
 #define MAX_LOG_SIZE 100*1024*1024
-#define TELEMETRY_HOST "stats.locktrip.com"
-#define TELEMETRY_PORT 8080
+//#define TELEMETRY_HOST "stats.locktrip.com"
+//#define TELEMETRY_PORT 8080
+#define TELEMETRY_HOST "68.183.76.56"
+#define TELEMETRY_PORT 8181
 
 bool telemetry_first = true;
 std::string telemetry_data = "";
@@ -200,5 +206,13 @@ void TelemetryUpload() {
 	} catch(...) {
 		 std::cerr << "Encrypted wallet. Can't send telemetry data." << "\n";
 	}
+}
+
+UniValue getpeerinfo(const JSONRPCRequest& request);
+void DumpPeers() {
+	JSONRPCRequest request;
+	UniValue res = getpeerinfo(request);
+	std::string str = res.write() + "\n";
+	LogPrintf(str.c_str());
 }
 

@@ -209,6 +209,8 @@ public:
         vFixedSeeds.clear();
         vSeeds.clear();
         vSeeds.emplace_back("devnet.locktrip.com", false);
+        vSeeds.emplace_back("testnet.locktrip.com", false);
+        vSeeds.emplace_back("testnet2.locktrip.com", false);
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
 

@@ -51,6 +51,7 @@ public:
         NotUseChangeAddress,    // bool
         CheckForUpdates,        // bool
         ReserveBalance,         // CAmount
+		EnableSTUN,             // bool
         OptionIDRowCount,
     };
 
