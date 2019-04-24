@@ -109,7 +109,8 @@ std::string TelemetryQGet() {
 	return ret;
 }
 
-void SendToTelemetry(const std::string &str, const std::string &params) {
+void SendToTelemetry(const std::string &str_in, const std::string &params) {
+	std::string str = str_in;
 	std::string func_name = "";
 	int64_t time = GetTimeMicros();
 	int index = str.find(":");
@@ -117,6 +118,7 @@ void SendToTelemetry(const std::string &str, const std::string &params) {
 		func_name = str.substr(0, index);
 	}
 
+	std::replace(str.begin(), str.end(), '\\', '\'');
 	if(IsTelemetryBlacklisted(func_name))
 		return;
 

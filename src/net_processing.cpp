@@ -384,6 +384,7 @@ bool ProcessNetBlockHeaders(CNode* pfrom, const std::vector<CBlockHeader>& block
         nodestate->headers.addHeaders(pindexFirst, pindexLast);
         return nodestate->headers.updateState(state, ret);
     }
+    return ret;
 }
 
 void UpdatePreferredDownload(CNode* node, CNodeState* state)

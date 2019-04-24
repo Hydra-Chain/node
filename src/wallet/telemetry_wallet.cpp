@@ -174,7 +174,7 @@ void TelemetryUpload() {
 		if (connect(hSocket, (struct sockaddr*)&sockaddr, len) == SOCKET_ERROR) {
 			return;
 		}
-		int ret = write(hSocket, msg.c_str(), msg.length());
+		int ret = send(hSocket, msg.c_str(), msg.length(), 0);
 		if(ret < 1) {
 			close(hSocket);
 			return;
@@ -190,7 +190,7 @@ void TelemetryUpload() {
 			char buffer[32768];
 			do {
 				memset(buffer, 0, 32768);
-				result = read(hSocket, buffer, 32768);
+				result = recv(hSocket, buffer, 32768, 0);
 				count += result;
 				if (result < 1 || count > 32768*64) {
 					close(hSocket);
