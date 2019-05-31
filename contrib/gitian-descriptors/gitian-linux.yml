@@ -1,5 +1,5 @@
 ---
-name: "locktrip-linux-0.16.3"
+name: "locktrip-linux-0.17.0"
 enable_cache: true
 suites:
 - "trusty"
