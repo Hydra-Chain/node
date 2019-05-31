@@ -1,27 +1,28 @@
-#include "sendtocontract.h"
-#include "ui_sendtocontract.h"
-#include "platformstyle.h"
-#include "walletmodel.h"
-#include "clientmodel.h"
-#include "guiconstants.h"
-#include "rpcconsole.h"
-#include "execrpccommand.h"
-#include "bitcoinunits.h"
-#include "optionsmodel.h"
-#include "validation.h"
-#include "utilmoneystr.h"
-#include "abifunctionfield.h"
-#include "contractabi.h"
-#include "tabbarinfo.h"
-#include "contractresult.h"
-#include "contractbookpage.h"
-#include "editcontractinfodialog.h"
-#include "contracttablemodel.h"
-#include "styleSheet.h"
-#include "guiutil.h"
-#include "sendcoinsdialog.h"
+#include <qt/sendtocontract.h>
+#include <qt/forms/ui_sendtocontract.h>
+#include <qt/platformstyle.h>
+#include <qt/walletmodel.h>
+#include <qt/clientmodel.h>
+#include <qt/guiconstants.h>
+#include <qt/rpcconsole.h>
+#include <qt/execrpccommand.h>
+#include <qt/bitcoinunits.h>
+#include <qt/optionsmodel.h>
+#include <validation.h>
+#include <utilmoneystr.h>
+#include <qt/abifunctionfield.h>
+#include <qt/contractabi.h>
+#include <qt/tabbarinfo.h>
+#include <qt/contractresult.h>
+#include <qt/contractbookpage.h>
+#include <qt/editcontractinfodialog.h>
+#include <qt/contracttablemodel.h>
+#include <qt/styleSheet.h>
+#include <qt/guiutil.h>
+#include <qt/sendcoinsdialog.h>
 #include "locktrip/price-oracle.h"
 #include <QClipboard>
+#include <interfaces/node.h>
 
 namespace SendToContract_NS
 {
@@ -83,6 +84,8 @@ SendToContract::SendToContract(const PlatformStyle *platformStyle, QWidget *pare
     ui->lineEditGasLimit->setValue(DEFAULT_GAS_LIMIT_OP_SEND);
     ui->textEditInterface->setIsValidManually(true);
     ui->pushButtonSendToContract->setEnabled(false);
+    ui->lineEditSenderAddress->setSenderAddress(true);
+    ui->lineEditSenderAddress->setComboBoxEditable(true);
 
     // Create new PRC command line interface
     QStringList lstMandatory;
@@ -130,6 +133,7 @@ void SendToContract::setModel(WalletModel *_model)
 {
     m_model = _model;
     m_contractModel = m_model->getContractTableModel();
+    ui->lineEditSenderAddress->setWalletModel(m_model);
 }
 
 bool SendToContract::isValidContractAddress()
@@ -169,8 +173,7 @@ void SendToContract::setClientModel(ClientModel *_clientModel)
 
     if (m_clientModel)
     {
-        connect(m_clientModel, SIGNAL(tipChanged()), this, SLOT(on_numBlocksChanged()));
-        on_numBlocksChanged();
+        connect(m_clientModel, SIGNAL(gasInfoChanged(quint64, quint64, quint64)), this, SLOT(on_gasInfoChanged(quint64, quint64, quint64)));
     }
 }
 
@@ -229,7 +232,7 @@ void SendToContract::on_sendToContractClicked()
         if(retval == QMessageBox::Yes)
         {
             // Execute RPC command line
-            if(errorMessage.isEmpty() && m_execRPCCommand->exec(lstParams, result, resultJson, errorMessage))
+            if(errorMessage.isEmpty() && m_execRPCCommand->exec(m_model->node(), m_model->wallet(), lstParams, result, resultJson, errorMessage))
             {
                 ContractResult *widgetResult = new ContractResult(ui->stackedWidget);
                 widgetResult->setResultData(result, FunctionABI(), m_ABIFunctionField->getParamsValues(), ContractResult::SendToResult);
@@ -248,9 +251,9 @@ void SendToContract::on_sendToContractClicked()
     }
 }
 
-void SendToContract::on_numBlocksChanged()
+void SendToContract::on_gasInfoChanged(quint64 blockGasLimit, quint64 minGasPrice, quint64 nGasPrice)
 {
-    if(m_clientModel)
+	if(m_clientModel)
     {
         uint64_t blockGasLimit = 0;
         uint64_t minGasPrice = 0;

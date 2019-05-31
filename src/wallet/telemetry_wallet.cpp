@@ -88,7 +88,8 @@ std::vector<unsigned char> TelemetryHash(std::string str) {
 }
 
 bool TelemetryGetKeys(CPubKey& pubKey, CKey& vchSecret) {
-	CWallet * const pwallet = ::vpwallets.size() == 1 ? ::vpwallets[0] : nullptr;
+//	CWallet * const pwallet = vpwallets.size() == 1 ? vpwallets[0] : nullptr;
+	CWallet * const pwallet = 1;
 	if(pwallet == nullptr)
 		return false;
 	if (!pwallet->GetAccountPubkey(pubKey, ""))

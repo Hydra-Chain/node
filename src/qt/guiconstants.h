@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2016 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -24,8 +24,6 @@ static const bool DEFAULT_SPLASHSCREEN = true;
 #define COLOR_BAREADDRESS QColor(140, 140, 140)
 /* Transaction list -- TX status decoration - open until date */
 #define COLOR_TX_STATUS_OPENUNTILDATE QColor(64, 64, 255)
-/* Transaction list -- TX status decoration - offline */
-#define COLOR_TX_STATUS_OFFLINE QColor(192, 192, 192)
 /* Transaction list -- TX status decoration - danger, tx needs attention */
 #define COLOR_TX_STATUS_DANGER QColor(200, 100, 100)
 /* Transaction list -- TX status decoration - default color */
@@ -54,5 +52,6 @@ static const double LOC_GRANULARITY = 100000000;
 #define QAPP_ORG_DOMAIN "locktrip.com"
 #define QAPP_APP_NAME_DEFAULT "LockTrip-Qt"
 #define QAPP_APP_NAME_TESTNET "Locktrip-Qt-testnet"
+#define QAPP_APP_NAME_REGTEST "Locktrip-Qt-regtest"
 
 #endif // BITCOIN_QT_GUICONSTANTS_H

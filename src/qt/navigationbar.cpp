@@ -1,11 +1,11 @@
-#include "navigationbar.h"
+#include <qt/navigationbar.h>
 #include <QActionGroup>
 #include <QToolButton>
 #include <QLayout>
 #include <QStylePainter>
 #include <QStyleOptionToolButton>
 #include <QStyle>
-#include "styleSheet.h"
+#include <qt/styleSheet.h>
 #include <locktrip/dgp.h>
 
 namespace NavigationBar_NS
@@ -20,7 +20,6 @@ static const int MarginBottom = 0;
 static const int ButtonSpacing = 0;
 static const int SubNavPaddingRight = 40;
 static const int SubNavSpacing = 10;
-
 }
 using namespace NavigationBar_NS;
 

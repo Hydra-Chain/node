@@ -1,9 +1,9 @@
-#include "eventlog.h"
-#include "execrpccommand.h"
+#include <qt/eventlog.h>
+#include <qt/execrpccommand.h>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
-#include "uint256.h"
+#include <uint256.h>
 
 namespace EventLog_NS
 {
@@ -55,7 +55,7 @@ EventLog::~EventLog()
     }
 }
 
-bool EventLog::searchTokenTx(int64_t fromBlock, int64_t toBlock, std::string strContractAddress, std::string strSenderAddress, QVariant &result)
+bool EventLog::searchTokenTx(interfaces::Node& node, interfaces::Wallet& wallet, int64_t fromBlock, int64_t toBlock, std::string strContractAddress, std::string strSenderAddress, QVariant &result)
 {
     std::vector<std::string> addresses;
     addresses.push_back(strContractAddress);
@@ -69,10 +69,10 @@ bool EventLog::searchTokenTx(int64_t fromBlock, int64_t toBlock, std::string str
     // Match the log with receiver address
     topics.push_back(strSenderAddress);
 
-    return search(fromBlock, toBlock, addresses, topics, result);
+    return search(node, wallet, fromBlock, toBlock, addresses, topics, result);
 }
 
-bool EventLog::search(int64_t fromBlock, int64_t toBlock, const std::vector<std::string> addresses, const std::vector<std::string> topics, QVariant &result)
+bool EventLog::search(interfaces::Node& node, interfaces::Wallet& wallet, int64_t fromBlock, int64_t toBlock, const std::vector<std::string> addresses, const std::vector<std::string> topics, QVariant &result)
 {
     setStartBlock(fromBlock);
     setEndBlock(toBlock);
@@ -81,7 +81,7 @@ bool EventLog::search(int64_t fromBlock, int64_t toBlock, const std::vector<std:
 
     QString resultJson;
     QString errorMessage;
-    if(!m_RPCCommand->exec(m_lstParams, result, resultJson, errorMessage))
+    if(!m_RPCCommand->exec(node, wallet, m_lstParams, result, resultJson, errorMessage))
         return false;
     return true;
 }

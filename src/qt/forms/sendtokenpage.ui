@@ -209,6 +209,12 @@
    <header>qvalidatedlineedit.h</header>
   </customwidget>
   <customwidget>
+   <class>BitcoinAmountField</class>
+   <extends>QLineEdit</extends>
+   <header>qt/bitcoinamountfield.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>TokenAmountField</class>
    <extends>QWidget</extends>
    <header>tokenamountfield.h</header>

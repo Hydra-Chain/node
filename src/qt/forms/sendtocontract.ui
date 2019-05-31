@@ -483,11 +483,6 @@
    <header>qvalidatedtextedit.h</header>
   </customwidget>
   <customwidget>
-   <class>AddressField</class>
-   <extends>QComboBox</extends>
-   <header>addressfield.h</header>
-  </customwidget>
-  <customwidget>
    <class>BitcoinAmountField</class>
    <extends>QLineEdit</extends>
    <header>bitcoinamountfield.h</header>
@@ -497,6 +492,11 @@
    <class>QValidatedLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qvalidatedlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>AddressField</class>
+   <extends>QComboBox</extends>
+   <header>qt/addressfield.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

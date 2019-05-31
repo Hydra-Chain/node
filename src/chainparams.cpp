@@ -1,22 +1,22 @@
 // Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2009-2016 The Bitcoin Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "chainparams.h"
-#include "consensus/merkle.h"
-#include "consensus/consensus.h"
-#include "pow.h"
+#include <chainparams.h>
+#include <consensus/merkle.h>
+#include <consensus/consensus.h>
+#include <pow.h>
 
-#include "tinyformat.h"
-#include "util.h"
-#include "utilstrencodings.h"
+#include <tinyformat.h>
+#include <util.h>
+#include <utilstrencodings.h>
 
 #include <assert.h>
 #include <iostream>
 
-#include "chainparamsseeds.h"
-#include "amount.h"
+#include <chainparamsseeds.h>
+#include <amount.h>
 ///////////////////////////////////////////// // qtum
 #include <libdevcore/SHA3.h>
 #include <libdevcore/RLP.h>
@@ -153,6 +153,7 @@ public:
         assert(consensus.hashGenesisBlock == uint256S("0x000073aa3f202501c3629ea0a29f9fcc2d152b91001eefe06801f6402f609366"));
         assert(genesis.hashMerkleRoot == uint256S("0xbc4480addd2d1c0bf7ff88574831c52cd472c7f1caf1427d082b4e974748e8eb"));
 
+		bech32_hrp = "qc";
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
         fDefaultConsistencyChecks = false;
@@ -173,6 +174,8 @@ public:
 
         consensus.BIP34Hash = uint256S("0x000073aa3f202501c3629ea0a29f9fcc2d152b91001eefe06801f6402f609366");
         // consensus.BIP65Height: 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
+		/* disable fallback fee on mainnet */
+        m_fallback_fee_enabled = false;
         // consensus.BIP66Height: 00000000000000000379eaa19dce8c9b722d46ae6a57c2f1a988119488b50931
 
         consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
@@ -211,6 +214,7 @@ public:
         vSeeds.emplace_back("devnet.locktrip.com", false);
         vSeeds.emplace_back("testnet.locktrip.com", false);
         vSeeds.emplace_back("testnet2.locktrip.com", false);
+		bech32_hrp = "tq";
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
 
@@ -234,6 +238,8 @@ public:
         // consensus.BIP65Height - 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
         // consensus.BIP66Height - 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
         consensus.BIP34Hash = uint256S("0x0000274254275eb73489b486a0e66d72b6d9e31fc2dad1aa277c66f72f63107e");
+		/* enable fallback fee on testnet */
+        m_fallback_fee_enabled = true;
         consensus.posLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
@@ -284,13 +290,14 @@ public:
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
-
+		bech32_hrp = "qcrt";
         consensus.BIP34Hash = uint256S("0x3b35fc4b74e82a8f78825d8389be7efdd11b6fb2c866bf1a3bc0631035c9c197");
         // consensus.BIP65Height:BIP65 activated on regtest (Used in rpc activation tests)
         // consensus.BIP66Height:BIP66 activated on regtest (Used in rpc activation tests)
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-
+		/* enable fallback fee on regtest */
+        m_fallback_fee_enabled = true;
         consensus.nMinimumChainWork = uint256S("0x00");
 
         consensus.nRuleChangeActivationThreshold = 108; // 75% for testchains
@@ -310,7 +317,9 @@ public:
     CUnitTestParams()
     {
         // Activate the the BIPs for regtest as in Bitcoin
+        consensus.BIP16Exception = uint256();
         consensus.BIP34Height = 100000000; // BIP34 has not activated on regtest (far in the future so block v1 are not rejected in tests)
+        consensus.BIP34Hash = uint256();
         consensus.BIP65Height = 1351; // BIP65 activated on regtest (Used in rpc activation tests)
         consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
 

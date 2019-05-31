@@ -1,8 +1,8 @@
 #include <sstream>
 #include <util.h>
 #include <validation.h>
-#include "chainparams.h"
-#include "qtumstate.h"
+#include <chainparams.h>
+#include <qtum/qtumstate.h>
 
 using namespace std;
 using namespace dev;
@@ -87,6 +87,7 @@ ResultExecute QtumState::execute(EnvInfo const& _envInfo, SealEngineFace const& 
         }
     }
     catch(Exception const& _e){
+
         printfErrorLog(dev::eth::toTransactionException(_e));
         res.excepted = dev::eth::toTransactionException(_e);
         res.gasUsed = _t.gas();
@@ -112,7 +113,6 @@ ResultExecute QtumState::execute(EnvInfo const& _envInfo, SealEngineFace const& 
         ex.gasRefunded=0;
         ex.gasUsed=gas;
         ex.excepted=TransactionException();
-
         //create a refund tx to send back any coins that were suppose to be sent to the contract
         CMutableTransaction refund;
         if(_t.value() > 0) {

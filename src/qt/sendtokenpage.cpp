@@ -1,21 +1,22 @@
-#include "sendtokenpage.h"
-#include "ui_sendtokenpage.h"
+#include <qt/sendtokenpage.h>
+#include <qt/forms/ui_sendtokenpage.h>
 
-#include "walletmodel.h"
-#include "clientmodel.h"
-#include "optionsmodel.h"
-#include "validation.h"
-#include "utilmoneystr.h"
-#include "token.h"
-#include "bitcoinunits.h"
-#include "wallet/wallet.h"
-#include "validation.h"
-#include "guiutil.h"
-#include "sendcoinsdialog.h"
-#include "bitcoinaddressvalidator.h"
-#include "uint256.h"
-#include "styleSheet.h"
-#include "guiconstants.h"
+#include <qt/walletmodel.h>
+#include <qt/clientmodel.h>
+#include <qt/optionsmodel.h>
+#include <validation.h>
+#include <utilmoneystr.h>
+#include <qt/token.h>
+#include <qt/bitcoinunits.h>
+#include <wallet/wallet.h>
+#include <validation.h>
+#include <qt/guiutil.h>
+#include <qt/sendcoinsdialog.h>
+#include <qt/bitcoinaddressvalidator.h>
+#include <uint256.h>
+#include <qt/styleSheet.h>
+#include <interfaces/node.h>
+#include <guiconstants.h>
 
 //static const CAmount SINGLE_STEP = 0.00000001*COIN;
 
@@ -65,7 +66,7 @@ SendTokenPage::SendTokenPage(QWidget *parent) :
     connect(ui->lineEditAmount, SIGNAL(valueChanged()), SLOT(on_updateConfirmButton()));
     connect(ui->confirmButton, SIGNAL(clicked()), SLOT(on_confirmClicked()));
 
-    ui->lineEditPayTo->setCheckValidator(new BitcoinAddressCheckValidator(parent, false));
+    ui->lineEditPayTo->setCheckValidator(new BitcoinAddressCheckValidator(parent, true));
 }
 
 SendTokenPage::~SendTokenPage()
@@ -80,6 +81,7 @@ SendTokenPage::~SendTokenPage()
 void SendTokenPage::setModel(WalletModel *_model)
 {
     m_model = _model;
+    m_tokenABI->setModel(m_model);
 }
 
 void SendTokenPage::setClientModel(ClientModel *_clientModel)
@@ -88,8 +90,7 @@ void SendTokenPage::setClientModel(ClientModel *_clientModel)
 
     if (m_clientModel)
     {
-        connect(m_clientModel, SIGNAL(tipChanged()), this, SLOT(on_numBlocksChanged()));
-        on_numBlocksChanged();
+        connect(m_clientModel, SIGNAL(gasInfoChanged(quint64, quint64, quint64)), this, SLOT(on_gasInfoChanged(quint64, quint64, quint64)));
     }
 }
 
@@ -128,7 +129,7 @@ void SendTokenPage::on_clearButton_clicked()
     clearAll();
 }
 
-void SendTokenPage::on_numBlocksChanged()
+void SendTokenPage::on_gasInfoChanged(quint64 blockGasLimit, quint64 minGasPrice, quint64 nGasPrice)
 {
     if(m_clientModel)
     {
@@ -166,7 +167,7 @@ void SendTokenPage::on_confirmClicked()
         return;
     }
 
-    if(m_model && m_model->isUnspentAddress(m_selectedToken->sender))
+    if(m_model && m_model->wallet().isUnspentAddress(m_selectedToken->sender))
     {
         int unit = m_model->getOptionsModel()->getDisplayUnit();
         uint64_t gasLimit = ui->lineEditGasLimit->value();
@@ -195,15 +196,15 @@ void SendTokenPage::on_confirmClicked()
         {
             if(m_tokenABI->transfer(toAddress, amountToSend, true))
             {
-                CTokenTx tokenTx;
-                tokenTx.strContractAddress = m_selectedToken->address;
-                tokenTx.strSenderAddress = m_selectedToken->sender;
-                tokenTx.strReceiverAddress = toAddress;
+                interfaces::TokenTx tokenTx;
+                tokenTx.contract_address = m_selectedToken->address;
+                tokenTx.sender_address = m_selectedToken->sender;
+                tokenTx.receiver_address = toAddress;
                 dev::u256 nValue(amountToSend);
-                tokenTx.nValue = u256Touint(nValue);
-                tokenTx.transactionHash = uint256S(m_tokenABI->getTxId());
-                tokenTx.strLabel = label;
-                m_model->addTokenTxEntry(tokenTx);
+                tokenTx.value = u256Touint(nValue);
+                tokenTx.tx_hash = uint256S(m_tokenABI->getTxId());
+                tokenTx.label = label;
+                m_model->wallet().addTokenTxEntry(tokenTx);
             }
             clearAll();
         }
@@ -211,7 +212,7 @@ void SendTokenPage::on_confirmClicked()
     else
     {
         QString message = tr("To send %1 you need LOC on address <br /> %2.")
-                .arg(QString::fromStdString(m_selectedToken->symbol)).arg(QString::fromStdString(CBitcoinAddress(m_selectedToken->sender).ToString()));
+                .arg(QString::fromStdString(m_selectedToken->symbol)).arg(QString::fromStdString(m_selectedToken->sender));
 
         QMessageBox::warning(this, tr("Send token"), message);
     }

@@ -90,6 +90,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="useAvailableBalanceButton">
+        <property name="text">
+         <string>Use available balance</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item row="1" column="1">

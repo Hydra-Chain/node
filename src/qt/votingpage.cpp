@@ -255,7 +255,7 @@ void VotingPage::voteButton(bool isYesVote) {
 	        LogPrintf("LOCs: %ul\n", confirmationDialog.locAmount->text().toDouble());
 	        ExecRPCCommand::appendParam(lstParams, PARAM_AMOUNT, QString::number(LOCs, 'f', 9));
 	        ExecRPCCommand::appendParam(lstParams, PARAM_GASLIMIT, QString::number(VOTE_GAS_LIMIT));
-		    bool smartContractSucceed = execRPCCommand->exec(lstParams, result, resultJson, errorMessage);
+		    bool smartContractSucceed = execRPCCommand->exec(model->node(), model->wallet(), lstParams, result, resultJson, errorMessage);
 		    if(!errorMessage.isEmpty())
 		    {
 		    	QMessageBox::critical( this, tr("Voting failed"), tr("Reason: %1\n").arg(errorMessage));
