@@ -906,7 +906,6 @@ static UniValue sendtocontract(const JSONRPCRequest& request){
                 + HelpExampleCli("sendtocontract", "\"c6ca2697719d00446d4ea51f6fac8fd1e9310214\" \"54f6127f\" 12.0015 6000000 \"LM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\"")
         );
 
-
     std::string contractaddress = request.params[0].get_str();
     if(contractaddress.size() != 40 || !CheckHex(contractaddress))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Incorrect contract address");

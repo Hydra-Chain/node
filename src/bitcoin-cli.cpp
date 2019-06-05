@@ -1,4 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
+// Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -372,6 +373,7 @@ static UniValue CallRPC(BaseRequestHandler *rh, const std::string& strMethod, co
             throw CConnectionFailed("uri-encode failed");
         }
     }
+
     int r = evhttp_make_request(evcon.get(), req.get(), EVHTTP_REQ_POST, endpoint.c_str());
     req.release(); // ownership moved to evcon in above call
     if (r != 0) {
@@ -454,7 +456,6 @@ static int CommandLineRPC(int argc, char *argv[])
         do {
             try {
                 const UniValue reply = CallRPC(rh.get(), method, args);
-
                 // Parse reply
                 const UniValue& result = find_value(reply, "result");
                 const UniValue& error  = find_value(reply, "error");

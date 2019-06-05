@@ -161,9 +161,9 @@ public:
         fMineBlocksOnDemand = false;
 
         checkpointData = (CCheckpointData) {
-                {
-                        { 0, uint256S("0x000073aa3f202501c3629ea0a29f9fcc2d152b91001eefe06801f6402f609366")},
-                }
+            {
+                { 0, uint256S("0x000073aa3f202501c3629ea0a29f9fcc2d152b91001eefe06801f6402f609366")},
+            }
         };
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,48);
@@ -211,9 +211,9 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.emplace_back("devnet.locktrip.com", false);
-        vSeeds.emplace_back("testnet.locktrip.com", false);
-        vSeeds.emplace_back("testnet2.locktrip.com", false);
+        vSeeds.push_back("devnet.locktrip.com");
+        vSeeds.push_back("testnet.locktrip.com");
+        vSeeds.push_back("testnet2.locktrip.com");
 		bech32_hrp = "tq";
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
@@ -224,9 +224,9 @@ public:
 
 
         checkpointData = (CCheckpointData) {
-                {
-                        {0, uint256S("0x0000274254275eb73489b486a0e66d72b6d9e31fc2dad1aa277c66f72f63107e")}
-                }
+            {
+                {0, uint256S("0x0000274254275eb73489b486a0e66d72b6d9e31fc2dad1aa277c66f72f63107e")}
+            }
         };
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,66);
@@ -280,9 +280,9 @@ public:
         fMineBlocksOnDemand = true;
 
         checkpointData = (CCheckpointData) {
-                {
-                        {0, uint256S("0x3b35fc4b74e82a8f78825d8389be7efdd11b6fb2c866bf1a3bc0631035c9c197")},
-                }
+            {
+                {0, uint256S("0x3b35fc4b74e82a8f78825d8389be7efdd11b6fb2c866bf1a3bc0631035c9c197")},
+            }
         };
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,120);

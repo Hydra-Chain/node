@@ -63,7 +63,6 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
                 pindex = pindex->pprev;
             return pindex->nBits;
         }
-        return pindexLast->nBits;
     }
 
     return CalculateNextWorkRequired(pindexPrev, pindexPrevPrev->GetBlockTime(), params, fProofOfStake);

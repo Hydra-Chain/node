@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 #include <iostream>
+#include <key_io.h>
 
 class CRPCConvertParam
 {
@@ -187,14 +188,12 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "disconnectnode", 1, "nodeid" },
     { "addwitnessaddress", 1, "p2sh" },
     { "createcontract", 1, "gasLimit" },
-    { "createcontract", 2, "gasPrice" },
-    { "createcontract", 4, "broadcast" },
-    { "createcontract", 5, "changeToSender" },
+    { "createcontract", 3, "broadcast" },
+    { "createcontract", 4, "changeToSender" },
     { "sendtocontract", 2, "amount" },
-    { "sendtocontract", 3, "gasLimit" },
-    { "sendtocontract", 4, "gasPrice" },
-    { "sendtocontract", 6, "broadcast" },
-    { "sendtocontract", 7, "changeToSender" },
+    { "sendtocontract", 3, "gasPrice" },
+    { "sendtocontract", 5, "broadcast" },
+    { "sendtocontract", 6, "changeToSender" },
     { "reservebalance", 0, "reserve"},
     { "reservebalance", 1, "amount"},
     { "listcontracts", 0, "start" },

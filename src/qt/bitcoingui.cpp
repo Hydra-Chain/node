@@ -1304,9 +1304,7 @@ void BitcoinGUI::setHDStatus(WalletModel* walletModel)
 
 void BitcoinGUI::setEncryptionStatus(WalletModel* walletModel)
 {
-    std::cout << "SET ENCR STATUS" << std::endl;
     int status = walletModel->getEncryptionStatus();
-    std::cout << "STATUS -> " << walletModel->getEncryptionStatus() << std::endl;
     switch(status)
     {
     case WalletModel::Unencrypted:
@@ -1318,7 +1316,6 @@ void BitcoinGUI::setEncryptionStatus(WalletModel* walletModel)
         encryptWalletAction->setEnabled(true);
         break;
     case WalletModel::Unlocked:
-        std::cout << "SET UNLOCKED" << std::endl;
         labelWalletEncryptionIcon->show();
         if(walletModel->getWalletUnlockStakingOnly())
         {
