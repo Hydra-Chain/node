@@ -118,8 +118,8 @@ AddressBookPage::AddressBookPage(const PlatformStyle *platformStyle, Mode _mode,
         break;
     case ReceivingTab:
         ui->labelExplanation->setText(tr("These are your LockTrip addresses for receiving payments. It is recommended to use a new receiving address for each transaction."));
-        ui->deleteAddress->setVisible(false);
-        ui->newAddress->setVisible(false);
+        ui->deleteAddress->setVisible(true);
+        ui->newAddress->setVisible(true);
         break;
     }
 
