@@ -189,7 +189,7 @@ public:
      * If a block header hasn't already been seen, call CheckBlockHeader on it, ensure
      * that it doesn't descend from an invalid block, and then add it to mapBlockIndex.
      */
-    bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state, const CChainParams& chainparams, CBlockIndex** ppindex) EXCLUSIVE_LOCKS_REQUIRED(cs_main);
+    bool AcceptBlockHeader(const CBlockHeader& block, CValidationState& state, const CChainParams& chainparams, CBlockIndex** ppindex, bool process_block) EXCLUSIVE_LOCKS_REQUIRED(cs_main);
     bool AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CValidationState& state, const CChainParams& chainparams, CBlockIndex** ppindex, bool fRequested, const CDiskBlockPos* dbp, bool* fNewBlock) EXCLUSIVE_LOCKS_REQUIRED(cs_main);
 
     // Block (dis)connection on a given view:
@@ -4710,14 +4710,14 @@ std::vector<unsigned char> GenerateCoinbaseCommitment(CBlock& block, const CBloc
  *  in ConnectBlock().
  *  Note that -reindex-chainstate skips the validation that happens here!
  */
-static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& state, const CChainParams& params, const CBlockIndex* pindexPrev, int64_t nAdjustedTime)
+static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& state, const CChainParams& params, const CBlockIndex* pindexPrev, int64_t nAdjustedTime, bool process_block)
 {
     assert(pindexPrev != nullptr);
     const int nHeight = pindexPrev->nHeight + 1;
 
     // Check proof of work
     const Consensus::Params& consensusParams = params.GetConsensus();
-    if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams, block.IsProofOfStake()))
+    if ((process_block || (chainActive.Tip()->GetBlockTime() > block.GetBlockTime() - 60 * 60)) &&  block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams, block.IsProofOfStake()))
     {
         return state.DoS(100, false, REJECT_INVALID, "bad-diffbits", false, "incorrect difficulty value");
     }
@@ -4902,7 +4902,7 @@ bool CheckPOS(const CBlockHeader& block, CBlockIndex* pindexPrev)
     return false;
 }
 
-bool CChainState::AcceptBlockHeader(const CBlockHeader& block, CValidationState& state, const CChainParams& chainparams, CBlockIndex** ppindex)
+bool CChainState::AcceptBlockHeader(const CBlockHeader& block, CValidationState& state, const CChainParams& chainparams, CBlockIndex** ppindex, bool process_block)
 {
     AssertLockHeld(cs_main);
     // Check for duplicate
@@ -4946,7 +4946,7 @@ bool CChainState::AcceptBlockHeader(const CBlockHeader& block, CValidationState&
         pindexPrev = (*mi).second;
         if (pindexPrev->nStatus & BLOCK_FAILED_MASK)
             return state.DoS(100, error("%s: prev block invalid", __func__), REJECT_INVALID, "bad-prevblk");
-        if (!ContextualCheckBlockHeader(block, state, chainparams, pindexPrev, GetAdjustedTime()))
+        if (!ContextualCheckBlockHeader(block, state, chainparams, pindexPrev, GetAdjustedTime(), process_block))
             return error("%s: Consensus::ContextualCheckBlockHeader: %s, %s", __func__, hash.ToString(), FormatStateMessage(state));
 
         // If the previous block index isn't valid, determine if it descends from any block which
@@ -5009,7 +5009,7 @@ bool ProcessNewBlockHeaders(const std::vector<CBlockHeader> &headers, CValidatio
         bool bFirst = true;
         for (const CBlockHeader& header : headers) {
             CBlockIndex *pindex = nullptr; // Use a temp pindex instead of ppindex to avoid a const_cast
-            if (!g_chainstate.AcceptBlockHeader(header, state, chainparams, &pindex)) {
+            if (!g_chainstate.AcceptBlockHeader(header, state, chainparams, &pindex, false)) {
                 if (first_invalid) *first_invalid = header;
                 return false;
             }
@@ -5057,7 +5057,7 @@ bool CChainState::AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CVali
     CBlockIndex *pindexDummy = nullptr;
     CBlockIndex *&pindex = ppindex ? *ppindex : pindexDummy;
 
-    if (!AcceptBlockHeader(block, state, chainparams, &pindex))
+    if (!AcceptBlockHeader(block, state, chainparams, &pindex, true))
         return false;
 
     if(block.IsProofOfWork()) {
@@ -5235,7 +5235,7 @@ bool TestBlockValidity(CValidationState& state, const CChainParams& chainparams,
     indexDummy.phashBlock = &block_hash;
 
     // NOTE: CheckBlockHeader is called by CheckBlock
-    if (!ContextualCheckBlockHeader(block, state, chainparams, pindexPrev, GetAdjustedTime()))
+    if (!ContextualCheckBlockHeader(block, state, chainparams, pindexPrev, GetAdjustedTime(), true))
         return error("%s: Consensus::ContextualCheckBlockHeader: %s", __func__, FormatStateMessage(state));
     if (!CheckBlock(block, state, chainparams.GetConsensus(), fCheckPOW, fCheckMerkleRoot))
         return error("%s: Consensus::CheckBlock: %s", __func__, FormatStateMessage(state));
