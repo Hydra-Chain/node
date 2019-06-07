@@ -32,6 +32,7 @@
 #include <wallet/walletdb.h>
 #include <wallet/walletutil.h>
 #include <miner.h>
+#include <scheduler.h>
 
 #include <stdint.h>
 
@@ -207,7 +208,7 @@ static UniValue getnewaddress(const JSONRPCRequest& request)
     return EncodeDestination(dest);
 }
 
-CTxDestination GetLabelDestination(CWallet* const pwallet, const std::string& label, bool bForceNew=false)
+CTxDestination GetLabelDestination(CWallet* const pwallet, const std::string& label, bool bForceNew)
 {
     CTxDestination dest;
     if (!pwallet->GetLabelDestination(dest, label, bForceNew)) {
@@ -3829,6 +3830,7 @@ static UniValue loadwallet(const JSONRPCRequest& request)
         );
     std::string wallet_file = request.params[0].get_str();
     std::string error;
+    CScheduler scheduler;
 
     fs::path wallet_path = fs::absolute(wallet_file, GetWalletDir());
     if (fs::symlink_status(wallet_path).type() == fs::file_not_found) {
@@ -3852,7 +3854,7 @@ static UniValue loadwallet(const JSONRPCRequest& request)
     }
     AddWallet(wallet);
 
-    wallet->postInitProcess();
+    wallet->postInitProcess(scheduler);
 
     // Mine proof-of-stake blocks in the background
     if (gArgs.GetBoolArg("-staking", DEFAULT_STAKE)) {
@@ -3889,6 +3891,7 @@ static UniValue createwallet(const JSONRPCRequest& request)
     std::string wallet_name = request.params[0].get_str();
     std::string error;
     std::string warning;
+    CScheduler scheduler;
 
     bool disable_privatekeys = false;
     if (!request.params[1].isNull()) {
@@ -3911,7 +3914,7 @@ static UniValue createwallet(const JSONRPCRequest& request)
     }
     AddWallet(wallet);
 
-    wallet->postInitProcess();
+    wallet->postInitProcess(scheduler);
 
     // Mine proof-of-stake blocks in the background
     if (gArgs.GetBoolArg("-staking", DEFAULT_STAKE)) {

@@ -248,7 +248,7 @@ bool WalletInit::Open() const
 void WalletInit::Start(CScheduler& scheduler) const
 {
     for (const std::shared_ptr<CWallet>& pwallet : GetWallets()) {
-        pwallet->postInitProcess();
+        pwallet->postInitProcess(scheduler);
     }
 
     // Mine proof-of-stake blocks in the background

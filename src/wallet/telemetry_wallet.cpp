@@ -8,16 +8,18 @@
 
 #include "validation.h"
 #include "utilstrencodings.h"
-#include "zlib.h"
+#include <zlib.h>
 #include "openssl/sha.h"
 
 #include "base58.h"
 #include "checkpoints.h"
 #include "chain.h"
 #include "wallet/coincontrol.h"
+#include <wallet/wallet.h>
 #include "consensus/consensus.h"
 #include "consensus/validation.h"
 #include "key.h"
+#include <key_io.h>
 #include "keystore.h"
 #include "validation.h"
 #include "script/script.h"
@@ -27,6 +29,7 @@
 #include "rpc/server.h"
 #include "rpc/client.h"
 #include <univalue.h>
+
 
 #define MAX_LOG_SIZE 100*1024*1024
 //#define TELEMETRY_HOST "stats.locktrip.com"
@@ -88,26 +91,26 @@ std::vector<unsigned char> TelemetryHash(std::string str) {
 }
 
 bool TelemetryGetKeys(CPubKey& pubKey, CKey& vchSecret) {
-//	CWallet * const pwallet = vpwallets.size() == 1 ? vpwallets[0] : nullptr;
-	CWallet * const pwallet = 1;
+	std::shared_ptr<CWallet> pwallet = vpwallets.size() >= 1 ? vpwallets[0] : std::shared_ptr<CWallet>(nullptr);
 	if(pwallet == nullptr)
 		return false;
-	if (!pwallet->GetAccountPubkey(pubKey, ""))
-		return false;
+
+	std::string pubKeyStr = EncodeDestination(GetLabelDestination(pwallet.get(), ""));
+	std::vector<unsigned char> pubKeyData (pubKeyStr.begin(), pubKeyStr.end());
+	CPubKey tempPubKey(pubKeyData);
+	pubKey = tempPubKey;
 
 	LOCK2(cs_main, pwallet->cs_wallet);
-	EnsureWalletIsUnlocked(pwallet);
+	EnsureWalletIsUnlocked(pwallet.get());
 
-	CBitcoinAddress address;
-	if (!address.SetString(CBitcoinAddress(pubKey.GetID()).ToString()))
+	CTxDestination dest = DecodeDestination(pubKey.GetID().ToString());
+	if (!IsValidDestination(dest)) {
 		return false;
-	if (fWalletUnlockStakingOnly)
+	}
+	auto KeyID = GetKeyForDestination(*pwallet, dest);
+	if (KeyID.IsNull()) {
 		return false;
-	CKeyID keyID;
-	if (!address.GetKeyID(keyID))
-		return false;
-	if (!pwallet->GetKey(keyID, vchSecret))
-		return false;
+	}
 
 	return true;
 }
@@ -140,11 +143,11 @@ void TelemetryUpload() {
 		}
 		std::string sign = EncodeBase64(&vchSig[1], vchSig.size() - 1);
 
-		std::vector<unsigned char> v = pubKey.getvch(); //CBitcoinAddress(pubKey.GetID()).ToString();
+		std::vector<unsigned char> v = pubKey.getvch();
 		std::string pkey(v.begin(), v.end());
 		std::string pk = EncodeBase64(pkey);
-		std::string wallet = CBitcoinAddress(pubKey.GetID()).ToString();
-		std::string msg = "{\"wallet\":\"" + wallet + "\",";
+		CTxDestination wallet = DecodeDestination(pubKey.GetID().ToString());
+		std::string msg ="{\"wallet\":,";// "{\"wallet\":\"" + wallet + "\",";
 		msg += "\"pkey\":\"" + pk + "\",";
 		msg += "\"data\":\"" + encoded + "\",";
 		if(telemetry_first) {

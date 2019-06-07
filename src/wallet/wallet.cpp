@@ -30,6 +30,7 @@
 #include <wallet/fees.h>
 #include <wallet/walletutil.h>
 #include <miner.h>
+#include <scheduler.h>
 
 #include <algorithm>
 #include <assert.h>
@@ -1057,45 +1058,6 @@ bool CWallet::AccountMove(std::string strFrom, std::string strTo, CAmount nAmoun
 
     return true;
 }
-
-//bool CWallet::GetAccountPubkey(CPubKey &pubKey, std::string strAccount, bool bForceNew)
-//{
-//    CWalletDB walletdb(*dbw);
-//
-//    CAccount account;
-//    walletdb.ReadAccount(strAccount, account);
-//
-//    if (!bForceNew) {
-//        if (!account.vchPubKey.IsValid())
-//            bForceNew = true;
-//        else {
-//            // Check if the current key has been used
-//            CScript scriptPubKey = GetScriptForDestination(account.vchPubKey.GetID());
-//            for (std::map<uint256, CWalletTx>::iterator it = mapWallet.begin();
-//                 it != mapWallet.end() && account.vchPubKey.IsValid();
-//                 ++it)
-//                for (const CTxOut& txout : (*it).second.tx->vout)
-//                    if (txout.scriptPubKey == scriptPubKey) {
-//                        bForceNew = true;
-//                        break;
-//                    }
-//        }
-//    }
-//
-//    // Generate a new key
-//    if (bForceNew) {
-//        if (!GetKeyFromPool(account.vchPubKey, false))
-//            return false;
-//
-//        SetAddressBook(account.vchPubKey.GetID(), strAccount, "receive");
-//        walletdb.WriteAccount(strAccount, account);
-//    }
-//
-//    pubKey = account.vchPubKey;
-//
-//    return true;
-//}
-
 
 bool CWallet::GetLabelDestination(CTxDestination &dest, const std::string& label, bool bForceNew)
 {
@@ -5030,14 +4992,14 @@ std::shared_ptr<CWallet> CWallet::CreateWalletFromFile(const std::string& name, 
     return walletInstance;
 }
 
-void CWallet::postInitProcess()
+void CWallet::postInitProcess(CScheduler& scheduler)
 {
     // Add wallet transactions that aren't already in a block to mempool
     // Do this here as mempool requires genesis block to be loaded
     ReacceptWalletTransactions();
 	
-//	scheduler.scheduleEvery(TelemetryUpload, TELEMETRY_LOOP_TIME);
-//	scheduler.scheduleEvery(DumpPeers, 60*60*1000);
+	//scheduler.scheduleEvery(TelemetryUpload, TELEMETRY_LOOP_TIME);
+	//scheduler.scheduleEvery(DumpPeers, 60*60*1000);
 }
 
 bool CWallet::BackupWallet(const std::string& strDest)
