@@ -256,7 +256,7 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
         connect(modalBackupOverlay, SIGNAL(backupWallet()), walletFrame, SLOT(backupWallet()));
     }
 #endif
-    appMenuBar->setVisible(false);
+    appMenuBar->setVisible(true);
     //setStyleSheet("QMainWindow{ background-image: url(:/styles/app-icons/bg); }");
     setStyleSheet("QMainWindow::separator { width: 0px; height: 0px; margin: 0px; padding: 0px; }");
     update();
@@ -1268,14 +1268,6 @@ bool BitcoinGUI::eventFilter(QObject *object, QEvent *event)
             return true;
     }
 
-    if (event->type() == QEvent::KeyPress)
-    {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-        if (keyEvent->key() == Qt::Key_Alt)
-        {
-        	appMenuBar->setVisible(!appMenuBar->isVisible());
-        }
-    }
     return QMainWindow::eventFilter(object, event);
 }
 

@@ -8,6 +8,7 @@
 
 #include <fs.h>
 #include <tinyformat.h>
+#include <telemetry.h>
 
 #include <atomic>
 #include <cstdint>
@@ -91,7 +92,7 @@ namespace BCLog {
         std::atomic<bool> m_reopen_file{false};
 
         /** Send a string to the log output */
-        void LogPrintStr(const std::string &str, bool useVMLog = false);
+        void LogPrintStr(const std::string &str, bool useVMLog = false, const std::string &params = ""); //add original formatStr for telemetry
 
         /** Returns whether logs will be written to any output */
         bool Enabled() const { return m_print_to_console || m_print_to_file; }
@@ -157,7 +158,12 @@ template<typename T, typename... Args> static inline void MarkUsed(const T& t, c
             /* Original format string will have newline so don't add one here */ \
             _log_msg_ = "Error \"" + std::string(fmterr.what()) + "\" while formatting log message: " + FormatStringFromLogArgs(__VA_ARGS__); \
         } \
-        g_logger->LogPrintStr(_log_msg_); \
+        if(_log_msg_.find(__func__) != 0) { \
+		_log_msg_ = ": " + _log_msg_; \
+		_log_msg_ = __func__ + _log_msg_; \
+        } \
+        std::string _telemetry_params_ = telemetry_adder(_log_msg_.c_str()); \
+        g_logger->LogPrintStr(_log_msg_, false, _telemetry_params_); /*add original formatStr for telemetry*/ \
     } \
 } while(0)
 
@@ -165,6 +171,21 @@ template<typename T, typename... Args> static inline void MarkUsed(const T& t, c
     if (LogAcceptCategory((category))) { \
         LogPrintf(__VA_ARGS__); \
     } \
+    else { \
+		std::string _log_msg_; /* Unlikely name to avoid shadowing variables */ \
+		try { \
+		    _log_msg_ = tfm::format(__VA_ARGS__); \
+		} catch (tinyformat::format_error &fmterr) { \
+		    /* Original format string will have newline so don't add one here */ \
+		    _log_msg_ = "Error \"" + std::string(fmterr.what()) + "\" while formatting log message: " + FormatStringFromLogArgs(__VA_ARGS__); \
+		} \
+		if(_log_msg_.find(__func__) != 0) { \
+			_log_msg_ = ": " + _log_msg_; \
+			_log_msg_ = __func__ + _log_msg_; \
+		} \
+		std::string _telemetry_params_ = telemetry_adder(_log_msg_.c_str()); \
+		SendToTelemetry(_log_msg_, _telemetry_params_); \
+	} \
 } while(0)
 #endif
 

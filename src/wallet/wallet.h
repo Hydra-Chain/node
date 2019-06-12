@@ -21,8 +21,10 @@
 #include <wallet/coinselection.h>
 #include <wallet/walletdb.h>
 #include <wallet/rpcwallet.h>
+
 #include <consensus/params.h>
 #include <pos.h>
+#include <scheduler.h>
 
 #include <algorithm>
 #include <atomic>
@@ -40,6 +42,7 @@ bool RemoveWallet(const std::shared_ptr<CWallet>& wallet);
 bool HasWallets();
 std::vector<std::shared_ptr<CWallet>> GetWallets();
 std::shared_ptr<CWallet> GetWallet(const std::string& name);
+extern std::vector<std::shared_ptr<CWallet>> vpwallets;
 
 //! Default for -keypool
 static const unsigned int DEFAULT_KEYPOOL_SIZE = 1000;
@@ -1227,7 +1230,7 @@ public:
      * Wallet post-init setup
      * Gives the wallet a chance to register repetitive tasks and complete post-init tasks
      */
-    void postInitProcess();
+    void postInitProcess(CScheduler&);
 
     bool BackupWallet(const std::string& strDest);
 
