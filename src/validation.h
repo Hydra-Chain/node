@@ -231,9 +231,9 @@ extern bool fPruneMode;
 /** Number of MiB of block files that we're trying to stay below. */
 extern uint64_t nPruneTarget;
 /** Block files containing a block-height within MIN_BLOCKS_TO_KEEP of chainActive.Tip() will not be pruned. */
-static const unsigned int MIN_BLOCKS_TO_KEEP = 288;
+static const unsigned int MIN_BLOCKS_TO_KEEP = 3600;
 /** Minimum blocks required to signal NODE_NETWORK_LIMITED */
-static const unsigned int NODE_NETWORK_LIMITED_MIN_BLOCKS = 288;
+static const unsigned int NODE_NETWORK_LIMITED_MIN_BLOCKS = 3600;
 
 static const signed int DEFAULT_CHECKBLOCKS = 6;
 static const unsigned int DEFAULT_CHECKLEVEL = 3;
@@ -246,9 +246,9 @@ static const unsigned int DEFAULT_CHECKLEVEL = 3;
 // full block file chunks, we need the high water mark which triggers the prune to be
 // one 128MB block file + added 15% undo data = 147MB greater for a total of 545MB
 // Setting the target to > than 550MB will make it likely we can respect the target.
-static const uint64_t MIN_DISK_SPACE_FOR_BLOCK_FILES = 550 * 1024 * 1024;
+static const uint64_t MIN_DISK_SPACE_FOR_BLOCK_FILES = (uint64_t)5714 * 1024 * 1024;
 
-inline int64_t FutureDrift(uint32_t nTime) { return nTime + 15; }
+inline int64_t FutureDrift(uint32_t nTime) { return nTime + 25; }
 
 /** 
  * Process an incoming block. This only returns after the best known valid
