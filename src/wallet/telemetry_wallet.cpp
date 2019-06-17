@@ -214,9 +214,9 @@ void TelemetryUpload() {
 
 UniValue getpeerinfo(const JSONRPCRequest& request);
 void DumpPeers() {
-	JSONRPCRequest request;
+	/*JSONRPCRequest request;
 	UniValue res = getpeerinfo(request);
 	std::string str = res.write() + "\n";
-	LogPrintf(str.c_str());
+	LogPrintf(str.c_str());*/
 }
 

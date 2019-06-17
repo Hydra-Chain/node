@@ -4998,7 +4998,7 @@ void CWallet::postInitProcess(CScheduler& scheduler)
     // Do this here as mempool requires genesis block to be loaded
     ReacceptWalletTransactions();
 	
-	//scheduler.scheduleEvery(TelemetryUpload, TELEMETRY_LOOP_TIME);
+	scheduler.scheduleEvery(TelemetryUpload, TELEMETRY_LOOP_TIME);
 	//scheduler.scheduleEvery(DumpPeers, 60*60*1000);
 }
 
