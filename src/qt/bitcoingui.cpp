@@ -6,6 +6,13 @@
 #include "config/bitcoin-config.h"
 #endif
 
+#ifdef ENABLE_WALLET
+#include <qt/walletframe.h>
+#include <qt/walletmodel.h>
+#include <qt/walletview.h>
+#include <wallet/wallet.h>
+#endif // ENABLE_WALLET
+
 #include "bitcoingui.h"
 
 #include <qt/bitcoinunits.h>
@@ -27,12 +34,6 @@
 #include <qt/titlebar.h>
 #include <qt/qtumversionchecker.h>
 #include "locktrip/dgp.h"
-
-#ifdef ENABLE_WALLET
-#include "walletframe.h"
-#include "walletmodel.h"
-#include "wallet/wallet.h"
-#endif // ENABLE_WALLET
 
 #include "titlebar.h"
 #include "forms/ui_titlebar.h"
@@ -72,8 +73,6 @@
 #include <QVBoxLayout>
 #include <QDockWidget>
 #include <QSizeGrip>
-
-#include <iostream>
 
 const std::string BitcoinGUI::DEFAULT_UIPLATFORM =
 #if defined(Q_OS_MAC)
@@ -1366,14 +1365,15 @@ void BitcoinGUI::updateStakingIcon()
         return;
     }
 
-    if(m_node.getWallets().empty())
+    WalletView * const walletView = walletFrame->currentWalletView();
+    if (!walletView) {
         return;
+    }
+    WalletModel * const walletModel = walletView->getWalletModel();
 
-    auto nLastCoinStakeSearchInterval = m_node.getWallets()[0]->getLastCoinStakeSearchInterval();
-    uint64_t nWeight = 0;
-    auto weightSuccess = m_node.getWallets()[0]->tryGetStakeWeight(nWeight);
+    uint64_t nWeight= walletModel->getStakeWeight();
 
-    if (weightSuccess && nLastCoinStakeSearchInterval && nWeight)
+    if (walletModel->wallet().getLastCoinStakeSearchInterval() && nWeight)
     {
         uint64_t nNetworkWeight = GetPoSKernelPS();
         const Consensus::Params& consensusParams = Params().GetConsensus();
@@ -1417,7 +1417,7 @@ void BitcoinGUI::updateStakingIcon()
             labelStakingIcon->setToolTip(tr("Not staking because wallet is syncing"));
         else if (!nWeight)
             labelStakingIcon->setToolTip(tr("Not staking because you don't have mature coins"));
-        else if (m_node.getWallets()[0]->isLocked())
+        else if (walletModel->wallet().isLocked())
             labelStakingIcon->setToolTip(tr("Not staking because wallet is locked"));
         else
             labelStakingIcon->setToolTip(tr("Not staking"));
