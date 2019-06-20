@@ -258,6 +258,7 @@ private:
     int cachedNumBlocks;
 
     QTimer *pollTimer;
+    QTimer *dgpCacheTimer;
 
     QString restorePath;
     QString restoreParam;
@@ -314,6 +315,8 @@ public Q_SLOTS:
     void updateWatchOnlyFlag(bool fHaveWatchonly);
     /* Current, immature or unconfirmed balance might have changed - emit 'balanceChanged' if so */
     void pollBalanceChanged();
+    /* Update DGP cached params*/
+    void updateDgpCache();
     /* New, updated or removed contract book entry */
     void updateContractBook(const QString &address, const QString &label, const QString &abi, int status);
     /* Set that update for coin address is needed */

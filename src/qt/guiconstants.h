@@ -8,6 +8,9 @@
 /* Milliseconds between model updates */
 static const int MODEL_UPDATE_DELAY = 2000;
 
+/* Milliseconds between DGP cache updates */
+static const int DGP_CACHE_UPDATE_DELAY = 300000;
+
 /* AskPassphraseDialog -- Maximum passphrase length */
 static const int MAX_PASSPHRASE_SIZE = 1024;
 

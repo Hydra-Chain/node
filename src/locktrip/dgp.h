@@ -40,6 +40,16 @@ static const uint64_t DEFAULT_BLOCK_GAS_LIMIT_DGP = 40000000;
 
 static const uint64_t ONE_CENT_EQUAL = 1000000; // representing fiat money like LOC and satoshi
 
+// DGP CACHE GLOBALS
+
+static uint64_t DGP_CACHE_FIAT_GAS_PRICE = 1000;
+static uint64_t DGP_CACHE_BURN_RATE = DEFAULT_BURN_RATE_PERCENTAGE;
+static uint64_t DGP_CACHE_ECONOMY_DIVIDEND = DEFAULT_ECONOMY_DIVIDEND_PERCENTAGE;
+static uint64_t DGP_CACHE_BLOCK_SIZE = DEFAULT_BLOCK_SIZE_DGP;
+static uint64_t DGP_CACHE_BLOCK_GAS_LIMIT = DEFAULT_BLOCK_GAS_LIMIT_DGP;
+static uint64_t DGP_CACHE_FIAT_BYTE_PRICE = 1000;
+static uint64_t DGP_CACHE_BLOCK_TIME = DEFAULT_BLOCK_TIME;
+
 // Array indexes are the same as the DGP param IDs
 const auto VOTE_HEADLINES = {
     "Vote for adding new admin",
@@ -717,6 +727,10 @@ public:
     void calculateGasPriceBuffer(CAmount gasPrice, CAmount& gasPriceBuffer);
     bool convertFiatThresholdToLoc(uint64_t& fiatThresholdInCents, uint64_t& locContainer);
     bool getBlockTime(const Consensus::Params& params, int64_t& nPowTargetSpacing);
+    void updateDgpCache();
+
+private:
+    void updateDgpCacheParam(dgp_params param, uint64_t& cache);
 };
 
 #endif //LOCKTRIP_DGP_H

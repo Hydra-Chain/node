@@ -166,9 +166,7 @@ void SendCoinsDialog::setModel(WalletModel *_model)
 
         // fee section
         for (const int &n : confTargets) {
-            Dgp dgp;
-            int64_t nPowTargetSpacing;
-            dgp.getBlockTime(Params().GetConsensus(), nPowTargetSpacing);
+            int64_t nPowTargetSpacing = DGP_CACHE_BLOCK_TIME;
             ui->confTargetSelector->addItem(tr("%1 (%2 blocks)").arg(GUIUtil::formatNiceTimeOffset(n*nPowTargetSpacing)).arg(n));
         }
         connect(ui->confTargetSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSmartFeeLabel()));

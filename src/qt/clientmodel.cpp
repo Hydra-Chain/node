@@ -24,6 +24,7 @@
 #include <warnings.h>
 #include <wallet/wallet.h>
 #include <locktrip/price-oracle.h>
+#include <locktrip/dgp.h>
 
 #include <stdint.h>
 
@@ -145,9 +146,8 @@ void ClientModel::getGasInfo(uint64_t& blockGasLimit, uint64_t& minGasPrice, uin
 {
     LOCK(cs_main);
 
-    QtumDGP qtumDGP(globalState.get(), fGettingValuesDGP);
-    blockGasLimit = qtumDGP.getBlockGasLimit(chainActive.Height());
-    minGasPrice = CAmount(qtumDGP.getMinGasPrice(chainActive.Height()));
+    blockGasLimit = DGP_CACHE_BLOCK_GAS_LIMIT;
+    minGasPrice = CAmount(DGP_CACHE_FIAT_GAS_PRICE);
 
     PriceOracle oracle;
     oracle.getPrice(nGasPrice);

@@ -23,6 +23,8 @@
 #include <wallet/coincontrol.h>
 #include <wallet/wallet.h>
 
+#include <locktrip/dgp.h>
+
 #include <stdint.h>
 
 #include <QDebug>
@@ -84,6 +86,10 @@ WalletModel::WalletModel(std::unique_ptr<interfaces::Wallet> wallet, interfaces:
     connect(pollTimer, SIGNAL(timeout()), worker, SLOT(updateModel()));
     pollTimer->start(MODEL_UPDATE_DELAY);
 
+    dgpCacheTimer = new QTimer(this);
+    connect(dgpCacheTimer, SIGNAL(timeout()), this, SLOT(updateDgpCache()));
+    dgpCacheTimer->start(DGP_CACHE_UPDATE_DELAY);
+
     connect(addressTableModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(checkCoinAddresses()));
     connect(addressTableModel, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(checkCoinAddresses()));
 
@@ -105,6 +111,14 @@ void WalletModel::updateStatus()
     if(cachedEncryptionStatus != newEncryptionStatus) {
         Q_EMIT encryptionStatusChanged();
     }
+}
+
+void WalletModel::updateDgpCache() {
+    std::cout << "UPDATE DGP CACHE !!!!!!!!!!!!!" << std::endl;
+
+    //Update DGP cache
+    Dgp dgp;
+    dgp.updateDgpCache();
 }
 
 void WalletModel::pollBalanceChanged()

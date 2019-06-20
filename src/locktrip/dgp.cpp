@@ -216,3 +216,49 @@ bool Dgp::getBlockTime(const Consensus::Params& params, int64_t& nPowTargetSpaci
 void Dgp::calculateGasPriceBuffer(CAmount gasPrice, CAmount& gasPriceBuffer) {
     gasPriceBuffer = gasPrice / 5 + gasPrice % 5;
 }
+
+void Dgp::updateDgpCache() {
+    this->updateDgpCacheParam(FIAT_GAS_PRICE, DGP_CACHE_FIAT_GAS_PRICE);
+    if(DGP_CACHE_FIAT_GAS_PRICE < DEFAULT_MIN_GAS_PRICE_DGP)
+        DGP_CACHE_FIAT_GAS_PRICE = DEFAULT_MIN_GAS_PRICE_DGP;
+
+    this->updateDgpCacheParam(BURN_RATE, DGP_CACHE_BURN_RATE);
+    if(DGP_CACHE_BURN_RATE < MIN_BURN_RATE_PERCENTAGE ||
+            DGP_CACHE_BURN_RATE > MAX_BURN_RATE_PERCENTAGE)
+        DGP_CACHE_BURN_RATE = DEFAULT_BURN_RATE_PERCENTAGE;
+
+    this->updateDgpCacheParam(ECONOMY_DIVIDEND, DGP_CACHE_ECONOMY_DIVIDEND);
+    if(DGP_CACHE_ECONOMY_DIVIDEND < MIN_ECONOMY_DIVIDEND_PERCENTAGE ||
+            DGP_CACHE_ECONOMY_DIVIDEND > MAX_ECONOMY_DIVIDEND_PERCENTAGE)
+        DGP_CACHE_ECONOMY_DIVIDEND = DEFAULT_ECONOMY_DIVIDEND_PERCENTAGE;
+
+    this->updateDgpCacheParam(BLOCK_SIZE_DGP_PARAM, DGP_CACHE_BLOCK_SIZE);
+    if(DGP_CACHE_BLOCK_SIZE < MIN_BLOCK_SIZE_DGP ||
+            DGP_CACHE_BLOCK_SIZE > MAX_BLOCK_SIZE_DGP)
+        DGP_CACHE_BLOCK_SIZE = DEFAULT_BLOCK_SIZE_DGP;
+
+    this->updateDgpCacheParam(BLOCK_GAS_LIMIT_DGP_PARAM, DGP_CACHE_BLOCK_GAS_LIMIT);
+    if(DGP_CACHE_BLOCK_GAS_LIMIT < MIN_BLOCK_GAS_LIMIT_DGP ||
+            DGP_CACHE_BLOCK_GAS_LIMIT > MAX_BLOCK_GAS_LIMIT_DGP)
+        DGP_CACHE_BLOCK_GAS_LIMIT = DEFAULT_BLOCK_GAS_LIMIT_DGP;
+
+    this->updateDgpCacheParam(FIAT_BYTE_PRICE, DGP_CACHE_FIAT_BYTE_PRICE);
+    if(DGP_CACHE_FIAT_BYTE_PRICE < DEFAULT_MIN_BYTE_PRICE_DGP)
+        DGP_CACHE_FIAT_BYTE_PRICE = DEFAULT_MIN_BYTE_PRICE_DGP;
+
+    this->updateDgpCacheParam(BLOCK_TIME, DGP_CACHE_BLOCK_TIME);
+    if(DGP_CACHE_BLOCK_TIME < MIN_BLOCK_TIME ||
+            DGP_CACHE_BLOCK_TIME > MAX_BLOCK_TIME)
+        DGP_CACHE_BLOCK_TIME = DEFAULT_BLOCK_TIME;
+}
+
+void Dgp::updateDgpCacheParam(dgp_params param, uint64_t& cache) {
+    LOCK(cs_main);
+    bool isParamVoted = false;
+
+    this->isParamVoted(param, isParamVoted);
+
+    if (isParamVoted) {
+        this->getDgpParam(param, cache);
+    }
+}

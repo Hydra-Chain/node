@@ -41,8 +41,7 @@ static const QString VOTE_FINISHED = "Voting has just finished";
 
 
 void VotingPage::updateVoteInfo() {
-	uint64_t coinBurnPercentage;
-	dgp->getDgpParam(BURN_RATE, coinBurnPercentage);
+	uint64_t coinBurnPercentage = DGP_CACHE_BURN_RATE;
 	voteInProgress = false;
 	bool inProgress = dgp->hasVoteInProgress(voteInProgress);
 	LogPrintf("hasVoteInProgress executes successfully(%d) returns inProgress = %d \n", voteInProgress, inProgress);

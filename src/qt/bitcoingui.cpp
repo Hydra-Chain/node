@@ -962,9 +962,7 @@ void BitcoinGUI::updateHeadersSyncProgressLabel()
 {
     int64_t headersTipTime = clientModel->getHeaderTipTime();
     int headersTipHeight = clientModel->getHeaderTipHeight();
-    Dgp dgp;
-    int64_t nPowTargetSpacing;
-    dgp.getBlockTime(Params().GetConsensus(), nPowTargetSpacing);
+    int64_t nPowTargetSpacing = DGP_CACHE_BLOCK_TIME;
     int estHeadersLeft = (GetTime() - headersTipTime) / nPowTargetSpacing;
     if (estHeadersLeft > HEADER_HEIGHT_DELTA_SYNC)
         progressBarLabel->setText(tr("Syncing Headers (%1%)...").arg(QString::number(100.0 / (headersTipHeight+estHeadersLeft)*headersTipHeight, 'f', 1)));
@@ -1377,9 +1375,7 @@ void BitcoinGUI::updateStakingIcon()
     {
         uint64_t nNetworkWeight = GetPoSKernelPS();
         const Consensus::Params& consensusParams = Params().GetConsensus();
-        Dgp dgp;
-        int64_t nTargetSpacing;
-        dgp.getBlockTime(consensusParams, nTargetSpacing);
+        uint64_t nTargetSpacing = DGP_CACHE_BLOCK_TIME;
 
         unsigned nEstimateTime = nTargetSpacing * nNetworkWeight / nWeight;
 
