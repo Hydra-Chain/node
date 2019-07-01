@@ -114,8 +114,6 @@ void WalletModel::updateStatus()
 }
 
 void WalletModel::updateDgpCache() {
-    std::cout << "UPDATE DGP CACHE !!!!!!!!!!!!!" << std::endl;
-
     //Update DGP cache
     Dgp dgp;
     dgp.updateDgpCache();
