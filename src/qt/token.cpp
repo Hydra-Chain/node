@@ -122,7 +122,7 @@ Token::Token():
     lstOptional.clear();
     lstOptional.append(PARAM_AMOUNT);
     lstOptional.append(PARAM_GASLIMIT);
-    lstOptional.append(PARAM_GASPRICE);
+//    lstOptional.append(PARAM_GASPRICE);
     lstOptional.append(PARAM_SENDER);
     lstOptional.append(PARAM_BROADCAST);
     lstOptional.append(PARAM_CHANGE_TO_SENDER);
@@ -239,7 +239,7 @@ void Token::setGasLimit(const std::string &gaslimit)
 
 void Token::setGasPrice(const std::string &gasPrice)
 {
-    d->lstParams[PARAM_GASPRICE] = QString::fromStdString(gasPrice);
+//    d->lstParams[PARAM_GASPRICE] = QString::fromStdString(gasPrice);
 }
 
 void Token::setSender(const std::string &sender)
@@ -538,6 +538,7 @@ bool Token::exec(const std::vector<std::string> &input, int func, std::vector<st
     std::vector<ParameterABI::ErrorType> errors;
     if(!function.abiIn(values, strData, errors))
         return false;
+
     setDataHex(strData);
 
     // Execute the command and get the result
@@ -547,7 +548,6 @@ bool Token::exec(const std::vector<std::string> &input, int func, std::vector<st
     QString errorMessage;
     if(!cmd->exec(d->model->node(), d->model->wallet(), d->lstParams, result, resultJson, errorMessage))
         return false;
-
     // Get the result from calling function
     if(!sendTo)
     {
