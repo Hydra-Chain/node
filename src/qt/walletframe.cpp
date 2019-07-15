@@ -4,6 +4,7 @@
 
 #include <qt/walletframe.h>
 #include <qt/walletmodel.h>
+#include <qt/addresstablemodel.h>
 
 #include <qt/bitcoingui.h>
 #include <qt/walletview.h>
@@ -52,6 +53,12 @@ bool WalletFrame::addWallet(WalletModel *walletModel)
     const QString name = walletModel->getWalletName();
     if (mapWalletViews.count(name) > 0) {
         return false;
+    }
+
+    if(walletModel->wallet().getAddresses().size() == 0)
+    {
+        walletModel->getAddressTableModel()->addRow(AddressTableModel::Receive, "", "",
+                                                    walletModel->wallet().getDefaultAddressType());
     }
 
     WalletView *walletView = new WalletView(platformStyle, this);
