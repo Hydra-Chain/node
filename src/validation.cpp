@@ -2630,6 +2630,11 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     uint64_t countCumulativeGasUsed = 0;
     /////////////////////////////////////////////////
 
+    // We recheck the hardened checkpoints here since ContextualCheckBlock(Header) is not called in ConnectBlock.
+    if(fCheckpointsEnabled && !Checkpoints::CheckHardened(pindex->nHeight, block.GetHash(), chainparams.Checkpoints())) {
+        return state.DoS(100, error("%s: expected hardened checkpoint at height %d", __func__, pindex->nHeight), REJECT_CHECKPOINT, "bad-fork-hardened-checkpoint");
+    }
+
     // Move this check from CheckBlock to ConnectBlock as it depends on DGP values
     if (block.vtx.empty() || block.vtx.size() > dgpMaxBlockSize ||
         ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) >
@@ -4731,6 +4736,10 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
         CBlockIndex* pcheckpoint = Checkpoints::GetLastCheckpoint(params.Checkpoints());
         if (pcheckpoint && nHeight < pcheckpoint->nHeight)
             return state.DoS(100, error("%s: forked chain older than last checkpoint (height %d)", __func__, nHeight), REJECT_CHECKPOINT, "bad-fork-prior-to-checkpoint");
+
+        if(!Checkpoints::CheckHardened(nHeight, block.GetHash(), params.Checkpoints())) {
+            return state.DoS(100, error("%s: expected hardened checkpoint at height %d", __func__, nHeight), REJECT_CHECKPOINT, "bad-fork-hardened-checkpoint");
+        }
     }
 
     // Check that the block satisfies synchronized checkpoint

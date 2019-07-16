@@ -19,6 +19,9 @@
 #include <timedata.h>
 #include <util.h>
 #include <utilstrencodings.h>
+#include <locktrip/dgp.h>
+#include <locktrip/price-oracle.h>
+
 #ifdef ENABLE_WALLET
 #include <wallet/rpcwallet.h>
 #include <wallet/wallet.h>
@@ -32,6 +35,83 @@
 #endif
 
 #include <univalue.h>
+
+UniValue getdgpinfo(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() != 0)
+        throw std::runtime_error(
+                "getdgpinfo\n"
+                "\nReturns an object containing DGP state info.\n"
+                "\nResult:\n"
+                "{\n"
+                "  \"fiatgasprice\": xxxxx,           (numeric) current fiat gas price in dollar satoshis (1$ = 100000000 dollar satoshi)\n"
+                "  \"burnrate\": xxxxx,   (numeric) current burn rate\n"
+                "  \"economydividend\": xxxxx,     (numeric) current economy dividend\n"
+                "  \"blocksize\": xxxxx,     (numeric) current block size\n"
+                "  \"blockgaslimit\": xxxxx,     (numeric) current block gas limit\n"
+                "  \"fiatbyteprice\": xxxxx,     (numeric) current fiat byte price in dollar satoshis (1$ = 100000000 dollar satoshi)\n"
+                "  \"blocktime\": xxxxx,     (numeric) current block time\n"
+                "  \"locgasprice\": xxxxx,     (numeric) current gas price in LOC satoshis\n"
+                "  \"locbyteprice\": xxxxx,     (numeric) current byte price in LOC satoshis\n"
+                "}\n"
+                "\nExamples:\n"
+                + HelpExampleCli("getdgpinfo", "")
+                + HelpExampleRpc("getdgpinfo", "")
+        );
+
+    LOCK(cs_main);
+
+    uint64_t fiatGasPrice = DGP_CACHE_FIAT_GAS_PRICE;
+    uint64_t burnRate = DEFAULT_BURN_RATE_PERCENTAGE;
+    uint64_t economyDividend = DEFAULT_ECONOMY_DIVIDEND_PERCENTAGE;
+    uint64_t blockSize = DEFAULT_BLOCK_SIZE_DGP;
+    uint64_t blockGasLimit = DEFAULT_BLOCK_GAS_LIMIT_DGP;
+    uint64_t fiatBytePrice = DGP_CACHE_FIAT_BYTE_PRICE;
+    uint64_t blockTime = DEFAULT_BLOCK_TIME;
+    uint64_t gasPrice, bytePrice;
+
+    Dgp dgp;
+
+    dgp.getDgpParam(FIAT_GAS_PRICE, fiatGasPrice);
+    if(fiatGasPrice < DEFAULT_MIN_GAS_PRICE_DGP) fiatGasPrice = DGP_CACHE_FIAT_GAS_PRICE;
+
+    dgp.getDgpParam(BURN_RATE, burnRate);
+    if(burnRate < MIN_BURN_RATE_PERCENTAGE || burnRate > MAX_BURN_RATE_PERCENTAGE) burnRate = DEFAULT_BURN_RATE_PERCENTAGE;
+
+    dgp.getDgpParam(ECONOMY_DIVIDEND, economyDividend);
+    if(economyDividend < MIN_ECONOMY_DIVIDEND_PERCENTAGE ||
+            economyDividend > MAX_ECONOMY_DIVIDEND_PERCENTAGE) economyDividend = DEFAULT_ECONOMY_DIVIDEND_PERCENTAGE;
+
+    dgp.getDgpParam(BLOCK_SIZE_DGP_PARAM, blockSize);
+    if(blockSize < MIN_BLOCK_SIZE_DGP || blockSize > MAX_BLOCK_SIZE_DGP) blockSize = DEFAULT_BLOCK_SIZE_DGP;
+
+    dgp.getDgpParam(BLOCK_GAS_LIMIT_DGP_PARAM, blockGasLimit);
+    if(blockGasLimit < MIN_BLOCK_GAS_LIMIT_DGP ||
+            blockGasLimit > MAX_BLOCK_GAS_LIMIT_DGP) blockGasLimit = DEFAULT_BLOCK_GAS_LIMIT_DGP;
+
+    dgp.getDgpParam(FIAT_BYTE_PRICE, fiatBytePrice);
+    if(fiatBytePrice < DEFAULT_MIN_BYTE_PRICE_DGP) fiatBytePrice = DGP_CACHE_FIAT_BYTE_PRICE;
+
+    dgp.getDgpParam(BLOCK_TIME, blockTime);
+    if(blockTime < MIN_BLOCK_TIME || blockTime > MAX_BLOCK_TIME) blockTime = DEFAULT_BLOCK_TIME;
+
+    PriceOracle oracle;
+    oracle.getPrice(gasPrice);
+    oracle.getBytePrice(bytePrice);
+
+    UniValue obj(UniValue::VOBJ);
+    obj.pushKV("fiatgasprice", fiatGasPrice);
+    obj.pushKV("burnrate", burnRate);
+    obj.pushKV("economydividend", economyDividend);
+    obj.pushKV("blocksize", blockSize);
+    obj.pushKV("blockgaslimit", blockGasLimit);
+    obj.pushKV("fiatbyteprice", fiatBytePrice);
+    obj.pushKV("blocktime", blockTime);
+    obj.pushKV("locgasprice", gasPrice);
+    obj.pushKV("locbyteprice", bytePrice);
+
+    return obj;
+}
 
 static UniValue validateaddress(const JSONRPCRequest& request)
 {
@@ -473,6 +553,7 @@ static const CRPCCommand commands[] =
   //  --------------------- ------------------------  -----------------------  ----------
     { "control",            "getmemoryinfo",          &getmemoryinfo,          {"mode"} },
     { "control",            "logging",                &logging,                {"include", "exclude"}},
+    { "control",            "getdgpinfo",             &getdgpinfo,             {} },
     { "util",               "validateaddress",        &validateaddress,        {"address"} }, /* uses wallet if enabled */
     { "util",               "createmultisig",         &createmultisig,         {"nrequired","keys","address_type"} },
     { "util",               "verifymessage",          &verifymessage,          {"address","signature","message"} },
