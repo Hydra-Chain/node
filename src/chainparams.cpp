@@ -135,6 +135,7 @@ public:
     CMainParams() {
         strNetworkID = "main";
         consensus.nFixUTXOCacheHFHeight=100000;
+        consensus.nEnableHeaderSignatureHeight = 0x7fffffff;
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -196,6 +197,7 @@ public:
     CTestNetParams() {
         strNetworkID = "test";
         consensus.nFixUTXOCacheHFHeight=84500;
+        consensus.nEnableHeaderSignatureHeight = 0x7fffffff;
 
         pchMessageStart[0] = 0x07; // 7
         pchMessageStart[1] = 0x13; // 19
@@ -259,6 +261,7 @@ public:
 
         strNetworkID = "regtest";
         consensus.nFixUTXOCacheHFHeight=0;
+        consensus.nEnableHeaderSignatureHeight = 0;
 
         pchMessageStart[0] = 0xc7; // 199
         pchMessageStart[1] = 0xe8; // 232
