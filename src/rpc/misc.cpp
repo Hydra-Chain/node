@@ -17,6 +17,7 @@
 #include <rpc/server.h>
 #include <rpc/util.h>
 #include <timedata.h>
+#include <pow.h>
 
 #ifdef ENABLE_BITCORE_RPC
 #include <txmempool.h>
@@ -1152,6 +1153,94 @@ static UniValue echo(const JSONRPCRequest& request)
     return request.params;
 }
 
+/**
+ * @note Do not add or change anything in the information returned by this
+ * method. `getinfo` exists for backwards-compatibility only. It combines
+ * information from wildly different sources in the program, which is a mess,
+ * and is thus planned to be deprecated eventually.
+ *
+ * Based on the source of the information, new information should be added to:
+ * - `getblockchaininfo`,
+ * - `getnetworkinfo` or
+ * - `getwalletinfo`
+ *
+ * Or alternatively, create a specific query method for the information.
+ **/
+UniValue getinfo(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() != 0)
+        throw std::runtime_error(
+                "getinfo\n"
+                "\nResult:\n"
+                "{\n"
+                "  \"version\": xxxxx,           (numeric) the server version\n"
+                "  \"protocolversion\": xxxxx,   (numeric) the protocol version\n"
+                "  \"walletversion\": xxxxx,     (numeric) the wallet version\n"
+                "  \"balance\": xxxxxxx,         (numeric) the total LOC balance of the wallet\n"
+                "  \"stake\": xxxxxxx,           (numeric) the total LOC stake balance of the wallet\n"
+                "  \"blocks\": xxxxxx,           (numeric) the current number of blocks processed in the server\n"
+                "  \"timeoffset\": xxxxx,        (numeric) the time offset\n"
+                "  \"connections\": xxxxx,       (numeric) the number of connections\n"
+                "  \"proxy\": \"host:port\",     (string, optional) the proxy used by the server\n"
+                "  \"difficulty\": xxxxxx,       (numeric) the current difficulty\n"
+                "  \"testnet\": true|false,      (boolean) if the server is using testnet or not\n"
+                "  \"keypoololdest\": xxxxxx,    (numeric) the timestamp (seconds since Unix epoch) of the oldest pre-generated key in the key pool\n"
+                "  \"keypoolsize\": xxxx,        (numeric) how many new keys are pre-generated\n"
+                "  \"unlocked_until\": ttt,      (numeric) the timestamp in seconds since epoch (midnight Jan 1 1970 GMT) that the wallet is unlocked for transfers, or 0 if the wallet is locked\n"
+                "  \"relayfee\": x.xxxx,         (numeric) minimum relay fee for transactions in " + CURRENCY_UNIT + "/kB\n"
+                "  \"errors\": \"...\"           (string) any error messages\n"
+                "}\n"
+                "\nExamples:\n"
+                + HelpExampleCli("getinfo", "")
+                + HelpExampleRpc("getinfo", "")
+        );
+
+#ifdef ENABLE_WALLET
+    std::shared_ptr<CWallet> pwallet = GetWalletForJSONRPCRequest(request);
+
+    LOCK2(cs_main, pwallet ? &pwallet->cs_wallet : nullptr);
+#else
+    LOCK(cs_main);
+#endif
+
+    proxyType proxy;
+    GetProxy(NET_IPV4, proxy);
+
+    UniValue obj(UniValue::VOBJ);
+    UniValue diff(UniValue::VOBJ);
+    obj.push_back(Pair("version", CLIENT_VERSION));
+    obj.push_back(Pair("protocolversion", PROTOCOL_VERSION));
+#ifdef ENABLE_WALLET
+    if (pwallet) {
+        obj.push_back(Pair("walletversion", pwallet->GetVersion()));
+        obj.push_back(Pair("balance",       ValueFromAmount(pwallet->GetBalance())));
+        obj.push_back(Pair("stake",         ValueFromAmount(pwallet->GetStake())));
+    }
+#endif
+    obj.push_back(Pair("blocks",        (int)chainActive.Height()));
+    obj.push_back(Pair("timeoffset",    GetTimeOffset()));
+    if(g_connman)
+        obj.push_back(Pair("connections",   (int)g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL)));
+    obj.push_back(Pair("proxy",         (proxy.IsValid() ? proxy.proxy.ToStringIPPort() : std::string())));
+    diff.push_back(Pair("proof-of-work",        GetDifficulty(GetLastBlockIndex(pindexBestHeader, false))));
+    diff.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex(pindexBestHeader, true))));
+    obj.push_back(Pair("difficulty",    diff));
+    obj.push_back(Pair("testnet",       Params().NetworkIDString() == CBaseChainParams::TESTNET));
+    obj.push_back(Pair("moneysupply",       pindexBestHeader->nMoneySupply / COIN));
+#ifdef ENABLE_WALLET
+    if (pwallet) {
+        obj.push_back(Pair("keypoololdest", pwallet->GetOldestKeyPoolTime()));
+        obj.push_back(Pair("keypoolsize",   (int)pwallet->GetKeyPoolSize()));
+    }
+    if (pwallet && pwallet->IsCrypted()) {
+        obj.push_back(Pair("unlocked_until", pwallet->nRelockTime));
+    }
+#endif
+    obj.push_back(Pair("relayfee",      ValueFromAmount(::minRelayTxFee.GetFeePerK())));
+    obj.push_back(Pair("errors",        GetWarnings("statusbar")));
+    return obj;
+}
+
 static UniValue getinfo_deprecated(const JSONRPCRequest& request)
 {
     throw JSONRPCError(RPC_METHOD_NOT_FOUND,
@@ -1168,6 +1257,7 @@ static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         argNames
   //  --------------------- ------------------------  -----------------------  ----------
     { "control",            "getmemoryinfo",          &getmemoryinfo,          {"mode"} },
+    { "control",            "getinfo",                &getinfo,                {}},
     { "control",            "logging",                &logging,                {"include", "exclude"}},
     { "util",               "validateaddress",        &validateaddress,        {"address"} }, /* uses wallet if enabled */
     { "util",               "createmultisig",         &createmultisig,         {"nrequired","keys","address_type"} },
@@ -1177,7 +1267,7 @@ static const CRPCCommand commands[] =
     { "hidden",             "setmocktime",            &setmocktime,            {"timestamp"}},
     { "hidden",             "echo",                   &echo,                   {"arg0","arg1","arg2","arg3","arg4","arg5","arg6","arg7","arg8","arg9"}},
     { "hidden",             "echojson",               &echo,                   {"arg0","arg1","arg2","arg3","arg4","arg5","arg6","arg7","arg8","arg9"}},
-    { "hidden",             "getinfo",                &getinfo_deprecated,     {}},
+//    { "hidden",             "getinfo",                &getinfo_deprecated,     {}},
 #ifdef ENABLE_BITCORE_RPC
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////// // qtum
     { "control",            "getdgpinfo",             &getdgpinfo,             {} },
