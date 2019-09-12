@@ -75,14 +75,14 @@ CChainParams::CChainParams()
 {
     consensus.totalCoinsSupply = 1858593274150085 ; // locktrip contract coin suply
     consensus.nBlockRewardChangeInterval = 1000000; // locktrip reward changing aprox every 1 year
-    consensus.blockRewardPerInterval = {10000000, 7500000, 5000000, 2500000, 1250000};
+    consensus.blockRewardPerInterval = {40000000, 30000000, 20000000, 10000000, 5000000};
     consensus.BIP34Height = 0;
     consensus.BIP65Height = 0;
     consensus.BIP66Height = 0;
     consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
     consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-    consensus.nPowTargetTimespan = 4 * 60; // 16 minutes
-    consensus.nPowTargetSpacing = 32;
+    consensus.nPowTargetTimespan = 16 * 60; // 16 minutes
+    consensus.nPowTargetSpacing = 2 * 64;
     consensus.fPowAllowMinDifficultyBlocks = false;
     consensus.fPowNoRetargeting = true;
     consensus.fPoSNoRetargeting = false;
