@@ -2443,10 +2443,7 @@ static UniValue getchaintxstats(const JSONRPCRequest& request)
         );
 
     const CBlockIndex* pindex;
-    Dgp dgp;
-    int64_t nPowTargetSpacing;
-    dgp.getBlockTime(Params().GetConsensus(), nPowTargetSpacing);
-    int blockcount = 30 * 24 * 60 * 60 / nPowTargetSpacing; // By default: 1 month
+    int blockcount = 30 * 24 * 60 * 60 / Params().GetConsensus().nPowTargetSpacing; // By default: 1 month
 
     if (request.params[1].isNull()) {
         LOCK(cs_main);

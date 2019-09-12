@@ -30,7 +30,7 @@ static const bool DEFAULT_STAKE_CACHE = true;
 //How many seconds to look ahead and prepare a block for staking
 //Look ahead up to 3 "timeslots" in the future, 48 seconds
 //Reduce this to reduce computational waste for stakers, increase this to increase the amount of time available to construct full blocks
-static const int32_t MAX_STAKE_LOOKAHEAD = 16 * 2;
+static const int32_t MAX_STAKE_LOOKAHEAD = 16 * 3;
 
 //Will not add any more contracts when GetAdjustedTime() >= nTimeLimit-BYTECODE_TIME_BUFFER
 //This does not affect non-contract transactions

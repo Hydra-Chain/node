@@ -4946,11 +4946,8 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
 
     // Check proof of work
     const Consensus::Params& consensusParams = params.GetConsensus();
-    if ((process_block || (chainActive.Tip()->GetBlockTime() > block.GetBlockTime() - 60 * 60)) &&  block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams, block.IsProofOfStake()))
-    {
+    if (block.nBits != GetNextWorkRequired(pindexPrev, &block, consensusParams,block.IsProofOfStake()))
         return state.DoS(100, false, REJECT_INVALID, "bad-diffbits", false, "incorrect difficulty value");
-    }
-
 
     // Check against checkpoints
     if (fCheckpointsEnabled) {

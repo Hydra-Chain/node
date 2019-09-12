@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include <vector>
 
-static const int64_t DEFAULT_MAX_TIME_ADJUSTMENT = 5;
+static const int64_t DEFAULT_MAX_TIME_ADJUSTMENT = 5; //TODO: It's 0 in original, but 5 make synchronization better
 
 class CNetAddr;
 

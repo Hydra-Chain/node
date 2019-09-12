@@ -50,10 +50,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         // Special difficulty rule for testnet:
         // If the new block's timestamp is more than 2* 10 minutes
         // then allow mining of a min-difficulty block.
-        Dgp dgp;
-        int64_t nPowTargetSpacing;
-        dgp.getBlockTime(params, nPowTargetSpacing);
-        if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + nPowTargetSpacing*2)
+        if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2)
             return nTargetLimit;
         else
         {
@@ -63,6 +60,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
                 pindex = pindex->pprev;
             return pindex->nBits;
         }
+        return pindexLast->nBits;
     }
 
     return CalculateNextWorkRequired(pindexPrev, pindexPrevPrev->GetBlockTime(), params, fProofOfStake);
@@ -78,9 +76,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
             return pindexLast->nBits;
     }
     // Limit adjustment step
-    Dgp dgp;
-    int64_t nTargetSpacing;
-    dgp.getBlockTime(params, nTargetSpacing);
+    int64_t nTargetSpacing = params.nPowTargetSpacing;
     int64_t nActualSpacing = pindexLast->GetBlockTime() - nFirstBlockTime;
     if (nActualSpacing < 0)
         nActualSpacing = nTargetSpacing;
