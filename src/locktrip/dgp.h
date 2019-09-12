@@ -48,7 +48,6 @@ static uint64_t DGP_CACHE_ECONOMY_DIVIDEND = DEFAULT_ECONOMY_DIVIDEND_PERCENTAGE
 static uint64_t DGP_CACHE_BLOCK_SIZE = DEFAULT_BLOCK_SIZE_DGP;
 static uint64_t DGP_CACHE_BLOCK_GAS_LIMIT = DEFAULT_BLOCK_GAS_LIMIT_DGP;
 static uint64_t DGP_CACHE_FIAT_BYTE_PRICE = 1000;
-static uint64_t DGP_CACHE_BLOCK_TIME = DEFAULT_BLOCK_TIME;
 
 // Array indexes are the same as the DGP param IDs
 const auto VOTE_HEADLINES = {
@@ -60,7 +59,6 @@ const auto VOTE_HEADLINES = {
     "Vote for block size change",
     "Vote for block gas limit change",
     "Vote for fiat transaction byte price change",
-    "Vote for block time change"
 };
 
 static const dev::Address LockTripDgpContract = dev::Address("0000000000000000000000000000000000000091");
@@ -676,8 +674,7 @@ enum dgp_params {
     ECONOMY_DIVIDEND = 4,
     BLOCK_SIZE_DGP_PARAM = 5,
     BLOCK_GAS_LIMIT_DGP_PARAM = 6,
-    FIAT_BYTE_PRICE = 7,
-    BLOCK_TIME = 8
+    FIAT_BYTE_PRICE = 7
 };
 
 enum dgp_contract_funcs {
@@ -726,7 +723,6 @@ public:
     bool fillCurrentVoteAddressInfo(dgp_contract_funcs func, dev::Address& container);
     void calculateGasPriceBuffer(CAmount gasPrice, CAmount& gasPriceBuffer);
     bool convertFiatThresholdToLoc(uint64_t& fiatThresholdInCents, uint64_t& locContainer);
-    bool getBlockTime(const Consensus::Params& params, int64_t& nPowTargetSpacing);
     void updateDgpCache();
 
 private:

@@ -199,20 +199,6 @@ bool Dgp::finishVote(CScript& scriptPubKey) {
     }
 }
 
-bool Dgp::getBlockTime(const Consensus::Params& params, int64_t& nPowTargetSpacing) {
-    uint64_t blockTime;
-    bool isSuccessful = this->getDgpParam(BLOCK_TIME, blockTime);
-    if ((blockTime > MAX_BLOCK_TIME ||
-            blockTime < MIN_BLOCK_TIME) && isSuccessful) {
-        nPowTargetSpacing = params.nPowTargetSpacing;
-    }
-    else {
-        nPowTargetSpacing = blockTime;
-    }
-
-    return true;
-}
-
 void Dgp::calculateGasPriceBuffer(CAmount gasPrice, CAmount& gasPriceBuffer) {
     gasPriceBuffer = gasPrice / 5 + gasPrice % 5;
 }
@@ -245,11 +231,6 @@ void Dgp::updateDgpCache() {
     this->updateDgpCacheParam(FIAT_BYTE_PRICE, DGP_CACHE_FIAT_BYTE_PRICE);
     if(DGP_CACHE_FIAT_BYTE_PRICE < DEFAULT_MIN_BYTE_PRICE_DGP)
         DGP_CACHE_FIAT_BYTE_PRICE = DEFAULT_MIN_BYTE_PRICE_DGP;
-
-    this->updateDgpCacheParam(BLOCK_TIME, DGP_CACHE_BLOCK_TIME);
-    if(DGP_CACHE_BLOCK_TIME < MIN_BLOCK_TIME ||
-            DGP_CACHE_BLOCK_TIME > MAX_BLOCK_TIME)
-        DGP_CACHE_BLOCK_TIME = DEFAULT_BLOCK_TIME;
 }
 
 void Dgp::updateDgpCacheParam(dgp_params param, uint64_t& cache) {

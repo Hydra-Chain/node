@@ -145,9 +145,7 @@ int64_t GetBlockProofEquivalentTime(const CBlockIndex& to, const CBlockIndex& fr
         sign = -1;
     }
     Dgp dgp;
-    int64_t nPowTargetSpacing;
-    dgp.getBlockTime(params, nPowTargetSpacing);
-    r = r * arith_uint256(nPowTargetSpacing) / GetBlockProof(tip);
+    r = r * arith_uint256(params.nPowTargetSpacing) / GetBlockProof(tip);
     if (r.bits() > 63) {
         return sign * std::numeric_limits<int64_t>::max();
     }
