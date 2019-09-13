@@ -149,9 +149,9 @@ public:
         nDefaultPort = 3338;
         nPruneAfterHeight = 100000;
 
-        genesis = CreateGenesisBlock(1535988275, 8150077, 0x1f00ffff, 1, 0 * COIN);
+        genesis = CreateGenesisBlock(1535988275, 8155867, 0x1f00ffff, 1, 0 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x000073aa3f202501c3629ea0a29f9fcc2d152b91001eefe06801f6402f609366"));
+        assert(consensus.hashGenesisBlock == uint256S("0x0000ad3c8d85d2936a5445a5f89122a896ecff9f5e556150cb0f6e0dbadfe5b9"));
         assert(genesis.hashMerkleRoot == uint256S("0xbc4480addd2d1c0bf7ff88574831c52cd472c7f1caf1427d082b4e974748e8eb"));
 
 		bech32_hrp = "qc";
@@ -163,7 +163,7 @@ public:
 
         checkpointData = (CCheckpointData) {
             {
-                { 0, uint256S("0x000073aa3f202501c3629ea0a29f9fcc2d152b91001eefe06801f6402f609366")},
+                { 0, uint256S("0x0000ad3c8d85d2936a5445a5f89122a896ecff9f5e556150cb0f6e0dbadfe5b9")},
             }
         };
 
@@ -173,7 +173,7 @@ public:
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E};
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
 
-        consensus.BIP34Hash = uint256S("0x000073aa3f202501c3629ea0a29f9fcc2d152b91001eefe06801f6402f609366");
+        consensus.BIP34Hash = uint256S("0x0000ad3c8d85d2936a5445a5f89122a896ecff9f5e556150cb0f6e0dbadfe5b9");
         // consensus.BIP65Height: 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
 		/* disable fallback fee on mainnet */
         m_fallback_fee_enabled = false;
@@ -206,9 +206,9 @@ public:
         nDefaultPort = 1337;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1535988275, 7526462, 0x1f00ffff, 1, 0 * COIN);
+        genesis = CreateGenesisBlock(1535988275, 7640815, 0x1f00ffff, 1, 0 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x0000274254275eb73489b486a0e66d72b6d9e31fc2dad1aa277c66f72f63107e"));
+        assert(consensus.hashGenesisBlock == uint256S("0x00002e86620c426ca41586889d213c4f51b9d72e093216c8d9b7f1b529f968d6"));
         assert(genesis.hashMerkleRoot == uint256S("0xbc4480addd2d1c0bf7ff88574831c52cd472c7f1caf1427d082b4e974748e8eb"));
 
         vFixedSeeds.clear();
@@ -227,7 +227,7 @@ public:
 
         checkpointData = (CCheckpointData) {
             {
-                {0, uint256S("0x0000274254275eb73489b486a0e66d72b6d9e31fc2dad1aa277c66f72f63107e")}
+                {0, uint256S("0x00002e86620c426ca41586889d213c4f51b9d72e093216c8d9b7f1b529f968d6")}
             }
         };
 
@@ -239,7 +239,7 @@ public:
 
         // consensus.BIP65Height - 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
         // consensus.BIP66Height - 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
-        consensus.BIP34Hash = uint256S("0x0000274254275eb73489b486a0e66d72b6d9e31fc2dad1aa277c66f72f63107e");
+        consensus.BIP34Hash = uint256S("0x00002e86620c426ca41586889d213c4f51b9d72e093216c8d9b7f1b529f968d6");
 		/* enable fallback fee on testnet */
         m_fallback_fee_enabled = true;
         consensus.posLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -361,14 +361,14 @@ void SelectParams(const std::string& network)
     globalChainParams = CreateChainParams(network);
 
 //    std::unique_ptr<CChainParams> testChainParams = std::unique_ptr<CChainParams>(new CMainParams());
-//    std::cout<<"Po4vame" << std::endl;
+
 //    auto genesis = CreateGenesisBlock(1535988275, 8109746, 0x1f00ffff, 1, 0 * COIN);;
 //
 //    LogPrintf("Started working \n");
 //    while (!CheckProofOfWork(genesis.GetHash(), genesis.nBits, ((CChainParams)*testChainParams).GetConsensus(), false)) {
 //        ++genesis.nNonce;
 //
-//       // std::cout << "Working Bitch " << genesis.nNonce << "::";
+//       // std::cout << "Working " << genesis.nNonce << "::";
 //
 //    }
 //
@@ -379,14 +379,14 @@ void SelectParams(const std::string& network)
 //    LogPrintf("Genesis : %s\n",genesis.GetHash().ToString());
 //
 //   testChainParams = std::unique_ptr<CChainParams>(new CTestNetParams());
-//    std::cout<<"Po4vame" << std::endl;
+
 //    genesis = CreateGenesisBlock(1535988275, 7359562, 0x1f00ffff, 1, 0 * COIN);
 //
 //    LogPrintf("Started working \n");
 //    while (!CheckProofOfWork(genesis.GetHash(), genesis.nBits, ((CChainParams)*testChainParams).GetConsensus(), false)) {
 //        ++genesis.nNonce;
 //
-//       // std::cout << "Working Bitch " << genesis.nNonce << "::";
+//       // std::cout << "Working " << genesis.nNonce << "::";
 //
 //    }
 //
@@ -397,14 +397,14 @@ void SelectParams(const std::string& network)
 //    LogPrintf("Genesis : %s\n",genesis.GetHash().ToString());
 //
 //    testChainParams = std::unique_ptr<CChainParams>(new CRegTestParams());
-//    std::cout<<"Po4vame" << std::endl;
+
 //    genesis = CreateGenesisBlock(1535988275, 18, 0x207fffff, 1, 0 * COIN);
 //
 //    LogPrintf("Started working \n");
 //    while (!CheckProofOfWork(genesis.GetHash(), genesis.nBits, ((CChainParams)*testChainParams).GetConsensus(), false)) {
 //        ++genesis.nNonce;
 //
-//     //   std::cout << "Working Bitch " << genesis.nNonce << "::";
+//     //   std::cout << "Working " << genesis.nNonce << "::";
 //
 //    }
 //
