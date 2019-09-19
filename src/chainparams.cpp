@@ -112,7 +112,7 @@ CChainParams::CChainParams()
             0 // * estimated number of transactions per second after that timestamp
     };
 
-    consensus.nLastPOWBlock = 15000;
+    consensus.nLastPOWBlock = 5000;
     consensus.nMPoSRewardRecipients = 1;
     consensus.nFirstMPoSBlock = consensus.nLastPOWBlock +
                                 consensus.nMPoSRewardRecipients +
@@ -203,7 +203,7 @@ public:
         pchMessageStart[1] = 0x13; // 19
         pchMessageStart[2] = 0x1f; // 31
         pchMessageStart[3] = 0x03; // 3
-        nDefaultPort = 1337;
+        nDefaultPort = 1336;
         nPruneAfterHeight = 1000;
 
         genesis = CreateGenesisBlock(1535988275, 7640815, 0x1f00ffff, 1, 0 * COIN);
