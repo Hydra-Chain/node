@@ -24,9 +24,9 @@ facilitates social contribution, easy testing and peer review.
 
 To contribute a patch, the workflow is as follows:
 
-  - Fork repository
-  - Create topic branch
-  - Commit patches
+  1. Fork repository
+  1. Create topic branch
+  1. Commit patches
 
 The project coding conventions in the [developer notes](doc/developer-notes.md)
 must be adhered to.
@@ -42,9 +42,11 @@ in init.cpp") in which case a single title line is sufficient. Commit messages s
 helpful to people reading your code in the future, so explain the reasoning for
 your decisions. Further explanation [here](http://chris.beams.io/posts/git-commit/).
 
-If a particular commit references another issue, please add the reference, for
-example `refs #1234`, or `fixes #4321`. Using the `fixes` or `closes` keywords
+If a particular commit references another issue, please add the reference. For
+example: `refs #1234` or `fixes #4321`. Using the `fixes` or `closes` keywords
 will cause the corresponding issue to be closed when the pull request is merged.
+
+Commit messages should never contain any `@` mentions.
 
 Please refer to the [Git manual](https://git-scm.com/doc) for more information
 about Git.
@@ -81,7 +83,9 @@ Examples:
     Qt: Add feed bump button
     Trivial: Fix typo in init.cpp
 
-If a pull request is specifically not to be considered for merging (yet) please
+Note that translations should not be submitted as pull requests
+
+If a pull request is not to be considered for merging (yet), please
 prefix the title with [WIP] or use [Tasks Lists](https://help.github.com/articles/basic-writing-and-formatting-syntax/#task-lists)
 in the body of the pull request to indicate tasks are pending.
 
@@ -94,6 +98,8 @@ At this stage one should expect comments and review from other contributors. You
 can add more commits to your pull request by committing them locally and pushing
 to your fork until you have satisfied all feedback.
 
+Note: Code review is a burdensome but important part of the development process, and as such, certain types of pull requests are rejected. In general, if the **improvements** do not warrant the **review effort** required, the PR has a high chance of being rejected. It is up to the PR author to convince the reviewers that the changes warrant the review effort, and if reviewers are "Concept NAK'ing" the PR, the author may need to present arguments and/or do research backing their suggested changes.
+
 Squashing Commits
 ---------------------------
 If your pull request is accepted for merging, you may be asked by a maintainer
@@ -102,11 +108,15 @@ before it will be merged. The basic squashing workflow is shown below.
 
     git checkout your_branch_name
     git rebase -i HEAD~n
-    # n is normally the number of commits in the pull
-    # set commits from 'pick' to 'squash', save and quit
-    # on the next screen, edit/refine commit messages
-    # save and quit
+    # n is normally the number of commits in the pull request.
+    # Set commits (except the one in the first line) from 'pick' to 'squash', save and quit.
+    # On the next screen, edit/refine commit messages.
+    # Save and quit.
     git push -f # (force push to GitHub)
+
+Please update the resulting commit message if needed, it should read as a
+coherent message. In most cases this means that you should not just list the
+interim commits.
 
 If you have problems with squashing (or other workflows with `git`), you can
 alternatively enable "Allow edits from maintainers" in the right GitHub
@@ -153,9 +163,28 @@ behaviour of code within the pull request (bugs must be preserved as is).
 Project maintainers aim for a quick turnaround on refactoring pull requests, so
 where possible keep them short, uncomplex and easy to verify.
 
+Pull requests that refactor the code should not be made by new contributors. It
+requires a certain level of experience to know where the code belongs to and to
+understand the full ramification (including rebase effort of open pull requests).
+
+Trivial pull requests or pull requests that refactor the code with no clear
+benefits may be immediately closed by the maintainers to reduce unnecessary
+workload on reviewing.
+
 
 "Decision Making" Process
 -------------------------
+
+The following applies to code changes to the LockTrip project (and related
+projects such as libsecp256k1), and is not to be confused with overall LockTrip
+Network Protocol consensus changes.
+
+Whether a pull request is merged into LockTrip rests with the project merge
+maintainers and ultimately the project lead.
+
+Maintainers will take into consideration if a patch is in line with the general
+principles of the project; meets the minimum standards for inclusion; and will
+judge the general consensus of contributors.
 
 In general, all pull requests must:
 
@@ -163,10 +192,18 @@ In general, all pull requests must:
     the project (for example refactoring for modularisation);
   - Be well peer reviewed;
   - Have unit tests and functional tests where appropriate;
-  - Follow code style guidelines;
+  - Follow code style guidelines ([C++](doc/developer-notes.md), [functional tests](test/functional/README.md));
   - Not break the existing test suite;
   - Where bugs are fixed, where possible, there should be unit tests
     demonstrating the bug and also proving the fix. This helps prevent regression.
+
+Patches that change LockTrip consensus rules are considerably more involved than
+normal because they affect the entire ecosystem and so must be preceded by
+extensive mailing list discussions and have a numbered BIP. While each case will
+be different, one should be prepared to expend more time and effort than for
+other kinds of patches because of increased peer review and consensus building
+requirements.
+
 
 ### Peer Review
 
@@ -201,8 +238,8 @@ higher in terms of discussion and peer review requirements, keeping in mind that
 mistakes could be very costly to the wider community. This includes refactoring
 of consensus critical code.
 
-Where a patch set proposes to change the consensus, it must have been
-discussed extensively on Github issues, be accompanied by a widely
+Where a patch set proposes to change the LockTrip consensus, it must have been
+discussed extensively on the mailing list and IRC, be accompanied by a widely
 discussed BIP and have a generally widely perceived technical consensus of being
 a worthwhile change based on the judgement of the maintainers.
 
@@ -242,3 +279,10 @@ Release Policy
 --------------
 
 The project leader is the release manager for each LockTrip Blockchain release.
+Copyright
+---------
+
+By contributing to this repository, you agree to license your work under the 
+MIT license unless specified otherwise in `contrib/debian/copyright` or at 
+the top of the file itself. Any work contributed where you are not the original 
+author must contain its license header with the original author(s) and source.
