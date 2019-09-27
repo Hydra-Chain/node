@@ -5,7 +5,8 @@
 #include <qt/clientmodel.h>
 #include <qt/optionsmodel.h>
 #include <validation.h>
-#include <utilmoneystr.h>
+#include <util/moneystr.h>
+#include <util/convert.h>
 #include <qt/token.h>
 #include <qt/bitcoinunits.h>
 #include <wallet/wallet.h>
@@ -16,7 +17,6 @@
 #include <uint256.h>
 #include <qt/styleSheet.h>
 #include <interfaces/node.h>
-#include <guiconstants.h>
 
 //static const CAmount SINGLE_STEP = 0.00000001*COIN;
 
@@ -62,9 +62,9 @@ SendTokenPage::SendTokenPage(QWidget *parent) :
     ui->confirmButton->setEnabled(false);
 
     // Connect signals with slots
-    connect(ui->lineEditPayTo, SIGNAL(textChanged(QString)), SLOT(on_updateConfirmButton()));
-    connect(ui->lineEditAmount, SIGNAL(valueChanged()), SLOT(on_updateConfirmButton()));
-    connect(ui->confirmButton, SIGNAL(clicked()), SLOT(on_confirmClicked()));
+    connect(ui->lineEditPayTo, &QValidatedLineEdit::textChanged, this, &SendTokenPage::on_updateConfirmButton);
+    connect(ui->lineEditAmount, &TokenAmountField::valueChanged,this, &SendTokenPage::on_updateConfirmButton);
+    connect(ui->confirmButton, &QPushButton::clicked, this, &SendTokenPage::on_confirmClicked);
 
     ui->lineEditPayTo->setCheckValidator(new BitcoinAddressCheckValidator(parent, true));
 }
@@ -82,6 +82,12 @@ void SendTokenPage::setModel(WalletModel *_model)
 {
     m_model = _model;
     m_tokenABI->setModel(m_model);
+
+    if (m_model && m_model->getOptionsModel())
+        connect(m_model->getOptionsModel(), &OptionsModel::displayUnitChanged, this, &SendTokenPage::updateDisplayUnit);
+
+    // update the display unit, to not use the default ("QTUM")
+    updateDisplayUnit();
 }
 
 void SendTokenPage::setClientModel(ClientModel *_clientModel)
@@ -215,6 +221,15 @@ void SendTokenPage::on_confirmClicked()
                 .arg(QString::fromStdString(m_selectedToken->symbol)).arg(QString::fromStdString(m_selectedToken->sender));
 
         QMessageBox::warning(this, tr("Send token"), message);
+    }
+}
+
+void SendTokenPage::updateDisplayUnit()
+{
+    if(m_model && m_model->getOptionsModel())
+    {
+        // Update gasPriceAmount with the current unit
+        ui->lineEditGasPrice->setDisplayUnit(m_model->getOptionsModel()->getDisplayUnit());
     }
 }
 

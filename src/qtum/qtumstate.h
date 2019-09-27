@@ -5,6 +5,7 @@
 #include <crypto/sha256.h>
 #include <crypto/ripemd160.h>
 #include <uint256.h>
+#include <util/convert.h>
 #include <primitives/transaction.h>
 #include <qtum/qtumtransaction.h>
 
@@ -76,7 +77,7 @@ public:
 
     dev::OverlayDB const& dbUtxo() const { return dbUTXO; }
 
-	dev::OverlayDB& dbUtxo() { return dbUTXO; }
+    dev::OverlayDB& dbUtxo() { return dbUTXO; }
 
     static const dev::Address createQtumAddress(dev::h256 hashTx, uint32_t voutNumber){
         uint256 hashTXid(h256Touint(hashTx));

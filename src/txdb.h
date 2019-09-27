@@ -22,7 +22,6 @@
 class CBlockIndex;
 class CCoinsViewDBCursor;
 class uint256;
-
 #ifdef ENABLE_BITCORE_RPC
 //////////////////////////////////// //qtum
 struct CAddressIndexKey;
@@ -169,11 +168,11 @@ public:
     bool WriteAddressIndex(const std::vector<std::pair<CAddressIndexKey, CAmount> > &vect);
     bool EraseAddressIndex(const std::vector<std::pair<CAddressIndexKey, CAmount> > &vect);
     bool ReadAddressIndex(uint256 addressHash, int type,
-                          std::vector<std::pair<CAddressIndexKey, CAmount> > &addressIndex,
-                          int start = 0, int end = 0);
+                        std::vector<std::pair<CAddressIndexKey, CAmount> > &addressIndex,
+                        int start = 0, int end = 0);
     bool UpdateAddressUnspentIndex(const std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue > >&vect);
     bool ReadAddressUnspentIndex(uint256 addressHash, int type,
-                                 std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > &vect);
+                                std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > &vect);
     bool WriteTimestampIndex(const CTimestampIndexKey &timestampIndex);
     bool ReadTimestampIndex(const unsigned int &high, const unsigned int &low, const bool fActiveOnly, std::vector<std::pair<uint256, unsigned int> > &vect);
     bool WriteTimestampBlockIndex(const CTimestampBlockIndexKey &blockhashIndex, const CTimestampBlockIndexValue &logicalts);
@@ -182,6 +181,7 @@ public:
     bool UpdateSpentIndex(const std::vector<std::pair<CSpentIndexKey, CSpentIndexValue> >&vect);
     bool blockOnchainActive(const uint256 &hash);
 #endif
+
     //////////////////////////////////////////////////////////////////////////////
 
 };

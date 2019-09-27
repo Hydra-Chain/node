@@ -5,8 +5,6 @@
 #ifndef BITCOIN_WALLET_RPCWALLET_H
 #define BITCOIN_WALLET_RPCWALLET_H
 
-#include <script/standard.h>
-
 #include <string>
 
 class CRPCTable;
@@ -32,6 +30,4 @@ bool EnsureWalletIsAvailable(CWallet *, bool avoidException);
 
 UniValue getaddressinfo(const JSONRPCRequest& request);
 UniValue signrawtransactionwithwallet(const JSONRPCRequest& request);
-bool FillPSBT(const CWallet* pwallet, PartiallySignedTransaction& psbtx, int sighash_type = 1 /* SIGHASH_ALL */, bool sign = true, bool bip32derivs = false);
-CTxDestination GetLabelDestination(CWallet* const pwallet, const std::string& label, bool bForceNew=false);
 #endif //BITCOIN_WALLET_RPCWALLET_H

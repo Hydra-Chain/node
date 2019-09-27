@@ -8,7 +8,6 @@
 #include <amount.h>
 
 #include <QWidget>
-#include <QLabel>
 
 class AmountSpinBox;
 
@@ -27,10 +26,19 @@ class BitcoinAmountField: public QWidget
     Q_PROPERTY(qint64 value READ value WRITE setValue NOTIFY valueChanged USER true)
 
 public:
-    explicit BitcoinAmountField(QWidget *parent = 0);
+    explicit BitcoinAmountField(QWidget *parent = nullptr);
 
-    CAmount value(bool *value=0) const;
+    CAmount value(bool *value=nullptr) const;
     void setValue(const CAmount& value);
+
+    /** If allow empty is set to false the field will be set to the minimum allowed value if left empty. **/
+    void SetAllowEmpty(bool allow);
+
+    /** Set the minimum value in satoshis **/
+    void SetMinValue(const CAmount& value);
+
+    /** Set the maximum value in satoshis **/
+    void SetMaxValue(const CAmount& value);
 
     /** Set single step in satoshis **/
     void setSingleStep(const CAmount& step);
@@ -57,9 +65,6 @@ public:
     */
     QWidget *setupTabChain(QWidget *prev);
 
-    CAmount minimum() const;
-    void setMinimum(const CAmount& min);
-
 Q_SIGNALS:
     void valueChanged();
 
@@ -69,7 +74,7 @@ protected:
 
 private:
     AmountSpinBox *amount;
-    QLabel *unit;
+    QValueComboBox *unit;
 
 private Q_SLOTS:
     void unitChanged(int idx);

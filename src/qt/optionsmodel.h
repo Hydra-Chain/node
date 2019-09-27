@@ -32,7 +32,7 @@ class OptionsModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    explicit OptionsModel(interfaces::Node& node, QObject *parent = 0, bool resetSettings = false);
+    explicit OptionsModel(interfaces::Node& node, QObject *parent = nullptr, bool resetSettings = false);
 
     enum OptionID {
         StartAtStartup,         // bool
@@ -58,7 +58,7 @@ public:
         SpendZeroConfChange,    // bool
         ZeroBalanceAddressToken,// bool
         Listen,                 // bool
-        UseChangeAddress,    // bool
+        UseChangeAddress,       // bool
         CheckForUpdates,        // bool
         ReserveBalance,         // CAmount
 		EnableSTUN,             // bool

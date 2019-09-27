@@ -6,14 +6,10 @@
 
 #include <hash.h>
 #include <uint256.h>
+#include <util/strencodings.h>
 
 #include <assert.h>
-#include <stdint.h>
 #include <string.h>
-#include <vector>
-#include <string>
-#include <boost/variant/apply_visitor.hpp>
-#include <boost/variant/static_visitor.hpp>
 
 /** All alphanumeric characters except for "0", "I", "O", and "l" */
 static const char* pszBase58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -39,7 +35,7 @@ static const int8_t mapBase58[256] = {
 bool DecodeBase58(const char* psz, std::vector<unsigned char>& vch)
 {
     // Skip leading spaces.
-    while (*psz && isspace(*psz))
+    while (*psz && IsSpace(*psz))
         psz++;
     // Skip and count leading '1's.
     int zeroes = 0;
@@ -53,7 +49,7 @@ bool DecodeBase58(const char* psz, std::vector<unsigned char>& vch)
     std::vector<unsigned char> b256(size);
     // Process the characters.
     static_assert(sizeof(mapBase58)/sizeof(mapBase58[0]) == 256, "mapBase58.size() should be 256"); // guarantee not out of range
-    while (*psz && !isspace(*psz)) {
+    while (*psz && !IsSpace(*psz)) {
         // Decode base58 character
         int carry = mapBase58[(uint8_t)*psz];
         if (carry == -1)  // Invalid b58 character
@@ -69,7 +65,7 @@ bool DecodeBase58(const char* psz, std::vector<unsigned char>& vch)
         psz++;
     }
     // Skip trailing spaces.
-    while (isspace(*psz))
+    while (IsSpace(*psz))
         psz++;
     if (*psz != 0)
         return false;

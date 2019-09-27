@@ -1,10 +1,10 @@
 #ifndef QTUMDGP_H
 #define QTUMDGP_H
 
-#include "qtumstate.h"
-#include "primitives/block.h"
-#include "validation.h"
-#include "utilstrencodings.h"
+#include <qtum/qtumstate.h>
+#include <primitives/block.h>
+#include <validation.h>
+#include <util/strencodings.h>
 
 class QtumDGP {
     
