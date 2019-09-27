@@ -2248,7 +2248,7 @@ bool CheckMinGasPrice(std::vector<EthTransactionParams>& etps, const uint64_t& m
 
 bool CheckReward(const CBlock &block, CValidationState &state, int nHeight, const Consensus::Params &consensusParams,
                  CAmount nFees, CAmount gasRefunds, CAmount contractOwnersDividents, CAmount nActualStakeReward,
-                 const std::vector<CTxOut> &vouts) {
+                 const std::vector<CTxOut> &vouts, uint64_t cached_coinBurnPercentage) {
     size_t offset = block.IsProofOfStake() ? 1 : 0;
     std::vector<CTxOut> vTempVouts=block.vtx[offset]->vout;
     std::vector<CTxOut>::iterator it;
@@ -2262,8 +2262,8 @@ bool CheckReward(const CBlock &block, CValidationState &state, int nHeight, cons
     }
 
     Dgp dgp;
-    uint64_t coinBurnPercentage;
-    dgp.getDgpParam(BURN_RATE, coinBurnPercentage);
+    uint64_t coinBurnPercentage = cached_coinBurnPercentage;
+    //dgp.getDgpParam(BURN_RATE, coinBurnPercentage);
     if (coinBurnPercentage > MAX_BURN_RATE_PERCENTAGE || coinBurnPercentage < MIN_BURN_RATE_PERCENTAGE) {
         coinBurnPercentage = DEFAULT_BURN_RATE_PERCENTAGE;
     }
@@ -2753,6 +2753,10 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     updateBlockSizeParams(dgpMaxBlockSize);
     CBlock checkBlock(block.GetBlockHeader());
     std::vector<CTxOut> checkVouts;
+
+    Dgp dgp;
+    uint64_t cached_coinBurnPercentage;
+    dgp.getDgpParam(BURN_RATE, cached_coinBurnPercentage);
 
     uint64_t countCumulativeGasUsed = 0;
     /////////////////////////////////////////////////
@@ -3426,7 +3430,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     }
 
     if (!CheckReward(block, state, pindex->nHeight, chainparams.GetConsensus(), nFees, gasRefunds,
-                     contractOwnersDividents, nActualStakeReward, checkVouts))
+                     contractOwnersDividents, nActualStakeReward, checkVouts, cached_coinBurnPercentage))
         return state.DoS(100, error("ConnectBlock(): Reward check failed"));
 
     if (!control.Wait())

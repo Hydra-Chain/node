@@ -273,6 +273,25 @@ UniValue transactionReceiptToJSON(const dev::eth::TransactionReceipt& txRec)
 }
 ////////////////////////////////////////////////////////////////////////////
 
+UniValue getcontractcode(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() < 1)
+        throw std::runtime_error(
+                "getcontractcode \"address\"\n"
+                "\nArgument:\n"
+                "1. \"address\"          (string, required) The contract address\n"
+        );
+    LOCK(cs_main);
+    std::string strAddr = request.params[0].get_str();
+    if(strAddr.size() != 40 || !CheckHex(strAddr))
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Incorrect address");
+    dev::Address addrAccount(strAddr);
+    if(!globalState->addressInUse(addrAccount))
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Address does not exist");
+    std::vector<uint8_t> code(globalState->code(addrAccount));
+    return HexStr(code.begin(), code.end());
+}
+
 static UniValue getblockcount(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size() != 0)
@@ -3058,6 +3077,7 @@ static const CRPCCommand commands[] =
     { "blockchain",         "getblock",               &getblock,               {"blockhash","verbosity|verbose"} },
     { "blockchain",         "getblockhash",           &getblockhash,           {"height"} },
     { "blockchain",         "getblockheader",         &getblockheader,         {"blockhash","verbose"} },
+    { "blockchain",         "getcontractcode",        &getcontractcode,        {"contract_address"} },
     { "blockchain",         "getchaintips",           &getchaintips,           {} },
     { "blockchain",         "getdifficulty",          &getdifficulty,          {} },
     { "blockchain",         "getmempoolancestors",    &getmempoolancestors,    {"txid","verbose"} },
