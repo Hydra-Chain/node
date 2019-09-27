@@ -110,20 +110,7 @@
       <widget class="QLineEdit" name="lineEditDescription"/>
      </item>
      <item row="4" column="1">
-      <widget class="QLabel" name="lineEditGasPrice">
-       <property name="minimumSize">
-        <size>
-         <width>100</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">color: gray</string>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-      </widget>
+      <widget class="BitcoinAmountField" name="lineEditGasPrice"/>
      </item>
      <item row="3" column="1">
       <widget class="QSpinBox" name="lineEditGasLimit">
@@ -206,7 +193,7 @@
   <customwidget>
    <class>QValidatedLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>qvalidatedlineedit.h</header>
+   <header>qt/qvalidatedlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>BitcoinAmountField</class>
@@ -217,7 +204,7 @@
   <customwidget>
    <class>TokenAmountField</class>
    <extends>QWidget</extends>
-   <header>tokenamountfield.h</header>
+   <header>qt/tokenamountfield.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

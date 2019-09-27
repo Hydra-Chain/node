@@ -19,6 +19,7 @@ static const int STATUSBAR_ICONSIZE = 16;
 
 static const bool DEFAULT_SPLASHSCREEN = true;
 
+
 /* Transaction list -- unconfirmed transaction */
 #define COLOR_UNCONFIRMED QColor(128, 128, 128)
 /* Transaction list -- negative amount */
@@ -56,5 +57,8 @@ static const double LOC_GRANULARITY = 100000000;
 #define QAPP_APP_NAME_DEFAULT "LockTrip-Qt"
 #define QAPP_APP_NAME_TESTNET "Locktrip-Qt-testnet"
 #define QAPP_APP_NAME_REGTEST "Locktrip-Qt-regtest"
+
+/* One gigabyte (GB) in bytes */
+static constexpr uint64_t GB_BYTES{1000000000};
 
 #endif // BITCOIN_QT_GUICONSTANTS_H

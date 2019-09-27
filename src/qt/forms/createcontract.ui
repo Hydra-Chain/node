@@ -44,7 +44,7 @@
             </font>
            </property>
            <property name="text">
-            <string/>
+            <string>Create Smart Contract</string>
            </property>
           </widget>
          </item>
@@ -71,13 +71,6 @@
            </property>
            <property name="text">
             <string>Solidity</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="labelToken">
-           <property name="text">
-            <string>Token</string>
            </property>
           </widget>
          </item>
@@ -253,7 +246,7 @@
                <x>0</x>
                <y>0</y>
                <width>656</width>
-               <height>157</height>
+               <height>172</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5"/>
@@ -320,14 +313,8 @@
             </property>
             <property name="minimumSize">
              <size>
-              <width>65</width>
+              <width>90</width>
               <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>60</width>
-              <height>16777215</height>
              </size>
             </property>
             <property name="text">
@@ -485,12 +472,12 @@
   <customwidget>
    <class>QValidatedTextEdit</class>
    <extends>QTextEdit</extends>
-   <header>qvalidatedtextedit.h</header>
+   <header>qt/qvalidatedtextedit.h</header>
   </customwidget>
   <customwidget>
    <class>AddressField</class>
    <extends>QComboBox</extends>
-   <header>addressfield.h</header>
+   <header>qt/addressfield.h</header>
   </customwidget>
   <customwidget>
    <class>BitcoinAmountField</class>

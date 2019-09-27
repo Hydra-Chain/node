@@ -42,10 +42,6 @@
         <translation>Qtum</translation>
     </message>
     <message>
-        <source>Wallet</source>
-        <translation>Капчык</translation>
-    </message>
-    <message>
         <source>&amp;File</source>
         <translation>&amp;Файл</translation>
     </message>
@@ -68,6 +64,10 @@
     <message>
         <source>Up to date</source>
         <translation>Жаңыланган</translation>
+    </message>
+    <message>
+        <source>&amp;Window</source>
+        <translation>&amp;Терезе</translation>
     </message>
     </context>
 <context>
@@ -101,6 +101,10 @@
 <context>
     <name>Intro</name>
     <message>
+        <source>Qtum</source>
+        <translation>Qtum</translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>Ката</translation>
     </message>
@@ -113,10 +117,6 @@
     </context>
 <context>
     <name>OptionsDialog</name>
-    <message>
-        <source>MB</source>
-        <translation>МБ</translation>
-    </message>
     <message>
         <source>&amp;Network</source>
         <translation>&amp;Тармак</translation>
@@ -148,6 +148,10 @@
     <message>
         <source>none</source>
         <translation>жок</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Ката</translation>
     </message>
     </context>
 <context>
@@ -215,6 +219,10 @@
     <message>
         <source>Message</source>
         <translation>Билдирүү</translation>
+    </message>
+    <message>
+        <source>Wallet</source>
+        <translation>Капчык</translation>
     </message>
     </context>
 <context>
@@ -284,10 +292,6 @@
 <context>
     <name>TransactionDesc</name>
     <message>
-        <source>%1/offline</source>
-        <translation>%1/тармакта эмес</translation>
-    </message>
-    <message>
         <source>Date</source>
         <translation>Дата</translation>
     </message>
@@ -323,6 +327,9 @@
     </context>
 <context>
     <name>UnitDisplayStatusBarControl</name>
+    </context>
+<context>
+    <name>WalletController</name>
     </context>
 <context>
     <name>WalletFrame</name>

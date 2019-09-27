@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>691</width>
+    <width>689</width>
     <height>583</height>
    </rect>
   </property>
@@ -35,12 +35,6 @@
        </property>
        <item>
         <widget class="QLabel" name="labelTitle">
-         <property name="maximumSize">
-          <size>
-           <width>0</width>
-           <height>16777215</height>
-          </size>
-         </property>
          <property name="font">
           <font>
            <weight>75</weight>
@@ -48,7 +42,7 @@
           </font>
          </property>
          <property name="text">
-          <string/>
+          <string>Send to Smart Contract</string>
          </property>
         </widget>
        </item>
@@ -231,8 +225,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>641</width>
-               <height>161</height>
+               <width>639</width>
+               <height>182</height>
               </rect>
              </property>
             </widget>
@@ -291,14 +285,8 @@
             </property>
             <property name="minimumSize">
              <size>
-              <width>60</width>
+              <width>90</width>
               <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>65</width>
-              <height>16777215</height>
              </size>
             </property>
             <property name="text">
@@ -478,20 +466,20 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QValidatedTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>qvalidatedtextedit.h</header>
+   <class>QValidatedLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qt/qvalidatedlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>BitcoinAmountField</class>
    <extends>QLineEdit</extends>
-   <header>bitcoinamountfield.h</header>
+   <header>qt/bitcoinamountfield.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QValidatedLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qvalidatedlineedit.h</header>
+   <class>QValidatedTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>qt/qvalidatedtextedit.h</header>
   </customwidget>
   <customwidget>
    <class>AddressField</class>
