@@ -249,8 +249,8 @@ static UniValue getmininginfo(const JSONRPCRequest& request)
     UniValue weight(UniValue::VOBJ);
 
     obj.pushKV("blocks",           (int)chainActive.Height());
-    if (BlockAssembler::m_last_block_weight) obj.pushKV("currentblockweight", *BlockAssembler::m_last_block_weight);
-    if (BlockAssembler::m_last_block_num_txs) obj.pushKV("currentblocktx", *BlockAssembler::m_last_block_num_txs);
+    //if (BlockAssembler::m_last_block_weight) obj.pushKV("currentblockweight", *BlockAssembler::m_last_block_weight);
+    //if (BlockAssembler::m_last_block_num_txs) obj.pushKV("currentblocktx", *BlockAssembler::m_last_block_num_txs);
 
     uint64_t nWeight = 0;
     uint64_t lastCoinStakeSearchInterval = 0;
@@ -343,7 +343,7 @@ static UniValue getstakinginfo(const JSONRPCRequest& request)
     obj.pushKV("staking", staking);
     obj.pushKV("errors", GetWarnings("statusbar"));
 
-    if (BlockAssembler::m_last_block_num_txs) obj.pushKV("currentblocktx", *BlockAssembler::m_last_block_num_txs);
+    //if (BlockAssembler::m_last_block_num_txs) obj.pushKV("currentblocktx", *BlockAssembler::m_last_block_num_txs);
     obj.pushKV("pooledtx", (uint64_t)mempool.size());
 
     obj.pushKV("difficulty", GetDifficulty(GetLastBlockIndex(pindexBestHeader, true)));
