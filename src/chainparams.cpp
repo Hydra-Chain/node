@@ -4,23 +4,29 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <chainparams.h>
+
+#include <chainparamsseeds.h>
 #include <consensus/merkle.h>
 #include <consensus/consensus.h>
 #include <pow.h>
 
 #include <tinyformat.h>
-#include <util.h>
-#include <utilstrencodings.h>
+#include <util/system.h>
+#include <util/strencodings.h>
+#include <util/convert.h>
+#include <versionbitsinfo.h>
 
 #include <assert.h>
 #include <iostream>
-
-#include <chainparamsseeds.h>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
 #include <amount.h>
 ///////////////////////////////////////////// // qtum
 #include <libdevcore/SHA3.h>
 #include <libdevcore/RLP.h>
 #include "arith_uint256.h"
+#include "chainparams.h"
+
 /////////////////////////////////////////////
 
 static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesisOutputScript, uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
@@ -63,12 +69,6 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
      const CScript genesisOutputScript = CScript() << ParseHex("033a537fcd935fba9f532ef78bb97154b5ea7b8dfd8b74facc36f7193e9d5b1cab") << OP_CHECKSIG;
 
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
-}
-
-void CChainParams::UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout)
-{
-    consensus.vDeployments[d].nStartTime = nStartTime;
-    consensus.vDeployments[d].nTimeout = nTimeout;
 }
 
 CChainParams::CChainParams()
@@ -148,6 +148,8 @@ public:
         pchMessageStart[3] = 0xf7; //247
         nDefaultPort = 3338;
         nPruneAfterHeight = 100000;
+        m_assumed_blockchain_size = 6;
+        m_assumed_chain_state_size = 2;
 
         genesis = CreateGenesisBlock(1535988275, 8155867, 0x1f00ffff, 1, 0 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
@@ -205,6 +207,8 @@ public:
         pchMessageStart[3] = 0x03; // 3
         nDefaultPort = 1336;
         nPruneAfterHeight = 1000;
+        m_assumed_blockchain_size = 6;
+        m_assumed_chain_state_size = 2;
 
         genesis = CreateGenesisBlock(1535988275, 7640815, 0x1f00ffff, 1, 0 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
@@ -269,6 +273,8 @@ public:
         pchMessageStart[3] = 0x9f; // 159
         nDefaultPort = 2338;
         nPruneAfterHeight = 1000;
+        m_assumed_blockchain_size = 0;
+        m_assumed_chain_state_size = 0;
 
         genesis = CreateGenesisBlock(1535988275, 18, 0x207fffff, 1, 0 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
@@ -337,7 +343,7 @@ public:
 
 static std::unique_ptr<CChainParams> globalChainParams;
 
-const CChainParams &Params() {
+CChainParams &Params() {
     assert(globalChainParams);
     return *globalChainParams;
 }
@@ -417,5 +423,10 @@ void SelectParams(const std::string& network)
 
 void UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout)
 {
-    globalChainParams->UpdateVersionBitsParameters(d, nStartTime, nTimeout);
+    globalChainParams->UpdateVersionBitsParametersChain(d, nStartTime, nTimeout);
+}
+
+void CChainParams::UpdateVersionBitsParametersChain(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout) {
+    consensus.vDeployments[d].nStartTime = nStartTime;
+    consensus.vDeployments[d].nTimeout = nTimeout;
 }

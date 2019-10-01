@@ -210,7 +210,7 @@ bool LoadWallets(interfaces::Chain& chain, const std::vector<std::string>& walle
 void StartWallets(CScheduler& scheduler)
 {
     for (const std::shared_ptr<CWallet>& pwallet : GetWallets()) {
-        pwallet->postInitProcess();
+        pwallet->postInitProcess(scheduler);
     }
 
     // Run a thread to flush wallet periodically

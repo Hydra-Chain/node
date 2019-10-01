@@ -21,7 +21,10 @@ struct VersionVM{
         return *(uint32_t*)this;
     }
     static VersionVM fromRaw(uint32_t val){
-        VersionVM x = *(VersionVM*)&val;
+        uint32_t* p = &val;
+        VersionVM x = *(VersionVM*)p; //FIX FOR TYPE-PUNNING WARNING
+
+        //VersionVM x = *(VersionVM*)&val;
         return x;
     }
     static VersionVM GetNoExec(){
@@ -68,10 +71,25 @@ public:
     VersionVM getVersion() const{
         return version;
     }
-private:
 
+    void setQtumType(opcodetype type){
+        qtumType= type;
+    }
+    opcodetype getQtumType(){
+        return qtumType;
+    }
+
+    void setTransactionFee(uint64_t transactionFee){
+        nTransactionFee = transactionFee;
+    }
+    uint64_t getTransactionFee(){
+        return nTransactionFee;
+    }
+
+private:
     uint32_t nVout;
     VersionVM version;
-
+    opcodetype qtumType;
+    uint64_t nTransactionFee;
 };
 #endif

@@ -2,7 +2,7 @@
 #include "univalue.h"
 #include "libethcore/ABI.h"
 #include <math.h>
-#include "util.h"
+#include <util/system.h>
 
 namespace ContractABI_NS
 {

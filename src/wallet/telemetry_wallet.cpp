@@ -7,7 +7,7 @@
 #include <fstream>
 
 #include "validation.h"
-#include "utilstrencodings.h"
+#include <util/strencodings.h>
 #include <zlib.h>
 #include "openssl/sha.h"
 
@@ -24,10 +24,12 @@
 #include "validation.h"
 #include "script/script.h"
 #include "script/sign.h"
+#include <script/standard.h>
 #include "scheduler.h"
 
 #include "rpc/server.h"
 #include "rpc/client.h"
+#include <wallet/rpcwallet.h>
 #include <univalue.h>
 
 
@@ -95,7 +97,9 @@ bool TelemetryGetKeys(CPubKey& pubKey, CKey& vchSecret) {
 	if(pwallet == nullptr)
 		return false;
 
-	std::string pubKeyStr = EncodeDestination(GetLabelDestination(pwallet.get(), ""));
+	CTxDestination tx_dest;
+    pwallet->GetLabelDestination(tx_dest, "");
+	std::string pubKeyStr = EncodeDestination(tx_dest);
 	std::vector<unsigned char> pubKeyData (pubKeyStr.begin(), pubKeyStr.end());
 	CPubKey tempPubKey(pubKeyData);
 	pubKey = tempPubKey;

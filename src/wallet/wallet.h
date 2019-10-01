@@ -962,7 +962,6 @@ public:
      */
     int64_t IncOrderPosNext(WalletBatch *batch = nullptr) EXCLUSIVE_LOCKS_REQUIRED(cs_wallet);
     DBErrors ReorderTransactions();
-    bool AccountMove(std::string strFrom, std::string strTo, CAmount nAmount, std::string strComment = "") EXCLUSIVE_LOCKS_REQUIRED(cs_wallet);
     bool GetLabelDestination(CTxDestination &dest, const std::string& label, bool bForceNew = false);
     //bool GetAccountPubkey(CPubKey &pubKey, std::string strAccount, bool bForceNew = false);
 
@@ -1226,7 +1225,7 @@ public:
      * Wallet post-init setup
      * Gives the wallet a chance to register repetitive tasks and complete post-init tasks
      */
-    void postInitProcess();
+    void postInitProcess(CScheduler& scheduler);
 
     bool BackupWallet(const std::string& strDest);
 
@@ -1362,6 +1361,36 @@ public:
     bool GetReservedKey(CPubKey &pubkey, bool internal = false);
     void KeepKey();
     void KeepScript() override { KeepKey(); }
+};
+
+/**
+ * DEPRECATED Account information.
+ * Stored in wallet with key "acc"+string account name.
+ */
+class CAccount
+{
+public:
+    CPubKey vchPubKey;
+
+    CAccount()
+    {
+        SetNull();
+    }
+
+    void SetNull()
+    {
+        vchPubKey = CPubKey();
+    }
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        int nVersion = s.GetVersion();
+        if (!(s.GetType() & SER_GETHASH))
+            READWRITE(nVersion);
+        READWRITE(vchPubKey);
+    }
 };
 
 /** RAII object to check and reserve a wallet rescan */

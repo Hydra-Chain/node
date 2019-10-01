@@ -18,6 +18,9 @@
 #include <rpc/util.h>
 #include <script/descriptor.h>
 #include <timedata.h>
+#include <wallet/rpcwallet.h>
+#include <wallet/wallet.h>
+#include <pow.h>
 #ifdef ENABLE_BITCORE_RPC
 #include <txmempool.h>
 #endif
@@ -1372,36 +1375,37 @@ UniValue getinfo(const JSONRPCRequest& request)
 
     UniValue obj(UniValue::VOBJ);
     UniValue diff(UniValue::VOBJ);
-    obj.push_back(Pair("version", CLIENT_VERSION));
-    obj.push_back(Pair("protocolversion", PROTOCOL_VERSION));
+    obj.pushKV("version", (uint64_t)CLIENT_VERSION);
+    obj.pushKV("protocolversion", (uint64_t)PROTOCOL_VERSION);
 #ifdef ENABLE_WALLET
     if (pwallet) {
-        obj.push_back(Pair("walletversion", pwallet->GetVersion()));
-        obj.push_back(Pair("balance",       ValueFromAmount(pwallet->GetBalance())));
-        obj.push_back(Pair("stake",         ValueFromAmount(pwallet->GetStake())));
+        obj.pushKV("walletversion", pwallet->GetVersion());
+        obj.pushKV("balance",       ValueFromAmount(pwallet->GetBalance()));
+        obj.pushKV("stake",         ValueFromAmount(pwallet->GetStake()));
     }
 #endif
-    obj.push_back(Pair("blocks",        (int)chainActive.Height()));
-    obj.push_back(Pair("timeoffset",    GetTimeOffset()));
+    obj.pushKV("locked", RPCLockedMemoryInfo());
+    obj.pushKV("blocks",        (int)chainActive.Height());
+    obj.pushKV("timeoffset",    (uint64_t)GetTimeOffset());
     if(g_connman)
-        obj.push_back(Pair("connections",   (int)g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL)));
-    obj.push_back(Pair("proxy",         (proxy.IsValid() ? proxy.proxy.ToStringIPPort() : std::string())));
-    diff.push_back(Pair("proof-of-work",        GetDifficulty(GetLastBlockIndex(pindexBestHeader, false))));
-    diff.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex(pindexBestHeader, true))));
-    obj.push_back(Pair("difficulty",    diff));
-    obj.push_back(Pair("testnet",       Params().NetworkIDString() == CBaseChainParams::TESTNET));
-    obj.push_back(Pair("moneysupply",       pindexBestHeader->nMoneySupply / COIN));
+        obj.pushKV("connections",   (int)g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL));
+    obj.pushKV("proxy",         (proxy.IsValid() ? proxy.proxy.ToStringIPPort() : std::string()));
+    diff.pushKV("proof-of-work",        GetDifficulty(GetLastBlockIndex(pindexBestHeader, false)));
+    diff.pushKV("proof-of-stake",       GetDifficulty(GetLastBlockIndex(pindexBestHeader, true)));
+    obj.pushKV("difficulty",    diff);
+    obj.pushKV("testnet",       Params().NetworkIDString() == CBaseChainParams::TESTNET);
+    obj.pushKV("moneysupply",       pindexBestHeader->nMoneySupply / COIN);
 #ifdef ENABLE_WALLET
     if (pwallet) {
-        obj.push_back(Pair("keypoololdest", pwallet->GetOldestKeyPoolTime()));
-        obj.push_back(Pair("keypoolsize",   (int)pwallet->GetKeyPoolSize()));
+        obj.pushKV("keypoololdest", pwallet->GetOldestKeyPoolTime());
+        obj.pushKV("keypoolsize",   (int)pwallet->GetKeyPoolSize());
     }
     if (pwallet && pwallet->IsCrypted()) {
-        obj.push_back(Pair("unlocked_until", pwallet->nRelockTime));
+        obj.pushKV("unlocked_until", pwallet->nRelockTime);
     }
 #endif
-    obj.push_back(Pair("relayfee",      ValueFromAmount(::minRelayTxFee.GetFeePerK())));
-    obj.push_back(Pair("errors",        GetWarnings("statusbar")));
+    obj.pushKV("relayfee",      ValueFromAmount(::minRelayTxFee.GetFeePerK()));
+    obj.pushKV("errors",        GetWarnings("statusbar"));
     return obj;
 }
 

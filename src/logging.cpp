@@ -223,7 +223,7 @@ std::string BCLog::Logger::LogTimestampStr(const std::string &str)
     return strStamped;
 }
 
-void BCLog::Logger::LogPrintStr(const std::string &str, bool useVMLog)
+void BCLog::Logger::LogPrintStr(const std::string &str, bool useVMLog, const std::string &params)
 {
     //////////////////////////////// // qtum
     FILE* file = m_fileout;

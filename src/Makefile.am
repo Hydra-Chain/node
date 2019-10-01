@@ -93,11 +93,11 @@ if BUILD_BITCOIN_CLI
   bin_PROGRAMS += locktrip-cli
 endif
 if BUILD_BITCOIN_TX
-  bin_PROGRAMS += locktrip-tx
+#  bin_PROGRAMS += locktrip-tx
 endif
 if ENABLE_WALLET
 if BUILD_BITCOIN_WALLET
-  bin_PROGRAMS += locktrip-wallet
+#  bin_PROGRAMS += locktrip-wallet
 endif
 endif
 
@@ -272,6 +272,7 @@ libbitcoin_server_a_SOURCES = \
   interfaces/chain.cpp \
   interfaces/handler.cpp \
   interfaces/node.cpp \
+  wallet/init.cpp \
   init.cpp \
   dbwrapper.cpp \
   merkleblock.cpp \
@@ -734,7 +735,6 @@ endif
 locktripd_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_WALLET) \
-  $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_COMMON) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
@@ -774,56 +774,56 @@ locktrip_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(Z_LIBS) $(CRYPTO_LIBS) $(EVENT
 #
 
 # bitcoin-tx binary #
-locktrip_tx_SOURCES = bitcoin-tx.cpp consensus/consensus.cpp
-locktrip_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-locktrip_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-locktrip_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
-
-if TARGET_WINDOWS
-locktrip_tx_SOURCES += bitcoin-tx-res.rc
-endif
-
-locktrip_tx_LDADD = \
-  $(LIBUNIVALUE) \
-  $(LIBBITCOIN_COMMON) \
-  $(LIBBITCOIN_UTIL) \
-  $(LIBBITCOIN_CONSENSUS) \
-  $(LIBBITCOIN_CRYPTO) \
-  $(LIBLEVELDB) \
-  $(LIBLEVELDB_SSE42) \
-  $(LIBMEMENV) \
-  $(LIBCRYPTOPP) \
-  $(LIBSECP256K1)
-
-locktrip_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+#locktrip_tx_SOURCES = bitcoin-tx.cpp consensus/consensus.cpp
+#locktrip_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+#locktrip_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+#locktrip_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+#
+#if TARGET_WINDOWS
+#locktrip_tx_SOURCES += bitcoin-tx-res.rc
+#endif
+#
+#locktrip_tx_LDADD = \
+#  $(LIBUNIVALUE) \
+#  $(LIBBITCOIN_COMMON) \
+#  $(LIBBITCOIN_UTIL) \
+#  $(LIBBITCOIN_CONSENSUS) \
+#  $(LIBBITCOIN_CRYPTO) \
+#  $(LIBLEVELDB) \
+#  $(LIBLEVELDB_SSE42) \
+#  $(LIBMEMENV) \
+#  $(LIBCRYPTOPP) \
+#  $(LIBSECP256K1)
+#
+#locktrip_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
 # bitcoin-wallet binary #
-locktrip_wallet_SOURCES = bitcoin-wallet.cpp
-locktrip_wallet_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-locktrip_wallet_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-locktrip_wallet_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
-
-if TARGET_WINDOWS
-locktrip_wallet_SOURCES += bitcoin-wallet-res.rc
-endif
-
-locktrip_wallet_LDADD = \
-  $(LIBBITCOIN_WALLET_TOOL) \
-  $(LIBBITCOIN_WALLET) \
-  $(LIBBITCOIN_SERVER) \
-  $(LIBBITCOIN_COMMON) \
-  $(LIBUNIVALUE) \
-  $(LIBBITCOIN_CONSENSUS) \
-  $(LIBBITCOIN_UTIL) \
-  $(LIBBITCOIN_CRYPTO) \
-  $(LIBLEVELDB) \
-  $(LIBLEVELDB_SSE42) \
-  $(LIBMEMENV) \
-  $(LIBCRYPTOPP) \
-  $(LIBSECP256K1)
-
-locktrip_wallet_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS)
+#locktrip_wallet_SOURCES = bitcoin-wallet.cpp
+#locktrip_wallet_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+#locktrip_wallet_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+#locktrip_wallet_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+#
+#if TARGET_WINDOWS
+#locktrip_wallet_SOURCES += bitcoin-wallet-res.rc
+#endif
+#
+#locktrip_wallet_LDADD = \
+#  $(LIBBITCOIN_WALLET_TOOL) \
+#  $(LIBBITCOIN_WALLET) \
+#  $(LIBBITCOIN_SERVER) \
+#  $(LIBBITCOIN_COMMON) \
+#  $(LIBUNIVALUE) \
+#  $(LIBBITCOIN_CONSENSUS) \
+#  $(LIBBITCOIN_UTIL) \
+#  $(LIBBITCOIN_CRYPTO) \
+#  $(LIBLEVELDB) \
+#  $(LIBLEVELDB_SSE42) \
+#  $(LIBMEMENV) \
+#  $(LIBCRYPTOPP) \
+#  $(LIBSECP256K1)
+#
+#locktrip_wallet_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(Z_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 #
 
 # bitcoinconsensus library #

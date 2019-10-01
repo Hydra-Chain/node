@@ -2,11 +2,11 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <utilstrencodings.h>
+#include <util/strencodings.h>
 #include "dgp.h"
 #include "qtum/qtumstate.h"
 #include "libethcore/ABI.h"
-#include "util.h"
+#include <util/system.h>
 #include "price-oracle.h"
 
 PriceOracle::PriceOracle() {

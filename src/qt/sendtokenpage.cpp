@@ -17,6 +17,7 @@
 #include <uint256.h>
 #include <qt/styleSheet.h>
 #include <interfaces/node.h>
+#include <qt/guiconstants.h>
 
 //static const CAmount SINGLE_STEP = 0.00000001*COIN;
 
@@ -82,12 +83,6 @@ void SendTokenPage::setModel(WalletModel *_model)
 {
     m_model = _model;
     m_tokenABI->setModel(m_model);
-
-    if (m_model && m_model->getOptionsModel())
-        connect(m_model->getOptionsModel(), &OptionsModel::displayUnitChanged, this, &SendTokenPage::updateDisplayUnit);
-
-    // update the display unit, to not use the default ("QTUM")
-    updateDisplayUnit();
 }
 
 void SendTokenPage::setClientModel(ClientModel *_clientModel)
@@ -221,15 +216,6 @@ void SendTokenPage::on_confirmClicked()
                 .arg(QString::fromStdString(m_selectedToken->symbol)).arg(QString::fromStdString(m_selectedToken->sender));
 
         QMessageBox::warning(this, tr("Send token"), message);
-    }
-}
-
-void SendTokenPage::updateDisplayUnit()
-{
-    if(m_model && m_model->getOptionsModel())
-    {
-        // Update gasPriceAmount with the current unit
-        ui->lineEditGasPrice->setDisplayUnit(m_model->getOptionsModel()->getDisplayUnit());
     }
 }
 

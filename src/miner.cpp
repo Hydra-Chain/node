@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2018 The Bitcoin Core developers
+// Copyright (c) 2009-2019 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,8 +10,8 @@
 #include <chainparams.h>
 #include <coins.h>
 #include <consensus/consensus.h>
-#include <consensus/tx_verify.h>
 #include <consensus/merkle.h>
+#include <consensus/tx_verify.h>
 #include <consensus/validation.h>
 #include <hash.h>
 #include <net.h>
@@ -22,10 +22,13 @@
 #include <primitives/transaction.h>
 #include <script/standard.h>
 #include <timedata.h>
-#include <util.h>
-#include <utilmoneystr.h>
+#include <util/convert.h>
+#include <util/moneystr.h>
+#include <util/system.h>
 #include <validationinterface.h>
+#ifdef ENABLE_WALLET
 #include <wallet/wallet.h>
+#endif
 
 #include <algorithm>
 #include <queue>
@@ -83,9 +86,8 @@ static BlockAssembler::Options DefaultOptions()
     // If -blockmaxweight is not given, limit to DEFAULT_BLOCK_MAX_WEIGHT
     BlockAssembler::Options options;
     options.nBlockMaxWeight = gArgs.GetArg("-blockmaxweight", DEFAULT_BLOCK_MAX_WEIGHT);
-    if (gArgs.IsArgSet("-blockmintxfee")) {
-        CAmount n = 0;
-        ParseMoney(gArgs.GetArg("-blockmintxfee", ""), n);
+    CAmount n = 0;
+    if (gArgs.IsArgSet("-blockmintxfee") && ParseMoney(gArgs.GetArg("-blockmintxfee", ""), n)) {
         options.blockMinFeeRate = CFeeRate(n);
     } else {
         options.blockMinFeeRate = CFeeRate(DEFAULT_BLOCK_MIN_TX_FEE);
@@ -194,13 +196,15 @@ void BlockAssembler::AddTransactionForSavingContractOwners(){
     originalRewardTx.vout[lastElementIndex].nValue = 0;
 }
 
-bool BlockAssembler::ExecuteCoinstakeContractCalls(CWallet& wallet, int64_t* pTotalFees, int32_t txProofTime){
+bool BlockAssembler::ExecuteCoinstakeContractCalls(CWallet& wallet, int64_t* pTotalFees, int32_t txProofTime,
+        std::set<std::pair<const CWalletTx*,unsigned int> > setCoins){
     CKey key;
     CMutableTransaction txCoinStake(*pblock->vtx[1]);
     uint32_t nTimeBlock = txProofTime;
     nTimeBlock &= ~STAKE_TIMESTAMP_MASK;
+    auto locked_chain = wallet.chain().lock();
 
-    wallet.CreateCoinStake(wallet, pblock->nBits, *pTotalFees, nTimeBlock, txCoinStake, key);
+    wallet.CreateCoinStake(*locked_chain, wallet, pblock->nBits, *pTotalFees, nTimeBlock, txCoinStake, key, setCoins);
     auto tx = MakeTransactionRef(txCoinStake);
     QtumTxConverter convert(*(tx.get()), NULL, &pblock->vtx);
 
@@ -256,7 +260,9 @@ void BlockAssembler::ReplaceRewardTransaction() {
     pblock->vtx[refundtx] = MakeTransactionRef(std::move(originalRewardTx));
 }
 
-std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx, bool fProofOfStake, int64_t* pTotalFees, int32_t txProofTime, int32_t nTimeLimit, CWallet* wallet)
+std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx,
+        bool fProofOfStake, int64_t* pTotalFees, int32_t txProofTime, int32_t nTimeLimit, CWallet* wallet,
+        std::set<std::pair<const CWalletTx*,unsigned int> > setCoins)
 {
     int64_t nTimeStart = GetTimeMicros();
 
@@ -430,7 +436,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     pblocktemplate->vTxSigOpsCost[0] = WITNESS_SCALE_FACTOR * GetLegacySigOpCount(*pblock->vtx[0]);
 
     if(fProofOfStake && hasCoinstakeCall) {
-        if(!ExecuteCoinstakeContractCalls(*wallet, pTotalFees, txProofTime)) {
+        if(!ExecuteCoinstakeContractCalls(*wallet, pTotalFees, txProofTime, setCoins)) {
             globalState->setRoot(oldHashStateRoot);
             globalState->setRootUTXO(oldHashUTXORoot);
             LogPrintf("ERROR: %s - Execution of coinstake contract calls failed!\n");
@@ -1029,6 +1035,7 @@ void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned
     pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
 }
 
+#ifdef ENABLE_WALLET
 //////////////////////////////////////////////////////////////////////////////
 //
 // Proof of Stake miner
@@ -1058,12 +1065,12 @@ bool CheckStake(const std::shared_ptr<const CBlock> pblock, CWallet& wallet)
 
     // Found a solution
     {
-        LOCK(cs_main);
+        auto locked_chain = wallet.chain().lock();
         if (pblock->hashPrevBlock != chainActive.Tip()->GetBlockHash())
             return error("CheckStake() : generated block is stale");
 
         for(const CTxIn& vin : pblock->vtx[1]->vin) {
-            if (wallet.IsSpent(vin.prevout.hash, vin.prevout.n)) {
+            if (wallet.IsSpent(*locked_chain, vin.prevout.hash, vin.prevout.n)) {
                 return error("CheckStake() : generated block became invalid due to stake UTXO being spent");
             }
         }
@@ -1123,7 +1130,16 @@ void ThreadStakeMiner(CWallet *pwallet, CConnman* connman)
         //
         // Create new block
         //
-        if(pwallet->HaveAvailableCoinsForStaking())
+        CAmount nBalance = pwallet->GetBalance();
+        CAmount nTargetValue = nBalance - pwallet->m_reserve_balance;
+        CAmount nValueIn = 0;
+        std::set<std::pair<const CWalletTx*,unsigned int> > setCoins;
+        int64_t start = GetAdjustedTime();
+        {
+            auto locked_chain = pwallet->chain().lock();
+            pwallet->SelectCoinsForStaking(*locked_chain, nTargetValue, setCoins, nValueIn);
+        }
+        if(setCoins.size() > 0)
         {
             int64_t nTotalFees = 0;
             // First just create an empty block. No need to process transactions until we know we can create a block
@@ -1144,7 +1160,7 @@ void ThreadStakeMiner(CWallet *pwallet, CConnman* connman)
                 // Try to sign a block (this also checks for a PoS stake)
                 pblocktemplate->block.nTime = i;
                 std::shared_ptr<CBlock> pblock = std::make_shared<CBlock>(pblocktemplate->block);
-                if (SignBlock(pblock, *pwallet, nTotalFees, i)) {
+                if (SignBlock(pblock, *pwallet, nTotalFees, i, setCoins)) {
                     // increase priority so we can build the full PoS block ASAP to ensure the timestamp doesn't expire
                     SetThreadPriority(THREAD_PRIORITY_ABOVE_NORMAL);
 
@@ -1156,7 +1172,7 @@ void ThreadStakeMiner(CWallet *pwallet, CConnman* connman)
                     // Create a block that's properly populated with transactions
                     std::unique_ptr<CBlockTemplate> pblocktemplatefilled(
                             BlockAssembler(Params()).CreateNewBlock(pblock->vtx[1]->vout[1].scriptPubKey, true, true, &nTotalFees,
-                                                                    i, FutureDrift(GetAdjustedTime()) - STAKE_TIME_BUFFER, pwallet));
+                                                                    i, FutureDrift(GetAdjustedTime()) - STAKE_TIME_BUFFER, pwallet, setCoins));
                     if (!pblocktemplatefilled.get())
                         return;
                     if (chainActive.Tip()->GetBlockHash() != pblock->hashPrevBlock) {
@@ -1166,7 +1182,7 @@ void ThreadStakeMiner(CWallet *pwallet, CConnman* connman)
                     }
                     // Sign the full block and use the timestamp from earlier for a valid stake
                     std::shared_ptr<CBlock> pblockfilled = std::make_shared<CBlock>(pblocktemplatefilled->block);
-                    if (SignBlock(pblockfilled, *pwallet, nTotalFees, i)) {
+                    if (SignBlock(pblockfilled, *pwallet, nTotalFees, i, setCoins)) {
                         // Should always reach here unless we spent too much time processing transactions and the timestamp is now invalid
                         // CheckStake also does CheckBlock and AcceptBlock to propogate it to the network
                         bool validBlock = false;
@@ -1227,3 +1243,4 @@ void StakeQtums(bool fStake, CWallet *pwallet, CConnman* connman, boost::thread_
         stakeThread->create_thread(boost::bind(&ThreadStakeMiner, pwallet, connman));
     }
 }
+#endif

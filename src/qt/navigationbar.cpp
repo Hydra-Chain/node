@@ -264,7 +264,7 @@ void NavigationBar::buildUi(QVBoxLayout* vboxLayoutMainSuper)
 				}
                 vboxLayoutMain->addWidget(subNavBar);
                 subNavBar->buildUi(vboxLayoutMain);
-                connect(action, SIGNAL(toggled(bool)), subNavBar, SLOT(onSubBarClick(bool)));
+                connect(action, &QAction::toggled, subNavBar, &NavigationBar::onSubBarClick);
             }
             else
             {

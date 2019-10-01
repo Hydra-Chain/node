@@ -34,7 +34,6 @@
 #include <wallet/fees.h>
 #include <pos.h>
 #include <miner.h>
-#include <scheduler.h>
 
 #include <algorithm>
 #include <assert.h>
@@ -47,7 +46,7 @@
 static const size_t OUTPUT_GROUP_MAX_ENTRIES = 10;
 
 static CCriticalSection cs_wallets;
-static std::vector<std::shared_ptr<CWallet>> vpwallets GUARDED_BY(cs_wallets);
+std::vector<std::shared_ptr<CWallet>> vpwallets GUARDED_BY(cs_wallets);
 CConnman* CWallet::defaultConnman = 0;
 
 bool AddWallet(const std::shared_ptr<CWallet>& wallet)
@@ -148,12 +147,13 @@ std::shared_ptr<CWallet> LoadWallet(interfaces::Chain& chain, const WalletLocati
     }
 
     std::shared_ptr<CWallet> wallet = CWallet::CreateWalletFromFile(chain, location);
+    CScheduler scheduler;
     if (!wallet) {
         error = "Wallet loading failed.";
         return nullptr;
     }
     AddWallet(wallet);
-    wallet->postInitProcess();
+    wallet->postInitProcess(scheduler);
     return wallet;
 }
 
@@ -928,76 +928,42 @@ int64_t CWallet::IncOrderPosNext(WalletBatch *batch)
     return nRet;
 }
 
-bool CWallet::AccountMove(std::string strFrom, std::string strTo, CAmount nAmount, std::string strComment)
-{
-    WalletBatch batch(*database);
-    if (!batch.TxnBegin())
-        return false;
-
-    int64_t nNow = GetAdjustedTime();
-
-    // Debit
-    CAccountingEntry debit;
-    debit.nOrderPos = IncOrderPosNext(&batch);
-    debit.strAccount = strFrom;
-    debit.nCreditDebit = -nAmount;
-    debit.nTime = nNow;
-    debit.strOtherAccount = strTo;
-    debit.strComment = strComment;
-    AddAccountingEntry(debit, &batch);
-
-    // Credit
-    CAccountingEntry credit;
-    credit.nOrderPos = IncOrderPosNext(&batch);
-    credit.strAccount = strTo;
-    credit.nCreditDebit = nAmount;
-    credit.nTime = nNow;
-    credit.strOtherAccount = strFrom;
-    credit.strComment = strComment;
-    AddAccountingEntry(credit, &batch);
-
-    if (!batch.TxnCommit())
-        return false;
-
-    return true;
-}
-
 bool CWallet::GetLabelDestination(CTxDestination &dest, const std::string& label, bool bForceNew)
 {
-    WalletBatch batch(*database);
-
-    CAccount account;
-    batch.ReadAccount(label, account);
-
-    if (!bForceNew) {
-        if (!account.vchPubKey.IsValid())
-            bForceNew = true;
-        else {
-            // Check if the current key has been used (TODO: check other addresses with the same key)
-            CScript scriptPubKey = GetScriptForDestination(GetDestinationForKey(account.vchPubKey, m_default_address_type));
-            for (std::map<uint256, CWalletTx>::iterator it = mapWallet.begin();
-                 it != mapWallet.end() && account.vchPubKey.IsValid();
-                 ++it)
-                for (const CTxOut& txout : (*it).second.tx->vout)
-                    if (txout.scriptPubKey == scriptPubKey) {
-                        bForceNew = true;
-                        break;
-                    }
-        }
-    }
-
-    // Generate a new key
-    if (bForceNew) {
-        if (!GetKeyFromPool(account.vchPubKey, false))
-            return false;
-
-        LearnRelatedScripts(account.vchPubKey, m_default_address_type);
-        dest = GetDestinationForKey(account.vchPubKey, m_default_address_type);
-        SetAddressBook(dest, label, "receive");
-        batch.WriteAccount(label, account);
-    } else {
-        dest = GetDestinationForKey(account.vchPubKey, m_default_address_type);
-    }
+//    WalletBatch batch(*database);
+//
+//    CAccount account;
+//    batch.ReadAccount(label, account);
+//
+//    if (!bForceNew) {
+//        if (!account.vchPubKey.IsValid())
+//            bForceNew = true;
+//        else {
+//            // Check if the current key has been used (TODO: check other addresses with the same key)
+//            CScript scriptPubKey = GetScriptForDestination(GetDestinationForKey(account.vchPubKey, m_default_address_type));
+//            for (std::map<uint256, CWalletTx>::iterator it = mapWallet.begin();
+//                 it != mapWallet.end() && account.vchPubKey.IsValid();
+//                 ++it)
+//                for (const CTxOut& txout : (*it).second.tx->vout)
+//                    if (txout.scriptPubKey == scriptPubKey) {
+//                        bForceNew = true;
+//                        break;
+//                    }
+//        }
+//    }
+//
+//    // Generate a new key
+//    if (bForceNew) {
+//        if (!GetKeyFromPool(account.vchPubKey, false))
+//            return false;
+//
+//        LearnRelatedScripts(account.vchPubKey, m_default_address_type);
+//        dest = GetDestinationForKey(account.vchPubKey, m_default_address_type);
+//        SetAddressBook(dest, label, "receive");
+//        batch.WriteAccount(label, account);
+//    } else {
+//        dest = GetDestinationForKey(account.vchPubKey, m_default_address_type);
+//    }
 
     return true;
 }

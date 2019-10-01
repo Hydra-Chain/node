@@ -2,10 +2,10 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <utilstrencodings.h>
+#include <util/strencodings.h>
 #include "economy.h"
 #include "qtum/qtumstate.h"
-#include "util.h"
+#include <util/system.h>
 
 #define CONTRACTOWNER_ADDR_LEN  40
 

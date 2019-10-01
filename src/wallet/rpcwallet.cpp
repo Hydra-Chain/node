@@ -1112,7 +1112,7 @@ static UniValue getreceivedbyaddress(const JSONRPCRequest& request)
 
         for (const CTxOut& txout : wtx.tx->vout)
             if (txout.scriptPubKey == scriptPubKey)
-                if (wtx.GetDepthInMainChain() >= nMinDepth)
+                if (wtx.GetDepthInMainChain(*locked_chain) >= nMinDepth)
                     nAmount += txout.nValue;
     }
 
@@ -1286,50 +1286,65 @@ static UniValue sendmany(const JSONRPCRequest& request)
         return NullUniValue;
     }
 
-    if (request.fHelp || request.params.size() < 2 || request.params.size() > 8)
+    if (request.fHelp || request.params.size() < 2 || request.params.size() > 8) {
         throw std::runtime_error(
-            RPCHelpMan{"sendmany",
-                "\nSend multiple times. Amounts are double-precision floating point numbers." +
-                    HelpRequiringPassphrase(pwallet) + "\n",
-                {
-                    {"dummy", RPCArg::Type::STR, RPCArg::Optional::NO, "Must be set to \"\" for backwards compatibility.", "\"\""},
-                    {"amounts", RPCArg::Type::OBJ, RPCArg::Optional::NO, "A json object with addresses and amounts",
-                        {
-                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO, "The locktrip address is the key, the numeric amount (can be string) in " + CURRENCY_UNIT + " is the value"},
-                        },
-                    },
-                    {"minconf", RPCArg::Type::NUM, /* default */ "1", "Only use the balance confirmed at least this many times."},
-                    {"comment", RPCArg::Type::STR, RPCArg::Optional::OMITTED_NAMED_ARG, "A comment"},
-                    {"subtractfeefrom", RPCArg::Type::ARR, RPCArg::Optional::OMITTED_NAMED_ARG, "A json array with addresses.\n"
-            "                           The fee will be equally deducted from the amount of each selected address.\n"
-            "                           Those recipients will receive less LOCs than you enter in their corresponding amount field.\n"
-            "                           If no addresses are specified here, the sender pays the fee.",
-                        {
-                            {"address", RPCArg::Type::STR, RPCArg::Optional::OMITTED, "Subtract fee from this address"},
-                        },
-                    },
-                    {"replaceable", RPCArg::Type::BOOL, /* default */ "fallback to wallet's default", "Allow this transaction to be replaced by a transaction with higher fees via BIP 125"},
-                    {"conf_target", RPCArg::Type::NUM, /* default */ "fallback to wallet's default", "Confirmation target (in blocks)"},
-                    {"estimate_mode", RPCArg::Type::STR, /* default */ "UNSET", "The fee estimate mode, must be one of:\n"
-            "       \"UNSET\"\n"
-            "       \"ECONOMICAL\"\n"
-            "       \"CONSERVATIVE\""},
-                },
-                 RPCResult{
-            "\"txid\"                   (string) The transaction id for the send. Only 1 transaction is created regardless of \n"
-            "                                    the number of addresses.\n"
-                 },
-                RPCExamples{
-            "\nSend two amounts to two different addresses:\n"
-            + HelpExampleCli("sendmany", "\"\" \"{\\\"LD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\":0.01,\\\"L353tsE8YMTA4EuV7dgUXGjNFf9KpVvKHz\\\":0.02}\"") +
-            "\nSend two amounts to two different addresses setting the confirmation and comment:\n"
-            + HelpExampleCli("sendmany", "\"\" \"{\\\"LD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\":0.01,\\\"L353tsE8YMTA4EuV7dgUXGjNFf9KpVvKHz\\\":0.02}\" 6 \"testing\"") +
-            "\nSend two amounts to two different addresses, subtract fee from amount:\n"
-            + HelpExampleCli("sendmany", "\"\" \"{\\\"LD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\":0.01,\\\"L353tsE8YMTA4EuV7dgUXGjNFf9KpVvKHz\\\":0.02}\" 1 \"\" \"[\\\"LD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\",\\\"L353tsE8YMTA4EuV7dgUXGjNFf9KpVvKHz\\\"]\"") +
-            "\nAs a JSON-RPC call\n"
-            + HelpExampleRpc("sendmany", "\"\", {\"LD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\":0.01,\"L353tsE8YMTA4EuV7dgUXGjNFf9KpVvKHz\":0.02}, 6, \"testing\"");
-                },
-            }.ToString());
+                RPCHelpMan{"sendmany",
+                           "\nSend multiple times. Amounts are double-precision floating point numbers." +
+                           HelpRequiringPassphrase(pwallet) + "\n",
+                           {
+                                   {"dummy", RPCArg::Type::STR, RPCArg::Optional::NO,
+                                    "Must be set to \"\" for backwards compatibility.", "\"\""},
+                                   {"amounts", RPCArg::Type::OBJ, RPCArg::Optional::NO,
+                                    "A json object with addresses and amounts",
+                                    {
+                                            {"address", RPCArg::Type::AMOUNT, RPCArg::Optional::NO,
+                                             "The locktrip address is the key, the numeric amount (can be string) in " +
+                                             CURRENCY_UNIT + " is the value"},
+                                    },
+                                   },
+                                   {"minconf", RPCArg::Type::NUM, /* default */ "1",
+                                    "Only use the balance confirmed at least this many times."},
+                                   {"comment", RPCArg::Type::STR, RPCArg::Optional::OMITTED_NAMED_ARG, "A comment"},
+                                   {"subtractfeefrom", RPCArg::Type::ARR, RPCArg::Optional::OMITTED_NAMED_ARG,
+                                    "A json array with addresses.\n"
+                                    "                           The fee will be equally deducted from the amount of each selected address.\n"
+                                    "                           Those recipients will receive less LOCs than you enter in their corresponding amount field.\n"
+                                    "                           If no addresses are specified here, the sender pays the fee.",
+                                    {
+                                            {"address", RPCArg::Type::STR, RPCArg::Optional::OMITTED,
+                                             "Subtract fee from this address"},
+                                    },
+                                   },
+                                   {"replaceable", RPCArg::Type::BOOL, /* default */ "fallback to wallet's default",
+                                    "Allow this transaction to be replaced by a transaction with higher fees via BIP 125"},
+                                   {"conf_target", RPCArg::Type::NUM, /* default */ "fallback to wallet's default",
+                                    "Confirmation target (in blocks)"},
+                                   {"estimate_mode", RPCArg::Type::STR, /* default */ "UNSET",
+                                    "The fee estimate mode, must be one of:\n"
+                                    "       \"UNSET\"\n"
+                                    "       \"ECONOMICAL\"\n"
+                                    "       \"CONSERVATIVE\""},
+                           },
+                           RPCResult{
+                                   "\"txid\"                   (string) The transaction id for the send. Only 1 transaction is created regardless of \n"
+                                   "                                    the number of addresses.\n"
+                           },
+                           RPCExamples{
+                                   "\nSend two amounts to two different addresses:\n"
+                                   + HelpExampleCli("sendmany",
+                                                    "\"\" \"{\\\"LD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\":0.01,\\\"L353tsE8YMTA4EuV7dgUXGjNFf9KpVvKHz\\\":0.02}\"") +
+                                   "\nSend two amounts to two different addresses setting the confirmation and comment:\n"
+                                   + HelpExampleCli("sendmany",
+                                                    "\"\" \"{\\\"LD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\":0.01,\\\"L353tsE8YMTA4EuV7dgUXGjNFf9KpVvKHz\\\":0.02}\" 6 \"testing\"") +
+                                   "\nSend two amounts to two different addresses, subtract fee from amount:\n"
+                                   + HelpExampleCli("sendmany",
+                                                    "\"\" \"{\\\"LD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\":0.01,\\\"L353tsE8YMTA4EuV7dgUXGjNFf9KpVvKHz\\\":0.02}\" 1 \"\" \"[\\\"LD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\",\\\"L353tsE8YMTA4EuV7dgUXGjNFf9KpVvKHz\\\"]\"") +
+                                   "\nAs a JSON-RPC call\n"
+                                   + HelpExampleRpc("sendmany",
+                                                    "\"\", {\"LD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\":0.01,\"L353tsE8YMTA4EuV7dgUXGjNFf9KpVvKHz\":0.02}, 6, \"testing\"")
+                           }
+                }.ToString());
+    }
 
     // Make sure the results are valid at least up to the most recent block
     // the user could have gotten from another RPC command prior to now
@@ -1536,7 +1551,7 @@ static UniValue sendmanywithdupes(const JSONRPCRequest& request)
     EnsureWalletIsUnlocked(pwallet);
 
     // Check funds
-    CAmount nBalance = pwallet->GetLegacyBalance(ISMINE_SPENDABLE, nMinDepth, &strAccount);
+    CAmount nBalance = pwallet->GetLegacyBalance(ISMINE_SPENDABLE, nMinDepth);
     if (totalAmount > nBalance)
         throw JSONRPCError(RPC_WALLET_INSUFFICIENT_FUNDS, "Account has insufficient funds");
 
@@ -3325,6 +3340,7 @@ static UniValue createwallet(const JSONRPCRequest& request)
     }
     std::string error;
     std::string warning;
+    CScheduler scheduler;
 
     uint64_t flags = 0;
     if (!request.params[1].isNull() && request.params[1].get_bool()) {
@@ -3351,7 +3367,7 @@ static UniValue createwallet(const JSONRPCRequest& request)
     }
     AddWallet(wallet);
 
-    wallet->postInitProcess();
+    wallet->postInitProcess(scheduler);
 
     UniValue obj(UniValue::VOBJ);
     obj.pushKV("name", wallet->GetName());
@@ -4414,9 +4430,9 @@ UniValue getaddressinfo(const JSONRPCRequest& request)
             "}\n"
                 },
                 RPCExamples{
-            + HelpExampleCli("getaddressinfo", "\"LggBunrm5fM5oyEqihw2uFGHjVkxXW32G4\"")
+            HelpExampleCli("getaddressinfo", "\"LggBunrm5fM5oyEqihw2uFGHjVkxXW32G4\"")
             + HelpExampleRpc("getaddressinfo", "\"LggBunrm5fM5oyEqihw2uFGHjVkxXW32G4\"")
-                },
+                }
             }.ToString());
     }
 

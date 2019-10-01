@@ -75,6 +75,11 @@ public:
     void setWalletSelector(QLabel *walletSelectorLabel, QComboBox* walletSelector);
 
 
+    /**
+     * @brief getUI gets the *ui member
+     */
+    Ui::TitleBar* getUI() {return ui;};
+
 Q_SIGNALS:
 
 public Q_SLOTS:

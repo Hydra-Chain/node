@@ -1,4 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
+
 // Copyright (c) 2009-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -92,7 +93,7 @@ namespace BCLog {
         std::atomic<bool> m_reopen_file{false};
 
         /** Send a string to the log output */
-        void LogPrintStr(const std::string &str, bool useVMLog = false);
+        void LogPrintStr(const std::string &str, bool useVMLog = false, const std::string &params = ""); //add original formatStr for telemetry
 
         /** Returns whether logs will be written to any output */
         bool Enabled() const { return m_print_to_console || m_print_to_file; }
@@ -150,7 +151,7 @@ template<typename T, typename... Args> static inline void MarkUsed(const T& t, c
 #define LogPrint(category, ...) do { MarkUsed(__VA_ARGS__); } while(0)
 #else
 #define LogPrintf(...) do { \
-    if (g_logger->Enabled()) { \
+    if (LogInstance().Enabled()) { \
         std::string _log_msg_; /* Unlikely name to avoid shadowing variables */ \
         try { \
             _log_msg_ = tfm::format(__VA_ARGS__); \
@@ -163,7 +164,7 @@ template<typename T, typename... Args> static inline void MarkUsed(const T& t, c
 		_log_msg_ = __func__ + _log_msg_; \
         } \
         std::string _telemetry_params_ = telemetry_adder(_log_msg_.c_str()); \
-        g_logger->LogPrintStr(_log_msg_, false, _telemetry_params_); /*add original formatStr for telemetry*/ \
+        LogInstance().LogPrintStr(_log_msg_, false, _telemetry_params_); /*add original formatStr for telemetry*/ \
     } \
 } while(0)
 

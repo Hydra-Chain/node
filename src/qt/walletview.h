@@ -143,7 +143,7 @@ public Q_SLOTS:
     void usedReceivingAddresses();
 
     /** Re-emit encryption status signal */
-    void updateEncryptionStatus();
+    void updateEncryptionStatus(WalletModel* walletModel);
 
     /** Show progress dialog e.g. for rescan */
     void showProgress(const QString &title, int nProgress);

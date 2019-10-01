@@ -258,8 +258,11 @@ public:
     int32_t nTimeLimit;
 
     /** Construct a new block template with coinbase to scriptPubKeyIn */
-    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true, bool fProofOfStake=false, int64_t* pTotalFees=0, int32_t nTime=0, int32_t nTimeLimit=0, CWallet* wallet=nullptr);
-    std::unique_ptr<CBlockTemplate> CreateEmptyBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true, bool fProofOfStake=false, int64_t* pTotalFees = 0, int32_t nTime=0);
+    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true,
+            bool fProofOfStake=false, int64_t* pTotalFees=0, int32_t nTime=0, int32_t nTimeLimit=0, CWallet* wallet=nullptr,
+            std::set<std::pair<const CWalletTx*,unsigned int> > setCoins={});
+    std::unique_ptr<CBlockTemplate> CreateEmptyBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true,
+            bool fProofOfStake=false, int64_t* pTotalFees = 0, int32_t nTime=0);
 
     static Optional<int64_t> m_last_block_num_txs;
     static Optional<int64_t> m_last_block_weight;
@@ -293,7 +296,8 @@ private:
 
     void ReplaceRewardTransaction();
 
-    bool ExecuteCoinstakeContractCalls(CWallet& wallet, int64_t* pTotalFees, int32_t txProofTime);
+    bool ExecuteCoinstakeContractCalls(CWallet& wallet, int64_t* pTotalFees, int32_t txProofTime,
+                                       std::set<std::pair<const CWalletTx*,unsigned int> >);
 
     // helper functions for addPackageTxs()
     /** Remove confirmed (inBlock) entries from given set */

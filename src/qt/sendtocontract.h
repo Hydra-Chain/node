@@ -45,9 +45,6 @@ public Q_SLOTS:
     void on_pasteAddressClicked();
     void on_contractAddressChanged();
 
-private Q_SLOTS:
-    void updateDisplayUnit();
-
 private:
     QString toDataHex(int func, QString& errorMessage);
     bool isFunctionPayable();
