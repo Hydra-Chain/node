@@ -144,6 +144,7 @@ const char* GetOpName(opcodetype opcode)
     case OP_CALL                   : return "OP_CALL";
     case OP_COINSTAKE_CALL         : return "OP_COINSTAKE_CALL";
     case OP_SPEND                  : return "OP_SPEND";
+    case OP_SENDER                 : return "OP_SENDER";
 
     case OP_INVALIDOPCODE          : return "OP_INVALIDOPCODE";
 
@@ -358,6 +359,41 @@ bool GetScriptOp(CScriptBase::const_iterator& pc, CScriptBase::const_iterator en
 
     opcodeRet = static_cast<opcodetype>(opcode);
     return true;
+}
+
+bool CScript::ReplaceParam(opcodetype findOp, int posBefore, const std::vector<unsigned char> &vchParam, CScript &scriptRet) const
+{
+    if(posBefore < 0)
+        return false;
+
+    // Find parameter with opcode and replace the parameter before with other value
+    bool ret = false;
+    std::vector<const_iterator> opcodes;
+    int minSize = posBefore + 1;
+
+    opcodetype opcode;
+    opcodes.push_back(begin());
+
+    for (const_iterator pc = begin(); pc != end() && GetOp(pc, opcode);)
+    {
+        if (opcode == findOp)
+        {
+            int size = opcodes.size();
+            if(size > minSize)
+            {
+                int firstPart = size -1 -posBefore;
+                int secondPart = size -posBefore;
+                scriptRet = CScript(begin(), opcodes[firstPart]) << vchParam;
+                scriptRet += CScript(opcodes[secondPart], end());
+                ret = true;
+            }
+            break;
+        }
+
+        opcodes.push_back(pc);
+    }
+
+    return ret;
 }
 
 #ifdef ENABLE_BITCORE_RPC

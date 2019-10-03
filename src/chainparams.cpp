@@ -79,9 +79,15 @@ CChainParams::CChainParams()
     consensus.BIP34Height = 0;
     consensus.BIP65Height = 0;
     consensus.BIP66Height = 0;
+    consensus.QIP5Height = 0;
+    consensus.QIP6Height = 0;
+    consensus.QIP7Height = 0;
+    consensus.QIP9Height = 0;
     consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
     consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+    consensus.QIP9PosLimit = uint256S("0000000000001fffffffffffffffffffffffffffffffffffffffffffffffffff"); // The new POS-limit activated after QIP9
     consensus.nPowTargetTimespan = 16 * 60; // 16 minutes
+    consensus.nPowTargetTimespanV2 = 4000; // 5.59 hours
     consensus.nPowTargetSpacing = 2 * 64;
     consensus.fPowAllowMinDifficultyBlocks = false;
     consensus.fPowNoRetargeting = true;
@@ -134,8 +140,8 @@ class CMainParams : public CChainParams {
 public:
     CMainParams() {
         strNetworkID = "main";
-        consensus.nFixUTXOCacheHFHeight=100000;
-        consensus.nEnableHeaderSignatureHeight = 500000;
+        consensus.nFixUTXOCacheHFHeight=0;
+        consensus.nEnableHeaderSignatureHeight = 0;
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -198,15 +204,15 @@ class CTestNetParams : public CChainParams {
 public:
     CTestNetParams() {
         strNetworkID = "test";
-        consensus.nFixUTXOCacheHFHeight=84500;
-        consensus.nEnableHeaderSignatureHeight = 500000;
+        consensus.nFixUTXOCacheHFHeight=0;
+        consensus.nEnableHeaderSignatureHeight = 0;
 
         pchMessageStart[0] = 0x07; // 7
         pchMessageStart[1] = 0x13; // 19
         pchMessageStart[2] = 0x1f; // 31
         pchMessageStart[3] = 0x03; // 3
         nDefaultPort = 1336;
-        nPruneAfterHeight = 1000;
+        nPruneAfterHeight = 100000;
         m_assumed_blockchain_size = 6;
         m_assumed_chain_state_size = 2;
 
@@ -421,12 +427,18 @@ void SelectParams(const std::string& network)
 //   LogPrintf("Genesis : %s\n",genesis.GetHash().ToString());
 }
 
-void UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout)
+std::string CChainParams::EVMGenesisInfo(dev::eth::Network network) const
 {
-    globalChainParams->UpdateVersionBitsParametersChain(d, nStartTime, nTimeout);
+    std::string genesisInfo = dev::eth::genesisInfo(network);
+    ReplaceInt(consensus.QIP7Height, "QIP7_STARTING_BLOCK", genesisInfo);
+    ReplaceInt(consensus.QIP6Height, "QIP6_STARTING_BLOCK", genesisInfo);
+    return genesisInfo;
 }
 
-void CChainParams::UpdateVersionBitsParametersChain(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout) {
-    consensus.vDeployments[d].nStartTime = nStartTime;
-    consensus.vDeployments[d].nTimeout = nTimeout;
+std::string CChainParams::EVMGenesisInfo(dev::eth::Network network, int nHeight) const
+{
+    std::string genesisInfo = dev::eth::genesisInfo(network);
+    ReplaceInt(nHeight, "QIP7_STARTING_BLOCK", genesisInfo);
+    ReplaceInt(nHeight, "QIP6_STARTING_BLOCK", genesisInfo);
+    return genesisInfo;
 }

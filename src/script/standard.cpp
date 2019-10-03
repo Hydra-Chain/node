@@ -14,6 +14,7 @@
 #include <qtum/qtumstate.h>
 #include <qtum/qtumtransaction.h>
 #include <validation.h>
+#include <streams.h>
 #include "locktrip/dgp.h"
 
 typedef std::vector<unsigned char> valtype;
@@ -41,6 +42,8 @@ const char* GetTxnOutputType(txnouttype t)
     case TX_WITNESS_V0_KEYHASH: return "witness_v0_keyhash";
     case TX_WITNESS_V0_SCRIPTHASH: return "witness_v0_scripthash";
     case TX_WITNESS_UNKNOWN: return "witness_unknown";
+    case TX_CREATE_SENDER: return "create_sender";
+    case TX_CALL_SENDER: return "call_sender";
     case TX_CREATE: return "create";
     case TX_CALL: return "call";
     case TX_COINSTAKE_CALL: return "coinstake_call";
@@ -67,7 +70,13 @@ txnouttype Solver(const CScript& scriptPubKey, std::vector<std::vector<unsigned 
         // Sender provides N pubkeys, receivers provides M signatures
         mTemplates.insert(std::make_pair(TX_MULTISIG, CScript() << OP_SMALLINTEGER << OP_PUBKEYS << OP_SMALLINTEGER << OP_CHECKMULTISIG));
 
-        //Call contract from coinstake
+        // Contract creation tx with sender
+        mTemplates.insert(std::make_pair(TX_CREATE_SENDER, CScript() << OP_ADDRESS_TYPE << OP_ADDRESS << OP_SCRIPT_SIG << OP_SENDER << OP_VERSION << OP_GAS_LIMIT << OP_DATA << OP_CREATE));
+
+        // Call contract tx with sender
+        mTemplates.insert(std::make_pair(TX_CALL_SENDER, CScript() << OP_ADDRESS_TYPE << OP_ADDRESS << OP_SCRIPT_SIG << OP_SENDER << OP_VERSION << OP_GAS_LIMIT << OP_DATA << OP_PUBKEYHASH << OP_CALL));
+
+        // Call contract from coinstake
         mTemplates.insert(std::make_pair(TX_COINSTAKE_CALL, CScript() << OP_VERSION << OP_DATA << OP_PUBKEYHASH << OP_COINSTAKE_CALL));
 
         // Contract creation tx
@@ -124,6 +133,8 @@ txnouttype Solver(const CScript& scriptPubKey, std::vector<std::vector<unsigned 
 
         opcodetype opcode1, opcode2;
         std::vector<unsigned char> vch1, vch2;
+
+        uint64_t addressType = 0;
 
         VersionVM version;
         version.rootVM=20; //set to some invalid value
@@ -238,6 +249,52 @@ txnouttype Solver(const CScript& scriptPubKey, std::vector<std::vector<unsigned 
                 {
                     if(vch1.empty())
                         break;
+                }
+            }
+            else if(opcode2 == OP_ADDRESS_TYPE)
+            {
+                try {
+                    uint64_t val = CScriptNum::vch_to_uint64(vch1);
+                    if(val < addresstype::PUBKEYHASH || val > addresstype::NONSTANDARD)
+                        break;
+
+                    addressType = val;
+                }
+                catch (const scriptnum_error &err) {
+                    break;
+                }
+            }
+            else if(opcode2 == OP_ADDRESS)
+            {
+                // Get the destination
+                CTxDestination dest;
+                if(addressType == addresstype::PUBKEYHASH && vch1.size() == sizeof(CKeyID))
+                {
+                    dest = CKeyID(uint160(vch1));
+                }
+                else
+                {
+                    break;
+                }
+
+                // Get the public key for the destination
+                CScript senderPubKey = GetScriptForDestination(dest);
+                CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+                ss << senderPubKey;
+                vSolutionsRet.push_back(std::vector<unsigned char>(ss.begin(), ss.end()));
+            }
+            else if(opcode2 == OP_SCRIPT_SIG)
+            {
+                if(0 <= opcode1 && opcode1 <= OP_PUSHDATA4)
+                {
+                    if(vch1.empty())
+                        break;
+
+                    // Check the max size of the signature script
+                    if(vch1.size() > MAX_BASE_SCRIPT_SIZE)
+                        return TX_NONSTANDARD;
+
+                    vSolutionsRet.push_back(vch1);
                 }
             }
             ///////////////////////////////////////////////////////////
@@ -437,6 +494,48 @@ bool IsValidContractSenderAddress(const CTxDestination &dest)
 {
     const CKeyID *keyID = boost::get<CKeyID>(&dest);
     return keyID != 0;
+}
+
+bool ExtractSenderData(const CScript &outputPubKey, CScript *senderPubKey, CScript *senderSig)
+{
+    if(outputPubKey.HasOpSender())
+    {
+        try
+        {
+            // Solve the contract with or without contract consensus
+            txnouttype typ;
+            std::vector<valtype> vSolutions;
+            if (TX_NONSTANDARD == Solver(outputPubKey, vSolutions, true) &&
+                TX_NONSTANDARD == Solver(outputPubKey, vSolutions, false))
+                return false;
+
+            // Check the size of the returned data
+            if(vSolutions.size() < 2)
+                return false;
+
+            // Get the sender public key
+            if(senderPubKey)
+            {
+                CDataStream ss(vSolutions[0], SER_NETWORK, PROTOCOL_VERSION);
+                ss >> *senderPubKey;
+            }
+
+            // Get the sender signature
+            if(senderSig)
+            {
+                CDataStream ss(vSolutions[1], SER_NETWORK, PROTOCOL_VERSION);
+                ss >> *senderSig;
+            }
+        }
+        catch(...)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    return false;
 }
 
 #ifdef ENABLE_BITCORE_RPC

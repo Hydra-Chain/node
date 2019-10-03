@@ -113,6 +113,13 @@ double GetPoSKernelPS()
     CBlockIndex* pindex = pindexBestHeader;
     CBlockIndex* pindexPrevStake = NULL;
 
+    const Consensus::Params& consensusParams = Params().GetConsensus();
+    bool dynamicStakeSpacing = true;
+    if(pindex)
+    {
+        dynamicStakeSpacing = pindex->nHeight < consensusParams.QIP9Height;
+    }
+
     while (pindex && nStakesHandled < nPoSInterval)
     {
         if (pindex->IsProofOfStake())
@@ -120,13 +127,20 @@ double GetPoSKernelPS()
             if (pindexPrevStake)
             {
                 dStakeKernelsTriedAvg += GetDifficulty(pindexPrevStake) * 4294967296.0;
-                nStakesTime += pindexPrevStake->nTime - pindex->nTime;
+                if(dynamicStakeSpacing)
+                    nStakesTime += pindexPrevStake->nTime - pindex->nTime;
                 nStakesHandled++;
             }
             pindexPrevStake = pindex;
         }
 
         pindex = pindex->pprev;
+    }
+
+    if(!dynamicStakeSpacing)
+    {
+        // Using a fixed denominator reduces the variation spikes
+        nStakesTime = consensusParams.nPowTargetSpacing * nStakesHandled;
     }
 
     double result = 0;
@@ -248,6 +262,7 @@ UniValue executionResultToJSON(const dev::eth::ExecutionResult& exRes)
     result.pushKV("gasRefunded", CAmount(exRes.gasRefunded));
     result.pushKV("depositSize", static_cast<int32_t>(exRes.depositSize));
     result.pushKV("gasForDeposit", CAmount(exRes.gasForDeposit));
+    result.pushKV("exceptedMessage", exceptedMessage(exRes.excepted, exRes.output));
     return result;
 }
 
@@ -255,7 +270,7 @@ UniValue transactionReceiptToJSON(const dev::eth::TransactionReceipt& txRec)
 {
     UniValue result(UniValue::VOBJ);
     result.pushKV("stateRoot", txRec.stateRoot().hex());
-    result.pushKV("gasUsed", CAmount(txRec.gasUsed()));
+    result.pushKV("gasUsed", CAmount(txRec.cumulativeGasUsed()));
     result.pushKV("bloom", txRec.bloom().hex());
     UniValue logEntries(UniValue::VARR);
     dev::eth::LogEntries logs = txRec.log();
@@ -917,7 +932,7 @@ static UniValue getaccountinfo(const JSONRPCRequest& request)
     for (auto j: storage)
     {
         UniValue e(UniValue::VOBJ);
-        e.pushKV(dev::toHex(j.second.first), dev::toHex(j.second.second));
+        e.pushKV(dev::toHex(dev::h256(j.second.first)), dev::toHex(dev::h256(j.second.second)));
         storageUV.pushKV(j.first.hex(), e);
     }
         
@@ -1009,7 +1024,7 @@ static UniValue getstorage(const JSONRPCRequest& request)
     for (const auto& j: storage)
     {
         UniValue e(UniValue::VOBJ);
-        e.pushKV(dev::toHex(j.second.first), dev::toHex(j.second.second));
+        e.pushKV(dev::toHex(dev::h256(j.second.first)), dev::toHex(dev::h256(j.second.second)));
         result.pushKV(j.first.hex(), e);
     }
     return result;
@@ -1300,6 +1315,7 @@ void assignJSON(UniValue& entry, const TransactionReceiptInfo& resExec) {
     std::stringstream ss;
     ss << resExec.excepted;
     entry.pushKV("excepted",ss.str());
+    entry.pushKV("exceptedMessage", resExec.exceptedMessage);
 }
 
 void assignJSON(UniValue& logEntry, const dev::eth::LogEntry& log,

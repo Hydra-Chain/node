@@ -10,9 +10,11 @@
 #include <consensus/params.h>
 #include <primitives/block.h>
 #include <protocol.h>
+#include <libethashseal/GenesisInfo.h>
 
 #include <memory>
 #include <vector>
+#include <string>
 
 struct SeedSpec6 {
     uint8_t addr[16];
@@ -84,7 +86,8 @@ public:
     const std::vector<SeedSpec6>& FixedSeeds() const { return vFixedSeeds; }
     const CCheckpointData& Checkpoints() const { return checkpointData; }
     const ChainTxData& TxData() const { return chainTxData; }
-    void UpdateVersionBitsParametersChain(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout);
+    std::string EVMGenesisInfo(dev::eth::Network network) const;
+    std::string EVMGenesisInfo(dev::eth::Network network, int nHeight) const;
 protected:
     CChainParams();
 
@@ -126,10 +129,5 @@ CChainParams &Params();
  * @throws std::runtime_error when the chain is not supported.
  */
 void SelectParams(const std::string& chain);
-
-/**
- * Allows modifying the Version Bits regtest parameters.
- */
-void UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout);
 
 #endif // BITCOIN_CHAINPARAMS_H

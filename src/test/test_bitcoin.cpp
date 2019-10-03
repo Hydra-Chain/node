@@ -85,11 +85,11 @@ TestingSetup::TestingSetup(const std::string& chainName) : BasicTestingSetup(cha
 
 ////////////////////////////////////////////////////////////// qtum
         dev::eth::Ethash::init();		
-        boost::filesystem::path pathTemp = fs::temp_directory_path() / strprintf("test_qtum_%lu_%i", (unsigned long)GetTime(), (int)(GetRand(100000)));
+        boost::filesystem::path pathTemp = fs::temp_directory_path() / strprintf("test_locktrip_%lu_%i", (unsigned long)GetTime(), (int)(GetRand(100000)));
         boost::filesystem::create_directories(pathTemp);
         const dev::h256 hashDB(dev::sha3(dev::rlp("")));
         globalState = std::unique_ptr<QtumState>(new QtumState(dev::u256(0), QtumState::openDB(pathTemp.string(), hashDB, dev::WithExisting::Trust), pathTemp.string(), dev::eth::BaseState::Empty));
-        dev::eth::ChainParams cp((dev::eth::genesisInfo(dev::eth::Network::qtumTestNetwork)));
+        dev::eth::ChainParams cp((chainparams.EVMGenesisInfo(dev::eth::Network::qtumTestNetwork)));
         globalSealEngine = std::unique_ptr<dev::eth::SealEngineFace>(cp.createSealEngine());
         globalState->populateFrom(cp.genesisState);
         globalState->setRootUTXO(uintToh256(chainparams.GenesisBlock().hashUTXORoot));

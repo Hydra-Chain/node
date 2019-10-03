@@ -102,7 +102,7 @@ static const char* FEE_ESTIMATES_FILENAME="fee_estimates.dat";
 /**
  * The PID file facilities.
  */
-static const char* BITCOIN_PID_FILENAME = "locktrip.pid";
+static const char* BITCOIN_PID_FILENAME = "locktripd.pid";
 
 static fs::path GetPidFile()
 {
@@ -416,6 +416,7 @@ void SetupServerArgs()
 #ifdef ENABLE_BITCORE_RPC
     gArgs.AddArg("-addrindex", strprintf("Maintain a full address index (default: %u)", DEFAULT_ADDRINDEX), false, OptionsCategory::OPTIONS);
 #endif
+    gArgs.AddArg("-deleteblockchaindata", "Delete the local copy of the block chain data", false, OptionsCategory::OPTIONS);
 
     gArgs.AddArg("-addnode=<ip>", "Add a node to connect to and attempt to keep the connection open (see the `addnode` RPC command help for more info). This option can be specified multiple times to add multiple nodes.", false, OptionsCategory::CONNECTION);
     gArgs.AddArg("-banscore=<n>", strprintf("Threshold for disconnecting misbehaving peers (default: %u)", DEFAULT_BANSCORE_THRESHOLD), false, OptionsCategory::CONNECTION);
@@ -682,6 +683,18 @@ static void CleanupBlockRevFiles()
         }
         remove(item.second);
     }
+}
+
+// Delete local blockchain data
+void DeleteBlockChainData()
+{
+    // Delete block chain data paths
+    fs::remove_all(GetDataDir() / "chainstate");
+    fs::remove_all(GetBlocksDir());
+    fs::remove_all(GetDataDir() / "stateQtum");
+    fs::remove(GetDataDir() / "banlist.dat");
+    fs::remove(GetDataDir() / FEE_ESTIMATES_FILENAME);
+    fs::remove(GetDataDir() / "mempool.dat");
 }
 
 static void ThreadImport(std::vector<fs::path> vImportFiles)
@@ -1303,6 +1316,11 @@ bool AppInitMain(InitInterfaces& interfaces)
             gArgs.GetArg("-datadir", ""), fs::current_path().string());
     }
 
+    if(gArgs.GetBoolArg("-deleteblockchaindata", false))
+    {
+        DeleteBlockChainData();
+    }
+
     InitSignatureCache();
     InitScriptExecutionCache();
 
@@ -1627,7 +1645,7 @@ bool AppInitMain(InitInterfaces& interfaces)
                 const dev::h256 hashDB(dev::sha3(dev::rlp("")));
                 dev::eth::BaseState existsQtumstate = fStatus ? dev::eth::BaseState::PreExisting : dev::eth::BaseState::Empty;
                 globalState = std::unique_ptr<QtumState>(new QtumState(dev::u256(0), QtumState::openDB(dirQtum, hashDB, dev::WithExisting::Trust), dirQtum, existsQtumstate));
-                dev::eth::ChainParams cp((dev::eth::genesisInfo(dev::eth::Network::qtumMainNetwork)));
+                dev::eth::ChainParams cp((chainparams.EVMGenesisInfo(dev::eth::Network::qtumMainNetwork)));
 
                 //std::cout << "State root " << cp.calculateStateRoot(true) << std::endl;
                 //LogPrintf("State root %s\n", cp.calculateStateRoot(true));

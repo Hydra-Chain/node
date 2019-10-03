@@ -122,6 +122,13 @@ BASE_SCRIPTS= [
     'qtum-pos.py', #the blocks are no synced still. Uncomment comptool.py:sync_blocks(): wait_until
     'qtum-opcall.py',
     'qtum-opcreate.py',
+    'qtum_op_sender.py',
+    'qtum_evm_revert.py',
+    'qtum_evm_create2.py',
+    'qtum_evm_staticcall.py',
+    'qtum_evm_constantinople_precompiles.py',
+    'qtum_evm_constantinople_opcodes.py',
+    'qtum_evm_constantinople_activation.py',
     'qtum-gas-limit.py',
     'qtum-searchlog.py',
     'qtum-pos-segwit.py', 

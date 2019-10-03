@@ -1,7 +1,7 @@
 #ifndef QTUMTRANSACTION_H
 #define QTUMTRANSACTION_H
 
-#include <libethcore/Transaction.h>
+#include <libethereum/Transaction.h>
 
 struct VersionVM{
     //this should be portable, see https://stackoverflow.com/questions/31726191/is-there-a-portable-alternative-to-c-bitfields
@@ -49,13 +49,13 @@ class QtumTransaction : public dev::eth::Transaction{
 
 public:
 
-    QtumTransaction() : nVout(0) {}
+    QtumTransaction() : nVout(0), hasRefundSender(false) {}
 
     QtumTransaction(dev::u256 const& _value, dev::u256 const& _gasPrice, dev::u256 const& _gas, dev::bytes const& _data, dev::u256 const& _nonce = dev::Invalid256):
-		dev::eth::Transaction(_value, _gasPrice, _gas, _data, _nonce) {}
+		    dev::eth::Transaction(_value, _gasPrice, _gas, _data, _nonce), nVout(0), hasRefundSender(false) {}
 
     QtumTransaction(dev::u256 const& _value, dev::u256 const& _gasPrice, dev::u256 const& _gas, dev::Address const& _dest, dev::bytes const& _data, dev::u256 const& _nonce = dev::Invalid256):
-		dev::eth::Transaction(_value, _gasPrice, _gas, _dest, _data, _nonce) {}
+		    dev::eth::Transaction(_value, _gasPrice, _gas, _dest, _data, _nonce), nVout(0), hasRefundSender(false) {}
 
     void setHashWith(const dev::h256 hash) { m_hashWith = hash; }
 
@@ -65,31 +65,28 @@ public:
 
     uint32_t getNVout() const { return nVout; }
 
-    void setVersion(VersionVM v){
-        version=v;
-    }
-    VersionVM getVersion() const{
-        return version;
-    }
+    void setVersion(VersionVM v) { version=v; }
 
-    void setQtumType(opcodetype type){
-        qtumType= type;
-    }
-    opcodetype getQtumType(){
-        return qtumType;
-    }
+    VersionVM getVersion() const { return version; }
 
-    void setTransactionFee(uint64_t transactionFee){
-        nTransactionFee = transactionFee;
-    }
-    uint64_t getTransactionFee(){
-        return nTransactionFee;
-    }
+    void setQtumType(opcodetype type) { qtumType= type; }
+
+    opcodetype getQtumType() { return qtumType; }
+
+    void setTransactionFee(uint64_t transactionFee){ nTransactionFee = transactionFee; }
+
+    uint64_t getTransactionFee(){ return nTransactionFee; }
+
+    void setRefundSender(const dev::Address _refundSender) { refundSender = _refundSender; hasRefundSender = true; }
+
+    dev::Address getRefundSender() const { return hasRefundSender ? refundSender : sender(); }
 
 private:
     uint32_t nVout;
     VersionVM version;
     opcodetype qtumType;
     uint64_t nTransactionFee;
+    dev::Address refundSender;
+    bool hasRefundSender;
 };
 #endif
