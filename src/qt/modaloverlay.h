@@ -55,7 +55,6 @@ private:
     QVector<QPair<qint64, double> > blockProcessTime;
     bool layerIsVisible;
     bool userClosed;
-    void UpdateHeaderSyncLabel();
     OverlayType type;
 };
 

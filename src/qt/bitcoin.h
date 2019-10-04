@@ -72,8 +72,6 @@ public:
     void createWindow(const NetworkStyle *networkStyle);
     /// Create splash screen
     void createSplashScreen(const NetworkStyle *networkStyle);
-    /// Basic initialization, before starting initialization/shutdown thread. Return true on success.
-    bool baseInitialize();
 
     /// Request core initialization
     void requestInitialize();
@@ -93,15 +91,18 @@ public:
     void restoreWallet();
 
 public Q_SLOTS:
-    void initializeResult(bool success);
+            void initializeResult(bool success);
     void shutdownResult();
     /// Handle runaway exceptions. Shows a message box with the problem and quits the program.
     void handleRunawayException(const QString &message);
+    void addWallet(WalletModel* walletModel);
+    void removeWallet();
 
-Q_SIGNALS:
-    void requestedInitialize();
+    Q_SIGNALS:
+            void requestedInitialize();
     void requestedShutdown();
-    void splashFinished();
+    void stopThread();
+    void splashFinished(QWidget *window);
     void windowShown(BitcoinGUI* window);
 
 private:
@@ -112,8 +113,9 @@ private:
     BitcoinGUI *window;
     QTimer *pollShutdownTimer;
 #ifdef ENABLE_WALLET
-    PaymentServer* paymentServer{nullptr};
-    WalletController* m_wallet_controller{nullptr};
+    PaymentServer* paymentServer;
+    std::vector<WalletModel*> m_wallet_models;
+    std::unique_ptr<interfaces::Handler> m_handler_load_wallet;
 #endif
     int returnValue;
     const PlatformStyle *platformStyle;

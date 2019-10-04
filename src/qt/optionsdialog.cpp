@@ -44,6 +44,10 @@ OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
     /* Main elements init */
     ui->databaseCache->setMinimum(nMinDbCache);
     ui->databaseCache->setMaximum(nMaxDbCache);
+    static const uint64_t GiB = 1024 * 1024 * 1024;
+    static const uint64_t nMinDiskSpace = MIN_DISK_SPACE_FOR_BLOCK_FILES / GiB +
+                          (MIN_DISK_SPACE_FOR_BLOCK_FILES % GiB) ? 1 : 0;
+    ui->pruneSize->setMinimum(nMinDiskSpace);
     ui->threadsScriptVerif->setMinimum(-GetNumCores());
     ui->threadsScriptVerif->setMaximum(MAX_SCRIPTCHECK_THREADS);
     ui->pruneWarning->setVisible(false);
@@ -85,11 +89,6 @@ OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
 #ifdef Q_OS_MAC
     /* remove Window tab on Mac */
     ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabWindow));
-#if  defined(MAC_OS_X_VERSION_MIN_REQUIRED) && MAC_OS_X_VERSION_MIN_REQUIRED > 101100
-    /* hide launch at startup option if compiled against macOS > 10.11 (removed API) */
-    ui->bitcoinAtStartup->setVisible(false);
-    ui->tabMain->layout()->removeWidget(ui->bitcoinAtStartup);
-#endif
 #endif
 
     /* remove Wallet tab in case of -disablewallet */
@@ -143,13 +142,6 @@ OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
     connect(ui->proxyIpTor, &QValidatedLineEdit::validationDidChange, this, &OptionsDialog::updateProxyValidationState);
     connect(ui->proxyPort, &QLineEdit::textChanged, this, &OptionsDialog::updateProxyValidationState);
     connect(ui->proxyPortTor, &QLineEdit::textChanged, this, &OptionsDialog::updateProxyValidationState);
-
-    if (!QSystemTrayIcon::isSystemTrayAvailable()) {
-        ui->hideTrayIcon->setChecked(true);
-        ui->hideTrayIcon->setEnabled(false);
-        ui->minimizeToTray->setChecked(false);
-        ui->minimizeToTray->setEnabled(false);
-    }
 }
 
 OptionsDialog::~OptionsDialog()
@@ -166,10 +158,6 @@ void OptionsDialog::setModel(OptionsModel *_model)
         /* check if client restart is needed and show persistent message */
         if (_model->isRestartRequired())
             showRestartWarning(true);
-
-        // Prune values are in GB to be consistent with intro.cpp
-        static constexpr uint64_t nMinDiskSpace = (MIN_DISK_SPACE_FOR_BLOCK_FILES / GB_BYTES) + (MIN_DISK_SPACE_FOR_BLOCK_FILES % GB_BYTES) ? 1 : 0;
-        ui->pruneSize->setRange(nMinDiskSpace, std::numeric_limits<int>::max());
 
         QString strLabel = _model->getOverriddenByCommandLine();
         if (strLabel.isEmpty())
@@ -205,16 +193,6 @@ void OptionsDialog::setModel(OptionsModel *_model)
     connect(ui->thirdPartyTxUrls, &QLineEdit::textChanged, [this]{ showRestartWarning(); });
 }
 
-void OptionsDialog::setCurrentTab(OptionsDialog::Tab tab)
-{
-    QWidget *tab_widget = nullptr;
-    if (tab == OptionsDialog::Tab::TAB_NETWORK) tab_widget = ui->tabNetwork;
-    if (tab == OptionsDialog::Tab::TAB_MAIN) tab_widget = ui->tabMain;
-    if (tab_widget && ui->tabWidget->currentWidget() != tab_widget) {
-        ui->tabWidget->setCurrentWidget(tab_widget);
-    }
-}
-
 void OptionsDialog::setMapper()
 {
     /* Main */
@@ -248,10 +226,8 @@ void OptionsDialog::setMapper()
 
     /* Window */
 #ifndef Q_OS_MAC
-    if (QSystemTrayIcon::isSystemTrayAvailable()) {
-        mapper->addMapping(ui->hideTrayIcon, OptionsModel::HideTrayIcon);
-        mapper->addMapping(ui->minimizeToTray, OptionsModel::MinimizeToTray);
-    }
+    mapper->addMapping(ui->hideTrayIcon, OptionsModel::HideTrayIcon);
+    mapper->addMapping(ui->minimizeToTray, OptionsModel::MinimizeToTray);
     mapper->addMapping(ui->minimizeOnClose, OptionsModel::MinimizeOnClose);
 #endif
 

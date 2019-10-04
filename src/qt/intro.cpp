@@ -22,6 +22,10 @@
 
 #include <cmath>
 
+/* Minimum free space (in GB) needed for data directory */
+static const uint64_t BLOCK_CHAIN_SIZE = 5;
+/* Minimum free space (in GB) needed for data directory when pruned; Does not include prune target */
+static const uint64_t CHAIN_STATE_SIZE = 1;
 /* Total required space (in GB) depending on user choice (prune, not prune) */
 static uint64_t requiredSpace;
 
@@ -110,13 +114,11 @@ void FreespaceChecker::check()
 }
 
 
-Intro::Intro(QWidget *parent, uint64_t blockchain_size, uint64_t chain_state_size) :
+Intro::Intro(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Intro),
-    thread(nullptr),
-    signalled(false),
-    m_blockchain_size(blockchain_size),
-    m_chain_state_size(chain_state_size)
+    thread(0),
+    signalled(false)
 {
     ui->setupUi(this);
     ui->welcomeLabel->setText(ui->welcomeLabel->text().arg(tr(PACKAGE_NAME)));
@@ -124,14 +126,14 @@ Intro::Intro(QWidget *parent, uint64_t blockchain_size, uint64_t chain_state_siz
 
     ui->lblExplanation1->setText(ui->lblExplanation1->text()
         .arg(tr(PACKAGE_NAME))
-        .arg(m_blockchain_size)
-        .arg(2018)
+        .arg(BLOCK_CHAIN_SIZE)
+        .arg(2009)
         .arg(tr("LockTrip"))
     );
     ui->lblExplanation2->setText(ui->lblExplanation2->text().arg(tr(PACKAGE_NAME)));
 
     uint64_t pruneTarget = std::max<int64_t>(0, gArgs.GetArg("-prune", 0));
-    requiredSpace = m_blockchain_size;
+    requiredSpace = BLOCK_CHAIN_SIZE;
     QString storageRequiresMsg = tr("At least %1 GB of data will be stored in this directory, and it will grow over time.");
     if (pruneTarget) {
         uint64_t prunedGBs = std::ceil(pruneTarget * 1024 * 1024.0 / GB_BYTES);
@@ -143,7 +145,7 @@ Intro::Intro(QWidget *parent, uint64_t blockchain_size, uint64_t chain_state_siz
     } else {
         ui->lblExplanation3->setVisible(false);
     }
-    requiredSpace += m_chain_state_size;
+    requiredSpace += CHAIN_STATE_SIZE;
     ui->sizeWarningLabel->setText(
         tr("%1 will download and store a copy of the LockTrip block chain.").arg(tr(PACKAGE_NAME)) + " " +
         storageRequiresMsg.arg(requiredSpace) + " " +
@@ -207,7 +209,7 @@ bool Intro::pickDataDirectory(interfaces::Node& node)
         }
 
         /* If current default data directory does not exist, let the user choose one */
-        Intro intro(0, node.getAssumedBlockchainSize(), node.getAssumedChainStateSize());
+        Intro intro;
         intro.setDataDirectory(dataDir);
         intro.setWindowIcon(QIcon(":icons/bitcoin"));
 
@@ -301,7 +303,7 @@ void Intro::on_dataDirCustom_clicked()
     ui->dataDirectory->setEnabled(true);
     ui->ellipsisButton->setEnabled(true);
 #ifdef MAC_OSX
-    setDataDirectory(QDir::homePath()+"/Qtum");
+    setDataDirectory(QDir::homePath()+"/LockTrip");
 #endif
 }
 

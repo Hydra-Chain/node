@@ -72,6 +72,8 @@ WalletModel::WalletModel(std::unique_ptr<interfaces::Wallet> wallet, interfaces:
     updateCoinAddresses(true)
 {
     fHaveWatchOnly = m_wallet->haveWatchOnly();
+    fForceCheckBalanceChanged = false;
+
     addressTableModel = new AddressTableModel(this);
     contractTableModel = new ContractTableModel(this);
     transactionTableModel = new TransactionTableModel(platformStyle, this);
@@ -549,11 +551,6 @@ static void NotifyWatchonlyChanged(WalletModel *walletmodel, bool fHaveWatchonly
                               Q_ARG(bool, fHaveWatchonly));
 }
 
-static void NotifyCanGetAddressesChanged(WalletModel* walletmodel)
-{
-    QMetaObject::invokeMethod(walletmodel, "canGetAddressesChanged");
-}
-
 static void NotifyContractBookChanged(WalletModel *walletmodel,
         const std::string &address, const std::string &label, const std::string &abi, ChangeType status)
 {
@@ -578,7 +575,6 @@ void WalletModel::subscribeToCoreSignals()
     m_handler_transaction_changed = m_wallet->handleTransactionChanged(std::bind(NotifyTransactionChanged, this, std::placeholders::_1, std::placeholders::_2));
     m_handler_show_progress = m_wallet->handleShowProgress(std::bind(ShowProgress, this, std::placeholders::_1, std::placeholders::_2));
     m_handler_watch_only_changed = m_wallet->handleWatchOnlyChanged(std::bind(NotifyWatchonlyChanged, this, std::placeholders::_1));
-    m_handler_can_get_addrs_changed = m_wallet->handleCanGetAddressesChanged(boost::bind(NotifyCanGetAddressesChanged, this));
     m_handler_contract_book_changed = m_wallet->handleContractBookChanged(boost::bind(NotifyContractBookChanged, this, _1, _2, _3, _4));
 }
 
@@ -591,7 +587,6 @@ void WalletModel::unsubscribeFromCoreSignals()
     m_handler_transaction_changed->disconnect();
     m_handler_show_progress->disconnect();
     m_handler_watch_only_changed->disconnect();
-    m_handler_can_get_addrs_changed->disconnect();
     m_handler_contract_book_changed->disconnect();
 }
 
@@ -670,7 +665,7 @@ bool WalletModel::saveReceiveRequest(const std::string &sAddress, const int64_t 
         return m_wallet->addDestData(dest, key, sRequest);
 }
 
-bool WalletModel::bumpFee(uint256 hash, uint256& new_hash)
+bool WalletModel::bumpFee(uint256 hash)
 {
     CCoinControl coin_control;
     coin_control.m_signal_bip125_rbf = true;
@@ -722,8 +717,9 @@ bool WalletModel::bumpFee(uint256 hash, uint256& new_hash)
         return false;
     }
     // commit the bumped transaction
-    if(!m_wallet->commitBumpTransaction(hash, std::move(mtx), errors, new_hash)) {
-        QMessageBox::critical(nullptr, tr("Fee bump error"), tr("Could not commit transaction") + "<br />(" +
+    uint256 txid;
+    if(!m_wallet->commitBumpTransaction(hash, std::move(mtx), errors, txid)) {
+        QMessageBox::critical(0, tr("Fee bump error"), tr("Could not commit transaction") + "<br />(" +
             QString::fromStdString(errors[0])+")");
          return false;
     }
@@ -738,11 +734,6 @@ bool WalletModel::isWalletEnabled()
 bool WalletModel::privateKeysDisabled() const
 {
     return m_wallet->IsWalletFlagSet(WALLET_FLAG_DISABLE_PRIVATE_KEYS);
-}
-
-bool WalletModel::canGetAddresses() const
-{
-    return m_wallet->canGetAddresses();
 }
 
 QString WalletModel::getWalletName() const
@@ -796,7 +787,9 @@ void WalletModel::checkCoinAddressesChanged()
     // Get the list of coin addresses and emit it to the subscribers
     std::vector<std::string> spendableAddresses;
     std::vector<std::string> allAddresses;
+
     bool includeZeroValue = false;
+
     if(updateCoinAddresses && m_wallet->tryGetAvailableAddresses(spendableAddresses, allAddresses, includeZeroValue))
     {
         QStringList listSpendableAddresses;
@@ -807,7 +800,7 @@ void WalletModel::checkCoinAddressesChanged()
         for(std::string address : allAddresses)
             listAllAddresses.append(QString::fromStdString(address));
 
-        Q_EMIT availableAddressesChanged(listSpendableAddresses, listAllAddresses, includeZeroValue);
+        Q_EMIT availableAddressesChanged(listSpendableAddresses, listAllAddresses);
 
         updateCoinAddresses = false;
     }

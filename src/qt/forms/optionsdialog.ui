@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>832</width>
-    <height>471</height>
+    <height>468</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabMain">
       <attribute name="title">
@@ -120,7 +120,7 @@
            <item>
             <widget class="QLabel" name="databaseCacheUnitLabel">
              <property name="text">
-              <string>MiB</string>
+              <string>MB</string>
              </property>
              <property name="textFormat">
               <enum>Qt::PlainText</enum>
@@ -160,7 +160,7 @@
            <item>
             <widget class="BitcoinAmountField" name="reserveBalance">
              <property name="toolTip">
-              <string>Reserve amount that will not be used for staking</string>
+              <string>(0 = auto, &lt;0 = leave that many cores free)</string>
              </property>
             </widget>
            </item>
@@ -275,7 +275,7 @@
      </widget>
      <widget class="QWidget" name="tabWallet">
       <attribute name="title">
-       <string>W&amp;allet</string>
+       <string>&amp;Wallet</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_Wallet">
        <property name="spacing">
@@ -397,7 +397,7 @@
        <item>
         <widget class="QCheckBox" name="allowIncoming">
          <property name="toolTip">
-          <string>Accept connections from outside.</string>
+          <string>Accept connections from outside</string>
          </property>
          <property name="text">
           <string>Allow incoming connections</string>
@@ -604,7 +604,7 @@
           <string>Connect to the Bitcoin network through a separate SOCKS5 proxy for Tor hidden services.</string>
          </property>
          <property name="text">
-          <string>Use separate SOCKS&amp;5 proxy to reach peers via Tor hidden services:</string>
+          <string>Use separate SOCKS5 proxy to reach peers via Tor hidden services:</string>
          </property>
         </widget>
        </item>
@@ -727,10 +727,10 @@
        <item>
         <widget class="QCheckBox" name="hideTrayIcon">
          <property name="toolTip">
-          <string>Hide the icon from the system tray.</string>
+          <string>&amp;Hide the icon from the system tray.</string>
          </property>
          <property name="text">
-          <string>&amp;Hide tray icon</string>
+          <string>Hide tray icon</string>
          </property>
         </widget>
        </item>
@@ -833,7 +833,7 @@
             <string>Third party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items. %s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</string>
            </property>
            <property name="text">
-            <string>&amp;Third party transaction URLs</string>
+            <string>Third party transaction URLs</string>
            </property>
            <property name="buddy">
             <cstring>thirdPartyTxUrls</cstring>
@@ -887,7 +887,7 @@
         <item>
          <widget class="QLabel" name="overriddenByCommandLineInfoLabel">
           <property name="text">
-           <string>Options set in this dialog are overridden by the command line or in the configuration file:</string>
+           <string>Active command-line options that override above options:</string>
           </property>
           <property name="textFormat">
            <enum>Qt::PlainText</enum>
@@ -1045,6 +1045,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>BitcoinAmountField</class>
+   <extends>QLineEdit</extends>
+   <header>qt/bitcoinamountfield.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QValidatedLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qt/qvalidatedlineedit.h</header>
@@ -1053,11 +1059,6 @@
    <class>QValueComboBox</class>
    <extends>QComboBox</extends>
    <header>qt/qvaluecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>BitcoinAmountField</class>
-   <extends>QSpinBox</extends>
-   <header>qt/bitcoinamountfield.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

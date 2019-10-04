@@ -96,10 +96,6 @@ public Q_SLOTS:
      */
     void on_navigationResized(const QSize& _size);
 
-#ifdef ENABLE_WALLET
-    void updateDisplayUnit();
-#endif
-
 private:
 #ifdef ENABLE_WALLET
     /**
@@ -110,10 +106,8 @@ private:
 
 private:
     Ui::TitleBar *ui;
-#ifdef ENABLE_WALLET
-    QPointer<WalletModel> m_model;
-#endif
-    QPointer<TabBarInfo> m_tab;
+    WalletModel *m_model;
+    TabBarInfo* m_tab;
     QIcon m_iconCloseTab;
 #ifdef ENABLE_WALLET
     std::map<QObject*, interfaces::WalletBalances> m_models;

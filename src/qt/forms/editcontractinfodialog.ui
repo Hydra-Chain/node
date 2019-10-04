@@ -49,6 +49,9 @@
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="labelAddress">
+       <property name="styleSheet">
+        <string notr="true">background: transparent; color: black</string>
+       </property>
        <property name="text">
         <string>Contract Address</string>
        </property>

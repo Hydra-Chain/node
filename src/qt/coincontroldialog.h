@@ -80,12 +80,8 @@ private:
         COLUMN_ADDRESS,
         COLUMN_DATE,
         COLUMN_CONFIRMATIONS,
-    };
-
-    enum
-    {
-        TxHashRole = Qt::UserRole,
-        VOutRole
+        COLUMN_TXHASH,
+        COLUMN_VOUT_INDEX,
     };
 
     friend class CCoinControlWidgetItem;

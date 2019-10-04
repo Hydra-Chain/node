@@ -21,6 +21,10 @@
 #include <util/system.h>
 
 #ifdef WIN32
+#ifdef _WIN32_WINNT
+#undef _WIN32_WINNT
+#endif
+#define _WIN32_WINNT 0x0501
 #ifdef _WIN32_IE
 #undef _WIN32_IE
 #endif
@@ -53,6 +57,12 @@
 #include <QTextDocument> // for Qt::mightBeRichText
 #include <QThread>
 #include <QUrlQuery>
+#include <QMouseEvent>
+
+
+#if QT_VERSION >= 0x50200
+#include <QFontDatabase>
+#endif
 
 #if defined(Q_OS_MAC)
 #pragma GCC diagnostic push
@@ -77,7 +87,13 @@ QString dateTimeStr(qint64 nTime)
 
 QFont fixedPitchFont()
 {
+#if QT_VERSION >= 0x50200
     return QFontDatabase::systemFont(QFontDatabase::FixedFont);
+#else
+    QFont font("Monospace");
+    font.setStyleHint(QFont::Monospace);
+    return font;
+#endif
 }
 
 // Just some dummy data to generate a convincing random-looking (but consistent) address
@@ -351,7 +367,7 @@ bool checkPoint(const QPoint &p, const QWidget *w)
 {
     QWidget *atW = QApplication::widgetAt(w->mapToGlobal(p));
     if (!atW) return false;
-    return atW->window() == w;
+    return atW->topLevelWidget() == w;
 }
 
 bool isObscured(QWidget *w)
@@ -583,28 +599,40 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         CoInitialize(nullptr);
 
         // Get a pointer to the IShellLink interface.
-        IShellLinkW* psl = nullptr;
+        IShellLink* psl = nullptr;
         HRESULT hres = CoCreateInstance(CLSID_ShellLink, nullptr,
-            CLSCTX_INPROC_SERVER, IID_IShellLinkW,
+            CLSCTX_INPROC_SERVER, IID_IShellLink,
             reinterpret_cast<void**>(&psl));
 
         if (SUCCEEDED(hres))
         {
             // Get the current executable path
-            WCHAR pszExePath[MAX_PATH];
-            GetModuleFileNameW(nullptr, pszExePath, ARRAYSIZE(pszExePath));
+            TCHAR pszExePath[MAX_PATH];
+            GetModuleFileName(nullptr, pszExePath, sizeof(pszExePath));
 
             // Start client minimized
             QString strArgs = "-min";
             // Set -testnet /-regtest options
             strArgs += QString::fromStdString(strprintf(" -testnet=%d -regtest=%d", gArgs.GetBoolArg("-testnet", false), gArgs.GetBoolArg("-regtest", false)));
 
+#ifdef UNICODE
+            boost::scoped_array<TCHAR> args(new TCHAR[strArgs.length() + 1]);
+            // Convert the QString to TCHAR*
+            strArgs.toWCharArray(args.get());
+            // Add missing '\0'-termination to string
+            args[strArgs.length()] = '\0';
+#endif
+
             // Set the path to the shortcut target
             psl->SetPath(pszExePath);
-            PathRemoveFileSpecW(pszExePath);
+            PathRemoveFileSpec(pszExePath);
             psl->SetWorkingDirectory(pszExePath);
             psl->SetShowCmd(SW_SHOWMINNOACTIVE);
-            psl->SetArguments(strArgs.toStdWString().c_str());
+#ifndef UNICODE
+            psl->SetArguments(strArgs.toStdString().c_str());
+#else
+            psl->SetArguments(args.get());
+#endif
 
             // Query IShellLink for the IPersistFile interface for
             // saving the shortcut in persistent storage.
@@ -612,8 +640,11 @@ bool SetStartOnSystemStartup(bool fAutoStart)
             hres = psl->QueryInterface(IID_IPersistFile, reinterpret_cast<void**>(&ppf));
             if (SUCCEEDED(hres))
             {
+                WCHAR pwsz[MAX_PATH];
+                // Ensure that the string is ANSI.
+                MultiByteToWideChar(CP_ACP, 0, StartupShortcutPath().string().c_str(), -1, pwsz, MAX_PATH);
                 // Save the link by calling IPersistFile::Save.
-                hres = ppf->Save(StartupShortcutPath().wstring().c_str(), TRUE);
+                hres = ppf->Save(pwsz, TRUE);
                 ppf->Release();
                 psl->Release();
                 CoUninitialize();
@@ -701,11 +732,13 @@ bool SetStartOnSystemStartup(bool fAutoStart)
 }
 
 
-#elif defined(Q_OS_MAC) && defined(MAC_OS_X_VERSION_MIN_REQUIRED) && MAC_OS_X_VERSION_MIN_REQUIRED <= 101100
+#elif defined(Q_OS_MAC)
 // based on: https://github.com/Mozketo/LaunchAtLoginController/blob/master/LaunchAtLoginController.m
 
-LSSharedFileListItemRef findStartupItemInList(CFArrayRef listSnapshot, LSSharedFileListRef list, CFURLRef findUrl)
+LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl);
+LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl)
 {
+    CFArrayRef listSnapshot = LSSharedFileListCopySnapshot(list, nullptr);
     if (listSnapshot == nullptr) {
         return nullptr;
     }
@@ -730,12 +763,15 @@ LSSharedFileListItemRef findStartupItemInList(CFArrayRef listSnapshot, LSSharedF
         if(currentItemURL) {
             if (CFEqual(currentItemURL, findUrl)) {
                 // found
+                CFRelease(listSnapshot);
                 CFRelease(currentItemURL);
                 return item;
             }
             CFRelease(currentItemURL);
         }
     }
+
+    CFRelease(listSnapshot);
     return nullptr;
 }
 
@@ -747,12 +783,10 @@ bool GetStartOnSystemStartup()
     }
 
     LSSharedFileListRef loginItems = LSSharedFileListCreate(nullptr, kLSSharedFileListSessionLoginItems, nullptr);
-    CFArrayRef listSnapshot = LSSharedFileListCopySnapshot(loginItems, nullptr);
-    bool res = (findStartupItemInList(listSnapshot, loginItems, bitcoinAppUrl) != nullptr);
+    LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, bitcoinAppUrl);
+
     CFRelease(bitcoinAppUrl);
-    CFRelease(loginItems);
-    CFRelease(listSnapshot);
-    return res;
+    return !!foundItem; // return boolified object
 }
 
 bool SetStartOnSystemStartup(bool fAutoStart)
@@ -763,8 +797,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
     }
 
     LSSharedFileListRef loginItems = LSSharedFileListCreate(nullptr, kLSSharedFileListSessionLoginItems, nullptr);
-    CFArrayRef listSnapshot = LSSharedFileListCopySnapshot(loginItems, nullptr);
-    LSSharedFileListItemRef foundItem = findStartupItemInList(listSnapshot, loginItems, bitcoinAppUrl);
+    LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, bitcoinAppUrl);
 
     if(fAutoStart && !foundItem) {
         // add bitcoin app to startup item list
@@ -776,8 +809,6 @@ bool SetStartOnSystemStartup(bool fAutoStart)
     }
 
     CFRelease(bitcoinAppUrl);
-    CFRelease(loginItems);
-    CFRelease(listSnapshot);
     return true;
 }
 #pragma GCC diagnostic pop

@@ -92,6 +92,9 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     // Highlight transaction after send
     connect(sendCoinsPage, &SendCoinsDialog::coinsSent, transactionView, static_cast<void (TransactionView::*)(const uint256&)>(&TransactionView::focusTransaction));
 
+    // Double-clicking on a transaction on the transaction history page shows details
+    connect(transactionView, SIGNAL(doubleClicked(QModelIndex)), transactionView, SLOT(showDetails()));
+
     // Clicking on "Export" allows to export the transaction list
     connect(exportButton, &QPushButton::clicked, transactionView, &TransactionView::exportClicked);
 
@@ -122,7 +125,7 @@ void WalletView::setBitcoinGUI(BitcoinGUI *gui)
         });
 
         // Pass through encryption status changed signals
-        connect(this, &WalletView::encryptionStatusChanged, gui, &BitcoinGUI::updateWalletStatus);
+        connect(this, SIGNAL(encryptionStatusChanged(WalletModel*)), gui, SLOT(setEncryptionStatus(WalletModel*)));
 
         // Pass through transaction notifications
         connect(this, &WalletView::incomingTransaction, gui, &BitcoinGUI::incomingTransaction);
@@ -131,7 +134,7 @@ void WalletView::setBitcoinGUI(BitcoinGUI *gui)
         connect(this, &WalletView::incomingTokenTransaction, gui, &BitcoinGUI::incomingTokenTransaction);
 
         // Connect HD enabled state signal
-        connect(this, &WalletView::hdEnabledStatusChanged, gui, &BitcoinGUI::updateWalletStatus);
+        connect(this, SIGNAL(hdEnabledStatusChanged(WalletModel*)), gui, SLOT(setHDStatus(WalletModel*)));
 
         // Clicking on add token button sends you to add token page
         connect(overviewPage, &OverviewPage::addTokenClicked, gui, &BitcoinGUI::gotoAddTokenPage);

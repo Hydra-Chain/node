@@ -44,7 +44,6 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void showMoreClicked();
-    void transactionClicked(const QModelIndex &index);
     void outOfSyncWarningClicked();
     void addTokenClicked();
 

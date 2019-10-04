@@ -30,8 +30,7 @@ class Intro : public QDialog
     Q_OBJECT
 
 public:
-    explicit Intro(QWidget *parent = nullptr,
-                   uint64_t blockchain_size = 0, uint64_t chain_state_size = 0);
+    explicit Intro(QWidget *parent = nullptr);
     ~Intro();
 
     QString getDataDirectory();
@@ -71,8 +70,6 @@ private:
     QMutex mutex;
     bool signalled;
     QString pathToCheck;
-    uint64_t m_blockchain_size;
-    uint64_t m_chain_state_size;
 
     void startThread();
     void checkPath(const QString &dataDir);

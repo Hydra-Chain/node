@@ -98,10 +98,10 @@ void OptionsModel::Init(bool resetSettings)
         settings.setValue("bPrune", false);
     if (!settings.contains("nPruneSize"))
         settings.setValue("nPruneSize", 2);
-    // Convert prune size from GB to MiB:
-    const uint64_t nPruneSizeMiB = (settings.value("nPruneSize").toInt() * GB_BYTES) >> 20;
-    if (!m_node.softSetArg("-prune", settings.value("bPrune").toBool() ? std::to_string(nPruneSizeMiB) : "0")) {
-        addOverriddenOption("-prune");
+    // Convert prune size to MB:
+    const uint64_t nPruneSizeMB = settings.value("nPruneSize").toInt() * 1000;
+    if (!m_node.softSetArg("-prune", settings.value("bPrune").toBool() ? std::to_string(nPruneSizeMB) : "0")) {
+      addOverriddenOption("-prune");
     }
 
     if (!settings.contains("nDatabaseCache"))
@@ -161,22 +161,10 @@ void OptionsModel::Init(bool resetSettings)
     if (!m_node.softSetBoolArg("-listen", settings.value("fListen").toBool()))
         addOverriddenOption("-listen");
 
-#ifdef ENABLE_WALLET
     if (!settings.contains("fUseChangeAddress"))
-    {
-        // Set the default value
-        bool useChangeAddress = DEFAULT_USE_CHANGE_ADDRESS;
-
-        // Get the old parameter value if exist
-        if(settings.contains("fNotUseChangeAddress"))
-            useChangeAddress = !settings.value("fNotUseChangeAddress").toBool();
-
-        // Set the parameter value
-        settings.setValue("fUseChangeAddress", useChangeAddress);
-    }
+        settings.setValue("fUseChangeAddress", DEFAULT_USE_CHANGE_ADDRESS);
     if (!m_node.softSetBoolArg("-usechangeaddress", settings.value("fUseChangeAddress").toBool()))
         addOverriddenOption("-usechangeaddress");
-#endif
 
     if (!settings.contains("fUseProxy"))
         settings.setValue("fUseProxy", false);
@@ -540,8 +528,6 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
         case UseChangeAddress:
             if (settings.value("fUseChangeAddress") != value) {
                 settings.setValue("fUseChangeAddress", value);
-                // Set fNotUseChangeAddress for backward compatibility reason
-                settings.setValue("fNotUseChangeAddress", !value.toBool());
                 setRestartRequired(true);
             }
             break;

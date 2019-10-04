@@ -134,7 +134,7 @@ void AskPassphraseDialog::accept()
                 {
                     QMessageBox::warning(this, tr("Wallet encrypted"),
                                          "<qt>" +
-                                         tr("Your wallet is now encrypted. "
+                                         tr("%1 will close now to finish the encryption process. "
                                          "Remember that encrypting your wallet cannot fully protect "
                                          "your LOCS from being stolen by malware infecting your computer.").arg(tr(PACKAGE_NAME)) +
                                          "<br><br><b>" +
@@ -143,6 +143,7 @@ void AskPassphraseDialog::accept()
                                          "For security reasons, previous backups of the unencrypted wallet file "
                                          "will become useless as soon as you start using the new, encrypted wallet.") +
                                          "</b></qt>");
+                    QApplication::quit();
                 }
                 else
                 {
@@ -164,16 +165,15 @@ void AskPassphraseDialog::accept()
         } break;
     case UnlockStaking:
     case Unlock:
-        try {
-            if (!model->setWalletLocked(false, oldpass)) {
-                QMessageBox::critical(this, tr("Wallet unlock failed"),
-                                      tr("The passphrase entered for the wallet decryption was incorrect."));
-            } else {
-                model->setWalletUnlockStakingOnly(ui->stakingCheckBox->isChecked());
-                QDialog::accept(); // Success
-            }
-        } catch (const std::runtime_error& e) {
-            QMessageBox::critical(this, tr("Wallet unlock failed"), e.what());
+        if(!model->setWalletLocked(false, oldpass))
+        {
+            QMessageBox::critical(this, tr("Wallet unlock failed"),
+                                  tr("The passphrase entered for the wallet decryption was incorrect."));
+        }
+        else
+        {
+            model->setWalletUnlockStakingOnly(ui->stakingCheckBox->isChecked());
+            QDialog::accept(); // Success
         }
         break;
     case Decrypt:

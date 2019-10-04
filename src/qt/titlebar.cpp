@@ -82,16 +82,6 @@ void TitleBar::on_navigationResized(const QSize &_size)
     //ui->widgetLogo->setFixedWidth(_size.width());
 }
 
-#ifdef ENABLE_WALLET
-void TitleBar::updateDisplayUnit()
-{
-    if(m_model && m_model->getOptionsModel())
-    {
-        ui->lblBalance->setText(BitcoinUnits::formatWithUnit(m_model->getOptionsModel()->getDisplayUnit(), m_models[m_model].balance));
-    }
-}
-#endif
-
 void TitleBar::setWalletSelector(QLabel *walletSelectorLabel, QComboBox *walletSelector)
 {
     QLayout* layout = ui->widgetLogo->layout();
@@ -127,10 +117,6 @@ void TitleBar::removeWallet(WalletModel *_model)
     {
         disconnect(_model, &WalletModel::balanceChanged, this, &TitleBar::setBalance);
         m_models.erase(_model);
-        if(m_models.size() == 0)
-        {
-            ui->lblBalance->setText("");
-        }
     }
 }
 

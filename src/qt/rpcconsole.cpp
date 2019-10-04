@@ -113,6 +113,8 @@ public:
         timer.start(millis);
     }
     ~QtRPCTimerBase() {}
+private Q_SLOTS:
+    void timeout() { func(); }
 private:
     QTimer timer;
     std::function<void()> func;
@@ -473,7 +475,6 @@ RPCConsole::RPCConsole(interfaces::Node& node, const PlatformStyle *_platformSty
 
     QChar nonbreaking_hyphen(8209);
     ui->dataDir->setToolTip(ui->dataDir->toolTip().arg(QString(nonbreaking_hyphen) + "datadir"));
-    ui->blocksDir->setToolTip(ui->blocksDir->toolTip().arg(QString(nonbreaking_hyphen) + "blocksdir"));
     ui->openDebugLogfileButton->setToolTip(ui->openDebugLogfileButton->toolTip().arg(tr(PACKAGE_NAME)));
 
     if (platformStyle->getImagesOnButtons()) {
@@ -678,7 +679,6 @@ void RPCConsole::setClientModel(ClientModel *model)
         ui->clientVersion->setText(model->formatFullVersion());
         ui->clientUserAgent->setText(model->formatSubVersion());
         ui->dataDir->setText(model->dataDir());
-        ui->blocksDir->setText(model->blocksDir());
         ui->startupTime->setText(model->formatClientStartupTime());
         ui->networkName->setText(QString::fromStdString(Params().NetworkIDString()));
 
@@ -695,9 +695,6 @@ void RPCConsole::setClientModel(ClientModel *model)
         wordList.sort();
         autoCompleter = new QCompleter(wordList, this);
         autoCompleter->setModelSorting(QCompleter::CaseSensitivelySortedModel);
-        // ui->lineEdit is initially disabled because running commands is only
-        // possible from now on.
-        ui->lineEdit->setEnabled(true);
         ui->lineEdit->setCompleter(autoCompleter);
         autoCompleter->popup()->installEventFilter(this);
         autoCompleter->popup()->setItemDelegate(new QStyledItemDelegate(this));
@@ -1004,9 +1001,10 @@ void RPCConsole::startExecutor()
 
 void RPCConsole::on_tabWidget_currentChanged(int index)
 {
-    if (ui->tabWidget->widget(index) == ui->tab_console) {
+    if (ui->tabWidget->widget(index) == ui->tab_console)
         ui->lineEdit->setFocus();
-    }
+    else if (ui->tabWidget->widget(index) != ui->tab_peers)
+        clearSelectedNode();
 }
 
 void RPCConsole::on_openDebugLogfileButton_clicked()

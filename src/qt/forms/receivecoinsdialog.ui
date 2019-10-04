@@ -325,7 +325,7 @@
             </property>
            </widget>
           </item>
-          <item>
+	  <item>
            <widget class="QCheckBox" name="useBech32">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -386,7 +386,7 @@
             </property>
             <property name="text">
              <string>Use the default receiving
-              address (recommended)</string>
+address (recommended)</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -415,7 +415,7 @@
             </property>
             <property name="text">
              <string>Generate a new receiving
-              address (not recommended)</string>
+address (not recommended)</string>
             </property>
             <attribute name="buttonGroup">
              <string notr="true">reuseAddressButtonGroup</string>
@@ -441,7 +441,7 @@
             </property>
             <property name="text">
              <string>Reuse an existing
-              receiving address</string>
+receiving address</string>
             </property>
             <attribute name="buttonGroup">
              <string notr="true">reuseAddressButtonGroup</string>

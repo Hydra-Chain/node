@@ -117,14 +117,9 @@ void ReceiveCoinsDialog::setModel(WalletModel *_model)
 
         ui->useBech32->setVisible(model->wallet().getDefaultAddressType() != OutputType::LEGACY);
 
-        // Set the button to be enabled or disabled based on whether the wallet can give out new addresses.
-        ui->receiveButton->setEnabled(model->canGetAddresses());
+        // eventually disable the main receive button if private key operations are disabled
+        ui->receiveButton->setEnabled(!model->privateKeysDisabled());
 
-        // Enable/disable the receive button if the wallet is now able/unable to give out new addresses.
-        connect(model, &WalletModel::canGetAddressesChanged, [this] {
-            ui->receiveButton->setEnabled(model->canGetAddresses());
-        });
-		
 		QSettings settings;
         if (settings.contains("nReceiveDefaultAddress") && settings.value("nReceiveDefaultAddress").toString() != "")
         {

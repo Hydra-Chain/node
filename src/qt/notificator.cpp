@@ -209,8 +209,9 @@ void Notificator::notifyDBus(Class cls, const QString &title, const QString &tex
 }
 #endif
 
-void Notificator::notifySystray(Class cls, const QString &title, const QString &text, int millisTimeout)
+void Notificator::notifySystray(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTimeout)
 {
+    Q_UNUSED(icon);
     QSystemTrayIcon::MessageIcon sicon = QSystemTrayIcon::NoIcon;
     switch(cls) // Set icon based on class
     {
@@ -222,8 +223,7 @@ void Notificator::notifySystray(Class cls, const QString &title, const QString &
 }
 
 #ifdef Q_OS_MAC
-void Notificator::notifyMacUserNotificationCenter(const QString &title, const QString &text)
-{
+void Notificator::notifyMacUserNotificationCenter(Class cls, const QString &title, const QString &text, const QIcon &icon) {
     // icon is not supported by the user notification center yet. OSX will use the app icon.
     MacNotificationHandler::instance()->showNotification(title, text);
 }
@@ -239,11 +239,11 @@ void Notificator::notify(Class cls, const QString &title, const QString &text, c
         break;
 #endif
     case QSystemTray:
-        notifySystray(cls, title, text, millisTimeout);
+        notifySystray(cls, title, text, icon, millisTimeout);
         break;
 #ifdef Q_OS_MAC
     case UserNotificationCenter:
-        notifyMacUserNotificationCenter(title, text);
+        notifyMacUserNotificationCenter(cls, title, text, icon);
         break;
 #endif
     default:

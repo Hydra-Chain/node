@@ -14,4 +14,4 @@ extern const std::function<std::string(const char*)> G_TRANSLATION_FUN = [](cons
     return QCoreApplication::translate("bitcoin-core", psz).toStdString();
 };
 
-int main(int argc, char* argv[]) { return GuiMain(argc, argv); }
+//int main(int argc, char* argv[]) { return GuiMain(argc, argv); }

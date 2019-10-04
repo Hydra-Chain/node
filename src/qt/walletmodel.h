@@ -75,14 +75,8 @@ public:
     // If from a payment request, this is used for storing the memo
     QString message;
 
-#ifdef ENABLE_BIP70
     // If from a payment request, paymentRequest.IsInitialized() will be true
     PaymentRequestPlus paymentRequest;
-#else
-    // If building with BIP70 is disabled, keep the payment request around as
-    // serialized string to ensure load/store is lossless
-    std::string sPaymentRequest;
-#endif
     // Empty if no authentication or invalid signature/cert/etc.
     QString authenticatedMerchant;
 
@@ -223,11 +217,10 @@ public:
     void loadReceiveRequests(std::vector<std::string>& vReceiveRequests);
     bool saveReceiveRequest(const std::string &sAddress, const int64_t nId, const std::string &sRequest);
 
-    bool bumpFee(uint256 hash, uint256& new_hash);
+    bool bumpFee(uint256 hash);
 
     static bool isWalletEnabled();
     bool privateKeysDisabled() const;
-    bool canGetAddresses() const;
 
     interfaces::Node& node() const { return m_node; }
     interfaces::Wallet& wallet() const { return *m_wallet; }
@@ -253,12 +246,11 @@ private:
     std::unique_ptr<interfaces::Handler> m_handler_token_changed;
     std::unique_ptr<interfaces::Handler> m_handler_show_progress;
     std::unique_ptr<interfaces::Handler> m_handler_watch_only_changed;
-    std::unique_ptr<interfaces::Handler> m_handler_can_get_addrs_changed;
     std::unique_ptr<interfaces::Handler> m_handler_contract_book_changed;
     interfaces::Node& m_node;
 
     bool fHaveWatchOnly;
-    bool fForceCheckBalanceChanged{false};
+    bool fForceCheckBalanceChanged;
 
     // Wallet has an options model for wallet-specific options
     // (transaction fee, for example)
@@ -320,11 +312,8 @@ Q_SIGNALS:
     // Signal that wallet is about to be removed
     void unload();
 
-    // Notify that there are now keys in the keypool
-    void canGetAddressesChanged();
-
     // Signal that available coin addresses are changed
-    void availableAddressesChanged(QStringList spendableAddresses, QStringList allAddresses, bool includeZeroValue);
+    void availableAddressesChanged(QStringList spendableAddresses, QStringList allAddresses);
 
 public Q_SLOTS:
     /* Wallet status might have changed */

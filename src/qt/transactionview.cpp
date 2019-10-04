@@ -92,11 +92,7 @@ TransactionView::TransactionView(const PlatformStyle *platformStyle, QWidget *pa
     amountWidget = new QLineEdit(this);
     amountWidget->setPlaceholderText(tr("Min amount"));
     amountWidget->setFixedWidth(AMOUNT_MINIMUM_COLUMN_WIDTH -10);
-    QDoubleValidator *amountValidator = new QDoubleValidator(0, 1e20, 8, this);
-    QLocale amountLocale(QLocale::C);
-    amountLocale.setNumberOptions(QLocale::RejectGroupSeparator);
-    amountValidator->setLocale(amountLocale);
-    amountWidget->setValidator(amountValidator);
+    amountWidget->setValidator(new QDoubleValidator(0, 1e20, 8, this));
     hlayout->addWidget(amountWidget);
 
     // Delay before filtering transactions in ms
@@ -189,12 +185,6 @@ TransactionView::TransactionView(const PlatformStyle *platformStyle, QWidget *pa
     connect(copyTxPlainText, &QAction::triggered, this, &TransactionView::copyTxPlainText);
     connect(editLabelAction, &QAction::triggered, this, &TransactionView::editLabel);
     connect(showDetailsAction, &QAction::triggered, this, &TransactionView::showDetails);
-    // Double-clicking on a transaction on the transaction history page shows details
-    connect(this, &TransactionView::doubleClicked, this, &TransactionView::showDetails);
-    // Highlight transaction after fee bump
-    connect(this, &TransactionView::bumpedFee, [this](const uint256& txid) {
-      focusTransaction(txid);
-    });
 }
 
 void TransactionView::setModel(WalletModel *_model)
@@ -215,8 +205,8 @@ void TransactionView::setModel(WalletModel *_model)
         transactionView->setAlternatingRowColors(true);
         transactionView->setSelectionBehavior(QAbstractItemView::SelectRows);
         transactionView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-        transactionView->horizontalHeader()->setSortIndicator(TransactionTableModel::Date, Qt::DescendingOrder);
         transactionView->setSortingEnabled(true);
+        transactionView->sortByColumn(TransactionTableModel::Date, Qt::DescendingOrder);
         transactionView->verticalHeader()->hide();
 
         transactionView->setColumnWidth(TransactionTableModel::Status, STATUS_COLUMN_WIDTH);
@@ -425,14 +415,9 @@ void TransactionView::bumpFee()
     hash.SetHex(hashQStr.toStdString());
 
     // Bump tx fee over the walletModel
-    uint256 newHash;
-    if (model->bumpFee(hash, newHash)) {
+    if (model->bumpFee(hash)) {
         // Update the table
-        transactionView->selectionModel()->clearSelection();
         model->getTransactionTableModel()->updateTransaction(hashQStr, CT_UPDATED, true);
-
-        qApp->processEvents();
-        Q_EMIT bumpedFee(newHash);
     }
 }
 

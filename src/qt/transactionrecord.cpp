@@ -203,7 +203,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const interface
     return parts;
 }
 
-void TransactionRecord::updateStatus(const interfaces::WalletTxStatus& wtx, int numBlocks, int64_t block_time)
+void TransactionRecord::updateStatus(const interfaces::WalletTxStatus& wtx, int numBlocks, int64_t adjustedTime)
 {
     // Determine transaction status
 
@@ -217,9 +217,10 @@ void TransactionRecord::updateStatus(const interfaces::WalletTxStatus& wtx, int 
     status.depth = wtx.depth_in_main_chain;
     status.cur_num_blocks = numBlocks;
 
-    const bool up_to_date = ((int64_t)QDateTime::currentMSecsSinceEpoch() / 1000 - block_time < MAX_BLOCK_TIME_GAP);
-    if (up_to_date && !wtx.is_final) {
-        if (wtx.lock_time < LOCKTIME_THRESHOLD) {
+    if (!wtx.is_final)
+    {
+        if (wtx.lock_time < LOCKTIME_THRESHOLD)
+        {
             status.status = TransactionStatus::OpenUntilBlock;
             status.open_for = wtx.lock_time - numBlocks;
         }
