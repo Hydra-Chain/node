@@ -66,12 +66,12 @@
         <translation>Διευθύνσεις λήψης</translation>
     </message>
     <message>
-        <source>These are your Qtum addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Αυτές είναι οι Qtum διευθύνσεις σας για να στέλνετε πληρωμές. Να ελέγχετε πάντα το ποσό, καθώς και τη διεύθυνση παραλήπτη πριν στείλετε νομίσματα.</translation>
+        <source>These are your LockTrip addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Αυτές είναι οι LockTrip διευθύνσεις σας για να στέλνετε πληρωμές. Να ελέγχετε πάντα το ποσό, καθώς και τη διεύθυνση παραλήπτη πριν στείλετε νομίσματα.</translation>
     </message>
     <message>
-        <source>These are your Qtum addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Αυτές είναι οι Qtum διευθύνσεις σας για να λαμβάνετε πληρωμές. Προτείνετε να χρησιμοποιείτε μια νέα διεύθυνση παραλήπτη για κάθε συναλλαγή.</translation>
+        <source>These are your LockTrip addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Αυτές είναι οι LockTrip διευθύνσεις σας για να λαμβάνετε πληρωμές. Προτείνετε να χρησιμοποιείτε μια νέα διεύθυνση παραλήπτη για κάθε συναλλαγή.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -176,8 +176,8 @@
         <translation>Επιβεβαίωσε κρυπτογράφηση πορτοφολιού</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR QTUMS&lt;/b&gt;!</source>
-        <translation>Προσόχη! Εάν κρυπτογραφήσεις το πορτοφόλι σου και χάσεις τη φράση αποκατάστασης, θα &lt;b&gt; ΧΑΣΕΙΣ ΟΛΑ ΣΟΥ ΤΑ QTUM &lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR LOCS&lt;/b&gt;!</source>
+        <translation>Προσόχη! Εάν κρυπτογραφήσεις το πορτοφόλι σου και χάσεις τη φράση αποκατάστασης, θα &lt;b&gt; ΧΑΣΕΙΣ ΟΛΑ ΣΟΥ ΤΑ LOCS &lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -236,7 +236,7 @@
     </message>
 </context>
 <context>
-    <name>QtumGUI</name>
+    <name>LockTripGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Υπογραφή &amp;μηνύματος...</translation>
@@ -334,8 +334,8 @@
         <translation>Φόρτωση ευρετηρίου μπλοκ στον σκληρό δίσκο...</translation>
     </message>
     <message>
-        <source>Send coins to a Qtum address</source>
-        <translation>Στείλε νομίσματα σε μια διεύθυνση qtum</translation>
+        <source>Send coins to a LockTrip address</source>
+        <translation>Στείλε νομίσματα σε μια διεύθυνση LockTrip</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -358,8 +358,8 @@
         <translation>&amp;Επιβεβαίωση μηνύματος</translation>
     </message>
     <message>
-        <source>Qtum</source>
-        <translation>Qtum</translation>
+        <source>LockTrip</source>
+        <translation>LockTrip</translation>
     </message>
     <message>
         <source>&amp;Send</source>
@@ -382,12 +382,12 @@
         <translation>Κρυπτογραφήστε τα ιδιωτικά κλειδιά που ανήκουν στο πορτοφόλι σας </translation>
     </message>
     <message>
-        <source>Sign messages with your Qtum addresses to prove you own them</source>
+        <source>Sign messages with your LockTrip addresses to prove you own them</source>
         <translation>Υπογράψτε ένα μήνυμα για να βεβαιώσετε πως είστε ο κάτοχος αυτής της διεύθυνσης</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Qtum addresses</source>
-        <translation>Υπογράψτε ένα μήνυμα για ν' αποδείξετε πως ανήκει μια συγκεκριμένη διεύθυνση Qtum</translation>
+        <source>Verify messages to ensure they were signed with specified LockTrip addresses</source>
+        <translation>Υπογράψτε ένα μήνυμα για ν' αποδείξετε πως ανήκει μια συγκεκριμένη διεύθυνση LockTrip</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -406,8 +406,8 @@
         <translation>Εργαλειοθήκη καρτελών</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
-        <translation>Αίτηση πληρωμών (δημιουργεί QR codes και διευθύνσεις qtum: )</translation>
+        <source>Request payments (generates QR codes and LockTrip: URIs)</source>
+        <translation>Αίτηση πληρωμών (δημιουργεί QR codes και διευθύνσεις LockTrip: )</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -418,8 +418,8 @@
         <translation>Προβολή της λίστας των χρησιμοποιημένων διευθύνσεων και ετικετών λήψεως</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
-        <translation>Άνοιγμα qtum: URI αίτησης πληρωμής</translation>
+        <source>Open a LockTrip: URI or payment request</source>
+        <translation>Άνοιγμα LockTrip: URI αίτησης πληρωμής</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -676,8 +676,8 @@
         <translation> Επεξεργασία διεύθυνσης αποστολής</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Qtum address.</source>
-        <translation>Η διεύθυνση "%1" δεν είναι έγκυρη Qtum διεύθυνση.</translation>
+        <source>The entered address "%1" is not a valid LockTrip address.</source>
+        <translation>Η διεύθυνση "%1" δεν είναι έγκυρη LockTrip διεύθυνση.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -753,8 +753,8 @@
         <translation>Προσαρμογή του φακέλου δεδομένων: </translation>
     </message>
     <message>
-        <source>Qtum</source>
-        <translation>Qtum</translation>
+        <source>LockTrip</source>
+        <translation>LockTrip</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -886,16 +886,16 @@
         <translation>&amp;Ξόδεμα μη επικυρωμένων ρέστων</translation>
     </message>
     <message>
-        <source>Automatically open the Qtum client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Αυτόματο άνοιγμα των θυρών Qtum στον δρομολογητή. Λειτουργεί μόνο αν ο δρομολογητής σας υποστηρίζει τη λειτουργία UPnP.</translation>
+        <source>Automatically open the LockTrip client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Αυτόματο άνοιγμα των θυρών LockTrip στον δρομολογητή. Λειτουργεί μόνο αν ο δρομολογητής σας υποστηρίζει τη λειτουργία UPnP.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
         <translation>Απόδοση θυρών με χρήστη &amp;UPnP</translation>
     </message>
     <message>
-        <source>Connect to the Qtum network through a SOCKS5 proxy.</source>
-        <translation>Σύνδεση στο δίκτυο Qtum μέσω διαμεσολαβητή SOCKS5 (π.χ. για σύνδεση μέσω Tor)</translation>
+        <source>Connect to the LockTrip network through a SOCKS5 proxy.</source>
+        <translation>Σύνδεση στο δίκτυο LockTrip μέσω διαμεσολαβητή SOCKS5 (π.χ. για σύνδεση μέσω Tor)</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1005,8 +1005,8 @@
         <translation>Φόρμα</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Qtum network after a connection is established, but this process has not completed yet.</source>
-        <translation>Οι πληροφορίες που εμφανίζονται μπορεί να είναι ξεπερασμένες. Το πορτοφόλι σας συγχρονίζεται αυτόματα με το δίκτυο Qtum μετά από μια σύνδεση, αλλά αυτή η διαδικασία δεν έχει ακόμη ολοκληρωθεί. </translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the LockTrip network after a connection is established, but this process has not completed yet.</source>
+        <translation>Οι πληροφορίες που εμφανίζονται μπορεί να είναι ξεπερασμένες. Το πορτοφόλι σας συγχρονίζεται αυτόματα με το δίκτυο LockTrip μετά από μια σύνδεση, αλλά αυτή η διαδικασία δεν έχει ακόμη ολοκληρωθεί. </translation>
     </message>
     <message>
         <source>Watch-only:</source>
@@ -1080,8 +1080,8 @@
         <translation>Σφάλμα αίτησης πληρωμής</translation>
     </message>
     <message>
-        <source>Cannot start qtum: click-to-pay handler</source>
-        <translation>Δεν είναι δυνατή η εκκίνηση του qtum: χειριστής click-to-pay</translation>
+        <source>Cannot start LockTrip: click-to-pay handler</source>
+        <translation>Δεν είναι δυνατή η εκκίνηση του LockTrip: χειριστής click-to-pay</translation>
     </message>
     <message>
         <source>URI handling</source>
@@ -1114,8 +1114,8 @@
         <translation>Ποσό</translation>
     </message>
     <message>
-        <source>Enter a Qtum address (e.g. %1)</source>
-        <translation>Εισάγετε μια διεύθυνση Qtum (π.χ. %1)</translation>
+        <source>Enter a LockTrip address (e.g. %1)</source>
+        <translation>Εισάγετε μια διεύθυνση LockTrip (π.χ. %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -1638,8 +1638,8 @@
         <translation>Αυτή είναι μια απλή πληρωμή.</translation>
     </message>
     <message>
-        <source>The Qtum address to send the payment to</source>
-        <translation>Η διεύθυνση Qtum που θα σταλεί η πληρωμή</translation>
+        <source>The LockTrip address to send the payment to</source>
+        <translation>Η διεύθυνση LockTrip που θα σταλεί η πληρωμή</translation>
     </message>
     <message>
         <source>Alt+A</source>
@@ -1699,8 +1699,8 @@
         <translation>&amp;Υπογραφή Μηνύματος</translation>
     </message>
     <message>
-        <source>The Qtum address to sign the message with</source>
-        <translation>Διεύθυνση Qtum που θα σταλεί το μήνυμα</translation>
+        <source>The LockTrip address to sign the message with</source>
+        <translation>Διεύθυνση LockTrip που θα σταλεί το μήνυμα</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -1731,8 +1731,8 @@
         <translation>Αντιγραφή της επιλεγμένης υπογραφής στο πρόχειρο του συστήματος</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this Qtum address</source>
-        <translation>Υπογράψτε το μήνυμα για να αποδείξετε πως σας ανήκει η συγκεκριμένη διεύθυνση Qtum</translation>
+        <source>Sign the message to prove you own this LockTrip address</source>
+        <translation>Υπογράψτε το μήνυμα για να αποδείξετε πως σας ανήκει η συγκεκριμένη διεύθυνση LockTrip</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -1751,12 +1751,12 @@
         <translation>&amp;Επιβεβαίωση Mηνύματος</translation>
     </message>
     <message>
-        <source>The Qtum address the message was signed with</source>
-        <translation>Διεύθυνση Qtum με την οποία έχει υπογραφεί το μήνυμα</translation>
+        <source>The LockTrip address the message was signed with</source>
+        <translation>Διεύθυνση LockTrip με την οποία έχει υπογραφεί το μήνυμα</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified Qtum address</source>
-        <translation>Επαληθεύστε το μήνυμα για να αποδείξετε πως υπογράφθηκε από τη συγκεκριμένη διεύθυνση Qtum</translation>
+        <source>Verify the message to ensure it was signed with the specified LockTrip address</source>
+        <translation>Επαληθεύστε το μήνυμα για να αποδείξετε πως υπογράφθηκε από τη συγκεκριμένη διεύθυνση LockTrip</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -1965,10 +1965,10 @@
     </message>
 </context>
 <context>
-    <name>qtum-core</name>
+    <name>LockTrip-core</name>
     <message>
-        <source>Qtum Core</source>
-        <translation>Qtum Core</translation>
+        <source>LockTrip Core</source>
+        <translation>LockTrip Core</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>

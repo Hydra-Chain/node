@@ -73,16 +73,16 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
 
 CChainParams::CChainParams()
 {
-    consensus.totalCoinsSupply = 1858593274150085 ; // locktrip contract coin suply
+    consensus.totalCoinsSupply = 1858593274150085; // locktrip contract coin suply
     consensus.nBlockRewardChangeInterval = 1000000; // locktrip reward changing aprox every 1 year
     consensus.blockRewardPerInterval = {40000000, 30000000, 20000000, 10000000, 5000000};
     consensus.BIP34Height = 0;
     consensus.BIP65Height = 0;
     consensus.BIP66Height = 0;
-    consensus.QIP5Height = 0;
-    consensus.QIP6Height = 0;
-    consensus.QIP7Height = 0;
-    consensus.QIP9Height = 0;
+    consensus.QIP5Height = 14000;
+    consensus.QIP6Height = 14000;
+    consensus.QIP7Height = 14000;
+    consensus.QIP9Height = 14000;
     consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
     consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
     consensus.QIP9PosLimit = uint256S("0000000000001fffffffffffffffffffffffffffffffffffffffffffffffffff"); // The new POS-limit activated after QIP9

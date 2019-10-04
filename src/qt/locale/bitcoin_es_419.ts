@@ -42,8 +42,8 @@
         <translation>Recibiendo direcciones</translation>
     </message>
     <message>
-        <source>These are your Qtum addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Estas son sus direcciones de Qtum para enviar sus pagos. Siempre revise el monto y la dirección recibida antes de enviar monedas.</translation>
+        <source>These are your LockTrip addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Estas son sus direcciones de LockTrip para enviar sus pagos. Siempre revise el monto y la dirección recibida antes de enviar monedas.</translation>
     </message>
     </context>
 <context>
@@ -56,7 +56,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>QtumGUI</name>
+    <name>LockTripGUI</name>
     </context>
 <context>
     <name>CoinControlDialog</name>
@@ -162,6 +162,6 @@
     </message>
     </context>
 <context>
-    <name>qtum-core</name>
+    <name>LockTrip</name>
     </context>
 </TS>
