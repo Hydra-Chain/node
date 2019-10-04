@@ -2909,7 +2909,10 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
     Dgp dgp;
     uint64_t cached_coinBurnPercentage;
-    dgp.getDgpParam(BURN_RATE, cached_coinBurnPercentage);
+    if(chainActive.Tip() == NULL)
+	cached_coinBurnPercentage = 0;
+    else
+    	dgp.getDgpParam(BURN_RATE, cached_coinBurnPercentage);
 
     uint64_t countCumulativeGasUsed = 0;
     /////////////////////////////////////////////////
