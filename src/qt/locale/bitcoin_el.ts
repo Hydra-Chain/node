@@ -32,7 +32,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>QtumGUI</name>
+    <name>LockTripGUI</name>
     <message>
         <source>Quit application</source>
         <translation>Κλείσιμο εφαρμογής</translation>
@@ -201,7 +201,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>qtum-core</name>
+    <name>LockTrip-core</name>
     <message>
         <source>Insufficient funds</source>
         <translation>Κεφάλαια μη επαρκή</translation>

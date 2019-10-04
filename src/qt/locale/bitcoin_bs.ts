@@ -12,10 +12,10 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>QtumGUI</name>
+    <name>LockTripGUI</name>
     <message>
-        <source>Qtum</source>
-        <translation>Qtum</translation>
+        <source>LockTrip</source>
+        <translation>LockTrip</translation>
     </message>
     </context>
 <context>
@@ -154,10 +154,10 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>qtum-core</name>
+    <name>LockTrip-core</name>
     <message>
-        <source>Qtum Core</source>
-        <translation>Qtum Jezrga</translation>
+        <source>LockTrip Core</source>
+        <translation>LockTrip Jezrga</translation>
     </message>
     </context>
 </TS>

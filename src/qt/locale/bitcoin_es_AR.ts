@@ -62,8 +62,8 @@
         <translation>Dirección destino</translation>
     </message>
     <message>
-        <source>These are your Qtum addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Estas son tus direcciones Qtum para enviar pagos. Chequea siempre el monto y la dirección destino antes de mandar monedas.
+        <source>These are your LockTrip addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Estas son tus direcciones LockTrip para enviar pagos. Chequea siempre el monto y la dirección destino antes de mandar monedas.
 </translation>
     </message>
     <message>
@@ -158,8 +158,8 @@
         <translation>Confirmar cifrado de la billetera</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR QTUMS&lt;/b&gt;!</source>
-        <translation>Advertencia: si usted cifra su billetera y olvida su Frase de Contraseña, usted &lt;b&gt; PERDERÁ TODOS SUS QTUMS&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR locsS&lt;/b&gt;!</source>
+        <translation>Advertencia: si usted cifra su billetera y olvida su Frase de Contraseña, usted &lt;b&gt; PERDERÁ TODOS SUS locsS&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -170,7 +170,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>QtumGUI</name>
+    <name>LockTripGUI</name>
     </context>
 <context>
     <name>CoinControlDialog</name>
@@ -321,6 +321,6 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>qtum-core</name>
+    <name>LockTrip</name>
     </context>
 </TS>

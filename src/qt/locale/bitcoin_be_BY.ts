@@ -66,11 +66,11 @@
         <translation>адрасы Прымання</translation>
     </message>
     <message>
-        <source>These are your Qtum addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <source>These are your LockTrip addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
         <translation>Тут знаходзяцца Біткойн-адрасы для высылання плацяжоў. Заўсёды спраўджвайце колькасць і адрас прызначэння перад здзяйсненнем транзакцыі.</translation>
     </message>
     <message>
-        <source>These are your Qtum addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <source>These are your LockTrip addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
         <translation>Тут знаходзяцца Біткойн-адрасы для прымання плацяжоў. Пажадана выкарыстоўваць новы адрас для кожнай транзакцыі.</translation>
     </message>
     <message>
@@ -172,8 +172,8 @@
         <translation>Пацвердзіце шыфраванне гаманца</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR QTUMS&lt;/b&gt;!</source>
-        <translation>Увага: калі вы зашыфруеце свой гаманец і страціце парольную фразу, то &lt;b&gt;СТРАЦІЦЕ ЎСЕ СВАЕ БІТКОЙНЫ&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR LOCS&lt;/b&gt;!</source>
+        <translation>Увага: калі вы зашыфруеце свой гаманец і страціце парольную фразу, то &lt;b&gt;СТРАЦІЦЕ ЎСЕ СВАЕ LOCs&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -224,7 +224,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>QtumGUI</name>
+    <name>LockTripGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Падпісаць паведамленне...</translation>
@@ -290,7 +290,7 @@
         <translation>Пераіндэксацыя блокаў на дыску...</translation>
     </message>
     <message>
-        <source>Send coins to a Qtum address</source>
+        <source>Send coins to a LockTrip address</source>
         <translation>Даслаць манеты на Біткойн-адрас</translation>
     </message>
     <message>
@@ -314,8 +314,8 @@
         <translation>Праверыць паведамленне...</translation>
     </message>
     <message>
-        <source>Qtum</source>
-        <translation>Біткойн</translation>
+        <source>LockTrip</source>
+        <translation>LockTrip</translation>
     </message>
     <message>
         <source>&amp;Send</source>
@@ -338,12 +338,12 @@
         <translation>Зашыфраваць прыватныя ключы, якия належаць вашаму гаманцу</translation>
     </message>
     <message>
-        <source>Sign messages with your Qtum addresses to prove you own them</source>
-        <translation>Падпісаць паведамленне з дапамогай Біткойн-адраса каб даказаць, што яно належыць вам</translation>
+        <source>Sign messages with your LockTrip addresses to prove you own them</source>
+        <translation>Падпісаць паведамленне з дапамогай LockTrip-адраса каб даказаць, што яно належыць вам</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Qtum addresses</source>
-        <translation>Спраўдзіць паведамленне з дапамогай Біткойн-адраса каб даказаць, што яно належыць вам</translation>
+        <source>Verify messages to ensure they were signed with specified LockTrip addresses</source>
+        <translation>Спраўдзіць паведамленне з дапамогай LockTrip-адраса каб даказаць, што яно належыць вам</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -358,8 +358,8 @@
         <translation>Дапамога</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
-        <translation>Запатрабаваць плацёж (генеруецца QR-код для біткойн URI)</translation>
+        <source>Request payments (generates QR codes and LockTrip: URIs)</source>
+        <translation>Запатрабаваць плацёж (генеруецца QR-код для LockTrip URI)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -370,8 +370,8 @@
         <translation>Паказаць спіс адрасоў і метак для прымання</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
-        <translation>Адкрыць біткойн: URI ці запыт плацяжу</translation>
+        <source>Open a LockTrip: URI or payment request</source>
+        <translation>Адкрыць LockTrip: URI ці запыт плацяжу</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -643,8 +643,8 @@
         <translation>Вітаем</translation>
     </message>
     <message>
-        <source>Qtum</source>
-        <translation>Біткойн</translation>
+        <source>LockTrip</source>
+        <translation>LockTrip</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1207,10 +1207,10 @@
     </message>
     </context>
 <context>
-    <name>qtum-core</name>
+    <name>LockTrip-core</name>
     <message>
-        <source>Qtum Core</source>
-        <translation>Qtum Core</translation>
+        <source>LockTrip Core</source>
+        <translation>LockTrip Core</translation>
     </message>
     <message>
         <source>Do you want to rebuild the block database now?</source>

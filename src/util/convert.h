@@ -11,6 +11,7 @@ inline dev::h256 uintToh256(const uint256& in)
 {
     std::vector<unsigned char> vHashBlock;
     vHashBlock.assign(in.begin(), in.end());
+    vHashBlock.assign(in.begin(), in.end());
     return dev::h256(vHashBlock);
 }
 
