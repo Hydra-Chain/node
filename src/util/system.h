@@ -56,7 +56,8 @@ const extern std::function<std::string(const char*)> G_TRANSLATION_FUN;
  */
 inline std::string _(const char* psz)
 {
-    return G_TRANSLATION_FUN ? (G_TRANSLATION_FUN)(psz) : psz;
+    //return G_TRANSLATION_FUN ? (G_TRANSLATION_FUN)(psz) : psz; //Disable translation
+    return psz;
 }
 
 void SetupEnvironment();
