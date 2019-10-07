@@ -5,8 +5,6 @@
 #include <QMessageBox>
 #include <QFile>
 #include <qt/styleSheet.h>
-#include <wallet/walletutil.h>
-#include <fs.h>
 
 RestoreDialog::RestoreDialog(QWidget *parent) :
     QDialog(parent),

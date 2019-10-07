@@ -9,7 +9,6 @@
 #include <qt/optionsmodel.h>
 
 #include <qt/bitcoinunits.h>
-#include <qt/guiconstants.h>
 #include <qt/guiutil.h>
 
 #include <interfaces/node.h>
@@ -114,12 +113,10 @@ void OptionsModel::Init(bool resetSettings)
     if (!m_node.softSetBoolArg("-logevents", settings.value("fLogEvents").toBool()))
         addOverriddenOption("-logevents");
 
-#ifdef ENABLE_WALLET
     if (!settings.contains("nReserveBalance"))
         settings.setValue("nReserveBalance", (long long)DEFAULT_RESERVE_BALANCE);
     if (!m_node.softSetArg("-reservebalance", FormatMoney(settings.value("nReserveBalance").toLongLong())))
         addOverriddenOption("-reservebalance");
-#endif
 
     if (!settings.contains("nThreadsScriptVerif"))
         settings.setValue("nThreadsScriptVerif", DEFAULT_SCRIPTCHECK_THREADS);
@@ -135,11 +132,11 @@ void OptionsModel::Init(bool resetSettings)
         settings.setValue("bSpendZeroConfChange", true);
     if (!m_node.softSetBoolArg("-spendzeroconfchange", settings.value("bSpendZeroConfChange").toBool()))
         addOverriddenOption("-spendzeroconfchange");
+#endif
 
     if (!settings.contains("bZeroBalanceAddressToken"))
         settings.setValue("bZeroBalanceAddressToken", DEFAULT_ZERO_BALANCE_ADDRESS_TOKEN);
     bZeroBalanceAddressToken = settings.value("bZeroBalanceAddressToken").toBool();
-#endif
 
     if (!settings.contains("fCheckForUpdates"))
         settings.setValue("fCheckForUpdates", DEFAULT_CHECK_FOR_UPDATES);
@@ -318,11 +315,11 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
 #ifdef ENABLE_WALLET
         case SpendZeroConfChange:
             return settings.value("bSpendZeroConfChange");
+#endif
         case ZeroBalanceAddressToken:
             return settings.value("bZeroBalanceAddressToken");
         case ReserveBalance:
             return settings.value("nReserveBalance");
-#endif
         case DisplayUnit:
             return nDisplayUnit;
         case ThirdPartyTxUrls:
@@ -345,10 +342,8 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return settings.value("fListen");
         case EnableSTUN:
             return settings.value("fEnableSTUN");
-#ifdef ENABLE_WALLET
         case UseChangeAddress:
             return settings.value("fUseChangeAddress");
-#endif
         case CheckForUpdates:
             return settings.value("fCheckForUpdates");
         default:
@@ -447,12 +442,12 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 setRestartRequired(true);
             }
             break;
+#endif
         case ZeroBalanceAddressToken:
             bZeroBalanceAddressToken = value.toBool();
             settings.setValue("bZeroBalanceAddressToken", bZeroBalanceAddressToken);
             Q_EMIT zeroBalanceAddressTokenChanged(bZeroBalanceAddressToken);
             break;
-#endif
         case DisplayUnit:
             setDisplayUnit(value);
             break;
@@ -498,14 +493,12 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 setRestartRequired(true);
             }
             break;
-#ifdef ENABLE_WALLET
         case ReserveBalance:
             if (settings.value("nReserveBalance") != value) {
                 settings.setValue("nReserveBalance", value);
                 setRestartRequired(true);
             }
             break;
-#endif
         case ThreadsScriptVerif:
             if (settings.value("nThreadsScriptVerif") != value) {
                 settings.setValue("nThreadsScriptVerif", value);
@@ -524,14 +517,12 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 setRestartRequired(true);
             }
             break;
-#ifdef ENABLE_WALLET			
         case UseChangeAddress:
             if (settings.value("fUseChangeAddress") != value) {
                 settings.setValue("fUseChangeAddress", value);
                 setRestartRequired(true);
             }
             break;
-#endif
         case CheckForUpdates:
             if (settings.value("fCheckForUpdates") != value) {
                 settings.setValue("fCheckForUpdates", value);

@@ -16,17 +16,16 @@
 #include <core_io.h>
 #include <interfaces/handler.h>
 #include <interfaces/node.h>
+#include <validation.h>
 #include <sync.h>
 #include <uint256.h>
 #include <util/system.h>
-#include <validation.h>
 
 #include <QColor>
 #include <QDateTime>
 #include <QDebug>
 #include <QIcon>
 #include <QList>
-
 
 // Amount column is right-aligned it contains numbers
 static int column_alignments[] = {
@@ -59,7 +58,7 @@ struct TxLessThan
 class TransactionTablePriv
 {
 public:
-    explicit TransactionTablePriv(TransactionTableModel *_parent) :
+    TransactionTablePriv(TransactionTableModel *_parent) :
         parent(_parent)
     {
     }
@@ -201,7 +200,7 @@ public:
             }
             return rec;
         }
-        return nullptr;
+        return 0;
     }
 
     QString describe(interfaces::Node& node, interfaces::Wallet& wallet, TransactionRecord *rec, int unit)
@@ -230,7 +229,7 @@ TransactionTableModel::TransactionTableModel(const PlatformStyle *_platformStyle
     columns << QString() << QString() << tr("Date") << tr("Type") << tr("Label") << BitcoinUnits::getAmountColumnTitle(walletModel->getOptionsModel()->getDisplayUnit());
     priv->refreshWallet(walletModel->wallet());
 
-    connect(walletModel->getOptionsModel(), &OptionsModel::displayUnitChanged, this, &TransactionTableModel::updateDisplayUnit);
+    connect(walletModel->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
 
     subscribeToCoreSignals();
 }
@@ -717,7 +716,6 @@ static std::vector< TransactionNotification > vQueueNotifications;
 
 static void NotifyTransactionChanged(TransactionTableModel *ttm, const uint256 &hash, ChangeType status)
 {
-
     TransactionNotification notification(hash, status, true);
 
     if (fQueueNotifications)
@@ -752,8 +750,8 @@ static void ShowProgress(TransactionTableModel *ttm, const std::string &title, i
 void TransactionTableModel::subscribeToCoreSignals()
 {
     // Connect signals to wallet
-    m_handler_transaction_changed = walletModel->wallet().handleTransactionChanged(std::bind(NotifyTransactionChanged, this, std::placeholders::_1, std::placeholders::_2));
-    m_handler_show_progress = walletModel->wallet().handleShowProgress(std::bind(ShowProgress, this, std::placeholders::_1, std::placeholders::_2));
+    m_handler_transaction_changed = walletModel->wallet().handleTransactionChanged(boost::bind(NotifyTransactionChanged, this, _1, _2));
+    m_handler_show_progress = walletModel->wallet().handleShowProgress(boost::bind(ShowProgress, this, _1, _2));
 }
 
 void TransactionTableModel::unsubscribeFromCoreSignals()

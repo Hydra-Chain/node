@@ -4,7 +4,6 @@
 
 #include <qt/transactionrecord.h>
 
-#include <chain.h>
 #include <consensus/consensus.h>
 #include <interfaces/wallet.h>
 #include <key_io.h>
@@ -12,8 +11,6 @@
 #include <validation.h>
 
 #include <stdint.h>
-
-#include <QDateTime>
 
 /* Convert the keyid into hash160 string for contract.
  */
@@ -107,14 +104,14 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const interface
     {
         bool involvesWatchAddress = false;
         isminetype fAllFromMe = ISMINE_SPENDABLE;
-        for (const isminetype mine : wtx.txin_is_mine)
+        for (isminetype mine : wtx.txin_is_mine)
         {
             if(mine & ISMINE_WATCH_ONLY) involvesWatchAddress = true;
             if(fAllFromMe > mine) fAllFromMe = mine;
         }
 
         isminetype fAllToMe = ISMINE_SPENDABLE;
-        for (const isminetype mine : wtx.txout_is_mine)
+        for (isminetype mine : wtx.txout_is_mine)
         {
             if(mine & ISMINE_WATCH_ONLY) involvesWatchAddress = true;
             if(fAllToMe > mine) fAllToMe = mine;

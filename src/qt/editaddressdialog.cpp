@@ -17,9 +17,9 @@
 EditAddressDialog::EditAddressDialog(Mode _mode, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::EditAddressDialog),
-    mapper(nullptr),
+    mapper(0),
     mode(_mode),
-    model(nullptr)
+    model(0)
 {
     ui->setupUi(this);
 

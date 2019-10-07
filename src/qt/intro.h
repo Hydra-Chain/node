@@ -30,7 +30,7 @@ class Intro : public QDialog
     Q_OBJECT
 
 public:
-    explicit Intro(QWidget *parent = nullptr);
+    explicit Intro(QWidget *parent = 0);
     ~Intro();
 
     QString getDataDirectory();
@@ -54,6 +54,7 @@ public:
 
 Q_SIGNALS:
     void requestCheck();
+    void stopThread();
 
 public Q_SLOTS:
     void setStatus(int status, const QString &message, quint64 bytesAvailable);

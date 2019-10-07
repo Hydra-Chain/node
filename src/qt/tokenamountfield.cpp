@@ -27,7 +27,7 @@ public:
     {
         setAlignment(Qt::AlignRight);
 
-        connect(lineEdit(), &QLineEdit::textEdited, this, &TokenAmountSpinBox::valueChanged);
+        connect(lineEdit(), SIGNAL(textEdited(QString)), this, SIGNAL(valueChanged()));
     }
 
     QValidator::State validate(QString &text, int &pos) const
@@ -194,7 +194,7 @@ TokenAmountField::TokenAmountField(QWidget *parent) :
     layout->setContentsMargins(0,0,0,0);
 
     setLayout(layout);
-    connect(amount, &TokenAmountSpinBox::valueChanged, this, &TokenAmountField::valueChanged);
+    connect(amount, SIGNAL(valueChanged()), this, SIGNAL(valueChanged()));
 }
 
 void TokenAmountField::clear()

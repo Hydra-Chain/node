@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2019 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,7 +6,6 @@
 #include <config/bitcoin-config.h>
 #endif
 
-#include <qt/bitcoin.h>
 #include <qt/bitcoingui.h>
 
 #include <chainparams.h>
@@ -25,21 +24,19 @@
 
 #ifdef ENABLE_WALLET
 #include <qt/paymentserver.h>
-#include <qt/walletcontroller.h>
 #include <qt/walletmodel.h>
 #include <wallet/walletutil.h>
 #endif
 
 #include <interfaces/handler.h>
 #include <interfaces/node.h>
-#include <noui.h>
 #include <init.h>
 #include <rpc/server.h>
 #include <ui_interface.h>
 #include <uint256.h>
 #include <util/system.h>
 #include <warnings.h>
-#include <validation.h>
+#include <validation.h> 
 
 #include <walletinitinterface.h>
 
@@ -60,7 +57,7 @@
 #include <QFile>
 #include <QProcess>
 
-#include "qt/runguard.h"
+#include "runguard.h"
 
 #if defined(QT_STATICPLUGIN)
 #include <QtPlugin>
@@ -184,8 +181,110 @@ void removeParam(QStringList& list, const QString& param, bool startWith)
     }
 }
 
+/** Class encapsulating Bitcoin Core startup and shutdown.
+ * Allows running startup and shutdown in a different thread from the UI thread.
+ */
+class BitcoinCore: public QObject
+{
+    Q_OBJECT
+public:
+    explicit BitcoinCore(interfaces::Node& node);
+
+public Q_SLOTS:
+    void initialize();
+    void shutdown();
+
+Q_SIGNALS:
+    void initializeResult(bool success);
+    void shutdownResult();
+    void runawayException(const QString &message);
+
+private:
+    /// Pass fatal exception message to UI thread
+    void handleRunawayException(const std::exception *e);
+
+    interfaces::Node& m_node;
+};
+
+/** Main Bitcoin application object */
+class BitcoinApplication: public QApplication
+{
+    Q_OBJECT
+public:
+    explicit BitcoinApplication(interfaces::Node& node, int &argc, char **argv);
+    ~BitcoinApplication();
+
+#ifdef ENABLE_WALLET
+    /// Create payment server
+    void createPaymentServer();
+#endif
+    /// parameter interaction/setup based on rules
+    void parameterSetup();
+    /// Create options model
+    void createOptionsModel(bool resetSettings);
+    /// Create main window
+    void createWindow(const NetworkStyle *networkStyle);
+    /// Create splash screen
+    void createSplashScreen(const NetworkStyle *networkStyle);
+
+    /// Request core initialization
+    void requestInitialize();
+    /// Request core shutdown
+    void requestShutdown();
+
+    /// Get process return value
+    int getReturnValue() const { return returnValue; }
+
+    /// Get window identifier of QMainWindow (BitcoinGUI)
+    WId getMainWinId() const;
+
+    /// Setup platform style
+    void setupPlatformStyle();
+
+    /// Restore wallet
+    void restoreWallet();
+
+public Q_SLOTS:
+    void initializeResult(bool success);
+    void shutdownResult();
+    /// Handle runaway exceptions. Shows a message box with the problem and quits the program.
+    void handleRunawayException(const QString &message);
+    void addWallet(WalletModel* walletModel);
+    void removeWallet();
+
+Q_SIGNALS:
+    void requestedInitialize();
+    void requestedShutdown();
+    void stopThread();
+    void splashFinished(QWidget *window);
+
+private:
+    QThread *coreThread;
+    interfaces::Node& m_node;
+    OptionsModel *optionsModel;
+    ClientModel *clientModel;
+    BitcoinGUI *window;
+    QTimer *pollShutdownTimer;
+#ifdef ENABLE_WALLET
+    PaymentServer* paymentServer;
+    std::vector<WalletModel*> m_wallet_models;
+    std::unique_ptr<interfaces::Handler> m_handler_load_wallet;
+#endif
+    int returnValue;
+    const PlatformStyle *platformStyle;
+    std::unique_ptr<QWidget> shutdownWindow;
+
+    void startThread();
+
+    QString restorePath;
+    QString restoreParam;
+    QString restoreName;
+};
+
+#include <qt/bitcoin.moc>
+
 BitcoinCore::BitcoinCore(interfaces::Node& node) :
-        QObject(), m_node(node)
+    QObject(), m_node(node)
 {
 }
 
@@ -260,7 +359,7 @@ BitcoinApplication::~BitcoinApplication()
     if(coreThread)
     {
         qDebug() << __func__ << ": Stopping thread";
-        coreThread->quit();
+        Q_EMIT stopThread();
         coreThread->wait();
         qDebug() << __func__ << ": Stopped thread";
     }
@@ -291,17 +390,17 @@ void BitcoinApplication::createOptionsModel(bool resetSettings)
 
 void BitcoinApplication::createWindow(const NetworkStyle *networkStyle)
 {
-    window = new BitcoinGUI(m_node, platformStyle, networkStyle, nullptr);
+    window = new BitcoinGUI(m_node, platformStyle, networkStyle, 0);
 
     pollShutdownTimer = new QTimer(window);
-    connect(pollShutdownTimer, &QTimer::timeout, window, &BitcoinGUI::detectShutdown);
+    connect(pollShutdownTimer, SIGNAL(timeout()), window, SLOT(detectShutdown()));
 }
 
 void BitcoinApplication::createSplashScreen(const NetworkStyle *networkStyle)
 {
-    SplashScreen *splash = new SplashScreen(m_node, nullptr, networkStyle);
+    SplashScreen *splash = new SplashScreen(m_node, 0, networkStyle);
     // We don't hold a direct pointer to the splash screen after creation, but the splash
-    // screen will take care of deleting itself when finish() happens.
+    // screen will take care of deleting itself when slotFinish happens.
     splash->show();
     connect(this, SIGNAL(splashFinished(QWidget*)), splash, SLOT(slotFinish(QWidget*)));
     connect(this, SIGNAL(requestedShutdown()), splash, SLOT(close()));
@@ -316,13 +415,13 @@ void BitcoinApplication::startThread()
     executor->moveToThread(coreThread);
 
     /*  communication to and from thread */
-    connect(executor, &BitcoinCore::initializeResult, this, &BitcoinApplication::initializeResult);
-    connect(executor, &BitcoinCore::shutdownResult, this, &BitcoinApplication::shutdownResult);
-    connect(executor, &BitcoinCore::runawayException, this, &BitcoinApplication::handleRunawayException);
-    connect(this, &BitcoinApplication::requestedInitialize, executor, &BitcoinCore::initialize);
-    connect(this, &BitcoinApplication::requestedShutdown, executor, &BitcoinCore::shutdown);
+    connect(executor, SIGNAL(initializeResult(bool)), this, SLOT(initializeResult(bool)));
+    connect(executor, SIGNAL(shutdownResult()), this, SLOT(shutdownResult()));
+    connect(executor, SIGNAL(runawayException(QString)), this, SLOT(handleRunawayException(QString)));
+    connect(this, SIGNAL(requestedInitialize()), executor, SLOT(initialize()));
+    connect(this, SIGNAL(requestedShutdown()), executor, SLOT(shutdown()));
     /*  make sure executor object is deleted in its own thread */
-    connect(coreThread, &QThread::finished, executor, &QObject::deleteLater);
+    connect(this, SIGNAL(stopThread()), executor, SLOT(deleteLater()));
     connect(this, SIGNAL(stopThread()), coreThread, SLOT(quit()));
 
     coreThread->start();
@@ -388,7 +487,7 @@ void BitcoinApplication::addWallet(WalletModel* walletModel)
     window->addWallet(walletModel);
 
     if (m_wallet_models.empty()) {
-        window->setCurrentWallet(walletModel);
+        window->setCurrentWallet(walletModel->getWalletName());
     }
 
     connect(walletModel, SIGNAL(coinsSent(WalletModel*, SendCoinsRecipient, QByteArray)),
@@ -425,6 +524,7 @@ void BitcoinApplication::initializeResult(bool success)
 
         clientModel = new ClientModel(m_node, optionsModel);
         window->setClientModel(clientModel);
+
 #ifdef ENABLE_WALLET
         {
             LOCK(cs_main);
@@ -451,7 +551,6 @@ void BitcoinApplication::initializeResult(bool success)
             window->show();
         }
         Q_EMIT splashFinished(window);
-        Q_EMIT windowShown(window);
 
 #ifdef ENABLE_WALLET
         // Now that initialization/startup is done, process any command-line
@@ -478,7 +577,7 @@ void BitcoinApplication::shutdownResult()
 
 void BitcoinApplication::handleRunawayException(const QString &message)
 {
-    QMessageBox::critical(nullptr, "Runaway exception", BitcoinGUI::tr("A fatal error occurred. LockTrip can no longer continue safely and will quit.") + QString("\n\n") + message);
+    QMessageBox::critical(0, "Runaway exception", BitcoinGUI::tr("A fatal error occurred. LockTrip can no longer continue safely and will quit.") + QString("\n\n") + message);
     ::exit(EXIT_FAILURE);
 }
 
@@ -534,7 +633,7 @@ void BitcoinApplication::restoreWallet()
 
 static void SetupUIArgs()
 {
-#if defined(ENABLE_WALLET) && defined(ENABLE_BIP70)
+#ifdef ENABLE_WALLET
     gArgs.AddArg("-allowselfsignedrootcertificates", strprintf("Allow self signed root certificates (default: %u)", DEFAULT_SELFSIGNED_ROOTCERTS), true, OptionsCategory::GUI);
 #endif
     gArgs.AddArg("-choosedatadir", strprintf("Choose data directory on startup (default: %u)", DEFAULT_CHOOSE_DATADIR), false, OptionsCategory::GUI);
@@ -587,8 +686,8 @@ int main(int argc, char *argv[])
     SetupUIArgs();
     std::string error;
     if (!node->parseParameters(argc, argv, error)) {
-        QMessageBox::critical(nullptr, QObject::tr(PACKAGE_NAME),
-                              QObject::tr("Error parsing command line arguments: %1.").arg(QString::fromStdString(error)));
+        QMessageBox::critical(0, QObject::tr(PACKAGE_NAME),
+            QObject::tr("Error parsing command line arguments: %1.").arg(QString::fromStdString(error)));
         return EXIT_FAILURE;
     }
 
@@ -606,6 +705,7 @@ int main(int argc, char *argv[])
     // Now that QSettings are accessible, initialize translations
     QTranslator qtTranslatorBase, qtTranslator, translatorBase, translator;
     initTranslations(qtTranslatorBase, qtTranslator, translatorBase, translator);
+//    translationInterface.Translate.connect(Translate);
 
     // Show help message immediately after parsing command-line options (for "-lang") and setting locale,
     // but before showing splash screen.
@@ -624,7 +724,7 @@ int main(int argc, char *argv[])
     /// - Do not call GetDataDir(true) before this step finishes
     if (!fs::is_directory(GetDataDir(false)))
     {
-        QMessageBox::critical(nullptr, QObject::tr(PACKAGE_NAME),
+        QMessageBox::critical(0, QObject::tr(PACKAGE_NAME),
                               QObject::tr("Error: Specified data directory \"%1\" does not exist.").arg(QString::fromStdString(gArgs.GetArg("-datadir", ""))));
         return EXIT_FAILURE;
     }
@@ -651,7 +751,7 @@ int main(int argc, char *argv[])
     try {
         node->selectParams(gArgs.GetChainName());
     } catch(std::exception &e) {
-        QMessageBox::critical(nullptr, QObject::tr(PACKAGE_NAME), QObject::tr("Error: %1").arg(e.what()));
+        QMessageBox::critical(0, QObject::tr(PACKAGE_NAME), QObject::tr("Error: %1").arg(e.what()));
         return EXIT_FAILURE;
     }
 #ifdef ENABLE_WALLET

@@ -7,7 +7,11 @@
 #include <config/bitcoin-config.h>
 #endif
 
+#include <functional>
+
+
 #include <init.h>
+
 
 #include <addrman.h>
 #include <amount.h>

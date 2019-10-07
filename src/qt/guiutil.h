@@ -32,7 +32,6 @@ class QAbstractItemView;
 class QDateTime;
 class QFont;
 class QLineEdit;
-class QProgressDialog;
 class QUrl;
 class QWidget;
 QT_END_NAMESPACE
@@ -142,7 +141,7 @@ namespace GUIUtil
         Q_OBJECT
 
     public:
-        explicit ToolTipToRichTextFilter(int size_threshold, QObject *parent = nullptr);
+        explicit ToolTipToRichTextFilter(int size_threshold, QObject *parent = 0);
 
     protected:
         bool eventFilter(QObject *obj, QEvent *evt);
@@ -257,9 +256,6 @@ namespace GUIUtil
     private:
         bool eventFilter(QObject *object, QEvent *event);
     };
-
-    // Fix known bugs in QProgressDialog class.
-    void PolishProgressDialog(QProgressDialog* dialog);
 
     void formatToolButtons(QToolButton* btn1, QToolButton* btn2 = 0, QToolButton* btn3 = 0);
 

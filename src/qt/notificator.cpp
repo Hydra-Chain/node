@@ -39,7 +39,7 @@ Notificator::Notificator(const QString &_programName, QSystemTrayIcon *_trayIcon
     mode(None),
     trayIcon(_trayIcon)
 #ifdef USE_DBUS
-    ,interface(nullptr)
+    ,interface(0)
 #endif
 {
     if(_trayIcon && _trayIcon->supportsMessages())
@@ -154,14 +154,14 @@ QVariant FreedesktopImage::toVariant(const QImage &img)
 
 void Notificator::notifyDBus(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTimeout)
 {
-    // https://developer.gnome.org/notification-spec/
-    // Arguments for DBus "Notify" call:
+    Q_UNUSED(cls);
+    // Arguments for DBus call:
     QList<QVariant> args;
 
     // Program Name:
     args.append(programName);
 
-    // Replaces ID; A value of 0 means that this notification won't replace any existing notifications:
+    // Unique ID of this notification type:
     args.append(0U);
 
     // Application Icon, empty string
@@ -222,11 +222,13 @@ void Notificator::notifySystray(Class cls, const QString &title, const QString &
     trayIcon->showMessage(title, text, sicon, millisTimeout);
 }
 
+// Based on Qt's tray icon implementation
 #ifdef Q_OS_MAC
 void Notificator::notifyMacUserNotificationCenter(Class cls, const QString &title, const QString &text, const QIcon &icon) {
     // icon is not supported by the user notification center yet. OSX will use the app icon.
     MacNotificationHandler::instance()->showNotification(title, text);
 }
+
 #endif
 
 void Notificator::notify(Class cls, const QString &title, const QString &text, const QIcon &icon, int millisTimeout)

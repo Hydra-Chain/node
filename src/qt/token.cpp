@@ -5,7 +5,6 @@
 #include <util/moneystr.h>
 #include <key_io.h>
 #include <util/strencodings.h>
-#include <util/convert.h>
 #include <qt/eventlog.h>
 #include <libethcore/ABI.h>
 #include <qt/walletmodel.h>
@@ -53,7 +52,6 @@ struct TokenData
     int evtBurn;
 
     std::string txid;
-    QString errorMessage;
 
     TokenData():
         call(0),
@@ -540,16 +538,16 @@ bool Token::exec(const std::vector<std::string> &input, int func, std::vector<st
     std::vector<ParameterABI::ErrorType> errors;
     if(!function.abiIn(values, strData, errors))
         return false;
+
     setDataHex(strData);
 
     // Execute the command and get the result
     ExecRPCCommand* cmd = sendTo ? d->send : d->call;
     QVariant result;
     QString resultJson;
-    d->errorMessage.clear();
-    if(!cmd->exec(d->model->node(), d->model, d->lstParams, result, resultJson, d->errorMessage))
+    QString errorMessage;
+    if(!cmd->exec(d->model->node(), d->model->wallet(), d->lstParams, result, resultJson, errorMessage))
         return false;
-
     // Get the result from calling function
     if(!sendTo)
     {
@@ -619,7 +617,7 @@ bool Token::execEvents(int64_t fromBlock, int64_t toBlock, int func, std::vector
     std::string senderAddress = d->lstParams[PARAM_SENDER].toStdString();
     ToHash160(senderAddress, senderAddress);
     senderAddress  = "000000000000000000000000" + senderAddress;
-    if(!(d->eventLog->searchTokenTx(d->model->node(), d->model, fromBlock, toBlock, contractAddress, senderAddress, result)))
+    if(!(d->eventLog->searchTokenTx(d->model->node(), d->model->wallet(), fromBlock, toBlock, contractAddress, senderAddress, result)))
         return false;
 
     // Parse the result events
@@ -665,9 +663,4 @@ bool Token::execEvents(int64_t fromBlock, int64_t toBlock, int func, std::vector
 void Token::setModel(WalletModel *model)
 {
     d->model = model;
-}
-
-std::string Token::getErrorMessage()
-{
-    return d->errorMessage.toStdString();
 }

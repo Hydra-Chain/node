@@ -39,6 +39,8 @@ public Q_SLOTS:
     void on_updateCreateButton();
     void on_newContractABI();
 
+private Q_SLOTS:
+
 private:
     QString toDataHex(int func, QString& errorMessage);
 

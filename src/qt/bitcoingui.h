@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2019 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -45,8 +45,8 @@ class NavigationBar;
 class QtumVersionChecker;
 
 namespace interfaces {
-    class Handler;
-    class Node;
+class Handler;
+class Node;
 }
 
 QT_BEGIN_NAMESPACE
@@ -68,7 +68,7 @@ class BitcoinGUI : public QMainWindow
 public:
     static const std::string DEFAULT_UIPLATFORM;
 
-    explicit BitcoinGUI(interfaces::Node& node, const PlatformStyle *platformStyle, const NetworkStyle *networkStyle, QWidget *parent = nullptr);
+    explicit BitcoinGUI(interfaces::Node& node, const PlatformStyle *platformStyle, const NetworkStyle *networkStyle, QWidget *parent = 0);
     ~BitcoinGUI();
 
     /** Set the client model.
@@ -81,11 +81,11 @@ public:
         The wallet model represents a bitcoin wallet, and offers access to the list of transactions, address book and sending
         functionality.
     */
-    void addWallet(WalletModel* walletModel);
-    void removeWallet(WalletModel* walletModel);
+    bool addWallet(WalletModel *walletModel);
+    bool removeWallet(WalletModel* walletModel);
     void removeAllWallets();
-#endif // ENABLE_WALLET
     void setTabBarInfo(QObject* into);
+#endif // ENABLE_WALLET
     bool enableWallet = false;
 
 protected:
@@ -133,14 +133,14 @@ private:
     QAction* toggleHideAction = nullptr;
     QAction* encryptWalletAction = nullptr;
     QAction* backupWalletAction = nullptr;
+    QAction *restoreWalletAction = nullptr;
     QAction* changePassphraseAction = nullptr;
+	QAction *unlockWalletAction = nullptr;
+	QAction *lockWalletAction = nullptr;
     QAction* aboutQtAction = nullptr;
     QAction* openRPCConsoleAction = nullptr;
     QAction* openAction = nullptr;
     QAction* showHelpMessageAction = nullptr;
-    QAction *restoreWalletAction = nullptr;
-    QAction *unlockWalletAction = nullptr;
-    QAction *lockWalletAction = nullptr;
     QAction* smartContractAction = nullptr;
     QAction* createContractAction = nullptr;
     QAction* sendToContractAction = nullptr;
@@ -154,7 +154,7 @@ private:
     QComboBox* m_wallet_selector = nullptr;
 
     QSystemTrayIcon* trayIcon = nullptr;
-    QMenu* trayIconMenu;
+    QMenu* trayIconMenu = nullptr;
     Notificator* notificator = nullptr;
     RPCConsole* rpcConsole = nullptr;
     HelpMessageDialog* helpMessageDialog = nullptr;
@@ -202,8 +202,8 @@ Q_SIGNALS:
     void receivedURI(const QString &uri);
 
 public Q_SLOTS:
-            /** Set number of connections shown in the UI */
-            void setNumConnections(int count);
+    /** Set number of connections shown in the UI */
+    void setNumConnections(int count);
     /** Set network state shown in the UI */
     void setNetworkActive(bool networkActive);
     /** Set number of blocks and last block date shown in the UI */
@@ -219,8 +219,8 @@ public Q_SLOTS:
     void message(const QString &title, const QString &message, unsigned int style, bool *ret = nullptr);
 
 #ifdef ENABLE_WALLET
-    void setCurrentWallet(WalletModel* walletModel);
-    void setCurrentWalletBySelectorIndex(int index);
+    bool setCurrentWallet(const QString& name);
+    bool setCurrentWalletBySelectorIndex(int index);
     /** Set the UI status indicators based on the currently selected wallet.
     */
 //    void updateWalletStatus();
@@ -229,10 +229,10 @@ public Q_SLOTS:
        @param[in] status            current encryption status
        @see WalletModel::EncryptionStatus
     */
-    void setEncryptionStatus(WalletModel *walletModel);
+    void setEncryptionStatus(WalletModel* walletModel);
 
     /** Set the hd-enabled status as shown in the UI.
-     @param[in] hdEnabled         current hd enabled status
+     @param[in] status            current hd enabled status
      @see WalletModel::EncryptionStatus
      */
     void setHDStatus(WalletModel* walletModel);
@@ -247,12 +247,7 @@ public Q_SLOTS:
     void incomingTokenTransaction(const QString& date, const QString& amount, const QString& type, const QString& address, const QString& label, const QString& walletName, const QString& title);
 #endif // ENABLE_WALLET
 
-private:
-    /** Set the proxy-enabled icon as shown in the UI. */
-    void updateProxyIcon();
-    void updateWindowTitle();
-
-public Q_SLOTS:
+private Q_SLOTS:
 #ifdef ENABLE_WALLET
     /** Switch to overview (home) page */
     void gotoOverviewPage();
@@ -285,8 +280,8 @@ public Q_SLOTS:
     /** Show open dialog */
     void openClicked();
 #endif // ENABLE_WALLET
-            /** Show configuration dialog */
-            void optionsClicked();
+    /** Show configuration dialog */
+    void optionsClicked();
     /** Show about dialog */
     void aboutClicked();
     /** Show debug window */
@@ -304,14 +299,11 @@ public Q_SLOTS:
 #endif
 
     /** Show window if hidden, unminimize when minimized, rise when obscured or show if hidden and fToggleHidden is true */
-    void showNormalIfMinimized() { showNormalIfMinimized(false); }
-    void showNormalIfMinimized(bool fToggleHidden);
+    void showNormalIfMinimized(bool fToggleHidden = false);
     /** Simply calls showNormalIfMinimized(true) for use in SLOT() macro */
     void toggleHidden();
-#ifdef ENABLE_WALLET
     /** Update staking icon **/
     void updateStakingIcon();
-#endif // ENABLE_WALLET
 
     /** called by a timer to check if ShutdownRequested() has been set **/
     void detectShutdown();
@@ -353,8 +345,8 @@ private:
     void createContextMenu();
 
 private Q_SLOTS:
-            /** When Display Units are changed on OptionsModel it will refresh the display text of the control on the status bar */
-            void updateDisplayUnit(int newUnits);
+    /** When Display Units are changed on OptionsModel it will refresh the display text of the control on the status bar */
+    void updateDisplayUnit(int newUnits);
     /** Tells underlying optionsModel to update its current display unit. */
     void onMenuSelection(QAction* action);
 };

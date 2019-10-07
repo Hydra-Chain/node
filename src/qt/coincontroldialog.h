@@ -43,7 +43,7 @@ class CoinControlDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit CoinControlDialog(const PlatformStyle *platformStyle, QWidget *parent = nullptr);
+    explicit CoinControlDialog(const PlatformStyle *platformStyle, QWidget *parent = 0);
     ~CoinControlDialog();
 
     void setModel(WalletModel *model);
@@ -83,7 +83,6 @@ private:
         COLUMN_TXHASH,
         COLUMN_VOUT_INDEX,
     };
-
     friend class CCoinControlWidgetItem;
 
 private Q_SLOTS:

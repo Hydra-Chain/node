@@ -260,6 +260,6 @@ const PlatformStyle *PlatformStyle::instantiate(const QString &platformId)
                     platform_styles[x].useExtraSpacing);
         }
     }
-    return nullptr;
+    return 0;
 }
 

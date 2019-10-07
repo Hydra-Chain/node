@@ -141,14 +141,14 @@ QRCToken::QRCToken(const PlatformStyle *platformStyle, QWidget *parent) :
     contextMenu->addAction(copyTokenAddressAction);
     contextMenu->addAction(removeTokenAction);
 
-    connect(copyTokenAddressAction, &QAction::triggered, this, &QRCToken::copyTokenAddress);
-    connect(copyTokenBalanceAction, &QAction::triggered, this, &QRCToken::copyTokenBalance);
-    connect(copyTokenNameAction, &QAction::triggered, this, &QRCToken::copyTokenName);
-    connect(copySenderAction, &QAction::triggered, this, &QRCToken::copySenderAddress);
-    connect(removeTokenAction, &QAction::triggered, this, &QRCToken::removeToken);
+    connect(copyTokenAddressAction, SIGNAL(triggered(bool)), this, SLOT(copyTokenAddress()));
+    connect(copyTokenBalanceAction, SIGNAL(triggered(bool)), this, SLOT(copyTokenBalance()));
+    connect(copyTokenNameAction, SIGNAL(triggered(bool)), this, SLOT(copyTokenName()));
+    connect(copySenderAction, SIGNAL(triggered(bool)), this, SLOT(copySenderAddress()));
+    connect(removeTokenAction, SIGNAL(triggered(bool)), this, SLOT(removeToken()));
 
-    connect(ui->tokensList, &QListView::clicked, this, &QRCToken::on_currentTokenChanged);
-    connect(ui->tokensList, &QListView::customContextMenuRequested, this, &QRCToken::contextualMenu);
+    connect(ui->tokensList, SIGNAL(clicked(QModelIndex)), this, SLOT(on_currentTokenChanged(QModelIndex)));
+    connect(ui->tokensList, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextualMenu(QPoint)));
 
     on_goToSendTokenPage();
 }
@@ -175,11 +175,11 @@ void QRCToken::setModel(WalletModel *_model)
 
         // Set tokens model
         ui->tokensList->setModel(m_tokenModel);
-        connect(ui->tokensList->selectionModel(), &QItemSelectionModel::currentChanged, this, &QRCToken::on_currentChanged);
+        connect(ui->tokensList->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)), this, SLOT(on_currentChanged(QModelIndex,QModelIndex)));
 
         // Set current token
-        connect(m_tokenModel, &QAbstractItemModel::dataChanged, this, &QRCToken::on_dataChanged);
-        connect(m_tokenModel, &QAbstractItemModel::rowsInserted, this, &QRCToken::on_rowsInserted);
+        connect(m_tokenModel, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), SLOT(on_dataChanged(QModelIndex,QModelIndex,QVector<int>)));
+        connect(m_tokenModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(on_rowsInserted(QModelIndex,int,int)));
         if(m_tokenModel->rowCount() > 0)
         {
             QModelIndex currentToken(m_tokenModel->index(0, 0));

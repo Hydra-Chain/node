@@ -5,7 +5,6 @@
 #include <qt/bitcoinamountfield.h>
 
 #include <qt/bitcoinunits.h>
-#include <qt/guiconstants.h>
 #include <qt/styleSheet.h>
 #include <qt/qvaluecombobox.h>
 
@@ -31,7 +30,7 @@ public:
     {
         setAlignment(Qt::AlignRight);
 
-        connect(lineEdit(), &QLineEdit::textEdited, this, &AmountSpinBox::valueChanged);
+        connect(lineEdit(), SIGNAL(textEdited(QString)), this, SIGNAL(valueChanged()));
     }
 
     QValidator::State validate(QString &text, int &pos) const
@@ -56,7 +55,7 @@ public:
         }
     }
 
-    CAmount value(bool *valid_out=nullptr) const
+    CAmount value(bool *valid_out=0) const
     {
         return parse(text(), valid_out);
     }
@@ -150,7 +149,7 @@ private:
      * return validity.
      * @note Must return 0 if !valid.
      */
-    CAmount parse(const QString &text, bool *valid_out=nullptr) const
+    CAmount parse(const QString &text, bool *valid_out=0) const
     {
         CAmount val = 0;
         bool valid = BitcoinUnits::parse(currentUnit, text, &val);
@@ -208,7 +207,7 @@ Q_SIGNALS:
 
 BitcoinAmountField::BitcoinAmountField(QWidget *parent) :
     QWidget(parent),
-    amount(nullptr)
+    amount(0)
 {
     amount = new AmountSpinBox(this);
     amount->setLocale(QLocale::c());
@@ -231,7 +230,8 @@ BitcoinAmountField::BitcoinAmountField(QWidget *parent) :
     setFocusProxy(amount);
 
     // If one if the widgets changes, the combined content changes as well
-    connect(amount, &AmountSpinBox::valueChanged, this, &BitcoinAmountField::valueChanged);
+    connect(amount, SIGNAL(valueChanged()), this, SIGNAL(valueChanged()));
+
 }
 
 void BitcoinAmountField::clear()

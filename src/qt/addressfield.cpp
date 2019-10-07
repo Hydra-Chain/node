@@ -29,7 +29,7 @@ AddressField::AddressField(QWidget *parent) :
     setComboBoxEditable(false);
 
     // Connect signals and slots
-    connect(this, &AddressField::addressTypeChanged, this, &AddressField::on_addressTypeChanged);
+    connect(this, SIGNAL(addressTypeChanged(AddressType)), SLOT(on_addressTypeChanged()));
 }
 
 QString AddressField::currentText() const
@@ -72,7 +72,7 @@ void AddressField::setComboBoxEditable(bool editable)
         QValidatedLineEdit *validatedLineEdit = (QValidatedLineEdit*)lineEdit();
         validatedLineEdit->setCheckValidator(new BitcoinAddressCheckValidator(parent(), m_senderAddress));
         completer()->setCompletionMode(QCompleter::InlineCompletion);
-        connect(validatedLineEdit, &QValidatedLineEdit::editingFinished, this, &AddressField::on_editingFinished);
+        connect(validatedLineEdit, SIGNAL(editingFinished()), this, SLOT(on_editingFinished()));
     }
 }
 
@@ -88,7 +88,7 @@ void AddressField::on_refresh()
         {
             QStringList addresses;
 
-            // Add all available addresses
+            // Add all available addresses if 0 address ballance for token is enabled
             if(m_includeZeroValue)
             {
                 // Include zero or unconfirmed coins too
@@ -155,7 +155,7 @@ void AddressField::setWalletModel(WalletModel *walletModel)
 {
     m_walletModel = walletModel;
 
-    connect(m_walletModel, SIGNAL(availableAddressesChanged(QStringList,QStringList,bool)), this, SLOT(on_availableAddressesChanged(QStringList,QStringList,bool)));
+    connect(m_walletModel, SIGNAL(availableAddressesChanged(QStringList,QStringList)), this, SLOT(on_availableAddressesChanged(QStringList,QStringList)));
 }
 
 void AddressField::on_availableAddressesChanged(QStringList spendableAddresses, QStringList allAddresses)

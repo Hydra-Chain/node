@@ -212,7 +212,7 @@
   <customwidget>
    <class>QTabBar</class>
    <extends>QWidget</extends>
-   <header>qtabbar.h</header>
+   <header>qt/qtabbar.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

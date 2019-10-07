@@ -10,7 +10,7 @@
 
 CSVModelWriter::CSVModelWriter(const QString &_filename, QObject *parent) :
     QObject(parent),
-    filename(_filename), model(nullptr)
+    filename(_filename), model(0)
 {
 }
 

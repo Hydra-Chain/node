@@ -6,7 +6,6 @@
 #include <qt/optionsmodel.h>
 #include <validation.h>
 #include <util/moneystr.h>
-#include <util/convert.h>
 #include <qt/token.h>
 #include <qt/bitcoinunits.h>
 #include <wallet/wallet.h>
@@ -63,9 +62,9 @@ SendTokenPage::SendTokenPage(QWidget *parent) :
     ui->confirmButton->setEnabled(false);
 
     // Connect signals with slots
-    connect(ui->lineEditPayTo, &QValidatedLineEdit::textChanged, this, &SendTokenPage::on_updateConfirmButton);
-    connect(ui->lineEditAmount, &TokenAmountField::valueChanged,this, &SendTokenPage::on_updateConfirmButton);
-    connect(ui->confirmButton, &QPushButton::clicked, this, &SendTokenPage::on_confirmClicked);
+    connect(ui->lineEditPayTo, SIGNAL(textChanged(QString)), SLOT(on_updateConfirmButton()));
+    connect(ui->lineEditAmount, SIGNAL(valueChanged()), SLOT(on_updateConfirmButton()));
+    connect(ui->confirmButton, SIGNAL(clicked()), SLOT(on_confirmClicked()));
 
     ui->lineEditPayTo->setCheckValidator(new BitcoinAddressCheckValidator(parent, true));
 }

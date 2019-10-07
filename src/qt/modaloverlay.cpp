@@ -29,8 +29,8 @@ type(_type)
     SetObjectStyleSheet(ui->warningIcon, StyleSheetNames::ButtonTransparent);
     SetObjectStyleSheet(ui->warningIconBackup, StyleSheetNames::ButtonTransparent);
 
-    connect(ui->closeButton, &QPushButton::clicked, this, &ModalOverlay::closeClicked);
-    connect(ui->walletBackupButton, &QPushButton::clicked, this, &ModalOverlay::backupWalletClicked);
+    connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(closeClicked()));
+    connect(ui->walletBackupButton, SIGNAL(clicked()), this, SLOT(backupWalletClicked()));
     if (parent) {
         parent->installEventFilter(this);
         raise();
@@ -140,6 +140,7 @@ void ModalOverlay::tipUpdate(int count, const QDateTime& blockDate, double nVeri
 
     // estimate the number of headers left based on nPowTargetSpacing
     // and check if the gui is not aware of the best header (happens rarely)
+
     int estimateNumHeadersLeft = bestHeaderDate.secsTo(currentDate) / Params().GetConsensus().nPowTargetSpacing;
     bool hasBestHeader = bestHeaderHeight >= count;
 

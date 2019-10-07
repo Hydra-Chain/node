@@ -51,7 +51,7 @@ class PeerTableModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
-    explicit PeerTableModel(interfaces::Node& node, ClientModel *parent = nullptr);
+    explicit PeerTableModel(interfaces::Node& node, ClientModel *parent = 0);
     ~PeerTableModel();
     const CNodeCombinedStats *getNodeStats(int idx);
     int getRowByNodeId(NodeId nodeid);

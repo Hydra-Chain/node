@@ -27,9 +27,9 @@ class BitcoinAmountField: public QWidget
     Q_PROPERTY(qint64 value READ value WRITE setValue NOTIFY valueChanged USER true)
 
 public:
-    explicit BitcoinAmountField(QWidget *parent = nullptr);
+    explicit BitcoinAmountField(QWidget *parent = 0);
 
-    CAmount value(bool *value=nullptr) const;
+    CAmount value(bool *value=0) const;
     void setValue(const CAmount& value);
 
     /** Set single step in satoshis **/

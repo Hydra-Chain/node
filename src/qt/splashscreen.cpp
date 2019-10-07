@@ -9,13 +9,13 @@
 #include <qt/splashscreen.h>
 
 #include <qt/networkstyle.h>
-
+#include <functional>
 #include <clientversion.h>
 #include <interfaces/handler.h>
 #include <interfaces/node.h>
 #include <interfaces/wallet.h>
-#include <ui_interface.h>
 #include <util/system.h>
+#include <ui_interface.h>
 #include <version.h>
 
 #include <QApplication>
@@ -24,17 +24,19 @@
 #include <QPainter>
 #include <QRadialGradient>
 
-
 SplashScreen::SplashScreen(interfaces::Node& node, Qt::WindowFlags f, const NetworkStyle *networkStyle) :
-    QWidget(nullptr, f), curAlignment(0), m_node(node)
+    QWidget(0, f), curAlignment(0), m_node(node)
 {
     // set sizes
     int versionTextHeight       = 30;
     int statusHeight            = 30;
     int titleAddTextHeight      = 20;
+
     float fontFactor            = 1.0;
     float devicePixelRatio      = 1.0;
+#if QT_VERSION > 0x050100
     devicePixelRatio = static_cast<QGuiApplication*>(QCoreApplication::instance())->devicePixelRatio();
+#endif
 
     // define text to place
     QString titleText       = tr(PACKAGE_NAME);
@@ -48,8 +50,10 @@ SplashScreen::SplashScreen(interfaces::Node& node, Qt::WindowFlags f, const Netw
     QSize splashSize(480,320);
     pixmap = QPixmap(480*devicePixelRatio,320*devicePixelRatio);
 
+#if QT_VERSION > 0x050100
     // change to HiDPI if it makes sense
     pixmap.setDevicePixelRatio(devicePixelRatio);
+#endif
 
     QPainter pixPaint(&pixmap);
     pixPaint.setPen(QColor("#ffffff"));
@@ -121,8 +125,10 @@ bool SplashScreen::eventFilter(QObject * obj, QEvent * ev) {
     return QObject::eventFilter(obj, ev);
 }
 
-void SplashScreen::finish()
+void SplashScreen::slotFinish(QWidget *mainWin)
 {
+    Q_UNUSED(mainWin);
+
     /* If the window is minimized, hide() will be ignored. */
     /* Make sure we de-minimize the splashscreen window before hiding */
     if (isMinimized())
@@ -170,7 +176,7 @@ void SplashScreen::unsubscribeFromCoreSignals()
     // Disconnect signals from client
     m_handler_init_message->disconnect();
     m_handler_show_progress->disconnect();
-    for (const auto& handler : m_connected_wallet_handlers) {
+    for (auto& handler : m_connected_wallet_handlers) {
         handler->disconnect();
     }
     m_connected_wallet_handlers.clear();
