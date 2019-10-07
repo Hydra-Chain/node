@@ -194,8 +194,8 @@ enum opcodetype
     OP_CREATE = 0xc1,
     OP_CALL = 0xc2,
     OP_SPEND = 0xc3,
-    OP_SENDER = 0xc4,
-    OP_COINSTAKE_CALL = 0xc5,
+    OP_COINSTAKE_CALL = 0xc4,
+    OP_SENDER = 0xc5,
 
     // template matching params
     OP_ADDRESS_TYPE = 0xf2,

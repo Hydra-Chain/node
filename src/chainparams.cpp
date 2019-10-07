@@ -79,10 +79,10 @@ CChainParams::CChainParams()
     consensus.BIP34Height = 0;
     consensus.BIP65Height = 0;
     consensus.BIP66Height = 0;
-    consensus.QIP5Height = 14500;
-    consensus.QIP6Height = 14500;
-    consensus.QIP7Height = 14500;
-    consensus.QIP9Height = 14500;
+    consensus.QIP5Height = 16000;
+    consensus.QIP6Height = 16000;
+    consensus.QIP7Height = 16000;
+    consensus.QIP9Height = 16000;
     consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
     consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
     consensus.QIP9PosLimit = uint256S("0000000000001fffffffffffffffffffffffffffffffffffffffffffffffffff"); // The new POS-limit activated after QIP9
