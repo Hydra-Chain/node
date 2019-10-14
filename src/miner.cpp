@@ -383,7 +383,24 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     dev::h256 oldHashUTXORoot(globalState->rootHashUTXO());
     int nPackagesSelected = 0;
     int nDescendantsUpdated = 0;
-    addPackageTxs(nPackagesSelected, nDescendantsUpdated, minGasPrice);
+
+    if(nHeight >= chainparams.GetConsensus().LIP1Height) {
+        Dgp dgp;
+        bool voteInProgress;
+        dgp.hasVoteInProgress(voteInProgress);
+        if(voteInProgress) {
+            uint64_t expiration;
+            dgp.getVoteBlockExpiration(expiration);
+            if (nHeight < expiration) {
+                // If there will be a DGP vote finishing, don't add transactions
+                addPackageTxs(nPackagesSelected, nDescendantsUpdated, minGasPrice);
+            }
+        } else {
+            addPackageTxs(nPackagesSelected, nDescendantsUpdated, minGasPrice);
+        }
+    } else {
+        addPackageTxs(nPackagesSelected, nDescendantsUpdated, minGasPrice);
+    }
 
     CalculateRewardWithoutDividents();
     AddRefundTransactions();

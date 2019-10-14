@@ -2910,7 +2910,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     Dgp dgp;
     uint64_t cached_coinBurnPercentage;
     if(chainActive.Tip() == NULL)
-	cached_coinBurnPercentage = 0;
+	    cached_coinBurnPercentage = 0;
     else
     	dgp.getDgpParam(BURN_RATE, cached_coinBurnPercentage);
 
@@ -3491,6 +3491,21 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
             std::vector<QtumTransaction> qtumTransactions = resultConvertQtumTX.first;
             if (!CheckDgp(qtumTransactions, state, pindex))
                 return error("%s: Consensus::CheckDgp: %s", __func__, FormatStateMessage(state));
+
+            if(pindex->nHeight >= chainparams.GetConsensus().LIP1Height) {
+                Dgp dgp;
+                bool voteInProgress;
+                dgp.hasVoteInProgress(voteInProgress);
+                if(voteInProgress) {
+                    uint64_t expiration;
+                    dgp.getVoteBlockExpiration(expiration);
+                    if (pindex->nHeight >= expiration && block.vtx.size() > 2) {
+                        return error(
+                                "%s: Consensus::CheckDgp: Cannot have txs other than coinstake and coinbase when there is a DGP vote finish",
+                                __func__);
+                    }
+                }
+            }
 
             ByteCodeExec exec(block, resultConvertQtumTX.first, INT64_MAX, pindex);
             if (!exec.performByteCode()) {

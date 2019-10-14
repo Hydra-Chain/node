@@ -69,7 +69,7 @@ void VotingPage::updateVoteInfo() {
 			ui->labelBurnRate->setText(QString::fromStdString(gdpCurrentVote.newAdmin.hex()));
 		}
 		else if(gdpCurrentVote.param == dgp_params::FIAT_GAS_PRICE || gdpCurrentVote.param == dgp_params::FIAT_BYTE_PRICE) {
-			ui->labelBurnRate->setText(QString::number((double)(gdpCurrentVote.param_value) / (double)100, 'f', 2)  + '$');
+			ui->labelBurnRate->setText(QString::number((double)(gdpCurrentVote.param_value) / (double)100000000, 'f', 8)  + '$');
 		}
 		else if(gdpCurrentVote.param == dgp_params::BURN_RATE || gdpCurrentVote.param == dgp_params::ECONOMY_DIVIDEND) {
 			ui->labelBurnRate->setText(QString::number(gdpCurrentVote.param_value) + '%');
