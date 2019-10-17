@@ -2871,6 +2871,8 @@ bool CheckDgp(std::vector<QtumTransaction> qtumTransactions, CValidationState &s
                         return state.DoS(100, false, REJECT_INVALID, "dgp-vote-finish-not-present", false,
                                          "tx for finish dgp voting is not present in the block");
                     }
+                } else {
+                    return true;
                 }
             } else {
                 return false;

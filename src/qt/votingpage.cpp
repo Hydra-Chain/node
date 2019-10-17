@@ -75,10 +75,10 @@ void VotingPage::updateVoteInfo() {
 			ui->labelBurnRate->setText(QString::number(gdpCurrentVote.param_value) + '%');
 		}
 		else if(gdpCurrentVote.param == dgp_params::BLOCK_SIZE_DGP_PARAM) {
-			ui->labelBurnRate->setText(QString::number(gdpCurrentVote.param_value) + ' bytes');
+			ui->labelBurnRate->setText(QString::number(gdpCurrentVote.param_value) + " bytes");
 		}
 		else if(gdpCurrentVote.param == dgp_params::BLOCK_GAS_LIMIT_DGP_PARAM) {
-			ui->labelBurnRate->setText(QString::number(gdpCurrentVote.param_value) + ' gas');
+			ui->labelBurnRate->setText(QString::number(gdpCurrentVote.param_value) + " gas");
 		}
 
 		LogPrintf("coinBurnPercentage: %ld ; param_value: %ld ; param: %ld\n", coinBurnPercentage, gdpCurrentVote.param_value, gdpCurrentVote.param);
@@ -112,6 +112,8 @@ void VotingPage::updateVoteInfo() {
 				{
 					ui->labelNoResultValue->setText(QString::number(0) + '%');
 					ui->labelYesResultValue->setText(QString::number(0) + '%');
+                    ui->labelYesCountValue->setText(QString::number(0));
+                    ui->labelNoCountValue->setText(QString::number(0));
 				}
 				else
 				{
