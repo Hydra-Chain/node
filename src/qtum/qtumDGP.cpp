@@ -3,7 +3,7 @@
 #include "locktrip/dgp.h"
 
 dev::eth::EVMSchedule QtumDGP::getGasSchedule(unsigned int blockHeight){
-    dev::eth::EVMSchedule schedule = dev::eth::EIP158Schedule;
+    dev::eth::EVMSchedule schedule = dev::eth::ConstantinopleSchedule;
     return schedule;
 }
 
