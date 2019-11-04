@@ -1,10 +1,14 @@
 #include "qtumDGP.h"
 #include "validation.h"
 #include "locktrip/dgp.h"
+#include <chainparams.h>
 
 dev::eth::EVMSchedule QtumDGP::getGasSchedule(unsigned int blockHeight){
-    dev::eth::EVMSchedule schedule = dev::eth::ConstantinopleSchedule;
-    return schedule;
+    if(blockHeight >= Params().GetConsensus().LIP2Height) {
+        return dev::eth::ConstantinopleSchedule;
+    } else {
+        return dev::eth::EIP158Schedule;
+    }
 }
 
 uint32_t QtumDGP::getBlockSize(unsigned int blockHeight){

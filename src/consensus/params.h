@@ -71,6 +71,9 @@ struct Params {
     /** Block height at which LIP1 becomes active */
     // LockTrip Improvement Proposal 1 (LIP1) - forbid transactions in block when DGP vote will be finished
     int LIP1Height;
+    /** Block height at which LIP2 becomes active */
+    // LockTrip Improvement Proposal 2 (LIP2) - activate Constantinople gas schedule
+    int LIP2Height;
 
     /**
      * Minimum blocks including miner confirmation of the total of 2016 blocks in a retargeting period,

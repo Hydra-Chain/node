@@ -2354,6 +2354,7 @@ bool CheckReward(const CBlock &block, CValidationState &state, int nHeight, cons
     size_t offset = block.IsProofOfStake() ? 1 : 0;
     std::vector<CTxOut> vTempVouts=block.vtx[offset]->vout;
     std::vector<CTxOut>::iterator it;
+
     for (size_t i = 0; i < vouts.size(); i++) {
         it = std::find(vTempVouts.begin(), vTempVouts.end(), vouts[i]);
         if (it == vTempVouts.end()) {
@@ -2645,10 +2646,12 @@ bool ByteCodeExec::processingResults(ByteCodeExecResult& resultBCE){
                                 std::pair<dev::Address, CAmount>(txs[i].receiveAddress(), dividend));
                     }
                 } else {
-                    auto newContractAddress = result[i].execRes.newAddress;
-                    auto contractOwnerAddress = txs[i].sender();
-                    resultBCE.contractAddresses.emplace_back(newContractAddress);
-                    resultBCE.contractOwners.emplace_back(contractOwnerAddress);
+                    if(result[i].execRes.excepted == dev::eth::TransactionException::None) {
+                        auto newContractAddress = result[i].execRes.newAddress;
+                        auto contractOwnerAddress = txs[i].sender();
+                        resultBCE.contractAddresses.emplace_back(newContractAddress);
+                        resultBCE.contractOwners.emplace_back(contractOwnerAddress);
+                    }
                 }
             }
             if (amount < 0) {
