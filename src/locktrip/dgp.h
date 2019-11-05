@@ -55,7 +55,7 @@ const auto VOTE_HEADLINES = {
     "Vote for removing admin",
     "Vote for fiat gas price change",
     "Vote for burn rate % change",
-    "Vote for economy dividend % change",
+    "Vote for economy reimbursement % change",
     "Vote for block size change",
     "Vote for block gas limit change",
     "Vote for fiat transaction byte price change",

@@ -2358,7 +2358,7 @@ bool CheckReward(const CBlock &block, CValidationState &state, int nHeight, cons
     for (size_t i = 0; i < vouts.size(); i++) {
         it = std::find(vTempVouts.begin(), vTempVouts.end(), vouts[i]);
         if (it == vTempVouts.end()) {
-            return state.DoS(100, error("CheckReward(): Gas refund missing or dividents or add contract owner call"));
+            return state.DoS(100, error("CheckReward(): Gas refund missing or reimbursement or add contract owner call"));
         } else {
             vTempVouts.erase(it);
         }

@@ -82,32 +82,30 @@ static UniValue validateaddress(const JSONRPCRequest& request)
     return ret;
 }
 
-#ifdef ENABLE_BITCORE_RPC
-/////////////////////////////////////////////////////////////////////// // qtum
 UniValue getdgpinfo(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size() != 0)
         throw std::runtime_error(
-            RPCHelpMan{"getdgpinfo",
-                "\nReturns an object containing DGP state info.\n",
-				{},
-				RPCResult{
-            "{\n"
-            "  \"fiatgasprice\": xxxxx,           (numeric) current fiat gas price in dollar satoshis (1$ = 100000000 dollar satoshi)\n"
-            "  \"burnrate\": xxxxx,   (numeric) current burn rate\n"
-            "  \"economydividend\": xxxxx,     (numeric) current economy dividend\n"
-            "  \"blocksize\": xxxxx,     (numeric) current block size\n"
-            "  \"blockgaslimit\": xxxxx,     (numeric) current block gas limit\n"
-            "  \"fiatbyteprice\": xxxxx,     (numeric) current fiat byte price in dollar satoshis (1$ = 100000000 dollar satoshi)\n"
-            "  \"locgasprice\": xxxxx,     (numeric) current gas price in LOC satoshis\n"
-            "  \"locbyteprice\": xxxxx,     (numeric) current byte price in LOC satoshis\n"
-            "}\n"
-				},
-                RPCExamples{
-                	HelpExampleCli("getdgpinfo", "")
-                + HelpExampleRpc("getdgpinfo", "")
-					},
-				}.ToString());
+                RPCHelpMan{"getdgpinfo",
+                           "\nReturns an object containing DGP state info.\n",
+                           {},
+                           RPCResult{
+                                   "{\n"
+                                   "  \"fiatgasprice\": xxxxx,           (numeric) current fiat gas price in dollar satoshis (1$ = 100000000 dollar satoshi)\n"
+                                   "  \"burnrate\": xxxxx,   (numeric) current burn rate\n"
+                                   "  \"economyreimbursement\": xxxxx,     (numeric) current economy reimbursement\n"
+                                   "  \"blocksize\": xxxxx,     (numeric) current block size\n"
+                                   "  \"blockgaslimit\": xxxxx,     (numeric) current block gas limit\n"
+                                   "  \"fiatbyteprice\": xxxxx,     (numeric) current fiat byte price in dollar satoshis (1$ = 100000000 dollar satoshi)\n"
+                                   "  \"locgasprice\": xxxxx,     (numeric) current gas price in LOC satoshis\n"
+                                   "  \"locbyteprice\": xxxxx,     (numeric) current byte price in LOC satoshis\n"
+                                   "}\n"
+                           },
+                           RPCExamples{
+                                   HelpExampleCli("getdgpinfo", "")
+                                   + HelpExampleRpc("getdgpinfo", "")
+                           },
+                }.ToString());
 
 
     LOCK(cs_main);
@@ -118,7 +116,6 @@ UniValue getdgpinfo(const JSONRPCRequest& request)
     uint64_t blockSize = DEFAULT_BLOCK_SIZE_DGP;
     uint64_t blockGasLimit = DEFAULT_BLOCK_GAS_LIMIT_DGP;
     uint64_t fiatBytePrice = DGP_CACHE_FIAT_BYTE_PRICE;
-    uint64_t blockTime = DEFAULT_BLOCK_TIME;
     uint64_t gasPrice, bytePrice;
 
     Dgp dgp;
@@ -143,9 +140,6 @@ UniValue getdgpinfo(const JSONRPCRequest& request)
     dgp.getDgpParam(FIAT_BYTE_PRICE, fiatBytePrice);
     if(fiatBytePrice < DEFAULT_MIN_BYTE_PRICE_DGP) fiatBytePrice = DGP_CACHE_FIAT_BYTE_PRICE;
 
-    dgp.getDgpParam(BLOCK_TIME, blockTime);
-    if(blockTime < MIN_BLOCK_TIME || blockTime > MAX_BLOCK_TIME) blockTime = DEFAULT_BLOCK_TIME;
-
     PriceOracle oracle;
     oracle.getPrice(gasPrice);
     oracle.getBytePrice(bytePrice);
@@ -153,17 +147,18 @@ UniValue getdgpinfo(const JSONRPCRequest& request)
     UniValue obj(UniValue::VOBJ);
     obj.pushKV("fiatgasprice", fiatGasPrice);
     obj.pushKV("burnrate", burnRate);
-    obj.pushKV("economydividend", economyDividend);
+    obj.pushKV("economyreimbursement", economyDividend);
     obj.pushKV("blocksize", blockSize);
     obj.pushKV("blockgaslimit", blockGasLimit);
     obj.pushKV("fiatbyteprice", fiatBytePrice);
-    obj.pushKV("blocktime", blockTime);
     obj.pushKV("locgasprice", gasPrice);
     obj.pushKV("locbyteprice", bytePrice);
 
     return obj;
 }
 
+/////////////////////////////////////////////////////////////////////// // qtum
+#ifdef ENABLE_BITCORE_RPC
 bool getAddressesFromParams(const UniValue& params, std::vector<std::pair<uint256, int> > &addresses)
 {
     if (params[0].isStr()) {
