@@ -114,10 +114,10 @@ CChainParams::CChainParams()
 
     chainTxData = ChainTxData{
             // Data as of block a1bab8db27f26952ce94fff6563931943554e36fc3a23f99cc8513270d685b2c (height 92662)
-            0, // * UNIX timestamp of last known number of transactions
-            0, // * total number of transactions between genesis and that timestamp
+            1572945296, // * UNIX timestamp of last known number of transactions
+            1088961, // * total number of transactions between genesis and that timestamp
             //   (the tx=... number in the SetBestChain debug.log lines)
-            0 // * estimated number of transactions per second after that timestamp
+            3.80842748271  // * estimated number of transactions per second after that timestamp
     };
 
     consensus.nLastPOWBlock = 5000;
