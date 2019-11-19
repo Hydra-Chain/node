@@ -135,10 +135,19 @@ void BlockAssembler::AddDividentsToCoinstakeTransaction(){
         refundtx=1; //1 for coinstake in PoS
     }
 
+    std::map<dev::Address, CAmount> dividendsPerAddress;
+    for (const auto &pair : bceResult.dividendByContract) {
+        if (dividendsPerAddress.count(pair.first)) {
+            dividendsPerAddress[pair.first] += pair.second;
+        } else {
+            dividendsPerAddress.insert(std::pair<dev::Address, CAmount>(pair.first, pair.second));
+        }
+    }
+
     Economy e;
     dev::Address contractOwner;
     std::vector<CTxOut> dividends;
-    for (const auto& pair : bceResult.dividendByContract) {
+    for (const auto& pair : dividendsPerAddress) {
         e.getContractOwner(pair.first, contractOwner);
         //if the contract doesn't have owner we won't pay dividents.Contracts without owners should be dgb contracts and economy contract.
         if(contractOwner != dev::Address("0"))
@@ -749,6 +758,11 @@ bool BlockAssembler::AttemptToAddContractToBlock(CTxMemPool::txiter iter, uint64
     //apply local bytecode to global bytecode state
     auto refundOutputs = testExecResult.refundOutputs;
 
+    for (const auto &pair : exec.dividendByContract) {
+        if (bceResult.dividendByContract.count(pair.first)) {
+            bceResult.dividendByContract[pair.first] += pair.second;
+        }
+    }
 
     bceResult.contractAddresses.insert(
             std::end(bceResult.contractAddresses),
