@@ -91,11 +91,11 @@ UniValue getdgpinfo(const JSONRPCRequest& request)
                            {},
                            RPCResult{
                                    "{\n"
-                                   "  \"fiatgasprice\": xxxxx,           (numeric) current fiat gas price in dollar satoshis (1$ = 100000000 dollar satoshi)\n"
                                    "  \"burnrate\": xxxxx,   (numeric) current burn rate\n"
                                    "  \"economyreimbursement\": xxxxx,     (numeric) current economy reimbursement\n"
                                    "  \"blocksize\": xxxxx,     (numeric) current block size\n"
                                    "  \"blockgaslimit\": xxxxx,     (numeric) current block gas limit\n"
+                                   "  \"fiatgasprice\": xxxxx,           (numeric) current fiat gas price in dollar satoshis (1$ = 100000000 dollar satoshi)\n"
                                    "  \"fiatbyteprice\": xxxxx,     (numeric) current fiat byte price in dollar satoshis (1$ = 100000000 dollar satoshi)\n"
                                    "  \"locgasprice\": xxxxx,     (numeric) current gas price in LOC satoshis\n"
                                    "  \"locbyteprice\": xxxxx,     (numeric) current byte price in LOC satoshis\n"
@@ -145,11 +145,12 @@ UniValue getdgpinfo(const JSONRPCRequest& request)
     oracle.getBytePrice(bytePrice);
 
     UniValue obj(UniValue::VOBJ);
-    obj.pushKV("fiatgasprice", fiatGasPrice);
+
     obj.pushKV("burnrate", burnRate);
     obj.pushKV("economyreimbursement", economyDividend);
     obj.pushKV("blocksize", blockSize);
     obj.pushKV("blockgaslimit", blockGasLimit);
+    obj.pushKV("fiatgasprice", fiatGasPrice);
     obj.pushKV("fiatbyteprice", fiatBytePrice);
     obj.pushKV("locgasprice", gasPrice);
     obj.pushKV("locbyteprice", bytePrice);
@@ -1315,6 +1316,34 @@ static UniValue echo(const JSONRPCRequest& request)
     return request.params;
 }
 
+UniValue getoracleinfo(const JSONRPCRequest& request) {
+    if (request.fHelp || request.params.size() != 0)
+        throw std::runtime_error(
+                "getoracleinfo\n"
+                "\nResult:\n"
+                "{\n"
+                "  \"gasPrice\": xxxxx,           (numeric) the oracle gas price in satoshis\n"
+                "  \"bytePrice\": xxxxx,          (numeric) the oracle byte price in satoshis\n"
+                "  \"errors\": \"...\"            (string) any error messages\n"
+                "}\n"
+                "\nExamples:\n"
+                + HelpExampleCli("getoracleinfo", "")
+                + HelpExampleRpc("getoracleinfo", "")
+        );
+
+    UniValue obj(UniValue::VOBJ);
+
+    PriceOracle oracle;
+    uint64_t oracleGasPrice, oracleBytePrice;
+    oracle.getPrice(oracleGasPrice);
+    oracle.getBytePrice(oracleBytePrice);
+
+    obj.pushKV("gasPrice", oracleGasPrice);
+    obj.pushKV("bytePrice", oracleBytePrice);
+
+    return obj;
+}
+
 /**
  * @note Do not add or change anything in the information returned by this
  * method. `getinfo` exists for backwards-compatibility only. It combines
@@ -1421,6 +1450,8 @@ static const CRPCCommand commands[] =
   //  --------------------- ------------------------  -----------------------  ----------
     { "control",            "getmemoryinfo",          &getmemoryinfo,          {"mode"} },
     { "control",            "getinfo",                &getinfo,                {}},
+    { "control",            "getdgpinfo",             &getdgpinfo,             {}},
+    { "control",            "getoracleinfo",          &getoracleinfo,          {}},
     { "control",            "logging",                &logging,                {"include", "exclude"}},
     { "util",               "validateaddress",        &validateaddress,        {"address"} },
     { "util",               "createmultisig",         &createmultisig,         {"nrequired","keys","address_type"} },
