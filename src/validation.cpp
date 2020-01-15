@@ -43,6 +43,7 @@
 #include <validationinterface.h>
 #include <warnings.h>
 #include <libethcore/ABI.h>
+#include <net_processing.h>
 
 #include <serialize.h>
 #include <pubkey.h>
@@ -216,6 +217,8 @@ public:
     void PruneBlockIndexCandidates();
 
     void UnloadBlockIndex();
+
+    bool RemoveBlockIndex(CBlockIndex *pindex);
 
 private:
     bool ActivateBestChainStep(CValidationState& state, const CChainParams& chainparams, CBlockIndex* pindexMostWork, const std::shared_ptr<const CBlock>& pblock, bool& fInvalidFound, ConnectTrace& connectTrace) EXCLUSIVE_LOCKS_REQUIRED(cs_main);
@@ -2304,7 +2307,7 @@ bool CheckSenderScript(const CCoinsViewCache& view, const CTransaction& tx){
     return true;
 }
 
-std::vector<ResultExecute> CallContract(const dev::Address& addrContract, std::vector<unsigned char> opcode, 
+std::vector<ResultExecute> CallContract(const dev::Address& addrContract, std::vector<unsigned char> opcode,
 										const dev::Address& sender, uint64_t gasLimit, uint64_t blockGasLimit){
     CBlock block;
     CMutableTransaction tx;
@@ -6923,6 +6926,50 @@ void CChainState::CheckBlockIndex(const Consensus::Params& consensusParams)
     assert(nNodes == forward.size());
 }
 
+bool CChainState::RemoveBlockIndex(CBlockIndex *pindex)
+{
+    // Check if the block index is present in any variable and remove it
+    if(pindexBestInvalid == pindex)
+        pindexBestInvalid = nullptr;
+
+    if(pindexBestHeader == pindex)
+        pindexBestHeader = nullptr;
+
+    if(pindexBestForkTip == pindex)
+        pindexBestForkTip = nullptr;
+
+    if(pindexBestForkBase == pindex)
+        pindexBestForkBase = nullptr;
+
+
+    // Check if the block index is present in any list and remove it
+    for (auto it=mapBlocksUnlinked.begin(); it!=mapBlocksUnlinked.end();){
+        if(it->first == pindex || it->second == pindex)
+        {
+            it = mapBlocksUnlinked.erase(it);
+        }
+        else{
+            it++;
+        }
+    }
+
+    setBlockIndexCandidates.erase(pindex);
+
+    m_failed_blocks.erase(pindex);
+
+    setDirtyBlockIndex.erase(pindex);
+
+    for (int b = 0; b < VERSIONBITS_NUM_BITS; b++) {
+        warningcache[b].erase(pindex);
+    }
+
+    for (int b = 0; b < Consensus::MAX_VERSION_BITS_DEPLOYMENTS; b++) {
+        versionbitscache.caches[b].erase(pindex);
+    }
+
+    return true;
+}
+
 std::string CBlockFileInfo::ToString() const
 {
     return strprintf("CBlockFileInfo(blocks=%u, size=%u, heights=%u...%u, time=%s...%s)", nBlocks, nSize, nHeightFirst, nHeightLast, FormatISO8601Date(nTimeFirst), FormatISO8601Date(nTimeLast));
@@ -7126,6 +7173,11 @@ std::string exceptedMessage(const dev::eth::TransactionException& excepted, cons
     {}
 
     return message;
+}
+
+bool RemoveStateBlockIndex(CBlockIndex *pindex)
+{
+    return g_chainstate.RemoveBlockIndex(pindex);
 }
 
 class CMainCleanup

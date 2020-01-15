@@ -86,7 +86,7 @@ const std::string BitcoinGUI::DEFAULT_UIPLATFORM =
 
 namespace BitCoinGUI_NS
 {
-	static const int NavigationBarWidth = 1120;
+	static const int NavigationBarWidth = 1280;
 	static const int TitleBarSize = 270;
 	//status bar
 	static const int StatusBarPositionX = 125;
@@ -317,32 +317,39 @@ void BitcoinGUI::createActions()
     smartContractAction->setStatusTip(tr("Smart contracts"));
     smartContractAction->setToolTip(smartContractAction->statusTip());
     smartContractAction->setCheckable(true);
-    smartContractAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
+    smartContractAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
     tabGroup->addAction(smartContractAction);
 
     createContractAction = new QAction(tr("Create Contract"), this);
     sendToContractAction = new QAction(tr("Send To Contract"), this);
     callContractAction = new QAction(tr("Call Contract"), this);
 
+    stakeAction = new QAction(platformStyle->MultiStatesIcon(":/icons/tx_mined"), tr("&Stake"), this);
+    stakeAction->setStatusTip(tr("Show stake of wallet"));
+    stakeAction->setToolTip(stakeAction->statusTip());
+    stakeAction->setCheckable(true);
+    stakeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+    tabGroup->addAction(stakeAction);
+
     historyAction = new QAction(platformStyle->MultiStatesIcon(":/icons/history"), tr("&Transactions"), this);
     historyAction->setStatusTip(tr("Browse transaction history"));
     historyAction->setToolTip(historyAction->statusTip());
     historyAction->setCheckable(true);
-    historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
+    historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
     tabGroup->addAction(historyAction);
 
     QRCTokenAction = new QAction(platformStyle->MultiStatesIcon(":/icons/qrctoken"), tr("&LRC Tokens"), this);
     QRCTokenAction->setStatusTip(tr("LRC Tokens (send, receive or add Tokens in list)"));
     QRCTokenAction->setToolTip(QRCTokenAction->statusTip());
     QRCTokenAction->setCheckable(true);
-    QRCTokenAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+    QRCTokenAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
     tabGroup->addAction(QRCTokenAction);
 
     votingAction = new QAction(platformStyle->MultiStatesIcon(":/icons/voting"), tr("&Vote"), this);
     votingAction->setStatusTip(tr("Vote for burn rate"));
     votingAction->setToolTip(votingAction->statusTip());
     votingAction->setCheckable(true);
-    votingAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
+    votingAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_8));
     tabGroup->addAction(votingAction);
 
 
@@ -379,6 +386,8 @@ void BitcoinGUI::createActions()
     connect(receiveTokenAction, SIGNAL(triggered()), this, SLOT(gotoReceiveTokenPage()));
     connect(addTokenAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(addTokenAction, SIGNAL(triggered()), this, SLOT(gotoAddTokenPage()));
+    connect(stakeAction, &QAction::triggered, [this]{ showNormalIfMinimized(); });
+    connect(stakeAction, &QAction::triggered, this, &BitcoinGUI::gotoStakePage);
 #endif // ENABLE_WALLET
 
     quitAction = new QAction(platformStyle->MenuColorIcon(":/icons/quit"), tr("E&xit"), this);
@@ -534,6 +543,7 @@ void BitcoinGUI::createToolBars()
         contractActions.append(sendToContractAction);
         contractActions.append(callContractAction);
         appNavigationBar->mapGroup(smartContractAction, contractActions);
+        appNavigationBar->addAction(stakeAction);
         QList<QAction*> tokenActions;
         tokenActions.append(sendTokenAction);
         tokenActions.append(receiveTokenAction);
@@ -907,6 +917,12 @@ void BitcoinGUI::gotoSendToContractPage()
 void BitcoinGUI::gotoCallContractPage()
 {
     if (walletFrame) walletFrame->gotoCallContractPage();
+}
+
+void BitcoinGUI::gotoStakePage()
+{
+    stakeAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoStakePage();
 }
 
 void BitcoinGUI::gotoSignMessageTab(QString addr)
@@ -1370,7 +1386,8 @@ void BitcoinGUI::updateStakingIcon()
 
     uint64_t nWeight= walletModel->getStakeWeight();
 
-    if (walletModel->wallet().getLastCoinStakeSearchInterval() && nWeight)
+    if (walletModel->wallet().getLastCoinStakeSearchInterval() &&
+        walletModel->wallet().getEnabledStaking() && nWeight)
     {
         uint64_t nNetworkWeight = GetPoSKernelPS();
         const Consensus::Params& consensusParams = Params().GetConsensus();

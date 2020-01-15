@@ -45,6 +45,12 @@ static const int MAX_URI_LENGTH = 255;
 
 static const double LOC_GRANULARITY = 100000000;
 
+/* Mainnet locktrip explorer uri */
+static const QString QTUM_INFO_MAINNET = "<a href='https://explorer.locktrip.com/%1/%2'>%2</a>";
+
+/* Testnet locktrip explorer uri */
+static const QString QTUM_INFO_TESTNET = "<a href='https://explorer.locktrip.com/%1/%2'>%2</a>";
+
 /* QRCodeDialog -- size of exported QR Code image */
 #define QR_IMAGE_SIZE 300
 

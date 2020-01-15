@@ -153,6 +153,23 @@ double GetPoSKernelPS()
     return result;
 }
 
+double GetEstimatedAnnualROI()
+{
+    double result = 0;
+    double networkWeight = GetPoSKernelPS();
+    CBlockIndex* pindex = pindexBestHeader == 0 ? chainActive.Tip() : pindexBestHeader;
+    int nHeight = pindex ? pindex->nHeight : 0;
+    const Consensus::Params& consensusParams = Params().GetConsensus();
+    double subsidy = GetBlockSubsidy(nHeight, consensusParams);
+    if(networkWeight > 0)
+    {
+        // Formula: 100 * 675 blocks/day * 365 days * subsidy) / Network Weight
+        result = 24637500 * subsidy / networkWeight;
+    }
+
+    return result;
+}
+
 static int ComputeNextBlockAndDepth(const CBlockIndex* tip, const CBlockIndex* blockindex, const CBlockIndex*& next)
 {
     next = tip->GetAncestor(blockindex->nHeight + 1);
@@ -307,6 +324,26 @@ UniValue getcontractcode(const JSONRPCRequest& request)
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Address does not exist");
     std::vector<uint8_t> code(globalState->code(addrAccount));
     return HexStr(code.begin(), code.end());
+}
+
+static UniValue getestimatedannualroi(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() != 0)
+        throw std::runtime_error(
+                RPCHelpMan{"getestimatedannualroi",
+                           "\nReturns the estimated annual roi.\n",
+                           {},
+                           RPCResult{
+                                   "n    (numeric) The current estimated annual roi\n"
+                           },
+                           RPCExamples{
+                                   HelpExampleCli("getestimatedannualroi", "")
+                                   + HelpExampleRpc("getestimatedannualroi", "")
+                           },
+                }.ToString());
+
+    LOCK(cs_main);
+    return GetEstimatedAnnualROI();
 }
 
 static UniValue getblockcount(const JSONRPCRequest& request)
@@ -2143,8 +2180,8 @@ UniValue gettxout(const JSONRPCRequest& request)
             "     \"hex\" : \"hex\",        (string) \n"
             "     \"reqSigs\" : n,          (numeric) Number of required signatures\n"
             "     \"type\" : \"pubkeyhash\", (string) The type, eg pubkeyhash\n"
-            "     \"addresses\" : [          (array of string) array of qtum addresses\n"
-            "        \"address\"     (string) qtum address\n"
+            "     \"addresses\" : [          (array of string) array of locktrip addresses\n"
+            "        \"address\"     (string) locktrip address\n"
             "        ,...\n"
             "     ]\n"
             "  },\n"
@@ -3372,7 +3409,6 @@ static const CRPCCommand commands[] =
     { "blockchain",         "getstorage",             &getstorage,             {"address, index, blockNum"} },
     { "blockchain",         "preciousblock",          &preciousblock,          {"blockhash"} },
     { "blockchain",         "scantxoutset",           &scantxoutset,           {"action", "scanobjects"} },
-
     { "blockchain",         "callcontract",           &callcontract,           {"address","data", "senderAddress", "gasLimit"} },
     /* Not shown in help */
     { "hidden",             "invalidateblock",        &invalidateblock,        {"blockhash"} },
@@ -3384,8 +3420,8 @@ static const CRPCCommand commands[] =
     { "blockchain",         "listcontracts",          &listcontracts,          {"start", "maxDisplay"} },
     { "blockchain",         "gettransactionreceipt",  &gettransactionreceipt,  {"hash"} },
     { "blockchain",         "searchlogs",             &searchlogs,             {"fromBlock", "toBlock", "address", "topics"} },
-
     { "blockchain",         "waitforlogs",            &waitforlogs,            {"fromBlock", "nblocks", "address", "topics"} },
+    { "blockchain",         "getestimatedannualroi",  &getestimatedannualroi,  {} }
 };
 // clang-format on
 

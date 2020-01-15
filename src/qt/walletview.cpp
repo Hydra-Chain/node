@@ -26,6 +26,7 @@
 #include <qt/callcontract.h>
 #include <qt/qrctoken.h>
 #include <qt/restoredialog.h>
+#include <qt/stakepage.h>
 
 #include <interfaces/node.h>
 #include <ui_interface.h>
@@ -77,6 +78,8 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
 
     QRCTokenPage = new QRCToken(platformStyle);
 
+    stakePage = new StakePage(platformStyle);
+
     addWidget(overviewPage);
     addWidget(transactionsPage);
     addWidget(receiveCoinsPage);
@@ -86,6 +89,7 @@ WalletView::WalletView(const PlatformStyle *_platformStyle, QWidget *parent):
     addWidget(callContractPage);
     addWidget(QRCTokenPage);
     addWidget(votingPage);
+    addWidget(stakePage);
 
     connect(overviewPage, SIGNAL(outOfSyncWarningClicked()), this, SLOT(requestedSyncWarningInfo()));
 
@@ -125,6 +129,7 @@ void WalletView::setBitcoinGUI(BitcoinGUI *gui)
 
         // Pass through encryption status changed signals
         connect(this, SIGNAL(encryptionStatusChanged(WalletModel*)), gui, SLOT(setEncryptionStatus(WalletModel*)));
+        connect(this, &WalletView::encryptionStatusChanged, stakePage, &StakePage::updateEncryptionStatus);
 
         // Pass through transaction notifications
         connect(this, SIGNAL(incomingTransaction(QString,int,CAmount,QString,QString,QString,QString)), gui, SLOT(incomingTransaction(QString,int,CAmount,QString,QString,QString,QString)));
@@ -151,6 +156,7 @@ void WalletView::setClientModel(ClientModel *_clientModel)
     sendToContractPage->setClientModel(_clientModel);
     callContractPage->setClientModel(_clientModel);
     QRCTokenPage->setClientModel(_clientModel);
+    stakePage->setClientModel(_clientModel);
 }
 
 void WalletView::setWalletModel(WalletModel *_walletModel)
@@ -167,6 +173,7 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
     sendToContractPage->setModel(_walletModel);
     callContractPage->setModel(_walletModel);
     QRCTokenPage->setModel(_walletModel);
+    stakePage->setWalletModel(_walletModel);
     usedReceivingAddressesPage->setModel(_walletModel ? _walletModel->getAddressTableModel() : nullptr);
     usedSendingAddressesPage->setModel(_walletModel ? _walletModel->getAddressTableModel() : nullptr);
 
@@ -192,6 +199,7 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
 
         // Ask for passphrase if needed
         connect(_walletModel, SIGNAL(requireUnlock()), this, SLOT(unlockWallet()));
+        connect(stakePage, SIGNAL(requireUnlock(bool)), this, SLOT(unlockWallet(bool)));
 
         // Show progress dialog
         connect(_walletModel, SIGNAL(showProgress(QString,int)), this, SLOT(showProgress(QString,int)));
@@ -318,6 +326,11 @@ void WalletView::gotoAddTokenPage()
     QRCTokenPage->on_goToAddTokenPage();
 }
 
+void WalletView::gotoStakePage()
+{
+    setCurrentWidget(stakePage);
+}
+
 void WalletView::gotoSignMessageTab(QString addr)
 {
     // calls show() in showTab_SM()
@@ -413,6 +426,9 @@ void WalletView::unlockWallet(bool fromMenu)
         AskPassphraseDialog dlg(mode, this);
         dlg.setModel(walletModel);
         dlg.exec();
+
+        if(sender() == stakePage)
+            stakePage->updateEncryptionStatus();
     }
 
     updateEncryptionStatus();

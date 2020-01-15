@@ -990,6 +990,8 @@ inline bool IsBlockPruned(const CBlockIndex* pblockindex)
 
 bool CheckReward(const CBlock& block, CValidationState& state, int nHeight, const Consensus::Params& consensusParams, CAmount nFees, CAmount gasRefunds, CAmount nActualStakeReward, const std::vector<CTxOut>& vouts);
 
+bool RemoveStateBlockIndex(CBlockIndex *pindex);
+
 //////////////////////////////////////////////////////// qtum
 unsigned int GetContractScriptFlags(int nHeight, const Consensus::Params& consensusparams);
 

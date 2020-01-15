@@ -14,12 +14,12 @@
 #include <QtGlobal>
 
 static const QString STYLE_FORMAT = ":/styles/%1";
+static const QString STYLE_CONFIG_FORMAT = ":/styles/%1/config";
 static const QColor LINK_COLOR = "#2d9ad0";
 
 class QtumStyle : public QProxyStyle
 {
 public:
-
     void polish(QWidget *widget)
     {
         if(widget && widget->inherits("QComboBox"))
@@ -79,6 +79,15 @@ public:
 
         QProxyStyle::polish(widget);
     }
+
+private:
+    QString message_info_path;
+    QString message_warning_path;
+    QString message_critical_path;
+    QString message_question_path;
+    int message_icon_weight;
+    int message_icon_height;
+    bool button_text_upper;
 };
 
 StyleSheet &StyleSheet::instance()
@@ -136,4 +145,14 @@ void StyleSheet::setObjectStyleSheet(T *object, const QString &style_name)
 {
     QString style_value = m_cacheStyles.contains(style_name) ? m_cacheStyles[style_name] : getStyleSheet(style_name);
     object->setStyleSheet(style_value);
+}
+
+QVariant StyleSheet::getStyleValue(const QString &key, const QVariant &defaultValue)
+{
+    if(m_config)
+    {
+        return m_config->value(key, defaultValue);
+    }
+
+    return defaultValue;
 }

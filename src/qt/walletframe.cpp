@@ -225,6 +225,13 @@ void WalletFrame::gotoCallContractPage()
         i.value()->gotoCallContractPage();
 }
 
+void WalletFrame::gotoStakePage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoStakePage();
+}
+
 void WalletFrame::gotoSignMessageTab(QString addr)
 {
     WalletView *walletView = currentWalletView();

@@ -132,6 +132,7 @@ QT_FORMS_UI = \
   qt/forms/receivetokenpage.ui \
   qt/forms/restoredialog.ui \
   qt/forms/debugwindow.ui \
+  qt/forms/stakepage.ui \
   qt/forms/sendcoinsdialog.ui \
   qt/forms/votingpage.ui \
   qt/forms/sendcoinsentry.ui \
@@ -183,6 +184,7 @@ QT_MOC_CPP = \
   qt/moc_peertablemodel.cpp \
   qt/moc_paymentserver.cpp \
   qt/moc_qrctoken.cpp \
+  qt/moc_qswitchcontrol.cpp \
   qt/moc_qvalidatedlineedit.cpp \
   qt/moc_qvalidatedtextedit.cpp \
   qt/moc_qvaluecombobox.cpp \
@@ -192,6 +194,7 @@ QT_MOC_CPP = \
   qt/moc_recentrequeststablemodel.cpp \
   qt/moc_restoredialog.cpp \
   qt/moc_rpcconsole.cpp \
+  qt/moc_stakepage.cpp \
   qt/moc_sendcoinsdialog.cpp \
   qt/moc_votingpage.cpp \
   qt/moc_sendcoinsentry.cpp \
@@ -292,6 +295,7 @@ BITCOIN_QT_H = \
   qt/peertablemodel.h \
   qt/platformstyle.h \
   qt/qrctoken.h \
+  qt/qswitchcontrol.h \
   qt/qvalidatedlineedit.h \
   qt/qvalidatedtextedit.h \
   qt/qvaluecombobox.h \
@@ -309,6 +313,7 @@ BITCOIN_QT_H = \
   qt/sendtokenpage.h \
   qt/signverifymessagedialog.h \
   qt/splashscreen.h \
+  qt/stakepage.h \
   qt/styleSheet.h \
   qt/tabbarinfo.h \
   qt/titlebar.h \
@@ -429,6 +434,7 @@ BITCOIN_QT_BASE_CPP = \
   qt/optionsmodel.cpp \
   qt/peertablemodel.cpp \
   qt/platformstyle.cpp \
+  qt/qswitchcontrol.cpp \
   qt/runguard.cpp \
   qt/qvalidatedlineedit.cpp \
   qt/qvalidatedtextedit.cpp \
@@ -479,6 +485,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/receivetokenpage.cpp \
   qt/recentrequeststablemodel.cpp \
   qt/restoredialog.cpp \
+  qt/stakepage.cpp \
   qt/sendcoinsdialog.cpp \
   qt/votingpage.cpp \
   qt/sendcoinsentry.cpp \
