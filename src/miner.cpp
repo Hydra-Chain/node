@@ -908,7 +908,7 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
     const int64_t MAX_CONSECUTIVE_FAILURES = 1000;
     int64_t nConsecutiveFailed = 0;
 
-    while (mi != mempool.mapTx.get<ancestor_score_or_gas_price>().end() || !mapModifiedTx.empty())
+    while ((mi != mempool.mapTx.get<ancestor_score_or_gas_price>().end() || !mapModifiedTx.empty()) && nPackagesSelected < 65000)
     {
         if(nTimeLimit != 0 && GetAdjustedTime() >= nTimeLimit){
             //no more time to add transactions, just exit
