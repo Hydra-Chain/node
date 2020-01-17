@@ -74,6 +74,8 @@ struct Params {
     /** Block height at which LIP2 becomes active */
     // LockTrip Improvement Proposal 2 (LIP2) - activate Constantinople gas schedule
     int LIP2Height;
+    /** Use old formila when blocktime is too big **/
+    int LIP3Height;
 
     /**
      * Minimum blocks including miner confirmation of the total of 2016 blocks in a retargeting period,
@@ -93,9 +95,9 @@ struct Params {
     int64_t nPowTargetSpacing;
     int64_t nPowTargetTimespan;
     int64_t nPowTargetTimespanV2;
-    int64_t DifficultyAdjustmentInterval(int height) const
+    int64_t DifficultyAdjustmentInterval(int height, bool ignore) const
     {
-        int64_t targetSpacing = height < QIP9Height ? nPowTargetTimespan : nPowTargetTimespanV2;
+        int64_t targetSpacing = (height < QIP9Height || ignore) ? nPowTargetTimespan : nPowTargetTimespanV2;
         return targetSpacing / nPowTargetSpacing;
     }
     uint256 nMinimumChainWork;

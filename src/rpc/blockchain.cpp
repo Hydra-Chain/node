@@ -104,6 +104,41 @@ double GetPoWMHashPS()
     return GetDifficulty(chainActive.Tip()) * 4294.967296 / nTargetSpacingWork;
 }
 
+bool CheckQIP9BlockTimeDiff(const CBlockIndex* pindex)
+{
+    int nPoSInterval = 72;
+    int nStakesHandled = 0, nStakesTime = 0;
+
+    CBlockIndex* pindexPrevStake = NULL;
+
+    const Consensus::Params& consensusParams = Params().GetConsensus();
+
+    if(pindex->nHeight < consensusParams.LIP3Height)
+        return false;
+
+    while (pindex && nStakesHandled < nPoSInterval)
+    {
+        if (pindex->IsProofOfStake())
+        {
+            if (pindexPrevStake)
+            {
+                nStakesTime += pindexPrevStake->nTime - pindex->nTime;
+                nStakesHandled++;
+            }
+            pindexPrevStake = (CBlockIndex*)pindex;
+        }
+
+        pindex = pindex->pprev;
+    }
+
+    bool result = false;
+
+    if (nStakesTime > 2 * consensusParams.nPowTargetSpacing * nStakesHandled)
+        result = true;
+
+    return result;
+}
+
 double GetPoSKernelPS()
 {
     int nPoSInterval = 72;
@@ -117,7 +152,7 @@ double GetPoSKernelPS()
     bool dynamicStakeSpacing = true;
     if(pindex)
     {
-        dynamicStakeSpacing = pindex->nHeight < consensusParams.QIP9Height;
+        dynamicStakeSpacing = pindex->nHeight < consensusParams.QIP9Height || CheckQIP9BlockTimeDiff(pindex);
     }
 
     while (pindex && nStakesHandled < nPoSInterval)

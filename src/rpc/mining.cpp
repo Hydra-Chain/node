@@ -40,6 +40,8 @@
 
 #include <locktrip/dgp.h>
 
+extern bool CheckQIP9BlockTimeDiff(const CBlockIndex* pindex);
+
 /**
  * Return average network hashes per second based on the last 'lookup' blocks,
  * or from the last difficulty change if 'lookup' is nonpositive.
@@ -55,8 +57,10 @@ static UniValue GetNetworkHashPS(int lookup, int height) {
         return 0;
 
     // If lookup is -1, then use blocks since last difficulty change.
-    if (lookup <= 0)
-        lookup = pb->nHeight % Params().GetConsensus().DifficultyAdjustmentInterval(pb->nHeight) + 1;
+    if (lookup <= 0) {
+        bool ignore = CheckQIP9BlockTimeDiff(pb);
+        lookup = pb->nHeight % Params().GetConsensus().DifficultyAdjustmentInterval(pb->nHeight, ignore) + 1;
+    }
 
     // If lookup is larger than chain, then set it to chain length.
     if (lookup > pb->nHeight)

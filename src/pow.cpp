@@ -10,6 +10,8 @@
 #include <primitives/block.h>
 #include <uint256.h>
 
+extern bool CheckQIP9BlockTimeDiff(const CBlockIndex* pindex);
+
 namespace {
     // returns a * exp(p/q) where |p/q| is small
     arith_uint256 mul_exp(arith_uint256 a, int64_t p, int64_t q)
@@ -84,7 +86,8 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         {
             // Return the last non-special-min-difficulty-rules-block
             const CBlockIndex* pindex = pindexLast;
-            while (pindex->pprev && pindex->nHeight % params.DifficultyAdjustmentInterval(pindex->nHeight) != 0 && pindex->nBits == nTargetLimit)
+            bool ignore = CheckQIP9BlockTimeDiff(pindex);
+            while (pindex->pprev && pindex->nHeight % params.DifficultyAdjustmentInterval(pindex->nHeight, ignore) != 0 && pindex->nBits == nTargetLimit)
                 pindex = pindex->pprev;
             return pindex->nBits;
         }
@@ -113,7 +116,8 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
     // ppcoin: retarget with exponential moving toward target spacing
     arith_uint256 bnNew;
     bnNew.SetCompact(pindexLast->nBits);
-    int64_t nInterval = params.DifficultyAdjustmentInterval(pindexLast->nHeight + 1);
+    bool ignore = CheckQIP9BlockTimeDiff(pindexLast);
+    int64_t nInterval = params.DifficultyAdjustmentInterval(pindexLast->nHeight + 1, ignore);
 
     if (pindexLast->nHeight + 1 < params.QIP9Height) {
         if (nActualSpacing < 0)
