@@ -119,7 +119,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
     bool ignore = CheckQIP9BlockTimeDiff(pindexLast);
     int64_t nInterval = params.DifficultyAdjustmentInterval(pindexLast->nHeight + 1, ignore);
 
-    if (pindexLast->nHeight + 1 < params.QIP9Height) {
+    if (pindexLast->nHeight + 1 < params.QIP9Height  || ignore) {
         if (nActualSpacing < 0)
             nActualSpacing = nTargetSpacing;
         if (nActualSpacing > nTargetSpacing * 10)
