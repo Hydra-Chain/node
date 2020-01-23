@@ -92,7 +92,6 @@ CChainParams::CChainParams()
     consensus.nPowTargetTimespan = 16 * 60; // 16 minutes
     consensus.nPowTargetTimespanV2 = 4000; // 5.59 hours
     consensus.nPowTargetSpacing = 2 * 64;
-    consensus.fPowAllowMinDifficultyBlocks = false;
     consensus.fPowNoRetargeting = true;
     consensus.fPoSNoRetargeting = false;
     consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
@@ -162,6 +161,7 @@ public:
 
         genesis = CreateGenesisBlock(1535988275, 8155867, 0x1f00ffff, 1, 0 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
+        consensus.fPowAllowMinDifficultyBlocks = false;
         assert(consensus.hashGenesisBlock == uint256S("0x0000ad3c8d85d2936a5445a5f89122a896ecff9f5e556150cb0f6e0dbadfe5b9"));
         assert(genesis.hashMerkleRoot == uint256S("0xbc4480addd2d1c0bf7ff88574831c52cd472c7f1caf1427d082b4e974748e8eb"));
 
@@ -221,6 +221,7 @@ public:
 
         genesis = CreateGenesisBlock(1535988275, 7640815, 0x1f00ffff, 1, 0 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
+        consensus.fPowAllowMinDifficultyBlocks = true; // special for testnet
         assert(consensus.hashGenesisBlock == uint256S("0x00002e86620c426ca41586889d213c4f51b9d72e093216c8d9b7f1b529f968d6"));
         assert(genesis.hashMerkleRoot == uint256S("0xbc4480addd2d1c0bf7ff88574831c52cd472c7f1caf1427d082b4e974748e8eb"));
 
@@ -287,6 +288,7 @@ public:
 
         genesis = CreateGenesisBlock(1535988275, 18, 0x207fffff, 1, 0 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
+        consensus.fPowAllowMinDifficultyBlocks = true;
         assert(consensus.hashGenesisBlock == uint256S("0x3b35fc4b74e82a8f78825d8389be7efdd11b6fb2c866bf1a3bc0631035c9c197"));
         assert(genesis.hashMerkleRoot == uint256S("0xbc4480addd2d1c0bf7ff88574831c52cd472c7f1caf1427d082b4e974748e8eb"));
 
