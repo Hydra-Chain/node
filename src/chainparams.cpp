@@ -87,6 +87,7 @@ CChainParams::CChainParams()
     consensus.LIP2Height = 31310;
     consensus.LIP3Height = 72400;
     consensus.LIP4Height = 72695;
+    consensus.LIP5Height = 72735;
     consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
     consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
     consensus.QIP9PosLimit = uint256S("0000000000001fffffffffffffffffffffffffffffffffffffffffffffffffff"); // The new POS-limit activated after QIP9
@@ -222,7 +223,7 @@ public:
 
         genesis = CreateGenesisBlock(1535988275, 7640815, 0x1f00ffff, 1, 0 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        consensus.fPowAllowMinDifficultyBlocks = true; // special for testnet
+        consensus.fPowAllowMinDifficultyBlocks = false; // special for testnet
         assert(consensus.hashGenesisBlock == uint256S("0x00002e86620c426ca41586889d213c4f51b9d72e093216c8d9b7f1b529f968d6"));
         assert(genesis.hashMerkleRoot == uint256S("0xbc4480addd2d1c0bf7ff88574831c52cd472c7f1caf1427d082b4e974748e8eb"));
 

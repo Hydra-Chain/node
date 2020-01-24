@@ -77,6 +77,7 @@ struct Params {
     /** Use old formila when blocktime is too big **/
     int LIP3Height;
     int LIP4Height;
+    int LIP5Height;
 
     /**
      * Minimum blocks including miner confirmation of the total of 2016 blocks in a retargeting period,

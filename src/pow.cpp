@@ -47,8 +47,10 @@ inline arith_uint256 GetLimit(int nHeight, const Consensus::Params& params, bool
     if(fProofOfStake) {
         if(nHeight < params.QIP9Height) {
             return UintToArith256(params.posLimit);
-        } else {
+        } else if(nHeight < params.LIP5Height) {
             return UintToArith256(params.QIP9PosLimit);
+        } else {
+            return UintToArith256(params.posLimit);
         }
     } else {
         return UintToArith256(params.powLimit);
@@ -57,7 +59,6 @@ inline arith_uint256 GetLimit(int nHeight, const Consensus::Params& params, bool
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, bool fProofOfStake)
 {
-
     unsigned int  nTargetLimit = GetLimit(pindexLast ? pindexLast->nHeight+1 : 0, params, fProofOfStake).GetCompact();
 
     // genesis block
@@ -80,8 +81,10 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         // Special difficulty rule for testnet:
         // If the new block's timestamp is more than 2* 10 minutes
         // then allow mining of a min-difficulty block.
-        if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2)
+        if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2) {
+            std::cout << "nTargetLimit -> " << nTargetLimit << std::endl;
             return nTargetLimit;
+        }
         else
         {
             // Return the last non-special-min-difficulty-rules-block
