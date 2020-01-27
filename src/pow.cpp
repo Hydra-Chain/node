@@ -75,8 +75,10 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     if (pindexPrevPrev->pprev == NULL)
         return nTargetLimit;
 
+    bool allowMinDifficultyBlocks = pindexLast->nHeight + 1 > params.LIP4Height && pindexLast->nHeight + 1 < params.LIP5Height;
+
     // min difficulty
-    if (params.fPowAllowMinDifficultyBlocks)
+    if (allowMinDifficultyBlocks)
     {
         // Special difficulty rule for testnet:
         // If the new block's timestamp is more than 2* 10 minutes
