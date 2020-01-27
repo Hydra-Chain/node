@@ -84,7 +84,6 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         // If the new block's timestamp is more than 2* 10 minutes
         // then allow mining of a min-difficulty block.
         if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2) {
-            std::cout << "nTargetLimit -> " << nTargetLimit << std::endl;
             return nTargetLimit;
         }
         else
