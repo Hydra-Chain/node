@@ -113,9 +113,6 @@ bool CheckQIP9BlockTimeDiff(const CBlockIndex* pindex)
 
     const Consensus::Params& consensusParams = Params().GetConsensus();
 
-    if(pindex->nHeight < consensusParams.LIP3Height)
-        return false;
-
     while (pindex && nStakesHandled < nPoSInterval)
     {
         if (pindex->IsProofOfStake())

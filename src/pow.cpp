@@ -44,17 +44,7 @@ const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfSta
 
 inline arith_uint256 GetLimit(int nHeight, const Consensus::Params& params, bool fProofOfStake)
 {
-    if(fProofOfStake) {
-        if(nHeight < params.QIP9Height) {
-            return UintToArith256(params.posLimit);
-        } else if(nHeight < params.LIP5Height) {
-            return UintToArith256(params.QIP9PosLimit);
-        } else {
-            return UintToArith256(params.posLimit);
-        }
-    } else {
-        return UintToArith256(params.powLimit);
-    }
+    return UintToArith256(params.powLimit); //Lockchain: Use a single limit
 }
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, bool fProofOfStake)
@@ -75,10 +65,8 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     if (pindexPrevPrev->pprev == NULL)
         return nTargetLimit;
 
-    bool allowMinDifficultyBlocks = pindexLast->nHeight + 1 > params.LIP4Height && pindexLast->nHeight + 1 < params.LIP5Height;
-
     // min difficulty
-    if (allowMinDifficultyBlocks)
+    if (params.fPowAllowMinDifficultyBlocks)
     {
         // Special difficulty rule for testnet:
         // If the new block's timestamp is more than 2* 10 minutes
@@ -123,7 +111,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
     bool ignore = CheckQIP9BlockTimeDiff(pindexLast);
     int64_t nInterval = params.DifficultyAdjustmentInterval(pindexLast->nHeight + 1, ignore);
 
-    if (pindexLast->nHeight + 1 < params.QIP9Height  || (pindexLast->nHeight + 1 > params.LIP4Height && ignore)) {
+    if (pindexLast->nHeight + 1 < params.QIP9Height  || ignore) {
         if (nActualSpacing < 0)
             nActualSpacing = nTargetSpacing;
         if (nActualSpacing > nTargetSpacing * 10)

@@ -62,8 +62,7 @@ int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParam
         pblock->nTime = nNewTime;
 
     // Updating time can change work required on testnet:
-    bool allowMinDifficultyBlocks = pindexPrev->nHeight + 1 > consensusParams.LIP4Height && pindexPrev->nHeight + 1 < consensusParams.LIP5Height;
-    if (allowMinDifficultyBlocks)
+    if (consensusParams.fPowAllowMinDifficultyBlocks)
         pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, consensusParams,pblock->IsProofOfStake());
 
     return nNewTime - nOldTime;
@@ -394,18 +393,14 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     int nPackagesSelected = 0;
     int nDescendantsUpdated = 0;
 
-    if(nHeight >= chainparams.GetConsensus().LIP1Height) {
-        Dgp dgp;
-        bool voteInProgress;
-        dgp.hasVoteInProgress(voteInProgress);
-        if(voteInProgress) {
-            uint64_t expiration;
-            dgp.getVoteBlockExpiration(expiration);
-            if (nHeight < expiration) {
-                // If there will be a DGP vote finishing, don't add transactions
-                addPackageTxs(nPackagesSelected, nDescendantsUpdated, minGasPrice);
-            }
-        } else {
+    Dgp dgp;
+    bool voteInProgress;
+    dgp.hasVoteInProgress(voteInProgress);
+    if(voteInProgress) {
+        uint64_t expiration;
+        dgp.getVoteBlockExpiration(expiration);
+        if (nHeight < expiration) {
+            // If there will be a DGP vote finishing, don't add transactions
             addPackageTxs(nPackagesSelected, nDescendantsUpdated, minGasPrice);
         }
     } else {

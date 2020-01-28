@@ -68,16 +68,6 @@ struct Params {
     int QIP7Height;
     /** Block height at which QIP9 becomes active */
     int QIP9Height;
-    /** Block height at which LIP1 becomes active */
-    // LockTrip Improvement Proposal 1 (LIP1) - forbid transactions in block when DGP vote will be finished
-    int LIP1Height;
-    /** Block height at which LIP2 becomes active */
-    // LockTrip Improvement Proposal 2 (LIP2) - activate Constantinople gas schedule
-    int LIP2Height;
-    /** Use old formila when blocktime is too big **/
-    int LIP3Height;
-    int LIP4Height;
-    int LIP5Height;
 
     /**
      * Minimum blocks including miner confirmation of the total of 2016 blocks in a retargeting period,
