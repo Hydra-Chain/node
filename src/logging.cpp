@@ -226,10 +226,8 @@ std::string BCLog::Logger::LogTimestampStr(const std::string &str)
     return strStamped;
 }
 
-void BCLog::Logger::LogPrintStr(const std::string &str, bool useVMLog, const std::string &params)
+void BCLog::Logger::LogPrintStr(const std::string &str, bool useVMLog)
 {
-    //SendToTelemetry(str, str);
-
     std::string strTimestamped = LogTimestampStr(str);
     bool print_to_console = m_print_to_console;
     if(print_to_console && useVMLog && !m_show_evm_logs) print_to_console = false;

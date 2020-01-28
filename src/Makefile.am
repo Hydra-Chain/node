@@ -197,7 +197,6 @@ BITCOIN_CORE_H = \
   support/events.h \
   support/lockedpool.h \
   sync.h \
-  telemetry.h \
   threadsafety.h \
   threadinterrupt.h \
   timedata.h \
@@ -225,7 +224,6 @@ BITCOIN_CORE_H = \
   wallet/fees.h \
   wallet/psbtwallet.h \
   wallet/rpcwallet.h \
-  wallet/telemetry_wallet.h \
   wallet/wallet.h \
   wallet/walletdb.h \
   wallet/wallettool.h \
@@ -351,7 +349,6 @@ libbitcoin_wallet_a_SOURCES = \
   wallet/psbtwallet.cpp \
   wallet/rpcdump.cpp \
   wallet/rpcwallet.cpp \
-  wallet/telemetry_wallet.cpp \
   wallet/wallet.cpp \
   wallet/walletdb.cpp \
   wallet/walletutil.cpp \
@@ -768,7 +765,6 @@ libbitcoin_util_a_SOURCES = \
   rpc/protocol.cpp \
   support/cleanse.cpp \
   sync.cpp \
-  telemetry.cpp \
   threadinterrupt.cpp \
   util/bip32.cpp \
   util/bytevectorhash.cpp \

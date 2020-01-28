@@ -41,8 +41,6 @@
 
 #include <boost/algorithm/string/replace.hpp>
 
-#include "telemetry_wallet.h"
-
 static const size_t OUTPUT_GROUP_MAX_ENTRIES = 10;
 
 static CCriticalSection cs_wallets;
@@ -4975,7 +4973,6 @@ void CWallet::postInitProcess(CScheduler& scheduler)
     // Do this here as mempool requires genesis block to be loaded
     ReacceptWalletTransactions(*locked_chain);
 
-	scheduler.scheduleEvery(TelemetryUpload, TELEMETRY_LOOP_TIME);
 	//scheduler.scheduleEvery(DumpPeers, 60*60*1000);
 
     // Update wallet transactions with current mempool transactions.
