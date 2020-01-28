@@ -44,7 +44,11 @@ const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfSta
 
 inline arith_uint256 GetLimit(int nHeight, const Consensus::Params& params, bool fProofOfStake)
 {
-    return UintToArith256(params.powLimit); //Lockchain: Use a single limit
+    if(fProofOfStake) {
+        return UintToArith256(params.posLimit);
+    } else {
+        return UintToArith256(params.powLimit);
+    }
 }
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, bool fProofOfStake)

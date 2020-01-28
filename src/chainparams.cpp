@@ -79,7 +79,7 @@ CChainParams::CChainParams()
     consensus.BIP34Height = 0;
     consensus.BIP65Height = 0;
     consensus.BIP66Height = 0;
-    consensus.QIP5Height = 0;
+    consensus.QIP5Height = 0x7fffffff;
     consensus.QIP6Height = 0;
     consensus.QIP7Height = 0;
     consensus.QIP9Height = 0;
