@@ -83,6 +83,8 @@ CChainParams::CChainParams()
     consensus.QIP6Height = 0;
     consensus.QIP7Height = 0;
     consensus.QIP9Height = 5500;
+    consensus.nFixUTXOCacheHFHeight=0;
+    consensus.nEnableHeaderSignatureHeight = 5500;
     consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
     consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
     consensus.QIP9PosLimit = uint256S("0000000000001fffffffffffffffffffffffffffffffffffffffffffffffffff"); // The new POS-limit activated after QIP9
@@ -140,8 +142,6 @@ class CMainParams : public CChainParams {
 public:
     CMainParams() {
         strNetworkID = "main";
-        consensus.nFixUTXOCacheHFHeight=0;
-        consensus.nEnableHeaderSignatureHeight = 0;
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -202,8 +202,6 @@ class CTestNetParams : public CChainParams {
 public:
     CTestNetParams() {
         strNetworkID = "test";
-        consensus.nFixUTXOCacheHFHeight=0;
-        consensus.nEnableHeaderSignatureHeight = 0;
 
         pchMessageStart[0] = 0x07; // 7
         pchMessageStart[1] = 0x13; // 19
@@ -268,8 +266,6 @@ public:
     CRegTestParams() {
 
         strNetworkID = "regtest";
-        consensus.nFixUTXOCacheHFHeight=0;
-        consensus.nEnableHeaderSignatureHeight = 0;
 
         pchMessageStart[0] = 0xc7; // 199
         pchMessageStart[1] = 0xe8; // 232
