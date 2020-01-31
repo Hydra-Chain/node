@@ -16,8 +16,8 @@ class TokenTransactionFormater
 public:
     TokenTransactionFormater()
     {
-        itemNameColor = GetStringStyleValue("tokentransactiondesc/item-name-color", "#ffffff");
-        itemColor = GetStringStyleValue("tokentransactiondesc/item-color", "#ffffff");
+        itemNameColor = GetStringStyleValue("tokentransactiondesc/item-name-color", "#000000");
+        itemColor = GetStringStyleValue("tokentransactiondesc/item-color", "#000000");
         itemFontBold = GetIntStyleValue("tokentransactiondesc/item-font-bold", true);
         network = Params().NetworkIDString();
     }
@@ -114,7 +114,6 @@ QString TokenTransactionDesc::toHTML(interfaces::Wallet &wallet, interfaces::Tok
 
     strHTML += TokenTransactionFormater::ItemNameColor(tr("Date")) + (nTime ? GUIUtil::dateTimeStr(nTime) : "") + "<br>";
 
-    strHTML += TokenTransactionFormater::ItemNameColor(tr("Transaction ID")) + rec->getTxID() + "<br>";
     strHTML += TokenTransactionFormater::ItemNameColor(tr("Transaction ID")) + TokenTransactionFormater::TxIdLink(rec->getTxID()) + "<br>";
 
     strHTML += TokenTransactionFormater::ItemNameColor(tr("Token Address")) + QString::fromStdString(wtx.contract_address) + "<br>";
