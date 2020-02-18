@@ -1503,7 +1503,8 @@ bool AppInitMain(InitInterfaces& interfaces)
 
     // ********************************************************* Step 7: load block chain
 
-    fReindex = gArgs.GetBoolArg("-reindex", false);
+    fReindex = gArgs.GetBoolArg("-reindex", false) || GetStartupFileVal();
+
     bool fReindexChainState = gArgs.GetBoolArg("-reindex-chainstate", false);
 
     // cache size calculations

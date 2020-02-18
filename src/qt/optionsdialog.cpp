@@ -18,6 +18,7 @@
 #include <netbase.h>
 #include <txdb.h> // for -dbcache defaults
 #include <qt/styleSheet.h>
+#include <shutdown.h>
 
 #include <QDataWidgetMapper>
 #include <QDir>
@@ -25,6 +26,7 @@
 #include <QLocale>
 #include <QMessageBox>
 #include <QTimer>
+#include <QProcess>
 
 OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
     QDialog(parent),
@@ -177,6 +179,7 @@ void OptionsDialog::setModel(OptionsModel *_model)
     connect(ui->pruneSize, SIGNAL(valueChanged(int)), this, SLOT(showRestartWarning()));
     connect(ui->databaseCache, SIGNAL(valueChanged(int)), this, SLOT(showRestartWarning()));
     connect(ui->logEvents, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
+//    connect(ui->reindexButton, SIGNAL(clicked(bool)), this, SLOT())
     connect(ui->threadsScriptVerif, SIGNAL(valueChanged(int)), this, SLOT(showRestartWarning()));
     connect(ui->reserveBalance, SIGNAL(valueChanged()), this, SLOT(showRestartWarning()));
     /* Wallet */
@@ -256,6 +259,25 @@ void OptionsDialog::on_resetButton_clicked()
         model->Reset();
         QApplication::quit();
     }
+}
+
+void OptionsDialog::on_reindexButton_clicked()
+{
+    if(model)
+    {
+        QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm reindex"),
+                                                                   tr("The wallet will shut down. The next time you start it, it will start with options <b>-reindex</b> and <b>-zapwallettxes=1</b>")
+                                                                   + tr("<br><br>Are you sure you wish to restore your wallet?"),
+                                                                   QMessageBox::Yes|QMessageBox::Cancel,
+                                                                   QMessageBox::Cancel);
+        if(retval == QMessageBox::Yes)
+        {
+            model->setWalletReindex();
+            StartShutdown();
+        }
+    }
+
+    accept();
 }
 
 void OptionsDialog::on_openBitcoinConfButton_clicked()

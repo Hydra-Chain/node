@@ -102,7 +102,7 @@ bool WalletInit::ParameterInteraction() const
         }
     }
 
-    bool zapwallettxes = gArgs.GetBoolArg("-zapwallettxes", false);
+    bool zapwallettxes = gArgs.GetBoolArg("-zapwallettxes", false) || GetStartupFileVal();
     // -zapwallettxes implies dropping the mempool on startup
     if (zapwallettxes && gArgs.SoftSetBoolArg("-persistmempool", false)) {
         LogPrintf("%s: parameter interaction: -zapwallettxes enabled -> setting -persistmempool=0\n", __func__);

@@ -259,6 +259,25 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="reindexButton">
+         <property name="toolTip">
+          <string>Reindex the blockchain from the beginning and reconstruct the wallet transactions.</string>
+         </property>
+         <property name="text">
+          <string>&amp;Reindex blockchain</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer_Main">
          <property name="orientation">
           <enum>Qt::Vertical</enum>

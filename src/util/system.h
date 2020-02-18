@@ -63,6 +63,9 @@ inline std::string _(const char* psz)
 void SetupEnvironment();
 bool SetupNetworking();
 
+void SetStartupFile(bool flag);
+bool GetStartupFileVal();
+
 template<typename... Args>
 bool error(const char* fmt, const Args&... args)
 {

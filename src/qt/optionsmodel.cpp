@@ -17,6 +17,7 @@
 #include <netbase.h>
 #include <txdb.h> // for -dbcache defaults
 #include <qt/intro.h>
+#include <util/system.h>
 
 #ifdef ENABLE_WALLET
 #include <wallet/wallet.h>
@@ -35,6 +36,11 @@ OptionsModel::OptionsModel(interfaces::Node& node, QObject *parent, bool resetSe
     QAbstractListModel(parent), m_node(node)
 {
     Init(resetSettings);
+}
+
+void OptionsModel::setWalletReindex()
+{
+    SetStartupFile(true);
 }
 
 void OptionsModel::addOverriddenOption(const std::string &option)

@@ -10,6 +10,7 @@
 #include <serialize.h>
 #include <util/strencodings.h>
 #include <regex>
+#include <fstream>
 
 #include <stdarg.h>
 
@@ -75,6 +76,7 @@
 const int64_t nStartupTime = GetTime();
 
 const char * const BITCOIN_CONF_FILENAME = "locktrip.conf";
+const char * const STARTUP_CONF_FILENAME = ".startup";
 
 ArgsManager gArgs;
 
@@ -134,6 +136,49 @@ bool DirIsWritable(const fs::path& directory)
     remove(tmpFile);
 
     return true;
+}
+
+void SetStartupFile(bool flag)
+{
+    fs::path startupFilePath = GetDataDir(false) / STARTUP_CONF_FILENAME;
+    std::fstream file;
+
+    // Create file if it does not exist
+    file.open(startupFilePath.c_str(), std::ios::out | std::ios::app);
+    file.close();
+
+    file.open(startupFilePath.c_str(), std::ios::in | std::ios::out | std::ios::trunc);
+
+    file << flag;
+    file.close();
+}
+
+bool GetStartupFileVal()
+{
+    fs::path startupFilePath = GetDataDir(false) / STARTUP_CONF_FILENAME;
+    std::fstream file;
+    struct stat buf;
+    std::string line;
+    bool flag = false;
+
+    // Check if file exists
+    if(stat(startupFilePath.c_str(), &buf) == 0)
+    {
+        file.open(startupFilePath.c_str(), std::ios::in);
+        std::getline(file, line);
+        std::istringstream iss(line);
+
+        // Try to fill line in bool
+        if(!(iss >> flag)) {
+            return false;
+        }
+
+        return flag;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 /**

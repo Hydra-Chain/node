@@ -85,6 +85,7 @@ public:
     const QString& getOverriddenByCommandLine() { return strOverriddenByCommandLine; }
     bool getCheckForUpdates() const { return fCheckForUpdates; }
     bool getZeroBalanceAddressToken() const { return bZeroBalanceAddressToken; }
+    void setWalletReindex();
 
     /* Restart flag helper */
     void setRestartRequired(bool fRequired);
