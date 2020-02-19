@@ -142,12 +142,13 @@ void SetStartupFile(bool flag)
 {
     fs::path startupFilePath = GetDataDir(false) / STARTUP_CONF_FILENAME;
     std::fstream file;
+    std::string path(startupFilePath.string());
 
     // Create file if it does not exist
-    file.open(startupFilePath.c_str(), std::ios::out | std::ios::app);
+    file.open(path, std::ios::out | std::ios::app);
     file.close();
 
-    file.open(startupFilePath.c_str(), std::ios::in | std::ios::out | std::ios::trunc);
+    file.open(path, std::ios::in | std::ios::out | std::ios::trunc);
 
     file << flag;
     file.close();
@@ -157,17 +158,18 @@ bool GetStartupFileVal()
 {
     fs::path startupFilePath = GetDataDir(false) / STARTUP_CONF_FILENAME;
     std::fstream file;
-    struct stat buf;
+    
     std::string line;
     bool flag = false;
-
+    std::string path(startupFilePath.string());
+    
     // Check if file exists
-    if(stat(startupFilePath.c_str(), &buf) == 0)
+    file.open(path, std::ios::in);
+    if(file.good())
     {
-        file.open(startupFilePath.c_str(), std::ios::in);
         std::getline(file, line);
         std::istringstream iss(line);
-
+	file.close();
         // Try to fill line in bool
         if(!(iss >> flag)) {
             return false;
