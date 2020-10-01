@@ -1,23 +1,23 @@
-# What is LockTrip?
+# What is LT?
 
-LockTrip is a decentralized open source bookings ecosystem for renting hotel rooms, private properties or accommodation. LockTrip will be the first system which allows end customers and property owners to deal with each other on the platform without any fee or commission.
+LT is a decentralized open source bookings ecosystem for renting hotel rooms, private properties or accommodation. LT will be the first system which allows end customers and property owners to deal with each other on the platform without any fee or commission.
 
-The LockTrip Blockchain is a hybrid utilizing the transaction model of Bitcoin and employing the powerful virtual machine of Ethereum. It is based on the Bitcoin Core, Ethereum and Qtum.
+The LT Blockchain is a hybrid utilizing the transaction model of Bitcoin and employing the powerful virtual machine of Ethereum. It is based on the Bitcoin Core, Ethereum and Qtum.
 It features a Proof of Stake consensus mechanism, high transaction throughput, democratic governance of key parameters, predictable network fees and a unique profit-sharing system.
 
 # License
-LockTrip is [GPLv3 licensed](https://www.gnu.org/licenses/gpl-3.0.html)
+LT is [GPLv3 licensed](https://www.gnu.org/licenses/gpl-3.0.html)
 
 # Resources
 Devnet explorer: http://explorer.locktrip.com/
 Devnet faucet: http://faucet.locktrip.com
 Wallet downloads: https://github.com/LockTrip/Blockchain/releases
 
-# Building LockTrip Blockchain
+# Building LT Blockchain
 
 ### Build on Ubuntu
 
-    # This is a quick start script for compiling LockTrip on  Ubuntu
+    # This is a quick start script for compiling LT on  Ubuntu
 
     sudo apt-get install build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils git cmake libboost-all-dev libgmp3-dev
     sudo apt-get install software-properties-common
@@ -28,8 +28,8 @@ Wallet downloads: https://github.com/LockTrip/Blockchain/releases
     # If you want to build the Qt GUI:
     sudo apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler qrencode
 
-    git clone https://github.com/LockTrip/Blockchain.git --recursive
-    cd LockTrip
+    git clone https://github.com/LockTrip/Blockchain.git --recursive LT
+    cd LT
 
     # Note autogen will prompt to install some more dependencies if needed
     ./autogen.sh
@@ -38,7 +38,7 @@ Wallet downloads: https://github.com/LockTrip/Blockchain/releases
     
 ### Build on CentOS
 
-Here is a brief description for compiling LockTrip on CentOS
+Here is a brief description for compiling LT on CentOS
 
     # Compiling boost manually
     sudo yum install python-devel bzip2-devel
@@ -50,16 +50,16 @@ Here is a brief description for compiling LockTrip on CentOS
     ./b2 headers
     sudo ./b2 -j4 install
     
-    # Installing Dependencies for LockTrip
+    # Installing Dependencies for LT
     sudo yum install epel-release
     sudo yum install libtool libdb4-cxx-devel openssl-devel libevent-devel gmp-devel
     
     # If you want to build the Qt GUI:
     sudo yum install qt5-qttools-devel protobuf-devel qrencode-devel
     
-    # Building LockTrip
-    git clone --recursive https://github.com/LockTrip/Blockchain.git
-    cd LockTrip
+    # Building LT
+    git clone https://github.com/LockTrip/Blockchain.git --recursive LT
+    cd LT
     ./autogen.sh
     ./configure
     make -j4
@@ -85,16 +85,16 @@ Then install [Homebrew](https://brew.sh).
 
 NOTE: Building with Qt4 is still supported, however, could result in a broken UI. Building with Qt5 is recommended.
 
-#### Build LockTrip 
+#### Build LT 
 
-1. Clone the LockTrip source code and cd into `LockTrip`
+1. Clone the LT source code and cd into `LT`
 
-        git clone --recursive https://github.com/LockTrip/Blockchain.git
-        cd LockTrip
+        git clone https://github.com/LockTrip/Blockchain.git --recursive LT
+        cd LT
 
-2.  Build LockTrip:
+2.  Build LT:
 
-    Configure and build the headless LockTrip binaries as well as the GUI (if Qt is found).
+    Configure and build the headless LT binaries as well as the GUI (if Qt is found).
 
     You can disable the GUI build by passing `--without-gui` to configure.
 
