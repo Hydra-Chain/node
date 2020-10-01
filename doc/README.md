@@ -1,15 +1,15 @@
-LockTrip
+LT
 ========
 
 Setup
 ---------------------
-LockTrip is the original LockTrip Blockchain client and it builds the backbone of the network. It downloads and, by default, stores the entire history of LockTrip transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
+LT is the original LT Blockchain client and it builds the backbone of the network. It downloads and, by default, stores the entire history of LT transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
 
-To download LockTrip, visit [the download page](https://github.com/LockTrip/Blockchain/releases).
+To download LT, visit [the download page](https://github.com/LockTrip/Blockchain/releases).
 
 Running
 ---------------------
-The following are some helpful notes on how to run LockTrip on your native platform.
+The following are some helpful notes on how to run LT on your native platform.
 
 ### Unix
 
@@ -24,7 +24,7 @@ Unpack the files into a directory, and then run locktrip-qt.exe.
 
 ### OS X
 
-Drag LockTrip to your applications folder, and then run LockTrip.
+Drag LT to your applications folder, and then run LT.
 
 ### Need Help?
 
@@ -34,7 +34,7 @@ Drag LockTrip to your applications folder, and then run LockTrip.
 
 Building
 ---------------------
-The following are developer notes on how to build LockTrip on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build LT on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [OS X Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
@@ -43,7 +43,7 @@ The following are developer notes on how to build LockTrip on your native platfo
 
 Development
 ---------------------
-The LockTrip repo's [root README](/README.md) contains relevant information on the development process and automated testing.
+The LT repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Release Notes](release-notes.md)

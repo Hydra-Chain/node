@@ -1,20 +1,20 @@
-# LockTrip Testnet Usage and Information
+# LT Testnet Usage and Information
 
-LockTrip is a decentralized blockchain project built on Bitcoin's UTXO model, but with support for Ethereum Virtual Machine based smart contracts. It achieves this through the revolutionary Account Abstraction Layer. For more general information about LockTrip as well as links to join our community, go to https://locktrip.com
+LT is a decentralized blockchain project built on Bitcoin's UTXO model, but with support for Ethereum Virtual Machine based smart contracts. It achieves this through the revolutionary Account Abstraction Layer. For more general information about LT as well as links to join our community, go to https://locktrip.com
 
-Welcome to LockTrip Testnet, the first public testnet for the LockTrip blockchain. The testnet is designed primarily for developers, and as such documentation at this point will be technical and suited more for developers. Testnet tokens do not hold any value and should not be traded for any monetary instruments. The testnet can be reset or forked at anytime as deemed necessary for development.
+Welcome to LT Testnet, the first public testnet for the LT blockchain. The testnet is designed primarily for developers, and as such documentation at this point will be technical and suited more for developers. Testnet tokens do not hold any value and should not be traded for any monetary instruments. The testnet can be reset or forked at anytime as deemed necessary for development.
 
-# Using Smart Contracts with LockTrip
+# Using Smart Contracts with LT
 
-The smart contract interface in LockTrip still requires some technical knowledge.
+The smart contract interface in LT still requires some technical knowledge.
 
 To demonstrate how to deploy and interact with a simple we will use this contract:
 
     pragma solidity ^0.4.0;
 
-    contract LockTripTest {
+    contract LTTest {
        uint storedNumber;
-       function LockTripTest() {
+       function LTTest() {
            storedNumber=1;
        }
        function setNumber(uint number) public{
@@ -59,7 +59,7 @@ And finally, has the following JSON interface file:
 
 This info can easily be retrieved for any contract by using [Remix IDE](http://remix.ethereum.org), inputing your contract's source code, and then on the right hand side clicking "contract details"
 
-(note, if using the debug window in the LockTrip Qt application, don't include `./locktrip-cli` in the commands)
+(note, if using the debug window in the LT Qt application, don't include `./locktrip-cli` in the commands)
 
 First, we need to deploy the contract:
 
@@ -153,7 +153,7 @@ Afterwards, we can call `returnNumber()` again and check the `output` field:
 
 This is 123456 encoded as hex. 
 
-You can also use the `logNumber()` function in order to generate logs. If your node was started with `-record-log-opcodes`, then the file `vmExecLogs.json` will contain any log operations that occur on the blockchain. This is what is used for events on the Ethereum blockchain, and eventually it is our intention to bring similar functionality to LockTrip.
+You can also use the `logNumber()` function in order to generate logs. If your node was started with `-record-log-opcodes`, then the file `vmExecLogs.json` will contain any log operations that occur on the blockchain. This is what is used for events on the Ethereum blockchain, and eventually it is our intention to bring similar functionality to LT.
 
 You can also deposit and withdraw coins from this test contract using the `deposit()` and `withdraw()` functions.
 
@@ -186,17 +186,17 @@ When creating this contract transaction, nothing will immediately happen, when t
 * Q: "I used `createcontract`, but can't call my contract and it's not in listcontract" A: You probably did not provide enough gas for the contract's constructor to be executed and it's code persisted in the blockchain. The vm.log file should confirm this by saying how much gas was needed
 * Q: "I sent a large amount of gas but I never got a refund" A: Refunds are generated from the coinstake transaction, so you must wait 1500 blocks for the gas refund to mature before it can be spent again
 * Q: "I used -reindex and now my node is taking forever to resync" A: Currently when doing a reindex, all contracts are reprocessed, so in a chain with many contract executions this can add up to a significant amount of time. This will be made faster in the future, as well as the initial syncing speed of nodes
-* Q: "I think I found a bug in LockTrip" A: Please report any bugs at https://github.com/LockTrip/Blockchain/issues
+* Q: "I think I found a bug in LT" A: Please report any bugs at https://github.com/LockTrip/Blockchain/issues
 
 
 
-# LockTrip RPC Commands
+# LT RPC Commands
 
-LockTrip supports all of the RPC commands supported by Bitcoin Core, but also includes the following commands:
+LT supports all of the RPC commands supported by Bitcoin Core, but also includes the following commands:
 
-* `createcontract` - This will create and deploy a new smart contract to the LockTrip blockchain. This requires gas.
-* `callcontract` - This will interact with an already deployed smart contract on the LockTrip blockchain, with all computation taking place off-chain and no persistence to the blockchain. This does not require gas
-* `sendtocontract` - This will interact with an already deployed smart contract on the LockTrip blockchain. All computation takes place on-chain and any state changes will be persisted to the blockchain. This allows tokens to be sent to a smart contract. This requires gas.
+* `createcontract` - This will create and deploy a new smart contract to the LT blockchain. This requires gas.
+* `callcontract` - This will interact with an already deployed smart contract on the LT blockchain, with all computation taking place off-chain and no persistence to the blockchain. This does not require gas
+* `sendtocontract` - This will interact with an already deployed smart contract on the LT blockchain. All computation takes place on-chain and any state changes will be persisted to the blockchain. This allows tokens to be sent to a smart contract. This requires gas.
 * `getaccountinfo` - This will show some low level information about a contract, including the contract's bytecode, stored data, and balance on the blockchain.
 * `listcontracts` - This will output a list of currently deployed contract addresses with their respective balance. This RPC call may change or be removed in the future.
 * `reservebalance` - This will reserve a set amount of coins so that they do not participate in staking. If you reserve as many or more coins than are in your wallet, then you will not participate at all in staking and block creation for the network.
@@ -205,26 +205,26 @@ LockTrip supports all of the RPC commands supported by Bitcoin Core, but also in
 * `fromhexaddress` - this will convert a hex address used in smart contracts to a standard Base58 pubkeyhash address
 
 
-# LockTrip Command Line Arguments
+# LT Command Line Arguments
 
-LockTrip supports all of the usual command line arguments that Bitcoin Core supports. In addition it adds the following new command line arguments:
+LT supports all of the usual command line arguments that Bitcoin Core supports. In addition it adds the following new command line arguments:
 
-* `-record-log-opcodes` - This will create a new log file in the LockTrip data directory (usually ~/.locktrip) named vmExecLogs.json, where any EVM LOG opcode is logged along with topics and data that the contract requested be logged.
+* `-record-log-opcodes` - This will create a new log file in the LT data directory (usually ~/.locktrip) named vmExecLogs.json, where any EVM LOG opcode is logged along with topics and data that the contract requested be logged.
 
 
 # Untested features
 
-Some features included in Bitcoin Core have not been tested in it's porting to LockTrip. This includes:
+Some features included in Bitcoin Core have not been tested in it's porting to LT. This includes:
 
 * Pruning
 
 # EVM Smart Contract Changes and Limitations
 
-Because of LockTrip's underlying technical differences, there are a few operations that can have different results or limitations when executed in LockTrip than when compared to Ethereum.
+Because of LT's underlying technical differences, there are a few operations that can have different results or limitations when executed in LT than when compared to Ethereum.
 
 These include the following, though there may be others introduced in the future:  
 
-* The gas schedule for LockTrip is different from Ethereum. Certain operations are more or less expensive. As such, gas cost estimators designed for Ethereum will not give accurate results for LockTrip. We will develop our own gas estimating tools as well as fully documenting these differences at a later date.
+* The gas schedule for LT is different from Ethereum. Certain operations are more or less expensive. As such, gas cost estimators designed for Ethereum will not give accurate results for LT. We will develop our own gas estimating tools as well as fully documenting these differences at a later date.
 * `block.coinbase` or the `COINBASE` opcode currently is not supported and will only return 0. When MPoS is released in the 2nd testnet this should be functioning as expected
 * `block.number` will return the previous block height before this block containing the contract's execution
 * `block.difficulty` will return the previous block's difficulty

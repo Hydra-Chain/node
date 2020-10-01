@@ -1,9 +1,9 @@
 Gitian building
 ================
 
-*Setup instructions for a Gitian build of LockTrip using a Debian VM or physical system.*
+*Setup instructions for a Gitian build of LT using a Debian VM or physical system.*
 
-Gitian is the deterministic build process that is used to build the LockTrip
+Gitian is the deterministic build process that is used to build the LT
 executables. It provides a way to be reasonably sure that the
 executables are really built from the source on GitHub. It also makes sure that
 the same, tested dependencies are used and statically built into the executable.
@@ -26,7 +26,7 @@ Table of Contents
 - [Installing Gitian](#installing-gitian)
 - [Setting up the Gitian image](#setting-up-the-gitian-image)
 - [Getting and building the inputs](#getting-and-building-the-inputs)
-- [Building LockTrip](#building-locktrip)
+- [Building LT](#building-locktrip)
 - [Building an alternative repository](#building-an-alternative-repository)
 - [Signing externally](#signing-externally)
 - [Uploading signatures](#uploading-signatures)
@@ -310,11 +310,11 @@ cd ..
 
 **Note**: When sudo asks for a password, enter the password for the user *debian* not for *root*.
 
-Clone the git repositories for LockTrip and Gitian.
+Clone the git repositories for LT and Gitian.
 
 ```bash
 git clone https://github.com/devrandom/gitian-builder.git
-git clone https://github.com/LockTrip/Blockchain LockTrip --recursive
+git clone https://github.com/LockTrip/Blockchain LT --recursive
 git clone https://github.com/LockTrip/Gitian-Sigs.git
 ```
 
@@ -353,16 +353,16 @@ Getting and building the inputs
 At this point you have two options, you can either use the automated script (found in [contrib/gitian-build.sh](/contrib/gitian-build.sh)) or you could manually do everything by following this guide. If you're using the automated script, then run it with the "--setup" command. Afterwards, run it with the "--build" command (example: "contrib/gitian-build.sh -b signer 0.13.0"). Otherwise ignore this.
 
 Follow the instructions in [doc/release-process.md](release-process.md#fetch-and-create-inputs-first-time-or-when-dependency-versions-change)
-in the LockTrip repository under 'Fetch and create inputs' to install sources which require
+in the LT repository under 'Fetch and create inputs' to install sources which require
 manual intervention. Also optionally follow the next step: 'Seed the Gitian sources cache
 and offline git repositories' which will fetch the remaining files required for building
 offline.
 
-Building LockTrip
+Building LT
 ----------------
 
-To build LockTrip (for Linux, OS X and Windows) just follow the steps under 'perform
-Gitian builds' in [doc/release-process.md](release-process.md#perform-gitian-builds) in the LockTrip repository.
+To build LT (for Linux, OS X and Windows) just follow the steps under 'perform
+Gitian builds' in [doc/release-process.md](release-process.md#perform-gitian-builds) in the LT repository.
 
 This may take some time as it will build all the dependencies needed for each descriptor.
 These dependencies will be cached after a successful build to avoid rebuilding them when possible.
@@ -402,7 +402,7 @@ Building fully offline
 -----------------------
 
 For building fully offline including attaching signatures to unsigned builds, the detached-sigs repository
-and the LockTrip git repository with the desired tag must both be available locally, and then gbuild must be
+and the LT git repository with the desired tag must both be available locally, and then gbuild must be
 told where to find them. It also requires an apt-cacher-ng which is fully-populated but set to offline mode, or
 manually disabling gitian-builder's use of apt-get to update the VM build environment.
 

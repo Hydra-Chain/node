@@ -38,18 +38,18 @@ from the root of the repository.
 
 **Note**: You only need Berkeley DB if the wallet is enabled (see [*Disable-wallet mode*](/doc/build-osx.md#disable-wallet-mode)).
 
-Build LockTrip
+Build LT
 ------------------------
 
-1. Clone the LockTrip source code and cd into `LockTrip`
+1. Clone the LT source code and cd into `LT`
 
-        git clone --recursive https://github.com/LockTrip/Blockchain.git LockTrip
-        cd LockTrip
+        git clone --recursive https://github.com/LockTrip/Blockchain.git LT
+        cd LT
         git submodule update --init --recursive
 
-2.  Build LockTrip-core:
+2.  Build LT:
 
-    Configure and build the headless LockTrip binaries as well as the GUI (if Qt is found).
+    Configure and build the headless LT binaries as well as the GUI (if Qt is found).
 
     You can disable the GUI build by passing `--without-gui` to configure.
 
@@ -79,7 +79,7 @@ Mining is also possible in disable-wallet mode using the `getblocktemplate` RPC 
 Running
 -------
 
-LockTrip is now available at `./src/locktripd`
+LT is now available at `./src/locktripd`
 
 Before running, it's recommended you create an RPC configuration file.
 
@@ -96,13 +96,13 @@ You can monitor the download process by looking at the debug.log file:
 Other commands:
 -------
 
-    ./src/locktripd -daemon # Starts the locktrip daemon.
+    ./src/locktripd -daemon # Starts the LT daemon.
     ./src/locktrip-cli --help # Outputs a list of command-line options.
     ./src/locktrip-cli help # Outputs a list of RPC commands when the daemon is running.
 
 Using Qt Creator as IDE
 ------------------------
-You can use Qt Creator as an IDE, for locktrip development.
+You can use Qt Creator as an IDE, for LT development.
 Download and install the community edition of [Qt Creator](https://www.qt.io/download/).
 Uncheck everything except Qt Creator during the installation process.
 
