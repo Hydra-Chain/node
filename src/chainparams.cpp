@@ -73,9 +73,9 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
 
 CChainParams::CChainParams()
 {
-    consensus.totalCoinsSupply = 1858593274150085; // locktrip contract coin suply
-    consensus.nBlockRewardChangeInterval = 262800; // locktrip reward changing aprox every 1 year
-    consensus.blockRewardPerInterval = {40000000, 30000000, 20000000, 10000000, 5000000};
+    consensus.totalCoinsSupply = 1858593274150085; // supply is practically infinite
+    consensus.blocksPerYear = 246375;
+    consensus.nBlockRewardChangeInterval = 0xffffffffffffffff; // block reward changes with dgp
     consensus.BIP34Height = 0;
     consensus.BIP65Height = 0;
     consensus.BIP66Height = 0;
@@ -333,8 +333,8 @@ public:
         consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
 
         // LOC have 500 blocks of maturity, increased values for regtest in unit tests in order to correspond with it
-        consensus.nBlockRewardChangeInterval = 750;
-        consensus.blockRewardPerInterval = {10000000, 7500000, 5000000, 2500000, 1250000};
+        consensus.blocksPerYear = 246375;
+        consensus.nBlockRewardChangeInterval = 0xffffffffffffffff; // block reward changes with dgp
         consensus.totalCoinsSupply = 1858593274150085 ; // locktrip contract coin suply
         consensus.nRuleChangeActivationThreshold = 558; // 75% for testchains
         consensus.nMinerConfirmationWindow = 744; // Faster than normal for regtest (744 instead of 2016)

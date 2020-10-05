@@ -1388,32 +1388,21 @@ bool ReadRawBlockFromDisk(std::vector<uint8_t>& block, const CBlockIndex* pindex
 
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
     if (nHeight <= consensusParams.nLastPOWBlock) {
-        CAmount totalRewardAfterPOW = 0;
-        for (CAmount blockRewardAfterPOW : consensusParams.blockRewardPerInterval)
-            totalRewardAfterPOW += blockRewardAfterPOW * consensusParams.nBlockRewardChangeInterval;
-
-        CAmount totalSupply = consensusParams.totalCoinsSupply;
-
-        if (totalSupply <= totalRewardAfterPOW) {
-            return 0;
-        }
-
-        CAmount devisionRemainder = 0;
-        if (nHeight == consensusParams.nLastPOWBlock) {
-            devisionRemainder = (totalSupply - totalRewardAfterPOW) % consensusParams.nLastPOWBlock;
-        }
-
-        return (totalSupply - totalRewardAfterPOW) / consensusParams.nLastPOWBlock + devisionRemainder;
-    }
-
-    int blockRewardInterval =
-            (nHeight - consensusParams.nLastPOWBlock - 1) / consensusParams.nBlockRewardChangeInterval;
-    if (consensusParams.blockRewardPerInterval.size() <= blockRewardInterval) {
         return 0;
     }
 
+    // TODO
+
+    Dgp dgp;
+    uint8_t blockRewardPercentage;
+    dgp.getDgpParam(BLOCK_REWARD_PERCENTAGE, blockRewardPercentage);
+    if (blockRewardPercentage > MAX_BLOCK_REWARD_PERCENTAGE_DGP ||
+            blockRewardPercentage < MIN_BLOCK_REWARD_PERCENTAGE_DGP) {
+        blockRewardPercentage = DEFAULT_BLOCK_REWARD_PERCENTAGE_DGP;
+    }
+
     // No reward after initial PoW coin generation
-    return consensusParams.blockRewardPerInterval[blockRewardInterval];
+    return ((blockRewardPercentage / 100) * consensusParams.totalCoinsSupply) / consensusParams.blocksPerYear;
 }
 
 bool IsInitialBlockDownload()

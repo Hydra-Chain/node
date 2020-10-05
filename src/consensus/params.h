@@ -49,8 +49,7 @@ struct BIP9Deployment {
  */
 struct Params {
     uint256 hashGenesisBlock;
-    int nBlockRewardChangeInterval;
-    std::vector<CAmount> blockRewardPerInterval;
+    unsigned long long int nBlockRewardChangeInterval;
     /* Block hash that is excepted from BIP16 enforcement */
     uint256 BIP16Exception;
     /** Block height and hash at which BIP34 becomes active */
@@ -96,6 +95,7 @@ struct Params {
     uint256 defaultAssumeValid;
     int nLastPOWBlock;
     CAmount totalCoinsSupply;
+    int blocksPerYear;
     int nFirstMPoSBlock;
     int nMPoSRewardRecipients;
     int nFixUTXOCacheHFHeight;
