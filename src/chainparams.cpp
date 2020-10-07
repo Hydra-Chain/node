@@ -74,6 +74,7 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
 CChainParams::CChainParams()
 {
     consensus.totalCoinsSupply = 1858593274150085; // supply is practically infinite
+    consensus.initialCoinsSupply = consensus.totalCoinsSupply;
     consensus.blocksPerYear = 246375;
     consensus.nBlockRewardChangeInterval = 0xffffffffffffffff; // block reward changes with dgp
     consensus.BIP34Height = 0;

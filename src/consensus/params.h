@@ -95,6 +95,7 @@ struct Params {
     uint256 defaultAssumeValid;
     int nLastPOWBlock;
     CAmount totalCoinsSupply;
+    CAmount initialCoinsSupply;
     int blocksPerYear;
     int nFirstMPoSBlock;
     int nMPoSRewardRecipients;

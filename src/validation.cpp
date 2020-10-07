@@ -10,6 +10,7 @@
 #include <chainparams.h>
 #include <checkpoints.h>
 #include <checkqueue.h>
+#include <cmath>
 #include <consensus/consensus.h>
 #include <consensus/merkle.h>
 #include <consensus/tx_verify.h>
@@ -1386,23 +1387,48 @@ bool ReadRawBlockFromDisk(std::vector<uint8_t>& block, const CBlockIndex* pindex
     return ReadRawBlockFromDisk(block, block_pos, message_start);
 }
 
+CAmount GetSupplayWithInterest(CAMount supplay, int percentage, int height, int blocksPerYear) {
+    //([initial supply] * (1 + [n%] / [blocks per year])^n)
+    return supplay * pow(1 + ((percentage / 100) / blocksPerYear), height);
+}
+
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
     if (nHeight <= consensusParams.nLastPOWBlock) {
         return 0;
     }
 
-    // TODO
-
     Dgp dgp;
-    uint8_t blockRewardPercentage;
-    dgp.getDgpParam(BLOCK_REWARD_PERCENTAGE, blockRewardPercentage);
-    if (blockRewardPercentage > MAX_BLOCK_REWARD_PERCENTAGE_DGP ||
-            blockRewardPercentage < MIN_BLOCK_REWARD_PERCENTAGE_DGP) {
-        blockRewardPercentage = DEFAULT_BLOCK_REWARD_PERCENTAGE_DGP;
+
+    dgp.fillBlockRewardBlocksInfo();
+    dgp.fillBlockRewardPercentageInfo();
+
+    CAmount prevTotalSupplay  = consensusParams.initialCoinsSupply;
+    CAmount newTotalSupplay = consensusParams.initialCoinsSupply;
+    int lastPercentage = dgp.blockRewardVotePercentages[0];
+    int lastHeight = dgp.blockRewardVoteBlocks[0];
+
+    for(int i = 1; i < dgp.blockRewardVotePercentages.size(); i++) {
+        if(nHeight < dgp.blockRewardVoteBlocks[i]) {
+            break;
+        }
+
+        newTotalSupplay = GetSupplayWithInterest(newTotalSupplay, lastPercentage, dgp.blockRewardVoteBlocks[i] - lastHeight, consensusParams.blocksPerYear);
+        lastHeight = dgp.blockRewardVoteBlocks[i];
+        lastPercentage = dgp.blockRewardVotePercentages[i];
     }
 
-    // No reward after initial PoW coin generation
-    return ((blockRewardPercentage / 100) * consensusParams.totalCoinsSupply) / consensusParams.blocksPerYear;
+    if(nHeight == lastHeight) {
+        prevTotalSupplay = newTotalSupplay;
+    }
+    else {
+        prevTotalSupplay = GetSupplayWithInterest(newTotalSupplay, lastPercentage, nHeight - lastHeight, consensusParams.blocksPerYear);
+    }
+
+    if(nHeight >= lastHeight) {
+        newTotalSupplay = GetSupplayWithInterest(newTotalSupplay, lastPercentage, nHeight - lastHeight + 1, consensusParams.blocksPerYear);
+    }
+
+    return newTotalSupplay - prevTotalSupplay;
 }
 
 bool IsInitialBlockDownload()
