@@ -136,6 +136,48 @@ bool Dgp::getVoteBlockExpiration(uint64_t& expiration) {
     }
 }
 
+bool Dgp::fillBlockRewardBlocksInfo() {
+    LOCK(cs_main);
+    std::string callString {};
+    std::vector<std::vector<std::string>> values{};
+    bool status = this->generateCallString(values, callString, GET_VOTE_EXPIRATION);
+
+    if (status) {
+        std::vector<ResultExecute> result = CallContract(LockTripDgpContract, ParseHex(callString), dev::Address(), 0, DEFAULT_BLOCK_GAS_LIMIT_DGP);
+
+        if (!result.empty()) {
+            dev::bytesConstRef o(&result[0].execRes.output);
+            dev::u256 data = dev::eth::ABIDeserialiser<dev::u256>::deserialise(o);
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+bool Dgp::fillBlockRewardPercentageInfo() {
+    LOCK(cs_main);
+    std::string callString {};
+    std::vector<std::vector<std::string>> values{};
+    bool status = this->generateCallString(values, callString, GET_VOTE_EXPIRATION);
+
+    if (status) {
+        std::vector<ResultExecute> result = CallContract(LockTripDgpContract, ParseHex(callString), dev::Address(), 0, DEFAULT_BLOCK_GAS_LIMIT_DGP);
+
+        if (!result.empty()) {
+            dev::bytesConstRef o(&result[0].execRes.output);
+            dev::u256 data = dev::eth::ABIDeserialiser<dev::u256>::deserialise(o);
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
 bool Dgp::getDgpParam(dgp_params param, uint64_t& value) {
     LOCK(cs_main);
     std::vector<std::string> params {std::to_string(param)};
@@ -148,6 +190,8 @@ bool Dgp::getDgpParam(dgp_params param, uint64_t& value) {
 
         if (!result.empty()) {
             dev::bytesConstRef o(&result[0].execRes.output);
+            std::string s(result[0].execRes.output.begin(), result[0].execRes.output.end());
+            std::cout << "############# bytes const ref -> " << s << std::endl;
             dev::u256 data = dev::eth::ABIDeserialiser<dev::u256>::deserialise(o);
             value = uint64_t(dev::u256(dev::h256(data)));
             return true;
@@ -236,6 +280,7 @@ void Dgp::updateDgpCache() {
     if(DGP_CACHE_BLOCK_REWARD_PERCENTAGE < MIN_BLOCK_REWARD_PERCENTAGE_DGP ||
             DGP_CACHE_BLOCK_REWARD_PERCENTAGE > MAX_BLOCK_REWARD_PERCENTAGE_DGP)
         DGP_CACHE_BLOCK_REWARD_PERCENTAGE = DEFAULT_BLOCK_REWARD_PERCENTAGE_DGP;
+
 }
 
 void Dgp::updateDgpCacheParam(dgp_params param, uint64_t& cache) {
