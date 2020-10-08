@@ -1394,7 +1394,12 @@ CAmount GetSupplayWithInterest(CAmount supplay, int percentage, int height, int 
 
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
     if (nHeight <= consensusParams.nLastPOWBlock) {
-        return 0;
+        CAmount divisionRemainder = 0;
+        if (nHeight == consensusParams.nLastPOWBlock) {
+            divisionRemainder = consensusParams.totalCoinsSupply % consensusParams.nLastPOWBlock;
+        }
+
+        return (consensusParams.totalCoinsSupply / consensusParams.nLastPOWBlock) + divisionRemainder;
     }
 
     Dgp dgp;
