@@ -66,12 +66,12 @@
         <translation>Direcciones de recepción</translation>
     </message>
     <message>
-        <source>These are your LockTrip addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Estás son tus direcciones de LockTrip para enviar pagos. Verifica siempre el monto y la dirección de recepción antes de enviar monedas.</translation>
+        <source>These are your LT addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Estás son tus direcciones de LT para enviar pagos. Verifica siempre el monto y la dirección de recepción antes de enviar monedas.</translation>
     </message>
     <message>
-        <source>These are your LockTrip addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Estas son tus direcciones de LockTrip para recibir pagos. Es recomendable usar una nueva dirección de recepción para cada transacción.</translation>
+        <source>These are your LT addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Estas son tus direcciones de LT para recibir pagos. Es recomendable usar una nueva dirección de recepción para cada transacción.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -176,8 +176,8 @@
         <translation>Confirmar encriptación de billetera</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR LOCS&lt;/b&gt;!</source>
-        <translation>Atención: Si encriptas tu billetera y pierdes tu contraseña, vas a &lt;b&gt;PERDER TODOS TUS LOCS&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR LTs&lt;/b&gt;!</source>
+        <translation>Atención: Si encriptas tu billetera y pierdes tu contraseña, vas a &lt;b&gt;PERDER TODOS TUS LTs&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -188,8 +188,8 @@
         <translation>Billetera encriptada</translation>
     </message>
     <message>
-        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your LOCS from being stolen by malware infecting your computer.</source>
-        <translation>Tu billetera quedó encriptada. Recuerda que encriptar tu billetera no protege totalmente tus LOCS de ser robados por malware que infecte tu computadora.</translation>
+        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your LTs from being stolen by malware infecting your computer.</source>
+        <translation>Tu billetera quedó encriptada. Recuerda que encriptar tu billetera no protege totalmente tus LTs de ser robados por malware que infecte tu computadora.</translation>
     </message>
     <message>
         <source>Wallet encryption failed</source>
@@ -204,7 +204,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>LockTripGUI</name>
+    <name>LTGUI</name>
     <message>
         <source>Synchronizing with network...</source>
         <translation>Sincronizando con la red...</translation>
@@ -250,16 +250,16 @@
         <translation>Cambiar contraseña</translation>
     </message>
     <message>
-        <source>Send coins to a LockTrip address</source>
-        <translation>Enviar monedas a una dirección LockTrip</translation>
+        <source>Send coins to a LT address</source>
+        <translation>Enviar monedas a una dirección LT</translation>
     </message>
     <message>
         <source>Change the passphrase used for wallet encryption</source>
         <translation>Cambie la clave utilizada para el cifrado del monedero</translation>
     </message>
     <message>
-        <source>LockTrip</source>
-        <translation>LockTrip</translation>
+        <source>LT</source>
+        <translation>LT</translation>
     </message>
     <message>
         <source>&amp;Show / Hide</source>
@@ -384,8 +384,8 @@
 <context>
     <name>Intro</name>
     <message>
-        <source>LockTrip</source>
-        <translation>LockTrip</translation>
+        <source>LT</source>
+        <translation>LT</translation>
     </message>
     <message>
         <source>Error</source>
@@ -648,7 +648,7 @@
     </message>
     </context>
 <context>
-    <name>LockTrip</name>
+    <name>LT</name>
     <message>
         <source>Information</source>
         <translation>Información</translation>

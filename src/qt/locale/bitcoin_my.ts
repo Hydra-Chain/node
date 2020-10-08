@@ -48,7 +48,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>QtumGUI</name>
+    <name>LTGUI</name>
     </context>
 <context>
     <name>CoinControlDialog</name>
@@ -158,6 +158,6 @@
     </message>
     </context>
 <context>
-    <name>qtum-core</name>
+    <name>LT-core</name>
     </context>
 </TS>

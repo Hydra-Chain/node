@@ -1,4 +1,4 @@
-This directory contains the LockTrip graphical user interface (GUI). It uses the cross-platform framework [Qt](https://www1.qt.io/developers/).
+This directory contains the LT graphical user interface (GUI). It uses the cross-platform framework [Qt](https://www1.qt.io/developers/).
 
 The current precise version for Qt 5 is specified in [qt.mk](/depends/packages/qt.mk).
 
@@ -32,7 +32,7 @@ Tests.
 
 ### bitcoingui.(h/cpp)
 
-Represents the main window of the LockTrip UI.
+Represents the main window of the LT UI.
 
 ### \*model.(h/cpp)
 

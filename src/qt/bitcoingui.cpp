@@ -292,7 +292,7 @@ void BitcoinGUI::createActions()
     tabGroup->addAction(overviewAction);
 
     sendCoinsAction = new QAction(platformStyle->MultiStatesIcon(":/icons/send_to"), tr("&Send"), this);
-    sendCoinsAction->setStatusTip(tr("Send coins to a LockTrip address"));
+    sendCoinsAction->setStatusTip(tr("Send coins to a LT address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
     sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
@@ -303,7 +303,7 @@ void BitcoinGUI::createActions()
     sendCoinsMenuAction->setToolTip(sendCoinsMenuAction->statusTip());
 
     receiveCoinsAction = new QAction(platformStyle->MultiStatesIcon(":/icons/receive_from"), tr("&Receive"), this);
-    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and LOC: URIs)"));
+    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and LT: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
     receiveCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_3));
@@ -423,9 +423,9 @@ void BitcoinGUI::createActions()
     lockWalletAction = new QAction(platformStyle->MenuColorIcon(":/icons/lock_closed"), tr("&Lock Wallet"), this);
     lockWalletAction->setToolTip(tr("Lock wallet"));
     signMessageAction = new QAction(platformStyle->MenuColorIcon(":/icons/edit"), tr("Sign &message..."), this);
-    signMessageAction->setStatusTip(tr("Sign messages with your LockTrip addresses to prove you own them"));
+    signMessageAction->setStatusTip(tr("Sign messages with your LT addresses to prove you own them"));
     verifyMessageAction = new QAction(platformStyle->MenuColorIcon(":/icons/verify"), tr("&Verify message..."), this);
-    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified LockTrip addresses"));
+    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified LT addresses"));
 
     openRPCConsoleAction = new QAction(platformStyle->MenuColorIcon(":/icons/debugwindow"), tr("&Information window"), this);
     openRPCConsoleAction->setStatusTip(tr("Open debugging and diagnostic console"));
@@ -438,11 +438,11 @@ void BitcoinGUI::createActions()
     usedReceivingAddressesAction->setStatusTip(tr("Show the list of used receiving addresses and labels"));
 
     openAction = new QAction(platformStyle->MenuColorIcon(":/icons/open"), tr("Open &URI..."), this);
-    openAction->setStatusTip(tr("Open a LOC: URI or payment request"));
+    openAction->setStatusTip(tr("Open a LT: URI or payment request"));
 
     showHelpMessageAction = new QAction(platformStyle->MenuColorIcon(":/icons/info"), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
-    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible LockTrip command-line options").arg(tr(PACKAGE_NAME)));
+    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible LT command-line options").arg(tr(PACKAGE_NAME)));
 
     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
     connect(aboutAction, SIGNAL(triggered()), this, SLOT(aboutClicked()));
@@ -587,7 +587,7 @@ void BitcoinGUI::setClientModel(ClientModel *_clientModel)
         if(_clientModel->getOptionsModel()->getCheckForUpdates() && qtumVersionChecker->newVersionAvailable())
         {
             QString link = QString("<a href=%1>%2</a>").arg(QTUM_RELEASES, QTUM_RELEASES);
-            QString message(tr("New version of LockTrip wallet is available on the LockTrip source code repository: <br /> %1. <br />It is recommended to download it and update this application").arg(link));
+            QString message(tr("New version of LT wallet is available on the LT source code repository: <br /> %1. <br />It is recommended to download it and update this application").arg(link));
             QMessageBox::information(this, tr("Check for updates"), message);
         }
 
@@ -952,7 +952,7 @@ void BitcoinGUI::updateNetworkState()
     QString tooltip;
 
     if (m_node.getNetworkActive()) {
-        tooltip = tr("%n active connection(s) to LockTrip network", "", count) + QString(".<br>") + tr("Click to disable network activity.");
+        tooltip = tr("%n active connection(s) to LT network", "", count) + QString(".<br>") + tr("Click to disable network activity.");
     } else {
         tooltip = tr("Network activity disabled.") + QString("<br>") + tr("Click to enable network activity again.");
         icon = ":/icons/network_disabled";
@@ -1102,7 +1102,7 @@ void BitcoinGUI::setNumBlocks(int count, const QDateTime& blockDate, double nVer
 
 void BitcoinGUI::message(const QString &title, const QString &message, unsigned int style, bool *ret)
 {
-    QString strTitle = tr("LockTrip"); // default title
+    QString strTitle = tr("LT"); // default title
     // Default to information icon
     int nMBoxIcon = QMessageBox::Information;
     int nNotifyIcon = Notificator::Information;
@@ -1416,7 +1416,7 @@ void BitcoinGUI::updateStakingIcon()
         nNetworkWeight /= COIN;
 
         labelStakingIcon->setPixmap(QIcon(":/icons/staking_on").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
-        labelStakingIcon->setToolTip(tr("Staking.<br>Your weight is %1<br>Network weight is %2<br>Expected* time to earn reward is %3<br>* This estimate is based on the current network weight and LOCs staked. Please keep in mind that the network weight is a dynamic value which changes constantly. For this reason, your estimation is nothing more than an hypothetical approximation based on the current network state.").arg(nWeight).arg(nNetworkWeight).arg(text));
+        labelStakingIcon->setToolTip(tr("Staking.<br>Your weight is %1<br>Network weight is %2<br>Expected* time to earn reward is %3<br>* This estimate is based on the current network weight and LTs staked. Please keep in mind that the network weight is a dynamic value which changes constantly. For this reason, your estimation is nothing more than an hypothetical approximation based on the current network state.").arg(nWeight).arg(nNetworkWeight).arg(text));
     }
     else
     {

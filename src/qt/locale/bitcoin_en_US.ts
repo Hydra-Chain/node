@@ -68,7 +68,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>LockTripGUI</name>
+    <name>LTGUI</name>
     </context>
 <context>
     <name>CoinControlDialog</name>
@@ -170,6 +170,6 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>LockTrip</name>
+    <name>LT</name>
     </context>
 </TS>

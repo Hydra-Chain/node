@@ -92,7 +92,7 @@
                                                     </font>
                                                 </property>
                                                 <property name="text">
-                                                    <string>0.000 000 00 LOC</string>
+                                                    <string>0.000 000 00 LT</string>
                                                 </property>
                                                 <property name="alignment">
                                                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -151,7 +151,7 @@
                                         <item>
                                             <widget class="QLabel" name="labelReward">
                                                 <property name="text">
-                                                    <string>0.4 LOC/Block</string>
+                                                    <string>0.4 LT/Block</string>
                                                 </property>
                                                 <property name="alignment">
                                                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

@@ -32,7 +32,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>LockTripGUI</name>
+    <name>LTGUI</name>
     <message>
         <source>Quit application</source>
         <translation>Κλείσιμο εφαρμογής</translation>
@@ -201,7 +201,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>LockTrip-core</name>
+    <name>LT-core</name>
     <message>
         <source>Insufficient funds</source>
         <translation>Κεφάλαια μη επαρκή</translation>

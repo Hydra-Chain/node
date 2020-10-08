@@ -39,7 +39,7 @@
 #include "locktrip/dgp.h"
 
 #if defined(NDEBUG)
-# error "LockTrip cannot be compiled without assertions."
+# error "LT cannot be compiled without assertions."
 #endif
 
 /** Expiration time for orphan transactions in seconds */

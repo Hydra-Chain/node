@@ -64,7 +64,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>QtumGUI</name>
+    <name>LTGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Потпиши &amp;порака...</translation>
@@ -126,7 +126,7 @@
         <translation>Повторно индексирање на блокови од дискот...</translation>
     </message>
     <message>
-        <source>Send coins to a Qtum address</source>
+        <source>Send coins to a LT address</source>
         <translation>Испрати биткоини на Биткоин адреса</translation>
     </message>
     <message>
@@ -134,7 +134,7 @@
         <translation>&amp;Потврди порака...</translation>
     </message>
     <message>
-        <source>Qtum</source>
+        <source>LT</source>
         <translation>Биткоин</translation>
     </message>
     <message>
@@ -287,7 +287,7 @@
 <context>
     <name>Intro</name>
     <message>
-        <source>Qtum</source>
+        <source>LT</source>
         <translation>Биткоин</translation>
     </message>
     <message>
@@ -575,9 +575,9 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>qtum-core</name>
+    <name>LT-core</name>
     <message>
-        <source>Qtum Core</source>
+        <source>LT Core</source>
         <translation>Биткоин Core</translation>
     </message>
     <message>

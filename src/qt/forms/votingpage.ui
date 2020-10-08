@@ -902,7 +902,7 @@
                <string notr="true">color: gray</string>
               </property>
               <property name="text">
-               <string>Legend: One vote is equal to 0.00000001 LOCs</string>
+               <string>Legend: One vote is equal to 0.00000001 LTs</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>

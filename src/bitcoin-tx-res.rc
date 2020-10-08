@@ -17,7 +17,7 @@ BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
             VALUE "CompanyName",        "LockTrip"
-            VALUE "FileDescription",    "locktrip-tx (CLI LockTrip transaction editor utility)"
+            VALUE "FileDescription",    "locktrip-tx (CLI LT transaction editor utility)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
             VALUE "InternalName",       "locktrip-tx"
             VALUE "LegalCopyright",     COPYRIGHT_STR

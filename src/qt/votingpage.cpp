@@ -204,17 +204,17 @@ VotingPage::~VotingPage()
 
 void VotingPage::voteButton(bool isYesVote) {
 	QStringList formatted;
-	QString questionString = tr("Please select the amount of LOCs to use for voting.");
+	QString questionString = tr("Please select the amount of LTs to use for voting.");
 	questionString.append("<br /><br />%1");
 	questionString.append("<hr /><span style='color:#aa0000;'>");
 	questionString.append("</span> ");
-	questionString.append("Your vote weight will be proportional to the amount of LOCs spent.");
+	questionString.append("Your vote weight will be proportional to the amount of LTs spent.");
 
 	questionString.append("<hr /><span style='color:#aa0000;'>");
-	questionString.append("The LOCs used for voting will be burned and cannot be retrieved!");
+	questionString.append("The LTs used for voting will be burned and cannot be retrieved!");
 	questionString.append("</span>");
 	questionString.append("<hr /><span style='color:#03aa00;font-size: 12px;'>");
-	questionString.append("Transaction fee (approximately): -" + QString::number((double)(VOTE_GAS_LIMIT * nGasPrice) / (double)LOC_COIN) + " LOCs" );
+	questionString.append("Transaction fee (approximately): -" + QString::number((double)(VOTE_GAS_LIMIT * nGasPrice) / (double)LOC_COIN) + " LTs" );
 	questionString.append("</span>");
 
 	SendVotingConfirmationDialog confirmationDialog(
@@ -227,7 +227,7 @@ void VotingPage::voteButton(bool isYesVote) {
 	if (retval == QMessageBox::Yes) {
 		QMessageBox::StandardButton reply;
 		reply = QMessageBox::question(&confirmationDialog, "Confirm voting",
-				"Voting will burn your " + confirmationDialog.locAmount->text() + " LOC(s)\n\n Are you sure?",
+				"Voting will burn your " + confirmationDialog.locAmount->text() + " LT(s)\n\n Are you sure?",
 				QMessageBox::Yes | QMessageBox::No);
 		if (reply == QMessageBox::Yes) {
 			qDebug() << "Yes was clicked";
@@ -250,7 +250,7 @@ void VotingPage::voteButton(bool isYesVote) {
 			ExecRPCCommand::appendParam(lstParams, PARAM_ADDRESS, QString::fromStdString(LockTripDgpContract.hex()));
 	        ExecRPCCommand::appendParam(lstParams, PARAM_DATAHEX, strFuncData);
 	        double LOCs = confirmationDialog.locAmount->text().toDouble();
-	        LogPrintf("LOCs: %ul\n", confirmationDialog.locAmount->text().toDouble());
+	        LogPrintf("LTs: %ul\n", confirmationDialog.locAmount->text().toDouble());
 	        ExecRPCCommand::appendParam(lstParams, PARAM_AMOUNT, QString::number(LOCs, 'f', 9));
 	        ExecRPCCommand::appendParam(lstParams, PARAM_GASLIMIT, QString::number(VOTE_GAS_LIMIT));
 		    bool smartContractSucceed = execRPCCommand->exec(model->node(), model->wallet(), lstParams, result, resultJson, errorMessage);
@@ -343,7 +343,7 @@ int SendVotingConfirmationDialog::exec()
     QHBoxLayout* hlayout = new QHBoxLayout(qobject_cast<QWidget*>(this->children()[2]));
     locAmount = new QLineEdit(qobject_cast<QWidget*>(this->children()[2]));
     locAmount->setFixedWidth(200);
-    locAmount->setPlaceholderText(tr("number of LOCs to burn"));
+    locAmount->setPlaceholderText(tr("number of LTs to burn"));
     locAmount->setText(QString::number(0.00000000, 'f', 8));
 
     QLocale lo(QLocale::C);
@@ -380,7 +380,7 @@ void SendVotingConfirmationDialog::customSlot(const QString& text)
 	if(locAmount->text().toDouble() == 0)
 	{
 		yesButton->setEnabled(false);
-		yesButton->setText(tr("Yes") + " (No LOCs)");
+		yesButton->setText(tr("Yes") + " (No LTs)");
 	}
 	else
 	{
@@ -414,7 +414,7 @@ void SendVotingConfirmationDialog::updateYesButton()
     	if(locAmount->text().toDouble() == 0)
     	{
     		yesButton->setEnabled(false);
-    		yesButton->setText(tr("Yes") + " (No LOCs)");
+    		yesButton->setText(tr("Yes") + " (No LTs)");
     	}
     }
 }

@@ -43,7 +43,7 @@ static const uint64_t MIN_BLOCK_REWARD_PERCENTAGE_DGP = 0;
 static const uint64_t MAX_BLOCK_REWARD_PERCENTAGE_DGP = 25;
 static const uint64_t DEFAULT_BLOCK_REWARD_PERCENTAGE_DGP = 25;
 
-static const uint64_t ONE_CENT_EQUAL = 1000000; // representing fiat money like LOC and satoshi
+static const uint64_t ONE_CENT_EQUAL = 1000000; // representing fiat money like LT and satoshi
 
 // DGP CACHE GLOBALS
 

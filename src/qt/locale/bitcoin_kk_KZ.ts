@@ -48,7 +48,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>QtumGUI</name>
+    <name>LTGUI</name>
     <message>
         <source>&amp;Transactions</source>
         <translation>&amp;Транзакциялар</translation>
@@ -70,7 +70,7 @@
         <translation>Құпия сөзді өзгерту</translation>
     </message>
     <message>
-        <source>Qtum</source>
+        <source>LT</source>
         <translation>Биткоин</translation>
     </message>
     <message>
@@ -165,7 +165,7 @@
 <context>
     <name>Intro</name>
     <message>
-        <source>Qtum</source>
+        <source>LT</source>
         <translation>Биткоин</translation>
     </message>
     <message>
@@ -309,7 +309,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>qtum-core</name>
+    <name>LT-core</name>
     <message>
         <source>Information</source>
         <translation>Информация</translation>

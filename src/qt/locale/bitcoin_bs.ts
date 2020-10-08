@@ -12,10 +12,10 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>LockTripGUI</name>
+    <name>LTGUI</name>
     <message>
-        <source>LockTrip</source>
-        <translation>LockTrip</translation>
+        <source>LT</source>
+        <translation>LT</translation>
     </message>
     </context>
 <context>
@@ -154,10 +154,10 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>LockTrip-core</name>
+    <name>LT-core</name>
     <message>
-        <source>LockTrip Core</source>
-        <translation>LockTrip Jezrga</translation>
+        <source>LT</source>
+        <translation>LT</translation>
     </message>
     </context>
 </TS>

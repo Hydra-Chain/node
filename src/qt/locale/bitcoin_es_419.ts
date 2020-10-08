@@ -42,8 +42,8 @@
         <translation>Recibiendo direcciones</translation>
     </message>
     <message>
-        <source>These are your LockTrip addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Estas son sus direcciones de LockTrip para enviar sus pagos. Siempre revise el monto y la dirección recibida antes de enviar monedas.</translation>
+        <source>These are your LT addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Estas son sus direcciones de LT para enviar sus pagos. Siempre revise el monto y la dirección recibida antes de enviar monedas.</translation>
     </message>
     </context>
 <context>
@@ -56,7 +56,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>LockTripGUI</name>
+    <name>LTGUI</name>
     </context>
 <context>
     <name>CoinControlDialog</name>
@@ -162,6 +162,6 @@
     </message>
     </context>
 <context>
-    <name>LockTrip</name>
+    <name>LT</name>
     </context>
 </TS>
