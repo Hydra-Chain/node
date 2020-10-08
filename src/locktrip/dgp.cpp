@@ -140,14 +140,18 @@ bool Dgp::fillBlockRewardBlocksInfo() {
     LOCK(cs_main);
     std::string callString {};
     std::vector<std::vector<std::string>> values{};
-    bool status = this->generateCallString(values, callString, GET_VOTE_EXPIRATION);
+    bool status = this->generateCallString(values, callString, GET_BLOCK_REWARD_VOTE_BLOCKS);
 
     if (status) {
         std::vector<ResultExecute> result = CallContract(LockTripDgpContract, ParseHex(callString), dev::Address(), 0, DEFAULT_BLOCK_GAS_LIMIT_DGP);
-
         if (!result.empty()) {
-            dev::bytesConstRef o(&result[0].execRes.output);
-            dev::u256 data = dev::eth::ABIDeserialiser<dev::u256>::deserialise(o);
+            std::string output = HexStr(result[0].execRes.output);
+            for(int i = 0; i < output.length(); i+=64) {
+                std::string current = output.substr(i, 64);
+                uint64_t num = uint64_t(dev::u256(dev::h256(current)));
+                this->blockRewardVoteBlocks.push_back(num);
+            }
+
             return true;
         } else {
             return false;
@@ -161,14 +165,18 @@ bool Dgp::fillBlockRewardPercentageInfo() {
     LOCK(cs_main);
     std::string callString {};
     std::vector<std::vector<std::string>> values{};
-    bool status = this->generateCallString(values, callString, GET_VOTE_EXPIRATION);
+    bool status = this->generateCallString(values, callString, GET_BLOCK_REWARD_VOTE_PERCENTAGES);
 
     if (status) {
         std::vector<ResultExecute> result = CallContract(LockTripDgpContract, ParseHex(callString), dev::Address(), 0, DEFAULT_BLOCK_GAS_LIMIT_DGP);
-
         if (!result.empty()) {
-            dev::bytesConstRef o(&result[0].execRes.output);
-            dev::u256 data = dev::eth::ABIDeserialiser<dev::u256>::deserialise(o);
+            std::string output = HexStr(result[0].execRes.output);
+            for(int i = 0; i < output.length(); i+=64) {
+                std::string current = output.substr(i, 64);
+                uint64_t num = uint64_t(dev::u256(dev::h256(current)));
+                this->blockRewardVotePercentages.push_back(num);
+            }
+
             return true;
         } else {
             return false;
@@ -190,8 +198,6 @@ bool Dgp::getDgpParam(dgp_params param, uint64_t& value) {
 
         if (!result.empty()) {
             dev::bytesConstRef o(&result[0].execRes.output);
-            std::string s(result[0].execRes.output.begin(), result[0].execRes.output.end());
-            std::cout << "############# bytes const ref -> " << s << std::endl;
             dev::u256 data = dev::eth::ABIDeserialiser<dev::u256>::deserialise(o);
             value = uint64_t(dev::u256(dev::h256(data)));
             return true;
