@@ -1387,7 +1387,7 @@ bool ReadRawBlockFromDisk(std::vector<uint8_t>& block, const CBlockIndex* pindex
     return ReadRawBlockFromDisk(block, block_pos, message_start);
 }
 
-CAmount GetSupplayWithInterest(CAMount supplay, int percentage, int height, int blocksPerYear) {
+CAmount GetSupplayWithInterest(CAmount supplay, int percentage, int height, int blocksPerYear) {
     //([initial supply] * (1 + [n%] / [blocks per year])^n)
     return supplay * pow(1 + ((percentage / 100) / blocksPerYear), height);
 }
