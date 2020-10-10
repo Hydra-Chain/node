@@ -1409,8 +1409,8 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
 
     CAmount prevTotalSupplay  = consensusParams.initialCoinsSupply;
     CAmount newTotalSupplay = consensusParams.initialCoinsSupply;
-    int lastPercentage = dgp.blockRewardVotePercentages[0];
-    int lastHeight = dgp.blockRewardVoteBlocks[0];
+    int lastPercentage = 20; //dgp.blockRewardVotePercentages[0];
+    int lastHeight = 5001; //dgp.blockRewardVoteBlocks[0];
 
     for(int i = 1; i < dgp.blockRewardVotePercentages.size(); i++) {
         if(nHeight < dgp.blockRewardVoteBlocks[i]) {

@@ -1140,21 +1140,21 @@ void ThreadStakeMiner(CWallet *pwallet, CConnman* connman)
             MilliSleep(10000);
         }
         //don't disable PoS mining for no connections if in regtest mode
-        if(!regtestMode && !gArgs.GetBoolArg("-emergencystaking", false)) {
-            while (connman->GetNodeCount(CConnman::CONNECTIONS_ALL) == 0 || IsInitialBlockDownload()) {
-                pwallet->m_last_coin_stake_search_interval = 0;
-                fTryToSync = true;
-                MilliSleep(1000);
-            }
-            if (fTryToSync) {
-                fTryToSync = false;
-                if (connman->GetNodeCount(CConnman::CONNECTIONS_ALL) < 3 ||
-                	chainActive.Tip()->GetBlockTime() < GetTime() - 10 * 60) {
-                    MilliSleep(60000);
-                    continue;
-                }
-            }
-        }
+//        if(!regtestMode && !gArgs.GetBoolArg("-emergencystaking", false)) {
+//            while (connman->GetNodeCount(CConnman::CONNECTIONS_ALL) == 0 || IsInitialBlockDownload()) {
+//                pwallet->m_last_coin_stake_search_interval = 0;
+//                fTryToSync = true;
+//                MilliSleep(1000);
+//            }
+//            if (fTryToSync) {
+//                fTryToSync = false;
+//                if (connman->GetNodeCount(CConnman::CONNECTIONS_ALL) < 3 ||
+//                	chainActive.Tip()->GetBlockTime() < GetTime() - 10 * 60) {
+//                    MilliSleep(60000);
+//                    continue;
+//                }
+//            }
+//        }
         //
         // Create new block
         //

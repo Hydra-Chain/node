@@ -65,13 +65,17 @@ void VotingPage::updateVoteInfo() {
 		uint64_t locTresholdInSatoshis;
 		dgp->convertFiatThresholdToLoc(gdpCurrentVote.threshold, locTresholdInSatoshis);
 		ui->labelThresholdValue->setText(QString::number(locTresholdInSatoshis) + " votes");
-		if(gdpCurrentVote.param == dgp_params::REMOVE_ADMIN_VOTE || gdpCurrentVote.param == dgp_params::ADMIN_VOTE) {
+		if(gdpCurrentVote.param == dgp_params::REMOVE_ADMIN_VOTE ||
+            gdpCurrentVote.param == dgp_params::ADMIN_VOTE) {
 			ui->labelBurnRate->setText(QString::fromStdString(gdpCurrentVote.newAdmin.hex()));
 		}
-		else if(gdpCurrentVote.param == dgp_params::FIAT_GAS_PRICE || gdpCurrentVote.param == dgp_params::FIAT_BYTE_PRICE) {
+		else if(gdpCurrentVote.param == dgp_params::FIAT_GAS_PRICE ||
+		    gdpCurrentVote.param == dgp_params::FIAT_BYTE_PRICE) {
 			ui->labelBurnRate->setText(QString::number((double)(gdpCurrentVote.param_value) / (double)100000000, 'f', 8)  + '$');
 		}
-		else if(gdpCurrentVote.param == dgp_params::BURN_RATE || gdpCurrentVote.param == dgp_params::ECONOMY_DIVIDEND) {
+		else if(gdpCurrentVote.param == dgp_params::BURN_RATE ||
+		    gdpCurrentVote.param == dgp_params::ECONOMY_DIVIDEND ||
+		    gdpCurrentVote.param == dgp_params::BLOCK_REWARD_PERCENTAGE) {
 			ui->labelBurnRate->setText(QString::number(gdpCurrentVote.param_value) + '%');
 		}
 		else if(gdpCurrentVote.param == dgp_params::BLOCK_SIZE_DGP_PARAM) {

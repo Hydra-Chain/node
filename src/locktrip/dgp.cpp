@@ -8,6 +8,7 @@
 #include "qtum/qtumstate.h"
 #include "libethcore/ABI.h"
 #include <util/system.h>
+#include <logging.h>
 
 Dgp::Dgp() {
     this->m_contractAbi.loads(DGP_CONTRACT_ABI);
@@ -146,11 +147,17 @@ bool Dgp::fillBlockRewardBlocksInfo() {
         std::vector<ResultExecute> result = CallContract(LockTripDgpContract, ParseHex(callString), dev::Address(), 0, DEFAULT_BLOCK_GAS_LIMIT_DGP);
         if (!result.empty()) {
             std::string output = HexStr(result[0].execRes.output);
-            for(int i = 0; i < output.length(); i+=64) {
-                std::string current = output.substr(i, 64);
+            std::cout << "output -> " << output << std::endl;
+            this->blockRewardVoteBlocks.clear();
+            for(int i = 0; i < output.length(); i+=192) {
+                std::string current = output.substr(128, 64);
                 uint64_t num = uint64_t(dev::u256(dev::h256(current)));
+                std::cout << "current blocks -> " << current << std::endl;
+                std::cout << "num blocks -> " << num << std::endl;
                 this->blockRewardVoteBlocks.push_back(num);
             }
+
+            std::cout << "###########################" << std::endl;
 
             return true;
         } else {
@@ -171,9 +178,12 @@ bool Dgp::fillBlockRewardPercentageInfo() {
         std::vector<ResultExecute> result = CallContract(LockTripDgpContract, ParseHex(callString), dev::Address(), 0, DEFAULT_BLOCK_GAS_LIMIT_DGP);
         if (!result.empty()) {
             std::string output = HexStr(result[0].execRes.output);
-            for(int i = 0; i < output.length(); i+=64) {
-                std::string current = output.substr(i, 64);
+            this->blockRewardVotePercentages.clear();
+            for(int i = 0; i < output.length(); i+=192) {
+                std::string current = output.substr(128, 64);
                 uint64_t num = uint64_t(dev::u256(dev::h256(current)));
+                std::cout << "current percentage -> " << current << std::endl;
+                std::cout << "num percentage -> " << num << std::endl;
                 this->blockRewardVotePercentages.push_back(num);
             }
 
