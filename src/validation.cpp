@@ -1389,7 +1389,7 @@ bool ReadRawBlockFromDisk(std::vector<uint8_t>& block, const CBlockIndex* pindex
 
 CAmount GetSupplayWithInterest(CAmount supplay, int percentage, int height, int blocksPerYear) {
     //([initial supply] * (1 + [n%] / [blocks per year])^n)
-    return supplay * pow(1 + ((percentage / 100) / blocksPerYear), height);
+    return supplay * pow((double)1 + (((double)percentage / (double)100) / (double)blocksPerYear), (double)height);
 }
 
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
