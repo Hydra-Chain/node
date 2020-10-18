@@ -76,8 +76,8 @@
 #include "pubkey.h"
 #include <univalue.h>
 #include <locktrip/economy.h>
-#include <locktrip/dgp.h>
 #include <locktrip/price-oracle.h>
+#include <locktrip/dgp.h>
 
 std::unique_ptr<QtumState> globalState;
 std::shared_ptr<dev::eth::SealEngineFace> globalSealEngine;
@@ -3554,13 +3554,14 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                         heightIndexes[key].first = CHeightTxIndexKey(pindex->nHeight, resultExec[k].execRes.newAddress);
                     }
                     heightIndexes[key].second.push_back(tx.GetHash());
-                    tri.push_back(TransactionReceiptInfo{block.GetHash(), uint32_t(pindex->nHeight), tx.GetHash(),
-                                                         uint32_t(1), resultConvertQtumTX.first[k].from(),
-                                                         resultConvertQtumTX.first[k].to(),
-                                                         countCumulativeGasUsed,
-                                                         uint64_t(resultExec[k].execRes.gasUsed),
-                                                         resultExec[k].execRes.newAddress, resultExec[k].txRec.log(),
-                                                         resultExec[k].execRes.excepted});
+                    auto a = TransactionReceiptInfo{block.GetHash(), uint32_t(pindex->nHeight), tx.GetHash(),
+                                               uint32_t(1), resultConvertQtumTX.first[k].from(),
+                                               resultConvertQtumTX.first[k].to(),
+                                               countCumulativeGasUsed,
+                                               uint64_t(resultExec[k].execRes.gasUsed),
+                                               resultExec[k].execRes.newAddress, resultExec[k].txRec.log(),
+                                               resultExec[k].execRes.excepted};
+                    tri.push_back(a);
                 }
 
                 pstorageresult->addResult(uintToh256(tx.GetHash()), tri);
@@ -3642,10 +3643,10 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 	nTimeVerify += nTime4 - nTime2;
     LogPrint(BCLog::BENCH, "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs (%.2fms/blk)]\n", nInputs - 1, MILLI * (nTime4 - nTime2), nInputs <= 1 ? 0 : MILLI * (nTime4 - nTime2) / (nInputs-1), nTimeVerify * MICRO, nTimeVerify * MILLI / nBlocksTotal);
 
-////////////////////////////////////////////////////////////////// // qtum
+///////////////////////////////////n/////////////////////////////// // qtum
     checkBlock.hashMerkleRoot = BlockMerkleRoot(checkBlock);
-    checkBlock.hashStateRoot = h256Touint(globalState->rootHash());
-    checkBlock.hashUTXORoot = h256Touint(globalState->rootHashUTXO());
+    checkBlock.hashStateRoot = uint256(h256Touint(dev::h256(globalState->rootHash())));
+    checkBlock.hashUTXORoot = uint256(h256Touint(dev::h256(globalState->rootHashUTXO())));
 
     //If this error happens, it probably means that something with AAL created transactions didn't match up to what is expected
     if((checkBlock.GetHash() != block.GetHash()) && !fJustCheck)
@@ -3691,11 +3692,17 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                 }
             }
         }
+
         if(checkBlock.hashUTXORoot != block.hashUTXORoot){
             LogPrintf("Actual block data does not match hashUTXORoot expected by AAL block\n");
         }
+
         if(checkBlock.hashStateRoot != block.hashStateRoot){
             LogPrintf("Actual block data does not match hashStateRoot expected by AAL block\n");
+//            std::cout << "check block stateroot -> " << checkBlock.hashStateRoot.ToString() << std::endl;
+//            std::cout << "check prev block stateroot -> " << checkBlock.hashStateRoot.ToString() << std::endl;
+//            std::cout << "actual block stateroot -> " << block.hashStateRoot.ToString() << std::endl;
+//            std::cout << "actual prev block stateroot -> " << pindex->pprev->hashStateRoot.ToString() << std::endl;
         }
 
         return state.DoS(100, error("ConnectBlock(): Incorrect AAL transactions or hashes (hashStateRoot, hashUTXORoot)"),

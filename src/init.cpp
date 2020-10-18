@@ -1656,7 +1656,7 @@ bool AppInitMain(InitInterfaces& interfaces)
                 globalState = std::unique_ptr<QtumState>(new QtumState(dev::u256(0), QtumState::openDB(dirQtum, hashDB, dev::WithExisting::Trust), dirQtum, existsQtumstate));
                 dev::eth::ChainParams cp((chainparams.EVMGenesisInfo(dev::eth::Network::qtumMainNetwork)));
 
-//                std::cout << "State root " << cp.calculateStateRoot(true) << std::endl;
+                //std::cout << "State root " << cp.calculateStateRoot(true) << std::endl;
                 //LogPrintf("State root %s\n", cp.calculateStateRoot(true));
 
                 globalSealEngine = std::unique_ptr<dev::eth::SealEngineFace>(cp.createSealEngine());

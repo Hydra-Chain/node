@@ -19,6 +19,7 @@ bool Dgp::hasVoteInProgress(bool& voteInProgress) {
     std::string callString {};
     std::vector<std::vector<std::string>> values{};
     bool status = this->generateCallString(values, callString, HAS_VOTE_IN_PROGRESS);
+
     if (status) {
         std::vector<ResultExecute> result = CallContract(LockTripDgpContract, ParseHex(callString), dev::Address(), 0, DEFAULT_BLOCK_GAS_LIMIT_DGP);
 
@@ -137,65 +138,6 @@ bool Dgp::getVoteBlockExpiration(uint64_t& expiration) {
     }
 }
 
-bool Dgp::fillBlockRewardBlocksInfo() {
-    LOCK(cs_main);
-    std::string callString {};
-    std::vector<std::vector<std::string>> values{};
-    bool status = this->generateCallString(values, callString, GET_BLOCK_REWARD_VOTE_BLOCKS);
-
-    if (status) {
-        std::vector<ResultExecute> result = CallContract(LockTripDgpContract, ParseHex(callString), dev::Address(), 0, DEFAULT_BLOCK_GAS_LIMIT_DGP);
-        if (!result.empty()) {
-            std::string output = HexStr(result[0].execRes.output);
-            std::cout << "output -> " << output << std::endl;
-            this->blockRewardVoteBlocks.clear();
-            for(int i = 0; i < output.length(); i+=192) {
-                std::string current = output.substr(128, 64);
-                uint64_t num = uint64_t(dev::u256(dev::h256(current)));
-                std::cout << "current blocks -> " << current << std::endl;
-                std::cout << "num blocks -> " << num << std::endl;
-                this->blockRewardVoteBlocks.push_back(num);
-            }
-
-            std::cout << "###########################" << std::endl;
-
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-}
-
-bool Dgp::fillBlockRewardPercentageInfo() {
-    LOCK(cs_main);
-    std::string callString {};
-    std::vector<std::vector<std::string>> values{};
-    bool status = this->generateCallString(values, callString, GET_BLOCK_REWARD_VOTE_PERCENTAGES);
-
-    if (status) {
-        std::vector<ResultExecute> result = CallContract(LockTripDgpContract, ParseHex(callString), dev::Address(), 0, DEFAULT_BLOCK_GAS_LIMIT_DGP);
-        if (!result.empty()) {
-            std::string output = HexStr(result[0].execRes.output);
-            this->blockRewardVotePercentages.clear();
-            for(int i = 0; i < output.length(); i+=192) {
-                std::string current = output.substr(128, 64);
-                uint64_t num = uint64_t(dev::u256(dev::h256(current)));
-                std::cout << "current percentage -> " << current << std::endl;
-                std::cout << "num percentage -> " << num << std::endl;
-                this->blockRewardVotePercentages.push_back(num);
-            }
-
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
-}
-
 bool Dgp::getDgpParam(dgp_params param, uint64_t& value) {
     LOCK(cs_main);
     std::vector<std::string> params {std::to_string(param)};
@@ -291,12 +233,6 @@ void Dgp::updateDgpCache() {
     this->updateDgpCacheParam(FIAT_BYTE_PRICE, DGP_CACHE_FIAT_BYTE_PRICE);
     if(DGP_CACHE_FIAT_BYTE_PRICE < DEFAULT_MIN_BYTE_PRICE_DGP)
         DGP_CACHE_FIAT_BYTE_PRICE = DEFAULT_MIN_BYTE_PRICE_DGP;
-
-    this->updateDgpCacheParam(BLOCK_REWARD_PERCENTAGE, DGP_CACHE_BLOCK_REWARD_PERCENTAGE);
-    if(DGP_CACHE_BLOCK_REWARD_PERCENTAGE < MIN_BLOCK_REWARD_PERCENTAGE_DGP ||
-            DGP_CACHE_BLOCK_REWARD_PERCENTAGE > MAX_BLOCK_REWARD_PERCENTAGE_DGP)
-        DGP_CACHE_BLOCK_REWARD_PERCENTAGE = DEFAULT_BLOCK_REWARD_PERCENTAGE_DGP;
-
 }
 
 void Dgp::updateDgpCacheParam(dgp_params param, uint64_t& cache) {
@@ -307,5 +243,57 @@ void Dgp::updateDgpCacheParam(dgp_params param, uint64_t& cache) {
 
     if (isParamVoted) {
         this->getDgpParam(param, cache);
+    }
+}
+
+bool Dgp::fillBlockRewardBlocksInfo() {
+    LOCK(cs_main);
+    std::string callString {};
+    std::vector<std::vector<std::string>> values{};
+    bool status = this->generateCallString(values, callString, GET_BLOCK_REWARD_VOTE_BLOCKS);
+
+    if (status) {
+        std::vector<ResultExecute> result = CallContract(LockTripDgpContract, ParseHex(callString), dev::Address(), 0, DEFAULT_BLOCK_GAS_LIMIT_DGP);
+        if (!result.empty()) {
+            std::string output = HexStr(result[0].execRes.output);
+            this->blockRewardVoteBlocks.clear();
+            for(int i = 0; i < output.length(); i+=192) {
+                std::string current = output.substr(128, 64);
+                uint64_t num = uint64_t(dev::u256(dev::h256(current)));
+                this->blockRewardVoteBlocks.push_back(num);
+            }
+
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+bool Dgp::fillBlockRewardPercentageInfo() {
+    LOCK(cs_main);
+    std::string callString {};
+    std::vector<std::vector<std::string>> values{};
+    bool status = this->generateCallString(values, callString, GET_BLOCK_REWARD_VOTE_PERCENTAGES);
+
+    if (status) {
+        std::vector<ResultExecute> result = CallContract(LockTripDgpContract, ParseHex(callString), dev::Address(), 0, DEFAULT_BLOCK_GAS_LIMIT_DGP);
+        if (!result.empty()) {
+            std::string output = HexStr(result[0].execRes.output);
+            this->blockRewardVotePercentages.clear();
+            for(int i = 0; i < output.length(); i+=192) {
+                std::string current = output.substr(128, 64);
+                uint64_t num = uint64_t(dev::u256(dev::h256(current)));
+                this->blockRewardVotePercentages.push_back(num);
+            }
+
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
     }
 }
