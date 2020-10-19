@@ -257,8 +257,8 @@ bool Dgp::fillBlockRewardBlocksInfo() {
         if (!result.empty()) {
             std::string output = HexStr(result[0].execRes.output);
             this->blockRewardVoteBlocks.clear();
-            for(int i = 0; i < output.length(); i+=192) {
-                std::string current = output.substr(128, 64);
+            for(int i = 128; i < output.length(); i+=64) {
+                std::string current = output.substr(i, 64);
                 uint64_t num = uint64_t(dev::u256(dev::h256(current)));
                 this->blockRewardVoteBlocks.push_back(num);
             }
@@ -280,11 +280,12 @@ bool Dgp::fillBlockRewardPercentageInfo() {
 
     if (status) {
         std::vector<ResultExecute> result = CallContract(LockTripDgpContract, ParseHex(callString), dev::Address(), 0, DEFAULT_BLOCK_GAS_LIMIT_DGP);
+
         if (!result.empty()) {
             std::string output = HexStr(result[0].execRes.output);
             this->blockRewardVotePercentages.clear();
-            for(int i = 0; i < output.length(); i+=192) {
-                std::string current = output.substr(128, 64);
+            for(int i = 128; i < output.length(); i+=64) {
+                std::string current = output.substr(i, 64);
                 uint64_t num = uint64_t(dev::u256(dev::h256(current)));
                 this->blockRewardVotePercentages.push_back(num);
             }

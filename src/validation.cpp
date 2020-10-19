@@ -3645,8 +3645,8 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
 ///////////////////////////////////n/////////////////////////////// // qtum
     checkBlock.hashMerkleRoot = BlockMerkleRoot(checkBlock);
-    checkBlock.hashStateRoot = uint256(h256Touint(dev::h256(globalState->rootHash())));
-    checkBlock.hashUTXORoot = uint256(h256Touint(dev::h256(globalState->rootHashUTXO())));
+    checkBlock.hashStateRoot = h256Touint(globalState->rootHash());
+    checkBlock.hashUTXORoot = h256Touint(globalState->rootHashUTXO());
 
     //If this error happens, it probably means that something with AAL created transactions didn't match up to what is expected
     if((checkBlock.GetHash() != block.GetHash()) && !fJustCheck)
@@ -3699,10 +3699,6 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
         if(checkBlock.hashStateRoot != block.hashStateRoot){
             LogPrintf("Actual block data does not match hashStateRoot expected by AAL block\n");
-//            std::cout << "check block stateroot -> " << checkBlock.hashStateRoot.ToString() << std::endl;
-//            std::cout << "check prev block stateroot -> " << checkBlock.hashStateRoot.ToString() << std::endl;
-//            std::cout << "actual block stateroot -> " << block.hashStateRoot.ToString() << std::endl;
-//            std::cout << "actual prev block stateroot -> " << pindex->pprev->hashStateRoot.ToString() << std::endl;
         }
 
         return state.DoS(100, error("ConnectBlock(): Incorrect AAL transactions or hashes (hashStateRoot, hashUTXORoot)"),
