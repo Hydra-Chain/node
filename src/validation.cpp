@@ -1406,17 +1406,22 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
     int lastPercentage = 20; //dgp.blockRewardVotePercentages[0];
     int lastHeight = 5001; //dgp.blockRewardVoteBlocks[0];
 
+    if(dgp.blockRewardVoteBlocks.size() > 0) {
+        lastPercentage = dgp.blockRewardVotePercentages[dgp.blockRewardVotePercentages.size() - 1];
+        lastHeight = dgp.blockRewardVoteBlocks[dgp.blockRewardVoteBlocks.size() - 1];
+    }
+
     for(int i = 1; i < dgp.blockRewardVotePercentages.size(); i++) {
         for(int j = dgp.blockRewardVoteBlocks[i - 1]; i < dgp.blockRewardVoteBlocks[i]; i++) {
             prevTotalSupplay += (dgp.blockRewardVotePercentages[i] * prevTotalSupplay) / consensusParams.blocksPerYear;
         }
     }
 
-    for(int i = dgp.blockRewardVoteBlocks[dgp.blockRewardVotePercentages.size() - 1]; i < nHeight; i++) {
-        prevTotalSupplay += (dgp.blockRewardVotePercentages[i] * prevTotalSupplay) / consensusParams.blocksPerYear;
+    for(int i = lastHeight; i < nHeight; i++) {
+        prevTotalSupplay += (lastPercentage * prevTotalSupplay) / consensusParams.blocksPerYear;
     }
 
-    CAmount reward = (dgp.blockRewardVotePercentages[dgp.blockRewardVotePercentages.size() - 1] * prevTotalSupplay) / consensusParams.blocksPerYear;
+    CAmount reward = (lastPercentage * prevTotalSupplay) / consensusParams.blocksPerYear;
 
     return reward / 100;
 }
