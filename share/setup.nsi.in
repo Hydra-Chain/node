@@ -74,12 +74,12 @@ ShowUninstDetails show
 Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
-    File @abs_top_srcdir@/release/bin/@BITCOIN_GUI_NAME@@EXEEXT@
+    File @abs_top_srcdir@/release/usr/local/bin/@BITCOIN_GUI_NAME@@EXEEXT@
     File /oname=COPYING.txt @abs_top_srcdir@/COPYING
     File /oname=readme.txt @abs_top_srcdir@/doc/README_windows.txt
     SetOutPath $INSTDIR\daemon
-    File @abs_top_srcdir@/release/bin/@BITCOIN_DAEMON_NAME@@EXEEXT@
-    File @abs_top_srcdir@/release/bin/@BITCOIN_CLI_NAME@@EXEEXT@
+    File @abs_top_srcdir@/release/usr/local/bin/@BITCOIN_DAEMON_NAME@@EXEEXT@
+    File @abs_top_srcdir@/release/usr/local/bin/@BITCOIN_CLI_NAME@@EXEEXT@
     SetOutPath $AppData\LockTrip
     File @abs_top_srcdir@/contrib/debian/examples/locktrip.conf
     SetOutPath $INSTDIR\doc

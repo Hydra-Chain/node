@@ -220,8 +220,6 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back("devnet.locktrip.com");
-        vSeeds.push_back("testnet.locktrip.com");
         vSeeds.push_back("testnet2.locktrip.com");
 		bech32_hrp = "tq";
 
