@@ -1387,11 +1387,6 @@ bool ReadRawBlockFromDisk(std::vector<uint8_t>& block, const CBlockIndex* pindex
     return ReadRawBlockFromDisk(block, block_pos, message_start);
 }
 
-CAmount GetSupplayWithInterest(CAmount supplay, int percentage, int height, int blocksPerYear) {
-    //([initial supply] * (1 + [n%] / [blocks per year])^n)
-    return supplay * pow((double)1 + (((double)percentage / (double)100) / (double)blocksPerYear), (double)height);
-}
-
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
     if (nHeight <= consensusParams.nLastPOWBlock) {
         CAmount divisionRemainder = 0;
@@ -1407,33 +1402,23 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
     dgp.fillBlockRewardBlocksInfo();
     dgp.fillBlockRewardPercentageInfo();
 
-    CAmount prevTotalSupplay  = consensusParams.initialCoinsSupply;
-    CAmount newTotalSupplay = consensusParams.initialCoinsSupply;
+    CAmount prevTotalSupplay  = consensusParams.initialCoinsSupply * 100;
     int lastPercentage = 20; //dgp.blockRewardVotePercentages[0];
     int lastHeight = 5001; //dgp.blockRewardVoteBlocks[0];
 
     for(int i = 1; i < dgp.blockRewardVotePercentages.size(); i++) {
-        if(nHeight < dgp.blockRewardVoteBlocks[i]) {
-            break;
+        for(int j = dgp.blockRewardVoteBlocks[i - 1]; i < dgp.blockRewardVoteBlocks[i]; i++) {
+            prevTotalSupplay += (dgp.blockRewardVotePercentages[i] * prevTotalSupplay) / consensusParams.blocksPerYear;
         }
-
-        newTotalSupplay = GetSupplayWithInterest(newTotalSupplay, lastPercentage, dgp.blockRewardVoteBlocks[i] - lastHeight, consensusParams.blocksPerYear);
-        lastHeight = dgp.blockRewardVoteBlocks[i];
-        lastPercentage = dgp.blockRewardVotePercentages[i];
     }
 
-    if(nHeight == lastHeight) {
-        prevTotalSupplay = newTotalSupplay;
-    }
-    else {
-        prevTotalSupplay = GetSupplayWithInterest(newTotalSupplay, lastPercentage, nHeight - lastHeight, consensusParams.blocksPerYear);
+    for(int i = dgp.blockRewardVoteBlocks[dgp.blockRewardVotePercentages.size() - 1]; i < nHeight; i++) {
+        prevTotalSupplay += (dgp.blockRewardVotePercentages[i] * prevTotalSupplay) / consensusParams.blocksPerYear;
     }
 
-    if(nHeight >= lastHeight) {
-        newTotalSupplay = GetSupplayWithInterest(newTotalSupplay, lastPercentage, nHeight - lastHeight + 1, consensusParams.blocksPerYear);
-    }
+    CAmount reward = (dgp.blockRewardVotePercentages[dgp.blockRewardVotePercentages.size() - 1] * prevTotalSupplay) / consensusParams.blocksPerYear;
 
-    return newTotalSupplay - prevTotalSupplay;
+    return reward / 100;
 }
 
 bool IsInitialBlockDownload()
