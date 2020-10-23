@@ -76,8 +76,8 @@
 #include "pubkey.h"
 #include <univalue.h>
 #include <locktrip/economy.h>
-#include <locktrip/dgp.h>
 #include <locktrip/price-oracle.h>
+#include <locktrip/dgp.h>
 
 std::unique_ptr<QtumState> globalState;
 std::shared_ptr<dev::eth::SealEngineFace> globalSealEngine;
@@ -3539,13 +3539,14 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                         heightIndexes[key].first = CHeightTxIndexKey(pindex->nHeight, resultExec[k].execRes.newAddress);
                     }
                     heightIndexes[key].second.push_back(tx.GetHash());
-                    tri.push_back(TransactionReceiptInfo{block.GetHash(), uint32_t(pindex->nHeight), tx.GetHash(),
-                                                         uint32_t(1), resultConvertQtumTX.first[k].from(),
-                                                         resultConvertQtumTX.first[k].to(),
-                                                         countCumulativeGasUsed,
-                                                         uint64_t(resultExec[k].execRes.gasUsed),
-                                                         resultExec[k].execRes.newAddress, resultExec[k].txRec.log(),
-                                                         resultExec[k].execRes.excepted});
+                    auto a = TransactionReceiptInfo{block.GetHash(), uint32_t(pindex->nHeight), tx.GetHash(),
+                                               uint32_t(1), resultConvertQtumTX.first[k].from(),
+                                               resultConvertQtumTX.first[k].to(),
+                                               countCumulativeGasUsed,
+                                               uint64_t(resultExec[k].execRes.gasUsed),
+                                               resultExec[k].execRes.newAddress, resultExec[k].txRec.log(),
+                                               resultExec[k].execRes.excepted};
+                    tri.push_back(a);
                 }
 
                 pstorageresult->addResult(uintToh256(tx.GetHash()), tri);
@@ -3627,7 +3628,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 	nTimeVerify += nTime4 - nTime2;
     LogPrint(BCLog::BENCH, "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs (%.2fms/blk)]\n", nInputs - 1, MILLI * (nTime4 - nTime2), nInputs <= 1 ? 0 : MILLI * (nTime4 - nTime2) / (nInputs-1), nTimeVerify * MICRO, nTimeVerify * MILLI / nBlocksTotal);
 
-////////////////////////////////////////////////////////////////// // qtum
+///////////////////////////////////n/////////////////////////////// // qtum
     checkBlock.hashMerkleRoot = BlockMerkleRoot(checkBlock);
     checkBlock.hashStateRoot = h256Touint(globalState->rootHash());
     checkBlock.hashUTXORoot = h256Touint(globalState->rootHashUTXO());
@@ -3676,9 +3677,11 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                 }
             }
         }
+
         if(checkBlock.hashUTXORoot != block.hashUTXORoot){
             LogPrintf("Actual block data does not match hashUTXORoot expected by AAL block\n");
         }
+
         if(checkBlock.hashStateRoot != block.hashStateRoot){
             LogPrintf("Actual block data does not match hashStateRoot expected by AAL block\n");
         }

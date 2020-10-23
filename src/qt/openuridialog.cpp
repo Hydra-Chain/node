@@ -51,5 +51,5 @@ void OpenURIDialog::on_selectFileButton_clicked()
     if(filename.isEmpty())
         return;
     QUrl fileUri = QUrl::fromLocalFile(filename);
-    ui->uriEdit->setText("locktrip:?r=" + QUrl::toPercentEncoding(fileUri.toString()));
+    ui->uriEdit->setText("lt:?r=" + QUrl::toPercentEncoding(fileUri.toString()));
 }

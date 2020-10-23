@@ -39,10 +39,6 @@ static const uint64_t MIN_BLOCK_GAS_LIMIT_DGP = 1000000;
 static const uint64_t MAX_BLOCK_GAS_LIMIT_DGP = 1000000000;
 static const uint64_t DEFAULT_BLOCK_GAS_LIMIT_DGP = 40000000;
 
-static const uint64_t MIN_BLOCK_REWARD_PERCENTAGE_DGP = 0;
-static const uint64_t MAX_BLOCK_REWARD_PERCENTAGE_DGP = 25;
-static const uint64_t DEFAULT_BLOCK_REWARD_PERCENTAGE_DGP = 25;
-
 static const uint64_t ONE_CENT_EQUAL = 1000000; // representing fiat money like LT and satoshi
 
 // DGP CACHE GLOBALS
@@ -53,7 +49,6 @@ static uint64_t DGP_CACHE_ECONOMY_DIVIDEND = DEFAULT_ECONOMY_DIVIDEND_PERCENTAGE
 static uint64_t DGP_CACHE_BLOCK_SIZE = DEFAULT_BLOCK_SIZE_DGP;
 static uint64_t DGP_CACHE_BLOCK_GAS_LIMIT = DEFAULT_BLOCK_GAS_LIMIT_DGP;
 static uint64_t DGP_CACHE_FIAT_BYTE_PRICE = 1000;
-static uint64_t DGP_CACHE_BLOCK_REWARD_PERCENTAGE = DEFAULT_BLOCK_REWARD_PERCENTAGE_DGP;
 
 // Array indexes are the same as the DGP param IDs
 const auto VOTE_HEADLINES = {
@@ -75,6 +70,21 @@ static const std::string DGP_CONTRACT_ABI = "[\n"
                                             "\t\t\"constant\": true,\n"
                                             "\t\t\"inputs\": [],\n"
                                             "\t\t\"name\": \"EQUAL_VOTES_EXTENSION\",\n"
+                                            "\t\t\"outputs\": [\n"
+                                            "\t\t\t{\n"
+                                            "\t\t\t\t\"internalType\": \"uint256\",\n"
+                                            "\t\t\t\t\"name\": \"\",\n"
+                                            "\t\t\t\t\"type\": \"uint256\"\n"
+                                            "\t\t\t}\n"
+                                            "\t\t],\n"
+                                            "\t\t\"payable\": false,\n"
+                                            "\t\t\"stateMutability\": \"view\",\n"
+                                            "\t\t\"type\": \"function\"\n"
+                                            "\t},\n"
+                                            "\t{\n"
+                                            "\t\t\"constant\": true,\n"
+                                            "\t\t\"inputs\": [],\n"
+                                            "\t\t\"name\": \"NEW_REWARD_ACTIVATION_BUFFER_BLOCKS\",\n"
                                             "\t\t\"outputs\": [\n"
                                             "\t\t\t{\n"
                                             "\t\t\t\t\"internalType\": \"uint256\",\n"
@@ -144,6 +154,15 @@ static const std::string DGP_CONTRACT_ABI = "[\n"
                                             "\t\t],\n"
                                             "\t\t\"payable\": false,\n"
                                             "\t\t\"stateMutability\": \"view\",\n"
+                                            "\t\t\"type\": \"function\"\n"
+                                            "\t},\n"
+                                            "\t{\n"
+                                            "\t\t\"constant\": false,\n"
+                                            "\t\t\"inputs\": [],\n"
+                                            "\t\t\"name\": \"activateNewReward\",\n"
+                                            "\t\t\"outputs\": [],\n"
+                                            "\t\t\"payable\": false,\n"
+                                            "\t\t\"stateMutability\": \"nonpayable\",\n"
                                             "\t\t\"type\": \"function\"\n"
                                             "\t},\n"
                                             "\t{\n"
@@ -769,25 +788,26 @@ enum dgp_params {
 };
 
 enum dgp_contract_funcs {
-    FINISH_VOTE = 14,
-    GET_BLOCK_REWARD_VOTE_BLOCKS = 15,
-    GET_BLOCK_REWARD_VOTE_PERCENTAGES = 16,
-    GET_DGP_PARAM = 26,
-    HAS_VOTE_IN_PROGRESS = 28,
-    GET_VOTE_EXPIRATION = 27,
-    PARAM_VOTED = 31,
-    VOTE = 36,
-    CONVERT_FIAT_THRESHOLD_TO_LOC = 8,
+    FINISH_VOTE = 16,
+    GET_DGP_PARAM = 28,
+    HAS_VOTE_IN_PROGRESS = 30,
+    GET_VOTE_EXPIRATION = 29,
+    PARAM_VOTED = 33,
+    VOTE = 38,
+    CONVERT_FIAT_THRESHOLD_TO_LOC = 10,
+    GET_BLOCK_REWARD_VOTE_BLOCKS = 17,
+    GET_BLOCK_REWARD_VOTE_PERCENTAGES = 18,
+    ACTIVATE_NEW_REWARD = 6,
     ///////////////
-    CURRENT_VOTE_NEWADMIN = 17,
-    CURRENT_VOTE_VOTESFOR = 25,
-    CURRENT_VOTE_VOTESAGAINST = 24,
-    CURRENT_VOTE_STARTBLOCK = 22,
-    CURRENT_VOTE_BLOCKSEXPIRATION = 18,
-    CURRENT_VOTE_PARAM = 20,
-    CURRENT_VOTE_VALUE = 21,
-    CURRENT_VOTE_CREATOR = 19,
-    CURRENT_VOTE_THRESHOLD = 23
+    CURRENT_VOTE_NEWADMIN = 19,
+    CURRENT_VOTE_VOTESFOR = 27,
+    CURRENT_VOTE_VOTESAGAINST = 26,
+    CURRENT_VOTE_STARTBLOCK = 24,
+    CURRENT_VOTE_BLOCKSEXPIRATION = 20,
+    CURRENT_VOTE_PARAM = 22,
+    CURRENT_VOTE_VALUE = 23,
+    CURRENT_VOTE_CREATOR = 21,
+    CURRENT_VOTE_THRESHOLD = 25
 };
 
 struct dgp_currentVote {

@@ -80,7 +80,7 @@ enum economy_contract_funcs {
     UPDATE_CONTRACT_FUNC_ID = 2
 };
 
-class Economy : public ContractProxy{
+class Economy : public ContractProxy {
 
 public:
     Economy();

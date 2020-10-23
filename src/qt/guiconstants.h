@@ -57,10 +57,10 @@ static const QString QTUM_INFO_TESTNET = "<a href='https://explorer.locktrip.com
 /* Number of frames in spinner animation */
 #define SPINNER_FRAMES 36
 
-#define QAPP_ORG_NAME "LockTrip"
+#define QAPP_ORG_NAME "LT"
 #define QAPP_ORG_DOMAIN "locktrip.com"
-#define QAPP_APP_NAME_DEFAULT "LockTrip-Qt"
-#define QAPP_APP_NAME_TESTNET "Locktrip-Qt-testnet"
-#define QAPP_APP_NAME_REGTEST "Locktrip-Qt-regtest"
+#define QAPP_APP_NAME_DEFAULT "LT-Qt"
+#define QAPP_APP_NAME_TESTNET "LT-Qt-testnet"
+#define QAPP_APP_NAME_REGTEST "LT-Qt-regtest"
 
 #endif // BITCOIN_QT_GUICONSTANTS_H
