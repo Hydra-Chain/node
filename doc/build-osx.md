@@ -38,18 +38,18 @@ from the root of the repository.
 
 **Note**: You only need Berkeley DB if the wallet is enabled (see [*Disable-wallet mode*](/doc/build-osx.md#disable-wallet-mode)).
 
-Build LT
+Build HYDRA
 ------------------------
 
-1. Clone the LT source code and cd into `LT`
+1. Clone the HYDRA source code and cd into `HYDRA`
 
-        git clone --recursive https://github.com/LockTrip/Blockchain.git LT
-        cd LT
+        git clone --recursive https://github.com/LockTrip/Blockchain.git HYDRA
+        cd HYDRA
         git submodule update --init --recursive
 
-2.  Build LT:
+2.  Build HYDRA:
 
-    Configure and build the headless LT binaries as well as the GUI (if Qt is found).
+    Configure and build the headless HYDRA binaries as well as the GUI (if Qt is found).
 
     You can disable the GUI build by passing `--without-gui` to configure.
 
@@ -79,37 +79,37 @@ Mining is also possible in disable-wallet mode using the `getblocktemplate` RPC 
 Running
 -------
 
-LT is now available at `./src/locktripd`
+HYDRA is now available at `./src/hydrad`
 
 Before running, it's recommended you create an RPC configuration file.
 
-    echo -e "rpcuser=locktriprpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/LockTrip/locktrip.conf"
+    echo -e "rpcuser=hydrarpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/HYDRA/hydra.conf"
 
-    chmod 600 "/Users/${USER}/Library/Application Support/LockTrip/locktrip.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/HYDRA/hydra.conf"
 
-The first time you run locktripd, it will start downloading the blockchain. This process could take several hours.
+The first time you run hydrad, it will start downloading the blockchain. This process could take several hours.
 
 You can monitor the download process by looking at the debug.log file:
 
-    tail -f $HOME/Library/Application\ Support/LockTrip/debug.log
+    tail -f $HOME/Library/Application\ Support/HYDRA/debug.log
 
 Other commands:
 -------
 
-    ./src/locktripd -daemon # Starts the LT daemon.
-    ./src/locktrip-cli --help # Outputs a list of command-line options.
-    ./src/locktrip-cli help # Outputs a list of RPC commands when the daemon is running.
+    ./src/hydrad -daemon # Starts the HYDRA daemon.
+    ./src/hydra-cli --help # Outputs a list of command-line options.
+    ./src/hydra-cli help # Outputs a list of RPC commands when the daemon is running.
 
 Using Qt Creator as IDE
 ------------------------
-You can use Qt Creator as an IDE, for LT development.
+You can use Qt Creator as an IDE, for HYDRA development.
 Download and install the community edition of [Qt Creator](https://www.qt.io/download/).
 Uncheck everything except Qt Creator during the installation process.
 
 1. Make sure you installed everything through Homebrew mentioned above
 2. Do a proper ./configure --enable-debug
 3. In Qt Creator do "New Project" -> Import Project -> Import Existing Project
-4. Enter "locktrip-qt" as project name, enter src/qt as location
+4. Enter "hydra-qt" as project name, enter src/qt as location
 5. Leave the file selection as it is
 6. Confirm the "summary page"
 7. In the "Projects" tab select "Manage Kits..."

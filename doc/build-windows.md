@@ -1,7 +1,7 @@
 WINDOWS BUILD NOTES
 ====================
 
-Below are some notes on how to build LockTrip for Windows.
+Below are some notes on how to build HYDRA for Windows.
 
 Most developers use cross-compilation from Ubuntu to build executables for
 Windows. Cross-compilation is also used to build the release binaries.
@@ -96,13 +96,13 @@ For Ubuntu Bionic 18.04 and Windows Subsystem for Linux <sup>[1](#footnote1)</su
 
     sudo update-alternatives --config i686-w64-mingw32-g++  # Set the default mingw32 g++ compiler option to posix.
 
-Note that for WSL the LT source path MUST be somewhere in the default mount file system, for
-example /usr/src/locktrip, AND not under /mnt/d/. If this is not the case the dependency autoconf scripts will fail.
+Note that for WSL the HYDRA source path MUST be somewhere in the default mount file system, for
+example /usr/src/hydra, AND not under /mnt/d/. If this is not the case the dependency autoconf scripts will fail.
 This means you cannot use a directory that located directly on the host Windows file system to perform the build.
 
 Acquire the source in the usual way:
 
-    git clone https://github.com/locktrip/Blockchain LT --recursive
+    git clone https://github.com/locktrip/Blockchain HYDRA --recursive
 
 Then build using:
 
@@ -124,6 +124,6 @@ Installation
 After building using the Windows subsystem it can be useful to copy the compiled
 executables to a directory on the windows drive in the same directory structure
 as they appear in the release `.zip` archive. This can be done in the following
-way. This will install to `c:\workspace\LockTrip`, for example:
+way. This will install to `c:\workspace\HYDRA`, for example:
 
-    make install DESTDIR=/mnt/c/workspace/LockTrip
+    make install DESTDIR=/mnt/c/workspace/HYDRA

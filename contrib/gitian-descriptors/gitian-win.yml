@@ -1,5 +1,5 @@
 ---
-name: "locktrip-win-0.17.0"
+name: "hydra-win-0.17.0"
 enable_cache: true
 suites:
 - "bionic"
@@ -24,7 +24,7 @@ packages:
 - "rename"
 remotes:
 - "url": "https://github.com/LockTrip/Blockchain.git"
-  "dir": "LockTrip"
+  "dir": "HYDRA"
 - "url": "https://github.com/LockTrip/cpp-ethereum.git"
   "dir": "cpp-ethereum"
 files: []
@@ -32,9 +32,9 @@ script: |
   set -e -o pipefail
 
   #this is a hack since gitian has no natural support for submodules
-  cp -r cpp-ethereum/* LockTrip/src/cpp-ethereum
+  cp -r cpp-ethereum/* HYDRA/src/cpp-ethereum
   #make sure this file exists...
-  cat LockTrip/src/cpp-ethereum/utils/libscrypt/b64.c
+  cat HYDRA/src/cpp-ethereum/utils/libscrypt/b64.c
 
   WRAP_DIR=$HOME/wrapped
   HOSTS="i686-w64-mingw32 x86_64-w64-mingw32"
@@ -112,7 +112,7 @@ script: |
   create_per-host_linker_wrapper "2000-01-01 12:00:00"
   export PATH=${WRAP_DIR}:${PATH}
 
-  cd LockTrip
+  cd HYDRA
   BASEPREFIX=`pwd`/depends
   # Build dependencies for each host
   for i in $HOSTS; do
@@ -130,14 +130,14 @@ script: |
   ./autogen.sh
   CONFIG_SITE=${BASEPREFIX}/`echo "${HOSTS}" | awk '{print $1;}'`/share/config.site ./configure --prefix=/
   make dist
-  SOURCEDIST=`echo locktrip-*.tar.gz`
+  SOURCEDIST=`echo hydra-*.tar.gz`
   DISTNAME=`echo ${SOURCEDIST} | sed 's/.tar.*//'`
 
   # Correct tar file order
   mkdir -p temp
   pushd temp
   tar xf ../$SOURCEDIST
-  find locktrip-* | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ../$SOURCEDIST
+  find hydra-* | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ../$SOURCEDIST
   mkdir -p $OUTDIR/src
   cp ../$SOURCEDIST $OUTDIR/src
   popd
@@ -166,7 +166,7 @@ script: |
     make deploy
     make install DESTDIR=${INSTALLPATH}
     rename 's/-setup\.exe$/-setup-unsigned.exe/' *-setup.exe
-    cp -f locktrip-*setup*.exe $OUTDIR/
+    cp -f hydra-*setup*.exe $OUTDIR/
     cd installed
     mv ${DISTNAME}/bin/*.dll ${DISTNAME}/lib/
     find . -name "lib*.la" -delete
@@ -182,7 +182,7 @@ script: |
   cp -rf contrib/windeploy $BUILD_DIR
   cd $BUILD_DIR/windeploy
   mkdir unsigned
-  cp $OUTDIR/locktrip-*setup-unsigned.exe unsigned/
+  cp $OUTDIR/hydra-*setup-unsigned.exe unsigned/
   find . | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ${OUTDIR}/${DISTNAME}-win-unsigned.tar.gz
   mv ${OUTDIR}/${DISTNAME}-x86_64-*-debug.zip ${OUTDIR}/${DISTNAME}-win64-debug.zip
   mv ${OUTDIR}/${DISTNAME}-i686-*-debug.zip ${OUTDIR}/${DISTNAME}-win32-debug.zip

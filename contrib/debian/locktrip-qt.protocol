@@ -1,6 +1,6 @@
 [Protocol]
-exec=locktrip-qt '%u'
-protocol=locktrip
+exec=hydra-qt '%u'
+protocol=hydra
 input=none
 output=none
 helper=true

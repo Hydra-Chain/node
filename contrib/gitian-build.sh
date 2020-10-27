@@ -32,7 +32,7 @@ commitFiles=true
 read -d '' usage <<- EOF
 Usage: $scriptName [-c|u|v|b|s|B|o|h|j|m|] version
 
-Run this script from the directory containing the locktrip, gitian-builder, gitian.sigs, and locktrip-detached-sigs.
+Run this script from the directory containing the hydra, gitian-builder, gitian.sigs, and hydra-detached-sigs.
 
 Arguments:
 --signer signer          GPG signer to sign each build assert file
@@ -248,7 +248,7 @@ then
 	    exit 1
 	fi
 	# Make output folder
-	mkdir -p ./locktrip-binaries/${VERSION}
+	mkdir -p ./hydra-binaries/${VERSION}
 
 	# Build Dependencies
 	echo ""
@@ -268,9 +268,9 @@ then
 	    echo ""
 	    pwd
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit LockTrip=${COMMIT},cpp-ethereum=0.2 --url LockTrip=${url},cpp-ethereum=${ethurl} ../Blockchain/contrib/gitian-descriptors/gitian-linux.yml
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit HYDRA=${COMMIT},cpp-ethereum=0.2 --url HYDRA=${url},cpp-ethereum=${ethurl} ../Blockchain/contrib/gitian-descriptors/gitian-linux.yml
 	    ./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../Blockchain/contrib/gitian-descriptors/gitian-linux.yml
-	    mv build/out/locktrip-*.tar.gz build/out/src/locktrip-*.tar.gz ../locktrip-binaries/${VERSION}
+	    mv build/out/hydra-*.tar.gz build/out/src/hydra-*.tar.gz ../hydra-binaries/${VERSION}
 	fi
 	# Windows
 	if [[ $windows = true ]]
@@ -278,10 +278,10 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} Windows"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit LockTrip=${COMMIT},cpp-ethereum=0.2 --url LockTrip=${url},cpp-ethereum=${ethurl} ../Blockchain/contrib/gitian-descriptors/gitian-win.yml
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit HYDRA=${COMMIT},cpp-ethereum=0.2 --url HYDRA=${url},cpp-ethereum=${ethurl} ../Blockchain/contrib/gitian-descriptors/gitian-win.yml
 	    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../Blockchain/contrib/gitian-descriptors/gitian-win.yml
-	    mv build/out/locktrip-*-win-unsigned.tar.gz inputs/locktrip-win-unsigned.tar.gz
-	    mv build/out/locktrip-*.zip build/out/locktrip-*.exe ../locktrip-binaries/${VERSION}
+	    mv build/out/hydra-*-win-unsigned.tar.gz inputs/hydra-win-unsigned.tar.gz
+	    mv build/out/hydra-*.zip build/out/hydra-*.exe ../hydra-binaries/${VERSION}
 	fi
 	# Mac OSX
 	if [[ $osx = true ]]
@@ -289,10 +289,10 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} Mac OSX"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit LockTrip=${COMMIT},cpp-ethereum=0.2 --url LockTrip=${url},cpp-ethereum=${ethurl} ../Blockchain/contrib/gitian-descriptors/gitian-osx.yml
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit HYDRA=${COMMIT},cpp-ethereum=0.2 --url HYDRA=${url},cpp-ethereum=${ethurl} ../Blockchain/contrib/gitian-descriptors/gitian-osx.yml
 	    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../Blockchain/contrib/gitian-descriptors/gitian-osx.yml
-	    mv build/out/locktrip-*-osx-unsigned.tar.gz inputs/locktrip-osx-unsigned.tar.gz
-	    mv build/out/locktrip-*.tar.gz build/out/locktrip-*.dmg ../locktrip-binaries/${VERSION}
+	    mv build/out/hydra-*-osx-unsigned.tar.gz inputs/hydra-osx-unsigned.tar.gz
+	    mv build/out/hydra-*.tar.gz build/out/hydra-*.dmg ../hydra-binaries/${VERSION}
 	fi
 	popd
 
@@ -361,8 +361,8 @@ then
 	    echo ""
 	    ./bin/gbuild -i --commit signature=${COMMIT} ../Blockchain/contrib/gitian-descriptors/gitian-win-signer.yml
 	    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../Blockchain/contrib/gitian-descriptors/gitian-win-signer.yml
-	    mv build/out/locktrip-*win64-setup.exe ../locktrip-binaries/${VERSION}
-	    mv build/out/locktrip-*win32-setup.exe ../locktrip-binaries/${VERSION}
+	    mv build/out/hydra-*win64-setup.exe ../hydra-binaries/${VERSION}
+	    mv build/out/hydra-*win32-setup.exe ../hydra-binaries/${VERSION}
 	fi
 	# Sign Mac OSX
 	if [[ $osx = true ]]
@@ -372,7 +372,7 @@ then
 	    echo ""
 	    ./bin/gbuild -i --commit signature=master ../Blockchain/contrib/gitian-descriptors/gitian-osx-signer.yml
 	    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../Blockchain/contrib/gitian-descriptors/gitian-osx-signer.yml
-	    mv build/out/locktrip-osx-signed.dmg ../locktrip-binaries/${VERSION}/locktrip-${VERSION}-osx.dmg
+	    mv build/out/hydra-osx-signed.dmg ../hydra-binaries/${VERSION}/hydra-${VERSION}-osx.dmg
 	fi
 	popd
 

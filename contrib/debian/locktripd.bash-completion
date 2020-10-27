@@ -1,2 +1,2 @@
-contrib/locktripd.bash-completion	locktripd
-contrib/locktrip-cli.bash-completion	locktrip-cli
+contrib/hydrad.bash-completion	hydrad
+contrib/hydra-cli.bash-completion	hydra-cli

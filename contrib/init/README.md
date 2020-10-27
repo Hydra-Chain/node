@@ -1,11 +1,11 @@
 Sample configuration files for:
 ```
-SystemD: locktripd.service
-Upstart: locktripd.conf
-OpenRC:  locktripd.openrc
-         locktripd.openrcconf
-CentOS:  locktripd.init
-OS X:    org.locktrip.locktripd.plist
+SystemD: hydrad.service
+Upstart: hydrad.conf
+OpenRC:  hydrad.openrc
+         hydrad.openrcconf
+CentOS:  hydrad.init
+OS X:    org.hydra.hydrad.plist
 ```
 have been made available to assist packagers in creating node packages here.
 

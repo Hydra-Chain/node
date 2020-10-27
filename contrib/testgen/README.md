@@ -1,6 +1,6 @@
 ### TestGen ###
 
-Utilities to generate test vectors for the data-driven LockTrip tests.
+Utilities to generate test vectors for the data-driven HYDRA tests.
 
 Usage: 
 

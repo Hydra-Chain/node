@@ -5,10 +5,10 @@
 Make sure you obtain the proper release signing key and verify the fingerprint with several independent sources.
 
 ```sh
-$ gpg --fingerprint "LockTrip binary release signing key"
+$ gpg --fingerprint "HYDRA binary release signing key"
 pub   4096R/36C2E964 2015-06-24 [expires: 2017-02-13]
       Key fingerprint = 01EA 5486 DE18 A882 D4C2  6845 90C8 019E 36C2 E964
-uid                  Wladimir J. van der Laan (LockTrip Core binary release signing key) <laanwj@gmail.com>
+uid                  Wladimir J. van der Laan (HYDRA binary release signing key) <laanwj@gmail.com>
 ```
 
 #### Usage:
@@ -21,19 +21,19 @@ The script returns 0 if everything passes the checks. It returns 1 if either the
 
 
 ```sh
-./verify.sh locktrip-0.15.3
+./verify.sh hydra-0.1
 ```
 
 If you only want to download the binaries of certain platform, add the corresponding suffix, e.g.:
 
 ```sh
-./verify.sh locktrip-0.15.3-osx
-./verify.sh locktrip-0.15.3-linux
-./verify.sh locktrip-0.15.3-rc3-win64
+./verify.sh hydra-0.1-osx
+./verify.sh hydra-0.1-linux
+./verify.sh hydra-0.1-rc3-win64
 ```
 
 If you do not want to keep the downloaded binaries, specify anything as the second parameter.
 
 ```sh
-./verify.sh locktrip-0.15.3 delete
+./verify.sh hydra-0.1 delete
 ```

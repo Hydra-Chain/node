@@ -1,9 +1,9 @@
 #!/usr/bin/make -f
 # -*- mode: makefile; coding: utf-8 -*-
 
-#DEB_MAKE_CHECK_TARGET = test_locktrip
-#build/locktripd::
-#	$(if $(filter nocheck,$(DEB_BUILD_OPTIONS)),,src/test_locktrip)
+#DEB_MAKE_CHECK_TARGET = test_hydra
+#build/hydrad::
+#	$(if $(filter nocheck,$(DEB_BUILD_OPTIONS)),,src/test_hydra)
 
 %:
 	dh --with bash-completion $@

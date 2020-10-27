@@ -126,15 +126,15 @@ db4/
 .cproject
 .project
 .settings/language.settings.xml
-src/locktrip-cli
-src/locktrip-tx
-src/locktripd
-src/bench/bench_locktrip
-src/qt/locktrip-qt
-src/qt/test/test_locktrip-qt
+src/hydra-cli
+src/hydra-tx
+src/hydrad
+src/bench/bench_hydra
+src/qt/hydra-qt
+src/qt/test/test_hydra-qt
 src/test/buildenv.py
-src/test/test_locktrip
-src/test/test_locktrip_fuzzy
+src/test/test_hydra
+src/test/test_hydra_fuzzy
 
 #CLion Ignore
 .idea/

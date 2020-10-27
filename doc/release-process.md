@@ -38,7 +38,7 @@ Check out the source code in the following directory hierarchy.
     git clone https://github.com/devrandom/gitian-builder.git
     git clone https://github.com/LockTrip/Blockchain.git
 
-### LT maintainers/release engineers, suggestion for writing release notes
+### HYDRA maintainers/release engineers, suggestion for writing release notes
 
 Write release notes. git shortlog helps a lot, for example:
 
@@ -58,7 +58,7 @@ If you're using the automated script (found in [contrib/gitian-build.sh](/contri
 
 Setup Gitian descriptors:
 
-    pushd ./LockTrip
+    pushd ./HYDRA
     export SIGNER=(your Gitian key, ie bluematt, sipa, etc)
     export VERSION=(new version, e.g. 0.8.0)
     git fetch
@@ -92,7 +92,7 @@ Create the OS X SDK tarball, see the [OS X readme](README_osx.md) for details, a
 By default, Gitian will fetch source files as needed. To cache them ahead of time:
 
     pushd ./gitian-builder
-    make -C ../LockTrip/depends download SOURCES_PATH=`pwd`/cache/common
+    make -C ../HYDRA/depends download SOURCES_PATH=`pwd`/cache/common
     popd
 
 Only missing files will be fetched, so this is safe to re-run for each build.
@@ -100,50 +100,50 @@ Only missing files will be fetched, so this is safe to re-run for each build.
 NOTE: Offline builds must use the --url flag to ensure Gitian fetches only from local URLs. For example:
 
     pushd ./gitian-builder
-    ./bin/gbuild --url LockTrip=/path/to/locktrip,signature=/path/to/sigs {rest of arguments}
+    ./bin/gbuild --url HYDRA=/path/to/hydra,signature=/path/to/sigs {rest of arguments}
     popd
 
 The gbuild invocations below <b>DO NOT DO THIS</b> by default.
 
-### Build and sign LT for Linux, Windows, and OS X:
+### Build and sign HYDRA for Linux, Windows, and OS X:
 
     pushd ./gitian-builder
-    ./bin/gbuild --num-make 2 --memory 3000 --commit LockTrip=v${VERSION} ../LockTrip/contrib/gitian-descriptors/gitian-linux.yml
-    ./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../Gitian-Sigs/ ../LockTrip/contrib/gitian-descriptors/gitian-linux.yml
-    mv build/out/locktrip-*.tar.gz build/out/src/locktrip-*.tar.gz ../
+    ./bin/gbuild --num-make 2 --memory 3000 --commit HYDRA=v${VERSION} ../HYDRA/contrib/gitian-descriptors/gitian-linux.yml
+    ./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../Gitian-Sigs/ ../HYDRA/contrib/gitian-descriptors/gitian-linux.yml
+    mv build/out/hydra-*.tar.gz build/out/src/hydra-*.tar.gz ../
 
-    ./bin/gbuild --num-make 2 --memory 3000 --commit LockTrip=v${VERSION} ../LockTrip/contrib/gitian-descriptors/gitian-win.yml
-    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../Gitian-Sigs/ ../LockTrip/contrib/gitian-descriptors/gitian-win.yml
-    mv build/out/locktrip-*-win-unsigned.tar.gz inputs/locktrip-win-unsigned.tar.gz
-    mv build/out/locktrip-*.zip build/out/locktrip-*.exe ../
+    ./bin/gbuild --num-make 2 --memory 3000 --commit HYDRA=v${VERSION} ../HYDRA/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../Gitian-Sigs/ ../HYDRA/contrib/gitian-descriptors/gitian-win.yml
+    mv build/out/hydra-*-win-unsigned.tar.gz inputs/hydra-win-unsigned.tar.gz
+    mv build/out/hydra-*.zip build/out/hydra-*.exe ../
 
-    ./bin/gbuild --num-make 2 --memory 3000 --commit LockTrip=v${VERSION} ../LockTrip/contrib/gitian-descriptors/gitian-osx.yml
-    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../Gitian-Sigs/ ../LockTrip/contrib/gitian-descriptors/gitian-osx.yml
-    mv build/out/locktrip-*-osx-unsigned.tar.gz inputs/locktrip-osx-unsigned.tar.gz
-    mv build/out/locktrip-*.tar.gz build/out/locktrip-*.dmg ../
+    ./bin/gbuild --num-make 2 --memory 3000 --commit HYDRA=v${VERSION} ../HYDRA/contrib/gitian-descriptors/gitian-osx.yml
+    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../Gitian-Sigs/ ../HYDRA/contrib/gitian-descriptors/gitian-osx.yml
+    mv build/out/hydra-*-osx-unsigned.tar.gz inputs/hydra-osx-unsigned.tar.gz
+    mv build/out/hydra-*.tar.gz build/out/hydra-*.dmg ../
     popd
 
 Build output expected:
 
-  1. source tarball (`locktrip-${VERSION}.tar.gz`)
-  2. linux 32-bit and 64-bit dist tarballs (`locktrip-${VERSION}-linux[32|64].tar.gz`)
-  3. windows 32-bit and 64-bit unsigned installers and dist zips (`locktrip-${VERSION}-win[32|64]-setup-unsigned.exe`, `locktrip-${VERSION}-win[32|64].zip`)
-  4. OS X unsigned installer and dist tarball (`locktrip-${VERSION}-osx-unsigned.dmg`, `locktrip-${VERSION}-osx64.tar.gz`)
+  1. source tarball (`hydra-${VERSION}.tar.gz`)
+  2. linux 32-bit and 64-bit dist tarballs (`hydra-${VERSION}-linux[32|64].tar.gz`)
+  3. windows 32-bit and 64-bit unsigned installers and dist zips (`hydra-${VERSION}-win[32|64]-setup-unsigned.exe`, `hydra-${VERSION}-win[32|64].zip`)
+  4. OS X unsigned installer and dist tarball (`hydra-${VERSION}-osx-unsigned.dmg`, `hydra-${VERSION}-osx64.tar.gz`)
   5. Gitian signatures (in `Gitian-Sigs/${VERSION}-<linux|{win,osx}-unsigned>/(your Gitian key)/`)
 
 ### Verify other gitian builders signatures to your own. (Optional)
 
 Add other gitian builders keys to your gpg keyring, and/or refresh keys.
 
-    gpg --import LockTrip/contrib/gitian-keys/*.pgp
+    gpg --import HYDRA/contrib/gitian-keys/*.pgp
     gpg --refresh-keys
 
 Verify the signatures
 
     pushd ./gitian-builder
-    ./bin/gverify -v -d ../Gitian-Sigs/ -r ${VERSION}-linux ../LockTrip/contrib/gitian-descriptors/gitian-linux.yml
-    ./bin/gverify -v -d ../Gitian-Sigs/ -r ${VERSION}-win-unsigned ../LockTrip/contrib/gitian-descriptors/gitian-win.yml
-    ./bin/gverify -v -d ../Gitian-Sigs/ -r ${VERSION}-osx-unsigned ../LockTrip/contrib/gitian-descriptors/gitian-osx.yml
+    ./bin/gverify -v -d ../Gitian-Sigs/ -r ${VERSION}-linux ../HYDRA/contrib/gitian-descriptors/gitian-linux.yml
+    ./bin/gverify -v -d ../Gitian-Sigs/ -r ${VERSION}-win-unsigned ../HYDRA/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gverify -v -d ../Gitian-Sigs/ -r ${VERSION}-osx-unsigned ../HYDRA/contrib/gitian-descriptors/gitian-osx.yml
     popd
 
 ### Next steps:
@@ -164,15 +164,15 @@ Codesigner only: Create Windows/OS X detached signatures:
 
 Codesigner only: Sign the osx binary:
 
-    transfer locktrip-osx-unsigned.tar.gz to osx for signing
-    tar xf locktrip-osx-unsigned.tar.gz
+    transfer hydra-osx-unsigned.tar.gz to osx for signing
+    tar xf hydra-osx-unsigned.tar.gz
     ./detached-sig-create.sh -s "Key ID"
     Enter the keychain password and authorize the signature
     Move signature-osx.tar.gz back to the gitian host
 
 Codesigner only: Sign the windows binaries:
 
-    tar xf locktrip-win-unsigned.tar.gz
+    tar xf hydra-win-unsigned.tar.gz
     ./detached-sig-create.sh -key /path/to/codesign.key
     Enter the passphrase for the key when prompted
     signature-win.tar.gz will be created
@@ -192,25 +192,25 @@ Codesigner only: Commit the detached codesign payloads:
 Non-codesigners: wait for Windows/OS X detached signatures:
 
 - Once the Windows/OS X builds each have 3 matching signatures, they will be signed with their respective release keys.
-- Detached signatures will then be committed to the [LockTrip Detached Sigs](https://github.com/LockTrip/Detached-Sigs) repository, which can be combined with the unsigned apps to create signed binaries.
+- Detached signatures will then be committed to the [HYDRA Detached Sigs](https://github.com/LockTrip/Detached-Sigs) repository, which can be combined with the unsigned apps to create signed binaries.
 
 Create (and optionally verify) the signed OS X binary:
 
     pushd ./gitian-builder
-    ./bin/gbuild -i --commit signature=v${VERSION} ../LockTrip/contrib/gitian-descriptors/gitian-osx-signer.yml
-    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-signed --destination ../Gitian-Sigs/ ../LockTrip/contrib/gitian-descriptors/gitian-osx-signer.yml
-    ./bin/gverify -v -d ../Gitian-Sigs/ -r ${VERSION}-osx-signed ../LockTrip/contrib/gitian-descriptors/gitian-osx-signer.yml
-    mv build/out/locktrip-osx-signed.dmg ../locktrip-${VERSION}-osx.dmg
+    ./bin/gbuild -i --commit signature=v${VERSION} ../HYDRA/contrib/gitian-descriptors/gitian-osx-signer.yml
+    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-signed --destination ../Gitian-Sigs/ ../HYDRA/contrib/gitian-descriptors/gitian-osx-signer.yml
+    ./bin/gverify -v -d ../Gitian-Sigs/ -r ${VERSION}-osx-signed ../HYDRA/contrib/gitian-descriptors/gitian-osx-signer.yml
+    mv build/out/hydra-osx-signed.dmg ../hydra-${VERSION}-osx.dmg
     popd
 
 Create (and optionally verify) the signed Windows binaries:
 
     pushd ./gitian-builder
-    ./bin/gbuild -i --commit signature=v${VERSION} ../LockTrip/contrib/gitian-descriptors/gitian-win-signer.yml
-    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-signed --destination ../Gitian-Sigs/ ../LockTrip/contrib/gitian-descriptors/gitian-win-signer.yml
-    ./bin/gverify -v -d ../Gitian-Sigs/ -r ${VERSION}-win-signed ../LockTrip/contrib/gitian-descriptors/gitian-win-signer.yml
-    mv build/out/locktrip-*win64-setup.exe ../locktrip-${VERSION}-win64-setup.exe
-    mv build/out/locktrip-*win32-setup.exe ../locktrip-${VERSION}-win32-setup.exe
+    ./bin/gbuild -i --commit signature=v${VERSION} ../HYDRA/contrib/gitian-descriptors/gitian-win-signer.yml
+    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-signed --destination ../Gitian-Sigs/ ../HYDRA/contrib/gitian-descriptors/gitian-win-signer.yml
+    ./bin/gverify -v -d ../Gitian-Sigs/ -r ${VERSION}-win-signed ../HYDRA/contrib/gitian-descriptors/gitian-win-signer.yml
+    mv build/out/hydra-*win64-setup.exe ../hydra-${VERSION}-win64-setup.exe
+    mv build/out/hydra-*win32-setup.exe ../hydra-${VERSION}-win32-setup.exe
     popd
 
 Commit your signature for the signed OS X/Windows binaries:
@@ -232,17 +232,17 @@ sha256sum * > SHA256SUMS
 
 The list of files should be:
 ```
-locktrip-${VERSION}-aarch64-linux-gnu.tar.gz
-locktrip-${VERSION}-arm-linux-gnueabihf.tar.gz
-locktrip-${VERSION}-i686-pc-linux-gnu.tar.gz
-locktrip-${VERSION}-x86_64-linux-gnu.tar.gz
-locktrip-${VERSION}-osx64.tar.gz
-locktrip-${VERSION}-osx.dmg
-locktrip-${VERSION}.tar.gz
-locktrip-${VERSION}-win32-setup.exe
-locktrip-${VERSION}-win32.zip
-locktrip-${VERSION}-win64-setup.exe
-locktrip-${VERSION}-win64.zip
+hydra-${VERSION}-aarch64-linux-gnu.tar.gz
+hydra-${VERSION}-arm-linux-gnueabihf.tar.gz
+hydra-${VERSION}-i686-pc-linux-gnu.tar.gz
+hydra-${VERSION}-x86_64-linux-gnu.tar.gz
+hydra-${VERSION}-osx64.tar.gz
+hydra-${VERSION}-osx.dmg
+hydra-${VERSION}.tar.gz
+hydra-${VERSION}-win32-setup.exe
+hydra-${VERSION}-win32.zip
+hydra-${VERSION}-win64-setup.exe
+hydra-${VERSION}-win64.zip
 ```
 The `*-debug*` files generated by the gitian build contain debug symbols
 for troubleshooting by developers. It is assumed that anyone that is interested

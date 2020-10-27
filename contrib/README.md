@@ -13,7 +13,7 @@ Construct a linear, no-fork, best version of the blockchain.
 
 ### [Qos](/contrib/qos) ###
 
-A Linux bash script that will set up traffic control (tc) to limit the outgoing bandwidth for connections to the LockTrip network. This means one can have an always-on locktripd instance running, and another local locktripd/locktrip-qt instance which connects to this node and receives blocks from it.
+A Linux bash script that will set up traffic control (tc) to limit the outgoing bandwidth for connections to the HYDRA network. This means one can have an always-on hydrad instance running, and another local hydrad/hydra-qt instance which connects to this node and receives blocks from it.
 
 ### [Seeds](/contrib/seeds) ###
 Utility to generate the pnSeed[] array that is compiled into the client.
@@ -22,20 +22,20 @@ Build Tools and Keys
 ---------------------
 
 ### [Debian](/contrib/debian) ###
-Contains files used to package locktripd/locktrip-qt
-for Debian-based Linux systems. If you compile locktripd/locktrip-qt yourself, there are some useful files here.
+Contains files used to package hydrad/hydra-qt
+for Debian-based Linux systems. If you compile hydrad/hydra-qt yourself, there are some useful files here.
 
 ### [Gitian-descriptors](/contrib/gitian-descriptors) ###
 Notes on getting Gitian builds up and running using KVM.
 
 ### [Gitian-keys](/contrib/gitian-keys)
-PGP keys used for signing LockTrip [Gitian release](/doc/release-process.md) results.
+PGP keys used for signing HYDRA [Gitian release](/doc/release-process.md) results.
 
 ### [MacDeploy](/contrib/macdeploy) ###
 Scripts and notes for Mac builds. 
 
 ### [RPM](/contrib/rpm) ###
-RPM spec file for building LockTrip on RPM based distributions
+RPM spec file for building HYDRA on RPM based distributions
 
 ### [Gitian-build](/contrib/gitian-build.sh) ###
 Script for running full Gitian builds.
@@ -44,7 +44,7 @@ Test and Verify Tools
 ---------------------
 
 ### [TestGen](/contrib/testgen) ###
-Utilities to generate test vectors for the data-driven LockTrip tests.
+Utilities to generate test vectors for the data-driven HYDRA tests.
 
 ### [Verify Binaries](/contrib/verifybinaries) ###
 This script attempts to download and verify the signature file SHA256SUMS.asc from https://github.com/LockTrip/Blockchain/releases.

@@ -8,9 +8,9 @@ Generate GPG key on your computer:
 Copy got gpg key into the /contrib/gitian-keys/ folder with .pgp format.
 ### Setting up Gitian
 1. Replace .yml files in Blockchain/contrib/gitian-descriptors folder. Replace gitian-build.sh in Blockchain/contrib folder. Add windeploy/ folder into the Blockchain/contrib. Push these changes to remote repository https://github.com/LockTrip/Blockchain. Also very important, windeploy/ folder should be The same version as you want to build. You will couldn't build win binaries without this folder in version which you want to build.
-2. gitian-build.sh script should be started from directory where LockTrip blockchain project places(like in instruction).
+2. gitian-build.sh script should be started from directory where HYDRA blockchain project places(like in instruction).
 ##### First time / New Gitian builders
-These actions are executed once when first using gitian-builder. If you have used gitian-builder for LockTrip skip these steps.
+These actions are executed once when first using gitian-builder. If you have used gitian-builder for HYDRA skip these steps.
 1. ```Blockchain/contrib/gitian-build.sh --setup``` This command create and setup virtual machines to build your binaries files. This command may take a while (about 40 minutes). If you want to use KVM as build VM , run script with ```--kvm```.
     ```Blockchain/contrib/gitian-build.sh --setup --kvm```
 
@@ -28,7 +28,7 @@ Ensure that the ./gitian-builder directory is up to date.
     git pull
     popd
 
-### Build and sign LockTrip for Linux, Windows, and OS X:
+### Build and sign HYDRA for Linux, Windows, and OS X:
 
   ```Blockchain/contrib/gitian-build.sh --build --signer signer version``` or 
   ```Blockchain/contrib/gitian-build.sh --build --kvm --signer signer version```
@@ -70,14 +70,14 @@ Output will look something like:
     Running build script (log in var/build.log)
 
 
-Binaries will be in locktrip-binaries/ . Signatures will appear in gitian.sigs/ . Signatures will be committed and you should push it manually. Sigs haven't committed with ```--no-commit```.
+Binaries will be in hydra-binaries/ . Signatures will appear in gitian.sigs/ . Signatures will be committed and you should push it manually. Sigs haven't committed with ```--no-commit```.
 
 Build output expected:
 
-  1. source tarball (`locktrip-${VERSION}.tar.gz`)
-  2. linux 32-bit and 64-bit dist tarballs (`locktrip-${VERSION}-linux[32|64].tar.gz`)
-  3. windows 32-bit and 64-bit unsigned installers and dist zips (`locktrip-${VERSION}-win[32|64]-setup-unsigned.exe`, `locktrip-${VERSION}-win[32|64].zip`)
-  4. OS X unsigned installer and dist tarball (`locktrip-${VERSION}-osx-unsigned.dmg`, `locktrip-${VERSION}-osx64.tar.gz`)
+  1. source tarball (`hydra-${VERSION}.tar.gz`)
+  2. linux 32-bit and 64-bit dist tarballs (`hydra-${VERSION}-linux[32|64].tar.gz`)
+  3. windows 32-bit and 64-bit unsigned installers and dist zips (`hydra-${VERSION}-win[32|64]-setup-unsigned.exe`, `hydra-${VERSION}-win[32|64].zip`)
+  4. OS X unsigned installer and dist tarball (`hydra-${VERSION}-osx-unsigned.dmg`, `hydra-${VERSION}-osx64.tar.gz`)
   5. Gitian signatures (in `gitian.sigs/${VERSION}-<linux|{win,osx}-unsigned>/(your Gitian key)/`)
 
 ### Verify other gitian builders signatures to your own. (Optional)
@@ -99,22 +99,22 @@ Verify the signatures
 
 Codesigner only: Sign the osx binary:
 
-    transfer locktrip-osx-unsigned.tar.gz to osx for signing
-    tar xf locktrip-osx-unsigned.tar.gz
+    transfer hydra-osx-unsigned.tar.gz to osx for signing
+    tar xf hydra-osx-unsigned.tar.gz
     ./detached-sig-create.sh -s "Key ID"
     Enter the keychain password and authorize the signature
     Move signature-osx.tar.gz back to the gitian host
 
 Codesigner only: Sign the windows binaries:
 
-    tar xf locktrip-win-unsigned.tar.gz
+    tar xf hydra-win-unsigned.tar.gz
     ./detached-sig-create.sh -key /path/to/codesign.key
     Enter the passphrase for the key when prompted
     signature-win.tar.gz will be created
 
 Codesigner only: Commit the detached codesign payloads:
 
-    cd /path/to/LockTrip-detached-sigs
+    cd /path/to/HYDRA-detached-sigs
     checkout the appropriate branch for this release series
     rm -rf *
     tar xf signature-osx.tar.gz
@@ -126,7 +126,7 @@ Codesigner only: Commit the detached codesign payloads:
 Non-codesigners: wait for Windows/OS X detached signatures:
 
     Once the Windows/OS X builds each have 3 matching signatures, they will be signed with their respective release keys.
-    Detached signatures will then be committed to the LockTrip-detached-sigs repository, which can be combined with the unsigned apps to create signed binaries.
+    Detached signatures will then be committed to the HYDRA-detached-sigs repository, which can be combined with the unsigned apps to create signed binaries.
 
 Create the signed OS X binary:
 ```Blockchain/contrib/gitian-build.sh --sign -o x --signer signer version```

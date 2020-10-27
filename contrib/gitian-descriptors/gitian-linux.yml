@@ -1,5 +1,5 @@
 ---
-name: "locktrip-linux-0.17.0"
+name: "hydra-linux-0.17.0"
 enable_cache: true
 suites:
 - "bionic"
@@ -38,7 +38,7 @@ packages:
 - "libminiupnpc-dev"
 remotes:
 - "url": "https://github.com/LockTrip/Blockchain.git"
-  "dir": "LockTrip"
+  "dir": "HYDRA"
 - "url": "https://github.com/LockTrip/cpp-ethereum.git"
   "dir": "cpp-ethereum"
 files: []
@@ -47,8 +47,8 @@ script: |
 
   #this is a hack since gitian has no natural support for submodules
   #make sure this file exists... 
-  cp -r cpp-ethereum/* LockTrip/src/cpp-ethereum
-  cat LockTrip/src/cpp-ethereum/utils/libscrypt/b64.c 
+  cp -r cpp-ethereum/* HYDRA/src/cpp-ethereum
+  cat HYDRA/src/cpp-ethereum/utils/libscrypt/b64.c
 
   WRAP_DIR=$HOME/wrapped
   HOSTS="i686-pc-linux-gnu x86_64-linux-gnu arm-linux-gnueabihf aarch64-linux-gnu"
@@ -134,7 +134,7 @@ script: |
   chmod +x ${WRAP_DIR}/${prog}
   done
 
-  cd LockTrip
+  cd HYDRA
 
   BASEPREFIX=`pwd`/depends
   # Build dependencies for each host
@@ -157,13 +157,13 @@ script: |
   ./autogen.sh
   CONFIG_SITE=${BASEPREFIX}/`echo "${HOSTS}" | awk '{print $1;}'`/share/config.site ./configure --prefix=/
   make V=1 dist
-  SOURCEDIST=`echo locktrip-*.tar.gz`
+  SOURCEDIST=`echo hydra-*.tar.gz`
   DISTNAME=`echo ${SOURCEDIST} | sed 's/.tar.*//'`
   # Correct tar file order
   mkdir -p temp
   pushd temp
   tar xf ../$SOURCEDIST
-  find locktrip-* | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ../$SOURCEDIST
+  find hydra-* | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ../$SOURCEDIST
   popd
 
   # Workaround for tarball not building with the bare tag version (prep)

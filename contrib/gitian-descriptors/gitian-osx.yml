@@ -1,5 +1,5 @@
 ---
-name: "locktrip-osx-0.17.0"
+name: "hydra-osx-0.17.0"
 enable_cache: true
 suites:
 - "bionic"
@@ -29,7 +29,7 @@ packages:
 - "fonts-tuffy"
 remotes:
 - "url": "https://github.com/LockTrip/Blockchain.git"
-  "dir": "LockTrip"
+  "dir": "HYDRA"
 - "url": "https://github.com/LockTrip/cpp-ethereum.git"
   "dir": "cpp-ethereum"
 files:
@@ -38,9 +38,9 @@ script: |
   set -e -o pipefail
 
   #this is a hack since gitian has no natural support for submodules
-  cp -r cpp-ethereum/* LockTrip/src/cpp-ethereum
+  cp -r cpp-ethereum/* HYDRA/src/cpp-ethereum
   #make sure this file exists...
-  cat LockTrip/src/cpp-ethereum/utils/libscrypt/b64.c
+  cat HYDRA/src/cpp-ethereum/utils/libscrypt/b64.c
 
   WRAP_DIR=$HOME/wrapped
   HOSTS="x86_64-apple-darwin14"
@@ -93,7 +93,7 @@ script: |
   create_per-host_faketime_wrappers "2000-01-01 12:00:00"
   export PATH=${WRAP_DIR}:${PATH}
 
-  cd LockTrip
+  cd HYDRA
   BASEPREFIX=`pwd`/depends
 
   mkdir -p ${BASEPREFIX}/SDKs
@@ -114,14 +114,14 @@ script: |
   ./autogen.sh
   CONFIG_SITE=${BASEPREFIX}/`echo "${HOSTS}" | awk '{print $1;}'`/share/config.site ./configure --prefix=/
   make dist
-  SOURCEDIST=`echo locktrip-*.tar.gz`
+  SOURCEDIST=`echo hydra-*.tar.gz`
   DISTNAME=`echo ${SOURCEDIST} | sed 's/.tar.*//'`
 
   # Correct tar file order
   mkdir -p temp
   pushd temp
   tar xf ../$SOURCEDIST
-  find locktrip-* | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ../$SOURCEDIST
+  find hydra-* | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ../$SOURCEDIST
   popd
 
   # Workaround for tarball not building with the bare tag version (prep)

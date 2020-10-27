@@ -1423,7 +1423,7 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
 
     CAmount reward = (lastPercentage * prevTotalSupplay) / consensusParams.blocksPerYear;
 
-    return reward / 100;
+    return reward / 10000;
 }
 
 bool IsInitialBlockDownload()

@@ -29,16 +29,16 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>LockTrip-Qt</string>
+  <string>HYDRA-Qt</string>
   
   <key>CFBundleName</key>
-  <string>LockTrip-Qt</string>
+  <string>HYDRA-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>
 
   <key>CFBundleIdentifier</key>
-  <string>org.LockTrip.LockTrip-Qt</string>
+  <string>org.HYDRA.HYDRA-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -46,10 +46,10 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>org.LockTrip.LockTripPayment</string>
+      <string>org.HYDRA.HYDRAPayment</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>LockTrip</string>
+        <string>HYDRA</string>
       </array>
     </dict>
   </array>
@@ -58,9 +58,9 @@
   <array>
     <dict>
       <key>UTTypeIdentifier</key>
-      <string>org.LockTrip.paymentrequest</string>
+      <string>org.HYDRA.paymentrequest</string>
       <key>UTTypeDescription</key>
-      <string>LockTrip payment request</string>
+      <string>HYDRA payment request</string>
       <key>UTTypeConformsTo</key>
       <array>
         <string>public.data</string>
@@ -68,10 +68,10 @@
       <key>UTTypeTagSpecification</key>
       <dict>
         <key>public.mime-type</key>
-        <string>application/x-LockTrip-payment-request</string>
+        <string>application/x-HYDRA-payment-request</string>
         <key>public.filename-extension</key>
         <array>
-          <string>LockTrip-paymentrequest</string>
+          <string>HYDRA-paymentrequest</string>
         </array>
       </dict>
     </dict>
@@ -84,7 +84,7 @@
       <string>Editor</string>
       <key>LSItemContentTypes</key>
       <array>
-        <string>org.LockTrip.paymentrequest</string>
+        <string>org.HYDRA.paymentrequest</string>
       </array>
       <key>LSHandlerRank</key>
       <string>Owner</string>

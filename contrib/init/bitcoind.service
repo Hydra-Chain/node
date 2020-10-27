@@ -1,15 +1,15 @@
 [Unit]
-Description=LockTrip's distributed currency daemon
+Description=HYDRA's distributed currency daemon
 After=network.target
 
 [Service]
-User=locktrip
-Group=locktrip
+User=hydra
+Group=hydra
 
 Type=forking
-PIDFile=/var/lib/locktripd/locktripd.pid
-ExecStart=/usr/bin/locktripd -daemon -pid=/var/lib/locktripd/locktripd.pid \
--conf=/etc/locktrip/locktrip.conf -datadir=/var/lib/locktripd -disablewallet
+PIDFile=/var/lib/hydrad/hydrad.pid
+ExecStart=/usr/bin/hydrad -daemon -pid=/var/lib/hydrad/hydrad.pid \
+-conf=/etc/hydra/hydra.conf -datadir=/var/lib/hydrad -disablewallet
 
 Restart=always
 PrivateTmp=true

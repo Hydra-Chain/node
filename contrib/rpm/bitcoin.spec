@@ -13,29 +13,29 @@
 %endif
 %endif
 
-Name:		locktrip
+Name:		hydra
 Version:	0.12.0
 Release:	2%{?dist}
 Summary:	Peer to Peer Cryptographic Currency
 
 Group:		Applications/System
 License:	MIT
-URL:		https://locktrip.org/
-Source0:	https://locktrip.org/bin/locktrip-%{version}/locktrip-%{version}.tar.gz
+URL:		https://hydra.org/
+Source0:	https://hydra.org/bin/hydra-%{version}/hydra-%{version}.tar.gz
 Source1:	http://download.oracle.com/berkeley-db/db-%{bdbv}.NC.tar.gz
 
-Source10:	https://raw.githubusercontent.com/locktrip/locktrip/v%{version}/contrib/debian/examples/locktrip.conf
+Source10:	https://raw.githubusercontent.com/hydra/hydra/v%{version}/contrib/debian/examples/hydra.conf
 
 #man pages
-Source20:	https://raw.githubusercontent.com/locktrip/locktrip/v%{version}/doc/man/locktripd.1
-Source21:	https://raw.githubusercontent.com/locktrip/locktrip/v%{version}/doc/man/locktrip-cli.1
-Source22:	https://raw.githubusercontent.com/locktrip/locktrip/v%{version}/doc/man/locktrip-qt.1
+Source20:	https://raw.githubusercontent.com/hydra/hydra/v%{version}/doc/man/hydrad.1
+Source21:	https://raw.githubusercontent.com/hydra/hydra/v%{version}/doc/man/hydra-cli.1
+Source22:	https://raw.githubusercontent.com/hydra/hydra/v%{version}/doc/man/hydra-qt.1
 
 #selinux
-Source30:	https://raw.githubusercontent.com/locktrip/locktrip/v%{version}/contrib/rpm/locktrip.te
-# Source31 - what about locktrip-tx and bench_locktrip ???
-Source31:	https://raw.githubusercontent.com/locktrip/locktrip/v%{version}/contrib/rpm/locktrip.fc
-Source32:	https://raw.githubusercontent.com/locktrip/locktrip/v%{version}/contrib/rpm/locktrip.if
+Source30:	https://raw.githubusercontent.com/hydra/hydra/v%{version}/contrib/rpm/hydra.te
+# Source31 - what about hydra-tx and bench_hydra ???
+Source31:	https://raw.githubusercontent.com/hydra/hydra/v%{version}/contrib/rpm/hydra.fc
+Source32:	https://raw.githubusercontent.com/hydra/hydra/v%{version}/contrib/rpm/hydra.if
 
 Source100:	https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg
 
@@ -50,13 +50,13 @@ BuildRequires:	autoconf automake libtool
 BuildRequires:	libevent-devel
 
 
-Patch0:		locktrip-0.12.0-libressl.patch
+Patch0:		hydra-0.12.0-libressl.patch
 
 
 %description
 Bitcoin is a digital cryptographic currency that uses peer-to-peer technology to
 operate with no central authority or banks; managing transactions and the
-issuing of locktrips is carried out collectively by the network.
+issuing of hydras is carried out collectively by the network.
 
 %if %{_buildqt}
 %package core
@@ -81,7 +81,7 @@ BuildRequires:	%{_bindir}/convert
 %description core
 Bitcoin is a digital cryptographic currency that uses peer-to-peer technology to
 operate with no central authority or banks; managing transactions and the
-issuing of locktrips is carried out collectively by the network.
+issuing of hydras is carried out collectively by the network.
 
 This package contains the Qt based graphical client and node. If you are looking
 to run a Bitcoin wallet, this is probably the package you want.
@@ -93,28 +93,28 @@ Summary:	Bitcoin shared libraries
 Group:		System Environment/Libraries
 
 %description libs
-This package provides the locktripconsensus shared libraries. These libraries
+This package provides the hydraconsensus shared libraries. These libraries
 may be used by third party software to provide consensus verification
 functionality.
 
 Unless you know need this package, you probably do not.
 
 %package devel
-Summary:	Development files for locktrip
+Summary:	Development files for hydra
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 
 %description devel
 This package contains the header files and static library for the
-locktripconsensus shared library. If you are developing or compiling software
+hydraconsensus shared library. If you are developing or compiling software
 that wants to link against that library, then you need this package installed.
 
 Most people do not need this package installed.
 
 %package server
-Summary:	The locktrip daemon
+Summary:	The hydra daemon
 Group:		System Environment/Daemons
-Requires:	locktrip-utils = %{version}-%{release}
+Requires:	hydra-utils = %{version}-%{release}
 Requires:	selinux-policy policycoreutils-python
 Requires(pre):	shadow-utils
 Requires(post):	%{_sbindir}/semodule %{_sbindir}/restorecon %{_sbindir}/fixfiles %{_sbindir}/sestatus
@@ -124,13 +124,13 @@ BuildRequires:	checkpolicy
 BuildRequires:	%{_datadir}/selinux/devel/Makefile
 
 %description server
-This package provides a stand-alone locktrip daemon. For most users, this
+This package provides a stand-alone hydra daemon. For most users, this
 package is only needed if they need a full-node without the graphical client.
 
 Some third party wallet software will want this package to provide the actual
-locktrip node they use to connect to the network.
+hydra node they use to connect to the network.
 
-If you use the graphical locktrip client then you almost certainly do not
+If you use the graphical hydra client then you almost certainly do not
 need this package.
 
 %package utils
@@ -139,19 +139,19 @@ Group:		Applications/System
 
 %description utils
 This package provides several command line utilities for interacting with a
-locktrip daemon.
+hydra daemon.
 
-The locktrip-cli utility allows you to communicate and control a locktrip daemon
-over RPC, the locktrip-tx utility allows you to create a custom transaction, and
-the bench_locktrip utility can be used to perform some benchmarks.
+The hydra-cli utility allows you to communicate and control a hydra daemon
+over RPC, the hydra-tx utility allows you to create a custom transaction, and
+the bench_hydra utility can be used to perform some benchmarks.
 
-This package contains utilities needed by the locktrip-server package.
+This package contains utilities needed by the hydra-server package.
 
 
 %prep
 %setup -q
 %patch0 -p1 -b .libressl
-cp -p %{SOURCE10} ./locktrip.conf.example
+cp -p %{SOURCE10} ./hydra.conf.example
 tar -zxf %{SOURCE1}
 cp -p db-%{bdbv}.NC/LICENSE ./db-%{bdbv}.NC-LICENSE
 mkdir db4 SELinux
@@ -172,7 +172,7 @@ make %{?_smp_mflags}
 pushd SELinux
 for selinuxvariant in %{selinux_variants}; do
 	make NAME=${selinuxvariant} -f %{_datadir}/selinux/devel/Makefile
-	mv locktrip.pp locktrip.pp.${selinuxvariant}
+	mv hydra.pp hydra.pp.${selinuxvariant}
 	make NAME=${selinuxvariant} -f %{_datadir}/selinux/devel/Makefile clean
 done
 popd
@@ -182,42 +182,42 @@ popd
 make install DESTDIR=%{buildroot}
 
 mkdir -p -m755 %{buildroot}%{_sbindir}
-mv %{buildroot}%{_bindir}/locktripd %{buildroot}%{_sbindir}/locktripd
+mv %{buildroot}%{_bindir}/hydrad %{buildroot}%{_sbindir}/hydrad
 
 # systemd stuff
 mkdir -p %{buildroot}%{_tmpfilesdir}
-cat <<EOF > %{buildroot}%{_tmpfilesdir}/locktrip.conf
-d /run/locktripd 0750 locktrip locktrip -
+cat <<EOF > %{buildroot}%{_tmpfilesdir}/hydra.conf
+d /run/hydrad 0750 hydra hydra -
 EOF
-touch -a -m -t 201504280000 %{buildroot}%{_tmpfilesdir}/locktrip.conf
+touch -a -m -t 201504280000 %{buildroot}%{_tmpfilesdir}/hydra.conf
 
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
-cat <<EOF > %{buildroot}%{_sysconfdir}/sysconfig/locktrip
-# Provide options to the locktrip daemon here, for example
+cat <<EOF > %{buildroot}%{_sysconfdir}/sysconfig/hydra
+# Provide options to the hydra daemon here, for example
 # OPTIONS="-testnet -disable-wallet"
 
 OPTIONS=""
 
 # System service defaults.
 # Don't change these unless you know what you're doing.
-CONFIG_FILE="%{_sysconfdir}/locktrip/locktrip.conf"
-DATA_DIR="%{_localstatedir}/lib/locktrip"
-PID_FILE="/run/locktripd/locktripd.pid"
+CONFIG_FILE="%{_sysconfdir}/hydra/hydra.conf"
+DATA_DIR="%{_localstatedir}/lib/hydra"
+PID_FILE="/run/hydrad/hydrad.pid"
 EOF
-touch -a -m -t 201504280000 %{buildroot}%{_sysconfdir}/sysconfig/locktrip
+touch -a -m -t 201504280000 %{buildroot}%{_sysconfdir}/sysconfig/hydra
 
 mkdir -p %{buildroot}%{_unitdir}
-cat <<EOF > %{buildroot}%{_unitdir}/locktrip.service
+cat <<EOF > %{buildroot}%{_unitdir}/hydra.service
 [Unit]
 Description=Bitcoin daemon
 After=syslog.target network.target
 
 [Service]
 Type=forking
-ExecStart=%{_sbindir}/locktripd -daemon -conf=\${CONFIG_FILE} -datadir=\${DATA_DIR} -pid=\${PID_FILE} \$OPTIONS
-EnvironmentFile=%{_sysconfdir}/sysconfig/locktrip
-User=locktrip
-Group=locktrip
+ExecStart=%{_sbindir}/hydrad -daemon -conf=\${CONFIG_FILE} -datadir=\${DATA_DIR} -pid=\${PID_FILE} \$OPTIONS
+EnvironmentFile=%{_sysconfdir}/sysconfig/hydra
+User=hydra
+Group=hydra
 
 Restart=on-failure
 PrivateTmp=true
@@ -229,63 +229,63 @@ StartLimitBurst=5
 [Install]
 WantedBy=multi-user.target
 EOF
-touch -a -m -t 201504280000 %{buildroot}%{_unitdir}/locktrip.service
+touch -a -m -t 201504280000 %{buildroot}%{_unitdir}/hydra.service
 #end systemd stuff
 
-mkdir %{buildroot}%{_sysconfdir}/locktrip
-mkdir -p %{buildroot}%{_localstatedir}/lib/locktrip
+mkdir %{buildroot}%{_sysconfdir}/hydra
+mkdir -p %{buildroot}%{_localstatedir}/lib/hydra
 
 #SELinux
 for selinuxvariant in %{selinux_variants}; do
 	install -d %{buildroot}%{_datadir}/selinux/${selinuxvariant}
-	install -p -m 644 SELinux/locktrip.pp.${selinuxvariant} %{buildroot}%{_datadir}/selinux/${selinuxvariant}/locktrip.pp
+	install -p -m 644 SELinux/hydra.pp.${selinuxvariant} %{buildroot}%{_datadir}/selinux/${selinuxvariant}/hydra.pp
 done
 
 %if %{_buildqt}
 # qt icons
-install -D -p share/pixmaps/locktrip.ico %{buildroot}%{_datadir}/pixmaps/locktrip.ico
+install -D -p share/pixmaps/hydra.ico %{buildroot}%{_datadir}/pixmaps/hydra.ico
 install -p share/pixmaps/nsis-header.bmp %{buildroot}%{_datadir}/pixmaps/
 install -p share/pixmaps/nsis-wizard.bmp %{buildroot}%{_datadir}/pixmaps/
-install -p %{SOURCE100} %{buildroot}%{_datadir}/pixmaps/locktrip.svg
-%{_bindir}/inkscape %{SOURCE100} --export-png=%{buildroot}%{_datadir}/pixmaps/locktrip16.png -w16 -h16
-%{_bindir}/inkscape %{SOURCE100} --export-png=%{buildroot}%{_datadir}/pixmaps/locktrip32.png -w32 -h32
-%{_bindir}/inkscape %{SOURCE100} --export-png=%{buildroot}%{_datadir}/pixmaps/locktrip64.png -w64 -h64
-%{_bindir}/inkscape %{SOURCE100} --export-png=%{buildroot}%{_datadir}/pixmaps/locktrip128.png -w128 -h128
-%{_bindir}/inkscape %{SOURCE100} --export-png=%{buildroot}%{_datadir}/pixmaps/locktrip256.png -w256 -h256
-%{_bindir}/convert -resize 16x16 %{buildroot}%{_datadir}/pixmaps/locktrip256.png %{buildroot}%{_datadir}/pixmaps/locktrip16.xpm
-%{_bindir}/convert -resize 32x32 %{buildroot}%{_datadir}/pixmaps/locktrip256.png %{buildroot}%{_datadir}/pixmaps/locktrip32.xpm
-%{_bindir}/convert -resize 64x64 %{buildroot}%{_datadir}/pixmaps/locktrip256.png %{buildroot}%{_datadir}/pixmaps/locktrip64.xpm
-%{_bindir}/convert -resize 128x128 %{buildroot}%{_datadir}/pixmaps/locktrip256.png %{buildroot}%{_datadir}/pixmaps/locktrip128.xpm
-%{_bindir}/convert %{buildroot}%{_datadir}/pixmaps/locktrip256.png %{buildroot}%{_datadir}/pixmaps/locktrip256.xpm
+install -p %{SOURCE100} %{buildroot}%{_datadir}/pixmaps/hydra.svg
+%{_bindir}/inkscape %{SOURCE100} --export-png=%{buildroot}%{_datadir}/pixmaps/hydra16.png -w16 -h16
+%{_bindir}/inkscape %{SOURCE100} --export-png=%{buildroot}%{_datadir}/pixmaps/hydra32.png -w32 -h32
+%{_bindir}/inkscape %{SOURCE100} --export-png=%{buildroot}%{_datadir}/pixmaps/hydra64.png -w64 -h64
+%{_bindir}/inkscape %{SOURCE100} --export-png=%{buildroot}%{_datadir}/pixmaps/hydra128.png -w128 -h128
+%{_bindir}/inkscape %{SOURCE100} --export-png=%{buildroot}%{_datadir}/pixmaps/hydra256.png -w256 -h256
+%{_bindir}/convert -resize 16x16 %{buildroot}%{_datadir}/pixmaps/hydra256.png %{buildroot}%{_datadir}/pixmaps/hydra16.xpm
+%{_bindir}/convert -resize 32x32 %{buildroot}%{_datadir}/pixmaps/hydra256.png %{buildroot}%{_datadir}/pixmaps/hydra32.xpm
+%{_bindir}/convert -resize 64x64 %{buildroot}%{_datadir}/pixmaps/hydra256.png %{buildroot}%{_datadir}/pixmaps/hydra64.xpm
+%{_bindir}/convert -resize 128x128 %{buildroot}%{_datadir}/pixmaps/hydra256.png %{buildroot}%{_datadir}/pixmaps/hydra128.xpm
+%{_bindir}/convert %{buildroot}%{_datadir}/pixmaps/hydra256.png %{buildroot}%{_datadir}/pixmaps/hydra256.xpm
 touch %{buildroot}%{_datadir}/pixmaps/*.png -r %{SOURCE100}
 touch %{buildroot}%{_datadir}/pixmaps/*.xpm -r %{SOURCE100}
 
 # Desktop File - change the touch timestamp if modifying
 mkdir -p %{buildroot}%{_datadir}/applications
-cat <<EOF > %{buildroot}%{_datadir}/applications/locktrip.desktop
+cat <<EOF > %{buildroot}%{_datadir}/applications/hydra.desktop
 [Desktop Entry]
 Encoding=UTF-8
 Name=Bitcoin
 Comment=Bitcoin P2P Cryptocurrency
 Comment[fr]=Bitcoin, monnaie virtuelle cryptographique pair à pair
 Comment[tr]=Bitcoin, eşten eşe kriptografik sanal para birimi
-Exec=locktrip-qt %u
+Exec=hydra-qt %u
 Terminal=false
 Type=Application
-Icon=locktrip128
-MimeType=x-scheme-handler/locktrip;
+Icon=hydra128
+MimeType=x-scheme-handler/hydra;
 Categories=Office;Finance;
 EOF
 # change touch date when modifying desktop
-touch -a -m -t 201511100546 %{buildroot}%{_datadir}/applications/locktrip.desktop
-%{_bindir}/desktop-file-validate %{buildroot}%{_datadir}/applications/locktrip.desktop
+touch -a -m -t 201511100546 %{buildroot}%{_datadir}/applications/hydra.desktop
+%{_bindir}/desktop-file-validate %{buildroot}%{_datadir}/applications/hydra.desktop
 
 # KDE protocol - change the touch timestamp if modifying
 mkdir -p %{buildroot}%{_datadir}/kde4/services
-cat <<EOF > %{buildroot}%{_datadir}/kde4/services/locktrip.protocol
+cat <<EOF > %{buildroot}%{_datadir}/kde4/services/hydra.protocol
 [Protocol]
-exec=locktrip-qt '%u'
-protocol=locktrip
+exec=hydra-qt '%u'
+protocol=hydra
 input=none
 output=none
 helper=true
@@ -296,14 +296,14 @@ makedir=false
 deleting=false
 EOF
 # change touch date when modifying protocol
-touch -a -m -t 201511100546 %{buildroot}%{_datadir}/kde4/services/locktrip.protocol
+touch -a -m -t 201511100546 %{buildroot}%{_datadir}/kde4/services/hydra.protocol
 %endif
 
 # man pages
-install -D -p %{SOURCE20} %{buildroot}%{_mandir}/man1/locktripd.1
-install -p %{SOURCE21} %{buildroot}%{_mandir}/man1/locktrip-cli.1
+install -D -p %{SOURCE20} %{buildroot}%{_mandir}/man1/hydrad.1
+install -p %{SOURCE21} %{buildroot}%{_mandir}/man1/hydra-cli.1
 %if %{_buildqt}
-install -p %{SOURCE22} %{buildroot}%{_mandir}/man1/locktrip-qt.1
+install -p %{SOURCE22} %{buildroot}%{_mandir}/man1/hydra-qt.1
 %endif
 
 # nuke these, we do extensive testing of binaries in %%check before packaging
@@ -311,7 +311,7 @@ rm -f %{buildroot}%{_bindir}/test_*
 
 %check
 make check
-srcdir=src test/locktrip-util-test.py
+srcdir=src test/hydra-util-test.py
 test/functional/test_runner.py --extended
 
 %post libs -p /sbin/ldconfig
@@ -319,35 +319,35 @@ test/functional/test_runner.py --extended
 %postun libs -p /sbin/ldconfig
 
 %pre server
-getent group locktrip >/dev/null || groupadd -r locktrip
-getent passwd locktrip >/dev/null ||
-	useradd -r -g locktrip -d /var/lib/locktrip -s /sbin/nologin \
-	-c "Bitcoin wallet server" locktrip
+getent group hydra >/dev/null || groupadd -r hydra
+getent passwd hydra >/dev/null ||
+	useradd -r -g hydra -d /var/lib/hydra -s /sbin/nologin \
+	-c "Bitcoin wallet server" hydra
 exit 0
 
 %post server
-%systemd_post locktrip.service
+%systemd_post hydra.service
 # SELinux
 if [ `%{_sbindir}/sestatus |grep -c "disabled"` -eq 0 ]; then
 for selinuxvariant in %{selinux_variants}; do
-	%{_sbindir}/semodule -s ${selinuxvariant} -i %{_datadir}/selinux/${selinuxvariant}/locktrip.pp &> /dev/null || :
+	%{_sbindir}/semodule -s ${selinuxvariant} -i %{_datadir}/selinux/${selinuxvariant}/hydra.pp &> /dev/null || :
 done
-%{_sbindir}/semanage port -a -t locktrip_port_t -p tcp 8332
-%{_sbindir}/semanage port -a -t locktrip_port_t -p tcp 8333
-%{_sbindir}/semanage port -a -t locktrip_port_t -p tcp 18332
-%{_sbindir}/semanage port -a -t locktrip_port_t -p tcp 18333
-%{_sbindir}/fixfiles -R locktrip-server restore &> /dev/null || :
-%{_sbindir}/restorecon -R %{_localstatedir}/lib/locktrip || :
+%{_sbindir}/semanage port -a -t hydra_port_t -p tcp 8332
+%{_sbindir}/semanage port -a -t hydra_port_t -p tcp 8333
+%{_sbindir}/semanage port -a -t hydra_port_t -p tcp 18332
+%{_sbindir}/semanage port -a -t hydra_port_t -p tcp 18333
+%{_sbindir}/fixfiles -R hydra-server restore &> /dev/null || :
+%{_sbindir}/restorecon -R %{_localstatedir}/lib/hydra || :
 fi
 
 %posttrans server
 %{_bindir}/systemd-tmpfiles --create
 
 %preun server
-%systemd_preun locktrip.service
+%systemd_preun hydra.service
 
 %postun server
-%systemd_postun locktrip.service
+%systemd_postun hydra.service
 # SELinux
 if [ $1 -eq 0 ]; then
 	if [ `%{_sbindir}/sestatus |grep -c "disabled"` -eq 0 ]; then
@@ -356,11 +356,11 @@ if [ $1 -eq 0 ]; then
 	%{_sbindir}/semanage port -d -p tcp 18332
 	%{_sbindir}/semanage port -d -p tcp 18333
 	for selinuxvariant in %{selinux_variants}; do
-		%{_sbindir}/semodule -s ${selinuxvariant} -r locktrip &> /dev/null || :
+		%{_sbindir}/semodule -s ${selinuxvariant} -r hydra &> /dev/null || :
 	done
-	%{_sbindir}/fixfiles -R locktrip-server restore &> /dev/null || :
-	[ -d %{_localstatedir}/lib/locktrip ] && \
-		%{_sbindir}/restorecon -R %{_localstatedir}/lib/locktrip &> /dev/null || :
+	%{_sbindir}/fixfiles -R hydra-server restore &> /dev/null || :
+	[ -d %{_localstatedir}/lib/hydra ] && \
+		%{_sbindir}/restorecon -R %{_localstatedir}/lib/hydra &> /dev/null || :
 	fi
 fi
 
@@ -371,16 +371,16 @@ rm -rf %{buildroot}
 %files core
 %defattr(-,root,root,-)
 %license COPYING db-%{bdbv}.NC-LICENSE
-%doc COPYING locktrip.conf.example doc/README.md doc/bips.md doc/files.md doc/multiwallet-qt.md doc/reduce-traffic.md doc/release-notes.md doc/tor.md
-%attr(0755,root,root) %{_bindir}/locktrip-qt
-%attr(0644,root,root) %{_datadir}/applications/locktrip.desktop
-%attr(0644,root,root) %{_datadir}/kde4/services/locktrip.protocol
+%doc COPYING hydra.conf.example doc/README.md doc/bips.md doc/files.md doc/multiwallet-qt.md doc/reduce-traffic.md doc/release-notes.md doc/tor.md
+%attr(0755,root,root) %{_bindir}/hydra-qt
+%attr(0644,root,root) %{_datadir}/applications/hydra.desktop
+%attr(0644,root,root) %{_datadir}/kde4/services/hydra.protocol
 %attr(0644,root,root) %{_datadir}/pixmaps/*.ico
 %attr(0644,root,root) %{_datadir}/pixmaps/*.bmp
 %attr(0644,root,root) %{_datadir}/pixmaps/*.svg
 %attr(0644,root,root) %{_datadir}/pixmaps/*.png
 %attr(0644,root,root) %{_datadir}/pixmaps/*.xpm
-%attr(0644,root,root) %{_mandir}/man1/locktrip-qt.1*
+%attr(0644,root,root) %{_mandir}/man1/hydra-qt.1*
 %endif
 
 %files libs
@@ -402,30 +402,30 @@ rm -rf %{buildroot}
 %files server
 %defattr(-,root,root,-)
 %license COPYING db-%{bdbv}.NC-LICENSE
-%doc COPYING locktrip.conf.example doc/README.md doc/REST-interface.md doc/bips.md doc/dnsseed-policy.md doc/files.md doc/reduce-traffic.md doc/release-notes.md doc/tor.md
-%attr(0755,root,root) %{_sbindir}/locktripd
-%attr(0644,root,root) %{_tmpfilesdir}/locktrip.conf
-%attr(0644,root,root) %{_unitdir}/locktrip.service
-%dir %attr(0750,locktrip,locktrip) %{_sysconfdir}/locktrip
-%dir %attr(0750,locktrip,locktrip) %{_localstatedir}/lib/locktrip
-%config(noreplace) %attr(0600,root,root) %{_sysconfdir}/sysconfig/locktrip
+%doc COPYING hydra.conf.example doc/README.md doc/REST-interface.md doc/bips.md doc/dnsseed-policy.md doc/files.md doc/reduce-traffic.md doc/release-notes.md doc/tor.md
+%attr(0755,root,root) %{_sbindir}/hydrad
+%attr(0644,root,root) %{_tmpfilesdir}/hydra.conf
+%attr(0644,root,root) %{_unitdir}/hydra.service
+%dir %attr(0750,hydra,hydra) %{_sysconfdir}/hydra
+%dir %attr(0750,hydra,hydra) %{_localstatedir}/lib/hydra
+%config(noreplace) %attr(0600,root,root) %{_sysconfdir}/sysconfig/hydra
 %attr(0644,root,root) %{_datadir}/selinux/*/*.pp
-%attr(0644,root,root) %{_mandir}/man1/locktripd.1*
+%attr(0644,root,root) %{_mandir}/man1/hydrad.1*
 
 %files utils
 %defattr(-,root,root,-)
 %license COPYING
-%doc COPYING locktrip.conf.example doc/README.md
-%attr(0755,root,root) %{_bindir}/locktrip-cli
-%attr(0755,root,root) %{_bindir}/locktrip-tx
-%attr(0755,root,root) %{_bindir}/bench_locktrip
-%attr(0644,root,root) %{_mandir}/man1/locktrip-cli.1*
+%doc COPYING hydra.conf.example doc/README.md
+%attr(0755,root,root) %{_bindir}/hydra-cli
+%attr(0755,root,root) %{_bindir}/hydra-tx
+%attr(0755,root,root) %{_bindir}/bench_hydra
+%attr(0644,root,root) %{_mandir}/man1/hydra-cli.1*
 
 
 
 %changelog
 * Fri Feb 26 2016 Alice Wonder <buildmaster@librelamp.com> - 0.12.0-2
-- Rename Qt package from locktrip to locktrip
+- Rename Qt package from hydra to hydra
 - Make building of the Qt package optional
 - When building the Qt package, default to Qt5 but allow building
 -  against Qt4
@@ -435,4 +435,4 @@ rm -rf %{buildroot}
 - Initial spec file for 0.12.0 release
 
 # This spec file is written from scratch but a lot of the packaging decisions are directly
-# based upon the 0.11.2 package spec file from https://www.ringingliberty.com/locktrip/
+# based upon the 0.11.2 package spec file from https://www.ringingliberty.com/hydra/

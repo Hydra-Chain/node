@@ -3,9 +3,9 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-""" LockTrip DGP functional test
+""" HYDRA DGP functional test
 
-This test checks the functionality of the LockTrip decentralized governance protocol.
+This test checks the functionality of the HYDRA decentralized governance protocol.
 It will perform a check that if DGP admin is set properly, it will set the initial data.
 """
 

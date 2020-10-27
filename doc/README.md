@@ -1,30 +1,30 @@
-LT
+HYDRA
 ========
 
 Setup
 ---------------------
-LT is the original LT Blockchain client and it builds the backbone of the network. It downloads and, by default, stores the entire history of LT transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
+HYDRA is the original HYDRA Blockchain client and it builds the backbone of the network. It downloads and, by default, stores the entire history of HYDRA transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
 
-To download LT, visit [the download page](https://github.com/LockTrip/Blockchain/releases).
+To download HYDRA, visit [the download page](https://github.com/LockTrip/Blockchain/releases).
 
 Running
 ---------------------
-The following are some helpful notes on how to run LT on your native platform.
+The following are some helpful notes on how to run HYDRA on your native platform.
 
 ### Unix
 
 Unpack the files into a directory and run:
 
-- `bin/locktrip-qt` (GUI) or
-- `bin/locktripd` (headless)
+- `bin/hydra-qt` (GUI) or
+- `bin/hydrad` (headless)
 
 ### Windows
 
-Unpack the files into a directory, and then run locktrip-qt.exe.
+Unpack the files into a directory, and then run hydra-qt.exe.
 
 ### OS X
 
-Drag LT to your applications folder, and then run LT.
+Drag HYDRA to your applications folder, and then run HYDRA.
 
 ### Need Help?
 
@@ -34,7 +34,7 @@ Drag LT to your applications folder, and then run LT.
 
 Building
 ---------------------
-The following are developer notes on how to build LT on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build HYDRA on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [OS X Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
@@ -43,7 +43,7 @@ The following are developer notes on how to build LT on your native platform. Th
 
 Development
 ---------------------
-The LT repo's [root README](/README.md) contains relevant information on the development process and automated testing.
+The HYDRA repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Release Notes](release-notes.md)

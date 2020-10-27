@@ -2,26 +2,26 @@
 
 # backward compatibility for existing gentoo layout 
 #
-if [ -d "/var/lib/locktrip/.locktrip" ]; then
-	BITCOIND_DEFAULT_DATADIR="/var/lib/locktrip/.locktrip"
+if [ -d "/var/lib/hydra/.hydra" ]; then
+	BITCOIND_DEFAULT_DATADIR="/var/lib/hydra/.hydra"
 else
-	BITCOIND_DEFAULT_DATADIR="/var/lib/locktripd"
+	BITCOIND_DEFAULT_DATADIR="/var/lib/hydrad"
 fi
 
-BITCOIND_CONFIGFILE=${BITCOIND_CONFIGFILE:-/etc/locktrip/locktrip.conf}
-BITCOIND_PIDDIR=${BITCOIND_PIDDIR:-/var/run/locktripd}
-BITCOIND_PIDFILE=${BITCOIND_PIDFILE:-${BITCOIND_PIDDIR}/locktripd.pid}
+BITCOIND_CONFIGFILE=${BITCOIND_CONFIGFILE:-/etc/hydra/hydra.conf}
+BITCOIND_PIDDIR=${BITCOIND_PIDDIR:-/var/run/hydrad}
+BITCOIND_PIDFILE=${BITCOIND_PIDFILE:-${BITCOIND_PIDDIR}/hydrad.pid}
 BITCOIND_DATADIR=${BITCOIND_DATADIR:-${BITCOIND_DEFAULT_DATADIR}}
-BITCOIND_USER=${BITCOIND_USER:-${BITCOIN_USER:-locktrip}}
-BITCOIND_GROUP=${BITCOIND_GROUP:-locktrip}
-BITCOIND_BIN=${BITCOIND_BIN:-/usr/bin/locktripd}
+BITCOIND_USER=${BITCOIND_USER:-${BITCOIN_USER:-hydra}}
+BITCOIND_GROUP=${BITCOIND_GROUP:-hydra}
+BITCOIND_BIN=${BITCOIND_BIN:-/usr/bin/hydrad}
 BITCOIND_NICE=${BITCOIND_NICE:-${NICELEVEL:-0}}
 BITCOIND_OPTS="${BITCOIND_OPTS:-${BITCOIN_OPTS}}"
 
-name="LockTrip Core Daemon"
-description="LockTrip cryptocurrency P2P network daemon"
+name="HYDRA Core Daemon"
+description="HYDRA cryptocurrency P2P network daemon"
 
-command="/usr/bin/locktripd"
+command="/usr/bin/hydrad"
 command_args="-pid=\"${BITCOIND_PIDFILE}\" \
 		-conf=\"${BITCOIND_CONFIGFILE}\" \
 		-datadir=\"${BITCOIND_DATADIR}\" \
@@ -71,7 +71,7 @@ checkconfig()
 {
 	if ! grep -qs '^rpcpassword=' "${BITCOIND_CONFIGFILE}" ; then
 		eerror ""
-		eerror "ERROR: You must set a secure rpcpassword to run locktripd."
+		eerror "ERROR: You must set a secure rpcpassword to run hydrad."
 		eerror "The setting must appear in ${BITCOIND_CONFIGFILE}"
 		eerror ""
 		eerror "This password is security critical to securing wallets "
@@ -84,7 +84,7 @@ checkconfig()
 		eerror "It is also recommended that you also set alertnotify so you are "
 		eerror "notified of problems:"
 		eerror ""
-		eerror "ie: alertnotify=echo %%s | mail -s \"LockTrip Alert\"" \
+		eerror "ie: alertnotify=echo %%s | mail -s \"HYDRA Alert\"" \
 			"admin@foo.com"
 		eerror ""
 		return 1

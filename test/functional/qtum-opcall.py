@@ -93,7 +93,7 @@ class OpCallTest(BitcoinTestFramework):
         sync_blocks(self.nodes)
         for i in range(1):
             assert(self.nodes[i].getblockcount() == block_height+1)
-            assert(len(self.nodes[i].listcontracts()) == 3+1) # LockTrip: Added 3 new contracts in genesis and removed qtum dgp
+            assert(len(self.nodes[i].listcontracts()) == 3+1) # HYDRA: Added 3 new contracts in genesis and removed qtum dgp
 
     # Sends a tx containing 2 op_call outputs calling inc()
     def many_calls_in_same_tx_test(self):

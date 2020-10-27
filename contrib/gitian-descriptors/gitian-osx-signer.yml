@@ -1,5 +1,5 @@
 ---
-name: "locktrip-dmg-signer"
+name: "hydra-dmg-signer"
 suites:
 - "bionic"
 architectures:
@@ -10,7 +10,7 @@ remotes:
 - "url": "https://gitlab.com/LockTrip-Dev-Team/locktrip-detached-sigs.git"
   "dir": "signature"
 files:
-- "locktrip-osx-unsigned.tar.gz"
+- "hydra-osx-unsigned.tar.gz"
 script: |
   set -e -o pipefail
 
@@ -29,8 +29,8 @@ script: |
     chmod +x ${WRAP_DIR}/${prog}
   done
 
-  UNSIGNED=locktrip-osx-unsigned.tar.gz
-  SIGNED=locktrip-osx-signed.dmg
+  UNSIGNED=hydra-osx-unsigned.tar.gz
+  SIGNED=hydra-osx-signed.dmg
 
   tar -xf ${UNSIGNED}
   OSX_VOLNAME="$(cat osx_volname)"

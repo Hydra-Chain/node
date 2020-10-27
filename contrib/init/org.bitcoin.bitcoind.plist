@@ -3,10 +3,10 @@
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>org.locktrip.locktripd</string>
+	<string>org.hydra.hydrad</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/usr/local/bin/locktripd</string>
+		<string>/usr/local/bin/hydrad</string>
 		<string>-daemon</string>
 	</array>
 	<key>RunAtLoad</key>

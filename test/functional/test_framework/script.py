@@ -247,7 +247,7 @@ OP_PUBKEY = CScriptOp(0xfe)
 
 OP_INVALIDOPCODE = CScriptOp(0xff)
 
-# LockTrip
+# HYDRA
 OP_COINSTAKE_CALL = CScriptOp(0xc5)
 
 VALID_OPCODES = {

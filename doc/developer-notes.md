@@ -160,7 +160,7 @@ that run in -regtest mode.
 
 **DEBUG_LOCKORDER**
 
-LT is a multithreaded application, and deadlocks or other multithreading bugs
+HYDRA is a multithreaded application, and deadlocks or other multithreading bugs
 can be very difficult to track down. Compiling with -DDEBUG_LOCKORDER (configure
 CXXFLAGS="-DDEBUG_LOCKORDER -g") inserts run-time checks to keep track of which locks
 are held, and adds warnings to the debug.log file if inconsistencies are detected.
@@ -209,7 +209,7 @@ Threads
 
 - ThreadRPCServer : Remote procedure call handler, listens on port 8332 for connections and services them.
 
-- LockTripMiner : Generates LOCs (if wallet is enabled).
+- HydraMiner : Generates LOCs (if wallet is enabled).
 
 - Shutdown : Does an orderly shutdown of everything.
 
@@ -219,7 +219,7 @@ Ignoring IDE/editor files
 In closed-source environments in which everyone uses the same IDE it is common
 to add temporary files it produces to the project-wide `.gitignore` file.
 
-However, in open source software such as LT, where everyone uses
+However, in open source software such as HYDRA, where everyone uses
 their own editors/IDE/tools, it is less common. Only you know what files your
 editor produces and this may change from version to version. The canonical way
 to do this is thus to create your local gitignore. Add this to `~/.gitconfig`:
@@ -249,9 +249,9 @@ Development guidelines
 ============================
 
 A few non-style-related recommendations for developers, as well as points to
-pay attention to for reviewers of LT code.
+pay attention to for reviewers of HYDRA code.
 
-General LT
+General HYDRA
 ----------------------
 
 - New features should be exposed on RPC first, then can be made available in the GUI
@@ -361,7 +361,7 @@ Strings and formatting
 
 - For `strprintf`, `LogPrint`, `LogPrintf` formatting characters don't need size specifiers
 
-  - *Rationale*: LT uses tinyformat, which is type safe. Leave them out to avoid confusion
+  - *Rationale*: HYDRA uses tinyformat, which is type safe. Leave them out to avoid confusion
 
 Variable names
 --------------
@@ -552,7 +552,7 @@ A few guidelines for introducing and reviewing new RPC interfaces:
 - Try not to overload methods on argument type. E.g. don't make `getblock(true)` and `getblock("hash")`
   do different things.
 
-  - *Rationale*: This is impossible to use with `locktrip-cli`, and can be surprising to users.
+  - *Rationale*: This is impossible to use with `hydra-cli`, and can be surprising to users.
 
   - *Exception*: Some RPC calls can take both an `int` and `bool`, most notably when a bool was switched
     to a multi-value, or due to other historical reasons. **Always** have false map to 0 and
@@ -571,7 +571,7 @@ A few guidelines for introducing and reviewing new RPC interfaces:
 
 - Add every non-string RPC argument `(method, idx, name)` to the table `vRPCConvertParams` in `rpc/client.cpp`.
 
-  - *Rationale*: `locktrip-cli` and the GUI debug console use this table to determine how to
+  - *Rationale*: `hydra-cli` and the GUI debug console use this table to determine how to
     convert a plaintext command line to JSON. If the types don't match, the method can be unusable
     from there.
 

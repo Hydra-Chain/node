@@ -1,12 +1,12 @@
 Expectations for DNS Seed operators
 ====================================
 
-LT attempts to minimize the level of trust in DNS seeds,
+HYDRA attempts to minimize the level of trust in DNS seeds,
 but DNS seeds still pose a small amount of risk for the network.
 As such, DNS seeds must be run by entities which have some minimum
-level of trust within the LT community.
+level of trust within the HYDRA community.
 
-Other implementations of LT software may also use the same
+Other implementations of HYDRA software may also use the same
 seeds and may be more exposed. In light of this exposure, this
 document establishes some basic expectations for operating dnsseeds.
 
@@ -16,7 +16,7 @@ and not sell or transfer control of the DNS seed. Any hosting services
 contracted by the operator are equally expected to uphold these expectations.
 
 1. The DNS seed results must consist exclusively of fairly selected and
-functioning LT nodes from the public network to the best of the
+functioning HYDRA nodes from the public network to the best of the
 operator's understanding and capability.
 
 2. For the avoidance of doubt, the results may be randomized but must not
@@ -26,7 +26,7 @@ urgent technical necessity and disclosed.
 3. The results may not be served with a DNS TTL of less than one minute.
 
 4. Any logging of DNS queries should be only that which is necessary
-for the operation of the service or urgent health of the LT
+for the operation of the service or urgent health of the HYDRA
 network and must not be retained longer than necessary nor disclosed
 to any third party.
 
@@ -42,7 +42,7 @@ details of their operating practices.
 related to the DNS seed operation.
 
 If these expectations cannot be satisfied the operator should
-discontinue providing services and contact the active LT
+discontinue providing services and contact the active HYDRA
 development team as well as posting on
 [issues page](https://github.com/LockTrip/Blockchain/issues).
 
@@ -51,4 +51,4 @@ situations but should be discussed in public in advance.
 
 See also
 ----------
-- [locktrip-seeder](https://github.com/LockTrip/Seeder) is a reference implementation of a DNS seed.
+- [hydra-seeder](https://github.com/LockTrip/Seeder) is a reference implementation of a DNS seed.

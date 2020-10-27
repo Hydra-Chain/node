@@ -1,81 +1,81 @@
-policy_module(locktrip, 1.100.1)
+policy_module(hydra, 1.100.1)
 
 ########################################
 #
 # Declarations
 #
 
-type locktrip_t;
-type locktrip_exec_t;
-init_daemon_domain(locktrip_t, locktrip_exec_t)
+type hydra_t;
+type hydra_exec_t;
+init_daemon_domain(hydra_t, hydra_exec_t)
 
-permissive locktrip_t;
+permissive hydra_t;
 
-type locktrip_initrc_exec_t;
-init_script_file(locktrip_initrc_exec_t)
+type hydra_initrc_exec_t;
+init_script_file(hydra_initrc_exec_t)
 
-type locktrip_conf_t;
-files_type(locktrip_conf_t)
+type hydra_conf_t;
+files_type(hydra_conf_t)
 
-type locktrip_var_lib_t;
-files_type(locktrip_var_lib_t)
+type hydra_var_lib_t;
+files_type(hydra_var_lib_t)
 
-type locktrip_var_run_t;
-files_type(locktrip_var_run_t)
+type hydra_var_run_t;
+files_type(hydra_var_run_t)
 
-type locktrip_port_t;
-corenet_port(locktrip_port_t)
+type hydra_port_t;
+corenet_port(hydra_port_t)
 
 ########################################
 #
-# locktrip local policy
+# hydra local policy
 #
-allow locktrip_t self:process { fork };
+allow hydra_t self:process { fork };
 
-allow locktrip_t self:fifo_file rw_fifo_file_perms;
-allow locktrip_t self:unix_stream_socket create_stream_socket_perms;
+allow hydra_t self:fifo_file rw_fifo_file_perms;
+allow hydra_t self:unix_stream_socket create_stream_socket_perms;
 
-manage_dirs_pattern(locktrip_t, locktrip_conf_t, locktrip_conf_t)
-manage_files_pattern(locktrip_t, locktrip_conf_t, locktrip_conf_t)
+manage_dirs_pattern(hydra_t, hydra_conf_t, hydra_conf_t)
+manage_files_pattern(hydra_t, hydra_conf_t, hydra_conf_t)
 
-manage_dirs_pattern(locktrip_t, locktrip_var_lib_t, locktrip_var_lib_t)
-manage_files_pattern(locktrip_t, locktrip_var_lib_t, locktrip_var_lib_t)
-files_var_lib_filetrans(locktrip_t, locktrip_var_lib_t, { dir file })
+manage_dirs_pattern(hydra_t, hydra_var_lib_t, hydra_var_lib_t)
+manage_files_pattern(hydra_t, hydra_var_lib_t, hydra_var_lib_t)
+files_var_lib_filetrans(hydra_t, hydra_var_lib_t, { dir file })
 
-manage_dirs_pattern(locktrip_t, locktrip_var_run_t, locktrip_var_run_t)
-manage_files_pattern(locktrip_t, locktrip_var_run_t, locktrip_var_run_t)
+manage_dirs_pattern(hydra_t, hydra_var_run_t, hydra_var_run_t)
+manage_files_pattern(hydra_t, hydra_var_run_t, hydra_var_run_t)
 
-sysnet_dns_name_resolve(locktrip_t)
-corenet_all_recvfrom_unlabeled(locktrip_t)
+sysnet_dns_name_resolve(hydra_t)
+corenet_all_recvfrom_unlabeled(hydra_t)
 
-allow locktrip_t self:tcp_socket create_stream_socket_perms;
-corenet_tcp_sendrecv_generic_if(locktrip_t)
-corenet_tcp_sendrecv_generic_node(locktrip_t)
-corenet_tcp_sendrecv_all_ports(locktrip_t)
-corenet_tcp_bind_generic_node(locktrip_t)
-
-gen_require(`
-    type locktrip_port_t;
-')
-allow locktrip_t locktrip_port_t:tcp_socket name_bind;
+allow hydra_t self:tcp_socket create_stream_socket_perms;
+corenet_tcp_sendrecv_generic_if(hydra_t)
+corenet_tcp_sendrecv_generic_node(hydra_t)
+corenet_tcp_sendrecv_all_ports(hydra_t)
+corenet_tcp_bind_generic_node(hydra_t)
 
 gen_require(`
-    type locktrip_port_t;
+    type hydra_port_t;
 ')
-allow locktrip_t locktrip_port_t:tcp_socket name_connect;
+allow hydra_t hydra_port_t:tcp_socket name_bind;
 
-domain_use_interactive_fds(locktrip_t)
+gen_require(`
+    type hydra_port_t;
+')
+allow hydra_t hydra_port_t:tcp_socket name_connect;
 
-files_read_etc_files(locktrip_t)
+domain_use_interactive_fds(hydra_t)
 
-miscfiles_read_localization(locktrip_t)
+files_read_etc_files(hydra_t)
 
-sysnet_dns_name_resolve(locktrip_t)
+miscfiles_read_localization(hydra_t)
 
-allow locktrip_t locktrip_exec_t:file execute_no_trans;
-allow locktrip_t self:process setsched;
-corecmd_exec_ls(locktrip_t)
-corenet_tcp_connect_http_port(locktrip_t)
-dev_read_urand(locktrip_t)
-fs_getattr_xattr_fs(locktrip_t)
-kernel_read_system_state(locktrip_t)
+sysnet_dns_name_resolve(hydra_t)
+
+allow hydra_t hydra_exec_t:file execute_no_trans;
+allow hydra_t self:process setsched;
+corecmd_exec_ls(hydra_t)
+corenet_tcp_connect_http_port(hydra_t)
+dev_read_urand(hydra_t)
+fs_getattr_xattr_fs(hydra_t)
+kernel_read_system_state(hydra_t)

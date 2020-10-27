@@ -1,8 +1,8 @@
-/usr/bin/locktrip-cli		--	gen_context(system_u:object_r:locktrip_exec_t,s0)
-/usr/sbin/locktripd		--	gen_context(system_u:object_r:locktrip_exec_t,s0)
-/usr/lib(64)?/locktrip/locktripd		--	gen_context(system_u:object_r:locktrip_exec_t,s0)
+/usr/bin/hydra-cli		--	gen_context(system_u:object_r:hydra_exec_t,s0)
+/usr/sbin/hydrad		--	gen_context(system_u:object_r:hydra_exec_t,s0)
+/usr/lib(64)?/hydra/hydrad		--	gen_context(system_u:object_r:hydra_exec_t,s0)
 
-/etc/locktrip(/.*)?		gen_context(system_u:object_r:locktrip_conf_t,s0)
-/var/lib/locktrip(/.*)?		gen_context(system_u:object_r:locktrip_var_lib_t,s0)
+/etc/hydra(/.*)?		gen_context(system_u:object_r:hydra_conf_t,s0)
+/var/lib/hydra(/.*)?		gen_context(system_u:object_r:hydra_var_lib_t,s0)
 
-(/var)?/run/locktripd(/.*)?   gen_context(system_u:object_r:locktrip_var_run_t,s0)
+(/var)?/run/hydrad(/.*)?   gen_context(system_u:object_r:hydra_var_run_t,s0)

@@ -1,31 +1,31 @@
-# /etc/conf.d/locktripd: config file for /etc/init.d/locktripd
+# /etc/conf.d/hydrad: config file for /etc/init.d/hydrad
 
 # Config file location
-#BITCOIND_CONFIGFILE="/etc/locktrip/locktrip.conf"
+#BITCOIND_CONFIGFILE="/etc/hydra/hydra.conf"
 
 # What directory to write pidfile to?  (created and owned by $BITCOIND_USER)
-#BITCOIND_PIDDIR="/var/run/locktripd"
+#BITCOIND_PIDDIR="/var/run/hydrad"
 
 # What filename to give the pidfile
-#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/locktripd.pid"
+#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/hydrad.pid"
 
-# Where to write locktripd data (be mindful that the blockchain is large)
-#BITCOIND_DATADIR="/var/lib/locktripd"
+# Where to write hydrad data (be mindful that the blockchain is large)
+#BITCOIND_DATADIR="/var/lib/hydrad"
 
-# User and group to own locktripd process
-#BITCOIND_USER="locktrip"
-#BITCOIND_GROUP="locktrip"
+# User and group to own hydrad process
+#BITCOIND_USER="hydra"
+#BITCOIND_GROUP="hydra"
 
-# Path to locktripd executable
-#BITCOIND_BIN="/usr/bin/locktripd"
+# Path to hydrad executable
+#BITCOIND_BIN="/usr/bin/hydrad"
 
-# Nice value to run locktripd under
+# Nice value to run hydrad under
 #BITCOIND_NICE=0
 
 # Additional options (avoid -conf and -datadir, use flags above)
 #BITCOIND_OPTS=""
 
-# The timeout in seconds OpenRC will wait for locktripd to terminate
+# The timeout in seconds OpenRC will wait for hydrad to terminate
 # after a SIGTERM has been raised.
 # Note that this will be mapped as argument to start-stop-daemon's
 # '--retry' option, which means you can specify a retry schedule

@@ -1,4 +1,4 @@
-Source: LockTrip
+Source: HYDRA
 Build-Depends: debhelper,
  devscripts,
  automake,
@@ -26,7 +26,7 @@ Homepage: https://locktrip.com/
 Vcs-Git: git://gitlab.com/LockTrip-Dev-Team/LockTrip.git
 Vcs-Browser: https://gitlab.com/LockTrip-Dev-Team/LockTrip.git
 
-Package: locktripd
+Package: hydrad
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - daemon
@@ -36,10 +36,10 @@ Description: peer-to-peer network based digital currency - daemon
  transact directly with each other, with the help of a P2P network to
  check for double-spending.
  .
- This package provides the daemon, locktripd, and the CLI tool
- locktrip-cli to interact with the daemon.
+ This package provides the daemon, hydrad, and the CLI tool
+ hydra-cli to interact with the daemon.
 
-Package: locktrip-qt
+Package: hydra-qt
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - Qt GUI
@@ -51,7 +51,7 @@ Description: peer-to-peer network based digital currency - Qt GUI
  .
  This package provides Bitcoin-Qt, a GUI for Bitcoin based on Qt.
 
-Package: locktrip-tx
+Package: hydra-tx
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer digital currency - standalone transaction tool
@@ -61,6 +61,6 @@ Description: peer-to-peer digital currency - standalone transaction tool
  transact directly with each other, with the help of a P2P network to
  check for double-spending.
  .
- This package provides locktrip-tx, a command-line transaction creation
- tool which can be used without a locktrip daemon.  Some means of
+ This package provides hydra-tx, a command-line transaction creation
+ tool which can be used without a hydra daemon.  Some means of
  exchanging minimal transaction data with peers is still required.

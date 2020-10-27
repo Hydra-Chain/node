@@ -20,7 +20,7 @@ class OpCreateTest(BitcoinTestFramework):
     # Creates a simple contract via a raw tx
     def basic_contract_is_created_raw_tx_test(self):
         for i in range(1):
-            assert(len(self.nodes[i].listcontracts()) == 3+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 1 new economy contract in genesis
+            assert(len(self.nodes[i].listcontracts()) == 3+NUM_DEFAULT_DGP_CONTRACTS) # HYDRA: Added 1 new economy contract in genesis
         node = self.nodes[0]
         amount = 10*COIN
 
@@ -72,7 +72,7 @@ class OpCreateTest(BitcoinTestFramework):
         sync_blocks(self.nodes)
         for i in range(1):
             assert(self.nodes[i].getblockcount() == block_height+1)
-            assert(len(self.nodes[i].listcontracts()) == 2+3+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 1 new economy contract in genesis
+            assert(len(self.nodes[i].listcontracts()) == 2+3+NUM_DEFAULT_DGP_CONTRACTS) # HYDRA: Added 1 new economy contract in genesis
 
 
     # Tests mining many contracts in one block
@@ -93,7 +93,7 @@ class OpCreateTest(BitcoinTestFramework):
         sync_blocks(self.nodes)
         for i in range(1):
             assert(self.nodes[i].getblockcount() == block_height+1)
-            assert(len(self.nodes[i].listcontracts(1, 10000)) == 2+num_new_contracts+3+NUM_DEFAULT_DGP_CONTRACTS) # LockTrip: Added 1 new economy contract in genesis
+            assert(len(self.nodes[i].listcontracts(1, 10000)) == 2+num_new_contracts+3+NUM_DEFAULT_DGP_CONTRACTS) # HYDRA: Added 1 new economy contract in genesis
 
     # Checks that contracts are removed if the block it was mined in was invalidated
     def contract_reorg_test(self):

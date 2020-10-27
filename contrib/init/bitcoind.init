@@ -1,36 +1,36 @@
 #!/bin/bash
 #
-#  locktripd The locktrip core server.
+#  hydrad The hydra core server.
 #
 #
 # chkconfig: 345 80 20
-# description: locktripd
-# processname: locktripd
+# description: hydrad
+# processname: hydrad
 #
 
 # Source function library.
 . /etc/init.d/functions
 
-# you can override defaults in /etc/sysconfig/locktripd, see below
-if [ -f /etc/sysconfig/locktripd ]; then
-        . /etc/sysconfig/locktripd
+# you can override defaults in /etc/sysconfig/hydrad, see below
+if [ -f /etc/sysconfig/hydrad ]; then
+        . /etc/sysconfig/hydrad
 fi
 
 RETVAL=0
 
-prog=locktripd
-# you can override the lockfile via BITCOIND_LOCKFILE in /etc/sysconfig/locktripd
-lockfile=${BITCOIND_LOCKFILE-/var/lock/subsys/locktripd}
+prog=hydrad
+# you can override the lockfile via BITCOIND_LOCKFILE in /etc/sysconfig/hydrad
+lockfile=${BITCOIND_LOCKFILE-/var/lock/subsys/hydrad}
 
-# locktripd defaults to /usr/bin/locktripd, override with BITCOIND_BIN
-locktripd=${BITCOIND_BIN-/usr/bin/locktripd}
+# hydrad defaults to /usr/bin/hydrad, override with BITCOIND_BIN
+hydrad=${BITCOIND_BIN-/usr/bin/hydrad}
 
-# locktripd opts default to -disablewallet, override with BITCOIND_OPTS
-locktripd_opts=${BITCOIND_OPTS--disablewallet}
+# hydrad opts default to -disablewallet, override with BITCOIND_OPTS
+hydrad_opts=${BITCOIND_OPTS--disablewallet}
 
 start() {
     echo -n $"Starting $prog: "
-    daemon $DAEMONOPTS $locktripd $locktripd_opts
+    daemon $DAEMONOPTS $hydrad $hydrad_opts
     RETVAL=$?
     echo
     [ $RETVAL -eq 0 ] && touch $lockfile

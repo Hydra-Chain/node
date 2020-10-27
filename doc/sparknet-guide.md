@@ -1,20 +1,20 @@
-# LT Testnet Usage and Information
+# HYDRA Testnet Usage and Information
 
-LT is a decentralized blockchain project built on Bitcoin's UTXO model, but with support for Ethereum Virtual Machine based smart contracts. It achieves this through the revolutionary Account Abstraction Layer. For more general information about LT as well as links to join our community, go to https://locktrip.com
+HYDRA is a decentralized blockchain project built on Bitcoin's UTXO model, but with support for Ethereum Virtual Machine based smart contracts. It achieves this through the revolutionary Account Abstraction Layer. For more general information about HYDRA as well as links to join our community, go to https://locktrip.com
 
-Welcome to LT Testnet, the first public testnet for the LT blockchain. The testnet is designed primarily for developers, and as such documentation at this point will be technical and suited more for developers. Testnet tokens do not hold any value and should not be traded for any monetary instruments. The testnet can be reset or forked at anytime as deemed necessary for development.
+Welcome to HYDRA Testnet, the first public testnet for the HYDRA blockchain. The testnet is designed primarily for developers, and as such documentation at this point will be technical and suited more for developers. Testnet tokens do not hold any value and should not be traded for any monetary instruments. The testnet can be reset or forked at anytime as deemed necessary for development.
 
-# Using Smart Contracts with LT
+# Using Smart Contracts with HYDRA
 
-The smart contract interface in LT still requires some technical knowledge.
+The smart contract interface in HYDRA still requires some technical knowledge.
 
 To demonstrate how to deploy and interact with a simple we will use this contract:
 
     pragma solidity ^0.4.0;
 
-    contract LTTest {
+    contract HYDRATest {
        uint storedNumber;
-       function LTTest() {
+       function HYDRATest() {
            storedNumber=1;
        }
        function setNumber(uint number) public{
@@ -59,11 +59,11 @@ And finally, has the following JSON interface file:
 
 This info can easily be retrieved for any contract by using [Remix IDE](http://remix.ethereum.org), inputing your contract's source code, and then on the right hand side clicking "contract details"
 
-(note, if using the debug window in the LT Qt application, don't include `./locktrip-cli` in the commands)
+(note, if using the debug window in the HYDRA Qt application, don't include `./hydra-cli` in the commands)
 
 First, we need to deploy the contract:
 
-    ./locktrip-cli createcontract 608060405234801561001057600080fd5b5060016000819055506102e0806100286000396000f300608060405260043610610078576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680633450bd6a1461007d5780633ccfd60b146100a85780633fb5c1cb146100bf57806394e8767d146100ec5780639f2c436f14610135578063d0e30db01461014c575b600080fd5b34801561008957600080fd5b50610092610156565b6040518082815260200191505060405180910390f35b3480156100b457600080fd5b506100bd61015f565b005b3480156100cb57600080fd5b506100ea600480360381019080803590602001909291905050506101b8565b005b3480156100f857600080fd5b50610117600480360381019080803590602001909291905050506101c2565b60405180826000191660001916815260200191505060405180910390f35b34801561014157600080fd5b5061014a61026b565b005b6101546102b2565b005b60008054905090565b3373ffffffffffffffffffffffffffffffffffffffff166108fc3073ffffffffffffffffffffffffffffffffffffffff16319081150290604051600060405180830381858888f1935050505015156101b657600080fd5b565b8060008190555050565b6000808214156101f4577f30000000000000000000000000000000000000000000000000000000000000009050610263565b5b600082111561026257610100816001900481151561020f57fe5b0460010290507f01000000000000000000000000000000000000000000000000000000000000006030600a8481151561024457fe5b06010260010281179050600a8281151561025a57fe5b0491506101f5565b5b809050919050565b6102766000546101c2565b6000191660405180807f73746f7265644e756d6265720000000000000000000000000000000000000000815250600c01905060405180910390a1565b5600a165627a7a723058203fdf16cd81f8833538e4e4d50b63585af3a91a2278210738bca3ce9d90179ce00029 300000
+    ./hydra-cli createcontract 608060405234801561001057600080fd5b5060016000819055506102e0806100286000396000f300608060405260043610610078576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680633450bd6a1461007d5780633ccfd60b146100a85780633fb5c1cb146100bf57806394e8767d146100ec5780639f2c436f14610135578063d0e30db01461014c575b600080fd5b34801561008957600080fd5b50610092610156565b6040518082815260200191505060405180910390f35b3480156100b457600080fd5b506100bd61015f565b005b3480156100cb57600080fd5b506100ea600480360381019080803590602001909291905050506101b8565b005b3480156100f857600080fd5b50610117600480360381019080803590602001909291905050506101c2565b60405180826000191660001916815260200191505060405180910390f35b34801561014157600080fd5b5061014a61026b565b005b6101546102b2565b005b60008054905090565b3373ffffffffffffffffffffffffffffffffffffffff166108fc3073ffffffffffffffffffffffffffffffffffffffff16319081150290604051600060405180830381858888f1935050505015156101b657600080fd5b565b8060008190555050565b6000808214156101f4577f30000000000000000000000000000000000000000000000000000000000000009050610263565b5b600082111561026257610100816001900481151561020f57fe5b0460010290507f01000000000000000000000000000000000000000000000000000000000000006030600a8481151561024457fe5b06010260010281179050600a8281151561025a57fe5b0491506101f5565b5b809050919050565b6102766000546101c2565b6000191660405180807f73746f7265644e756d6265720000000000000000000000000000000000000000815250600c01905060405180910390a1565b5600a165627a7a723058203fdf16cd81f8833538e4e4d50b63585af3a91a2278210738bca3ce9d90179ce00029 300000
 
 Note that the last number is the gas limit for this transaction. The default value is not large enough for this contract, so we increase it to 300,000 gas.
 
@@ -83,7 +83,7 @@ Now, you should store the `address` in a variable so it's easy to track:
 
 Now wait for your contract to be included in a block. You should be able to confirm it made it into a block by using:
 
-    ./locktrip-cli getaccountinfo $CONTRACT
+    ./hydra-cli getaccountinfo $CONTRACT
 
 If you get a message saying "Address does not exist", then either your transaction has not yet been included in a block (you can confirm this with `getrawtransaction` and your txid), or you did not provide enough gas for the contract to be executed and persisted into the blockchain. If the contract was successfully executed and persisted in the blockchain, you should see something like this:
 
@@ -113,7 +113,7 @@ The result of this is:
 
 Now, because we are not changing state, we use `callcontract`:
 
-    ./locktrip-cli callcontract $CONTRACT 3450bd6a
+    ./hydra-cli callcontract $CONTRACT 3450bd6a
 
 This results in a lot of data that can be useful in different contexts (including gas estimates), but we are only concerned about the `output` field, which is the value of `storedNumber`
 
@@ -145,7 +145,7 @@ To change the storedNumber we can do an on-chain execution using `sendtocontract
 
 Note we use --lenient so that we do not need to provide a full 256bit value as a parameter. Now, we can execute the contract directly:
 
-    ./locktrip-cli sendtocontract $CONTRACT 3fb5c1cb000000000000000000000000000000000000000000000000000000000001e240
+    ./hydra-cli sendtocontract $CONTRACT 3fb5c1cb000000000000000000000000000000000000000000000000000000000001e240
 
 Afterwards, we can call `returnNumber()` again and check the `output` field:
 
@@ -153,7 +153,7 @@ Afterwards, we can call `returnNumber()` again and check the `output` field:
 
 This is 123456 encoded as hex. 
 
-You can also use the `logNumber()` function in order to generate logs. If your node was started with `-record-log-opcodes`, then the file `vmExecLogs.json` will contain any log operations that occur on the blockchain. This is what is used for events on the Ethereum blockchain, and eventually it is our intention to bring similar functionality to LT.
+You can also use the `logNumber()` function in order to generate logs. If your node was started with `-record-log-opcodes`, then the file `vmExecLogs.json` will contain any log operations that occur on the blockchain. This is what is used for events on the Ethereum blockchain, and eventually it is our intention to bring similar functionality to HYDRA.
 
 You can also deposit and withdraw coins from this test contract using the `deposit()` and `withdraw()` functions.
 
@@ -161,23 +161,23 @@ The ABI value for `deposit` is d0e30db0 and the ABI value for `withdraw` is 3ccf
 
 This will send 10 tokens to the contract:
 
-    ./locktrip-cli sendtocontract $CONTRACT d0e30db0 10
+    ./hydra-cli sendtocontract $CONTRACT d0e30db0 10
 
 And then, to withdraw them it's also very simple:
 
-    ./locktrip-cli sendtocontract $CONTRACT 3ccfd60b
+    ./hydra-cli sendtocontract $CONTRACT 3ccfd60b
 
 If you want to control the exact address that the contract sends coins to, you can also explicitly specify the sender. Note that you must be capable of sending coins from that address (you can't use someone elses address). One of my wallet addresses is TbuujUYgjhXu8fwr1wvexcRiN2qz8JFVgG, so I'll use that:
 
-    ./locktrip-cli sendtocontract $CONTRACT 3ccfd60b 0 190000 0.0000001 TbuujUYgjhXu8fwr1wvexcRiN2qz8JFVgG
+    ./hydra-cli sendtocontract $CONTRACT 3ccfd60b 0 190000 0.0000001 TbuujUYgjhXu8fwr1wvexcRiN2qz8JFVgG
 
 Note that if you get the error "Sender address does not have any unspent outputs", then you should send some coins to that address (they must be spent in order to prove that you own that address). This can be accomplished with any amount of coins:
 
-    ./locktrip-cli sendtoaddress TbuujUYgjhXu8fwr1wvexcRiN2qz8JFVgG 0.001
+    ./hydra-cli sendtoaddress TbuujUYgjhXu8fwr1wvexcRiN2qz8JFVgG 0.001
 
 There is no need to wait for this transaction to confirm, it can be followed immediately by the sendtocontract command:
 
-    ./locktrip-cli sendtocontract $CONTRACT 3ccfd60b 0 190000 0.0000001 TbuujUYgjhXu8fwr1wvexcRiN2qz8JFVgG
+    ./hydra-cli sendtocontract $CONTRACT 3ccfd60b 0 190000 0.0000001 TbuujUYgjhXu8fwr1wvexcRiN2qz8JFVgG
 
 When creating this contract transaction, nothing will immediately happen, when the transaction is put into a block though a new transaction will appear in a block which will send any coins owned by the contract to the pubkeyhash address TbuujUYgjhXu8fwr1wvexcRiN2qz8JFVgG
 
@@ -186,17 +186,17 @@ When creating this contract transaction, nothing will immediately happen, when t
 * Q: "I used `createcontract`, but can't call my contract and it's not in listcontract" A: You probably did not provide enough gas for the contract's constructor to be executed and it's code persisted in the blockchain. The vm.log file should confirm this by saying how much gas was needed
 * Q: "I sent a large amount of gas but I never got a refund" A: Refunds are generated from the coinstake transaction, so you must wait 1500 blocks for the gas refund to mature before it can be spent again
 * Q: "I used -reindex and now my node is taking forever to resync" A: Currently when doing a reindex, all contracts are reprocessed, so in a chain with many contract executions this can add up to a significant amount of time. This will be made faster in the future, as well as the initial syncing speed of nodes
-* Q: "I think I found a bug in LT" A: Please report any bugs at https://github.com/LockTrip/Blockchain/issues
+* Q: "I think I found a bug in HYDRA" A: Please report any bugs at https://github.com/LockTrip/Blockchain/issues
 
 
 
-# LT RPC Commands
+# HYDRA RPC Commands
 
-LT supports all of the RPC commands supported by Bitcoin Core, but also includes the following commands:
+HYDRA supports all of the RPC commands supported by Bitcoin Core, but also includes the following commands:
 
-* `createcontract` - This will create and deploy a new smart contract to the LT blockchain. This requires gas.
-* `callcontract` - This will interact with an already deployed smart contract on the LT blockchain, with all computation taking place off-chain and no persistence to the blockchain. This does not require gas
-* `sendtocontract` - This will interact with an already deployed smart contract on the LT blockchain. All computation takes place on-chain and any state changes will be persisted to the blockchain. This allows tokens to be sent to a smart contract. This requires gas.
+* `createcontract` - This will create and deploy a new smart contract to the HYDRA blockchain. This requires gas.
+* `callcontract` - This will interact with an already deployed smart contract on the HYDRA blockchain, with all computation taking place off-chain and no persistence to the blockchain. This does not require gas
+* `sendtocontract` - This will interact with an already deployed smart contract on the HYDRA blockchain. All computation takes place on-chain and any state changes will be persisted to the blockchain. This allows tokens to be sent to a smart contract. This requires gas.
 * `getaccountinfo` - This will show some low level information about a contract, including the contract's bytecode, stored data, and balance on the blockchain.
 * `listcontracts` - This will output a list of currently deployed contract addresses with their respective balance. This RPC call may change or be removed in the future.
 * `reservebalance` - This will reserve a set amount of coins so that they do not participate in staking. If you reserve as many or more coins than are in your wallet, then you will not participate at all in staking and block creation for the network.
@@ -205,26 +205,26 @@ LT supports all of the RPC commands supported by Bitcoin Core, but also includes
 * `fromhexaddress` - this will convert a hex address used in smart contracts to a standard Base58 pubkeyhash address
 
 
-# LT Command Line Arguments
+# HYDRA Command Line Arguments
 
-LT supports all of the usual command line arguments that Bitcoin Core supports. In addition it adds the following new command line arguments:
+HYDRA supports all of the usual command line arguments that Bitcoin Core supports. In addition it adds the following new command line arguments:
 
-* `-record-log-opcodes` - This will create a new log file in the LT data directory (usually ~/.locktrip) named vmExecLogs.json, where any EVM LOG opcode is logged along with topics and data that the contract requested be logged.
+* `-record-log-opcodes` - This will create a new log file in the HYDRA data directory (usually ~/.hydra) named vmExecLogs.json, where any EVM LOG opcode is logged along with topics and data that the contract requested be logged.
 
 
 # Untested features
 
-Some features included in Bitcoin Core have not been tested in it's porting to LT. This includes:
+Some features included in Bitcoin Core have not been tested in it's porting to HYDRA. This includes:
 
 * Pruning
 
 # EVM Smart Contract Changes and Limitations
 
-Because of LT's underlying technical differences, there are a few operations that can have different results or limitations when executed in LT than when compared to Ethereum.
+Because of HYDRA's underlying technical differences, there are a few operations that can have different results or limitations when executed in HYDRA than when compared to Ethereum.
 
 These include the following, though there may be others introduced in the future:  
 
-* The gas schedule for LT is different from Ethereum. Certain operations are more or less expensive. As such, gas cost estimators designed for Ethereum will not give accurate results for LT. We will develop our own gas estimating tools as well as fully documenting these differences at a later date.
+* The gas schedule for HYDRA is different from Ethereum. Certain operations are more or less expensive. As such, gas cost estimators designed for Ethereum will not give accurate results for HYDRA. We will develop our own gas estimating tools as well as fully documenting these differences at a later date.
 * `block.coinbase` or the `COINBASE` opcode currently is not supported and will only return 0. When MPoS is released in the 2nd testnet this should be functioning as expected
 * `block.number` will return the previous block height before this block containing the contract's execution
 * `block.difficulty` will return the previous block's difficulty

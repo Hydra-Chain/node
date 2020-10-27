@@ -3,9 +3,9 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-""" LockTrip Economy smart contract functional test
+""" HYDRA Economy smart contract functional test
 
-This test checks the functionality of the LockTrip Economy smart contract.
+This test checks the functionality of the HYDRA Economy smart contract.
 It will perform a check that if OP_COINSTAKECALL is executed more than once in a block,
 it shall not be accepted
 """
