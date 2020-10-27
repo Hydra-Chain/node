@@ -106,7 +106,7 @@ static const char* FEE_ESTIMATES_FILENAME="fee_estimates.dat";
 /**
  * The PID file facilities.
  */
-static const char* BITCOIN_PID_FILENAME = "locktripd.pid";
+static const char* BITCOIN_PID_FILENAME = "hydrad.pid";
 
 static fs::path GetPidFile()
 {
@@ -211,7 +211,7 @@ void Shutdown(InitInterfaces& interfaces)
     /// for example if the data directory was found to be locked.
     /// Be sure that anything that writes files or flushes caches only does this if the respective
     /// module was initialized.
-    RenameThread("locktrip-shutoff");
+    RenameThread("hydra-shutoff");
     mempool.AddTransactionsUpdated(1);
 
     StopHTTPRPC();
@@ -1648,7 +1648,7 @@ bool AppInitMain(InitInterfaces& interfaces)
                 }
 
                 dev::eth::NoProof::init();
-                fs::path qtumStateDir = GetDataDir() / "stateLockTrip";
+                fs::path qtumStateDir = GetDataDir() / "stateHYDRA";
                 bool fStatus = fs::exists(qtumStateDir);
                 const std::string dirQtum(qtumStateDir.string());
                 const dev::h256 hashDB(dev::sha3(dev::rlp("")));

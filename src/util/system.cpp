@@ -75,7 +75,7 @@
 // Application startup time (used for uptime calculation)
 const int64_t nStartupTime = GetTime();
 
-const char * const BITCOIN_CONF_FILENAME = "locktrip.conf";
+const char * const BITCOIN_CONF_FILENAME = "hydra.conf";
 const char * const STARTUP_CONF_FILENAME = ".startup";
 
 ArgsManager gArgs;
@@ -728,13 +728,13 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 
 fs::path GetDefaultDataDir()
 {
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\LockTrip
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\LockTrip
-    // Mac: ~/Library/Application Support/LockTrip
-    // Unix: ~/.locktrip
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\HYDRA
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\HYDRA
+    // Mac: ~/Library/Application Support/HYDRA
+    // Unix: ~/.hydra
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "LockTrip";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "HYDRA";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -744,10 +744,10 @@ fs::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/LockTrip";
+    return pathRet / "Library/Application Support/HYDRA";
 #else
     // Unix
-    return pathRet / ".locktrip";
+    return pathRet / ".hydra";
 #endif
 #endif
 }
@@ -1256,8 +1256,8 @@ std::string CopyrightHolders(const std::string& strPrefix)
     std::string strCopyrightHolders = strPrefix + strprintf(_(COPYRIGHT_HOLDERS), _(COPYRIGHT_HOLDERS_SUBSTITUTION));
 
     // Check for untranslated substitution to make sure Bitcoin Core copyright is not removed by accident
-    if (strprintf(COPYRIGHT_HOLDERS, COPYRIGHT_HOLDERS_SUBSTITUTION).find("LT") == std::string::npos) {
-        strCopyrightHolders += "\n" + strPrefix + "The LT developers";
+    if (strprintf(COPYRIGHT_HOLDERS, COPYRIGHT_HOLDERS_SUBSTITUTION).find("HYDRA") == std::string::npos) {
+        strCopyrightHolders += "\n" + strPrefix + "The HYDRA developers";
     }
     return strCopyrightHolders;
 }

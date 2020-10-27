@@ -84,7 +84,7 @@ static void AssembleBlock(benchmark::State& state)
         ::globalSealEngine.reset();
 
         ::fRequireStandard=false;
-        fs::path qtumStateDir = GetDataDir() / "stateLockTrip";
+        fs::path qtumStateDir = GetDataDir() / "stateHYDRA";
         bool fStatus = fs::exists(qtumStateDir);
         const std::string dirQtum(qtumStateDir.string());
         const dev::h256 hashDB(dev::sha3(dev::rlp("")));

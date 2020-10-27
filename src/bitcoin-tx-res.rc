@@ -16,14 +16,14 @@ BEGIN
     BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
-            VALUE "CompanyName",        "LockTrip"
-            VALUE "FileDescription",    "locktrip-tx (CLI LT transaction editor utility)"
+            VALUE "CompanyName",        "HYDRA"
+            VALUE "FileDescription",    "hydra-tx (CLI HYDRA transaction editor utility)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
-            VALUE "InternalName",       "locktrip-tx"
+            VALUE "InternalName",       "hydra-tx"
             VALUE "LegalCopyright",     COPYRIGHT_STR
             VALUE "LegalTrademarks1",   "Distributed under the MIT software license, see the accompanying file COPYING or http://www.opensource.org/licenses/mit-license.php."
-            VALUE "OriginalFilename",   "locktrip-tx.exe"
-            VALUE "ProductName",        "locktrip-tx"
+            VALUE "OriginalFilename",   "hydra-tx.exe"
+            VALUE "ProductName",        "hydra-tx"
             VALUE "ProductVersion",     VER_PRODUCTVERSION_STR
         END
     END

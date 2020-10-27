@@ -97,9 +97,9 @@ static int AppInitRawTx(int argc, char* argv[])
 
     if (argc < 2 || HelpRequested(gArgs)) {
         // First part of help message is specific to this utility
-        std::string strUsage = PACKAGE_NAME " locktrip-tx utility version " + FormatFullVersion() + "\n\n" +
-            "Usage:  locktrip-tx [options] <hex-tx> [commands]  Update hex-encoded LT transaction\n" +
-            "or:     locktrip-tx [options] -create [commands]   Create hex-encoded LT transaction\n" +
+        std::string strUsage = PACKAGE_NAME " hydra-tx utility version " + FormatFullVersion() + "\n\n" +
+            "Usage:  hydra-tx [options] <hex-tx> [commands]  Update hex-encoded HYDRA transaction\n" +
+            "or:     hydra-tx [options] -create [commands]   Create hex-encoded HYDRA transaction\n" +
             "\n";
         strUsage += gArgs.GetHelpMessage();
 

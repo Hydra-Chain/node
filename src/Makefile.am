@@ -92,15 +92,15 @@ TESTS =
 BENCHMARKS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += locktripd
+  bin_PROGRAMS += hydrad
 endif
 
 if BUILD_BITCOIN_CLI
-  bin_PROGRAMS += locktrip-cli
+  bin_PROGRAMS += hydra-cli
 endif
 
 if BUILD_BITCOIN_TX
-#  bin_PROGRAMS += locktrip-tx
+#  bin_PROGRAMS += hydra-tx
 endif
 
 .PHONY: FORCE check-symbols check-security
@@ -790,16 +790,16 @@ nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
 # bitcoind binary #
-locktripd_SOURCES = bitcoind.cpp
-locktripd_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-locktripd_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-locktripd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+hydrad_SOURCES = bitcoind.cpp
+hydrad_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+hydrad_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+hydrad_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-locktripd_SOURCES += bitcoind-res.rc
+hydrad_SOURCES += bitcoind-res.rc
 endif
 
-locktripd_LDADD = \
+hydrad_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_WALLET) \
   $(LIBBITCOIN_COMMON) \
@@ -815,19 +815,19 @@ locktripd_LDADD = \
   $(LIBFF) \
   $(LIBSECP256K1)
 
-locktripd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(Z_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS) $(GMP_LIBS) $(GMPXX_LIBS)
+hydrad_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(Z_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS) $(GMP_LIBS) $(GMPXX_LIBS)
 
 # bitcoin-cli binary #
-locktrip_cli_SOURCES = bitcoin-cli.cpp
-locktrip_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
-locktrip_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-locktrip_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+hydra_cli_SOURCES = bitcoin-cli.cpp
+hydra_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+hydra_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+hydra_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-locktrip_cli_SOURCES += bitcoin-cli-res.rc
+hydra_cli_SOURCES += bitcoin-cli-res.rc
 endif
 
-locktrip_cli_LDADD = \
+hydra_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
@@ -838,20 +838,20 @@ locktrip_cli_LDADD = \
   $(LIBCRYPTOPP) \
   $(LIBSECP256K1)
 
-locktrip_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(Z_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+hydra_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(Z_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
 # bitcoin-tx binary #
-#locktrip_tx_SOURCES = bitcoin-tx.cpp consensus/consensus.cpp
-#locktrip_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-#locktrip_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-#locktrip_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+#hydra_tx_SOURCES = bitcoin-tx.cpp consensus/consensus.cpp
+#hydra_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+#hydra_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+#hydra_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 #
 #if TARGET_WINDOWS
-#locktrip_tx_SOURCES += bitcoin-tx-res.rc
+#hydra_tx_SOURCES += bitcoin-tx-res.rc
 #endif
 #
-#locktrip_tx_LDADD = \
+#hydra_tx_LDADD = \
 #  $(LIBUNIVALUE) \
 #  $(LIBBITCOIN_COMMON) \
 #  $(LIBBITCOIN_UTIL) \
@@ -863,7 +863,7 @@ locktrip_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(Z_LIBS) $(CRYPTO_LIBS) $(EVENT
 #  $(LIBCRYPTOPP) \
 #  $(LIBSECP256K1)
 #
-#locktrip_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+#hydra_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
 # bitcoinconsensus library #

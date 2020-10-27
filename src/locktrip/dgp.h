@@ -39,7 +39,7 @@ static const uint64_t MIN_BLOCK_GAS_LIMIT_DGP = 1000000;
 static const uint64_t MAX_BLOCK_GAS_LIMIT_DGP = 1000000000;
 static const uint64_t DEFAULT_BLOCK_GAS_LIMIT_DGP = 40000000;
 
-static const uint64_t ONE_CENT_EQUAL = 1000000; // representing fiat money like LT and satoshi
+static const uint64_t ONE_CENT_EQUAL = 1000000; // representing fiat money like HYDRA and satoshi
 
 // DGP CACHE GLOBALS
 

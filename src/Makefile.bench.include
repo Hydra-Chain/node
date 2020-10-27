@@ -2,15 +2,15 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-bin_PROGRAMS += bench/bench_locktrip
+bin_PROGRAMS += bench/bench_hydra
 BENCH_SRCDIR = bench
-BENCH_BINARY = bench/bench_locktrip$(EXEEXT)
+BENCH_BINARY = bench/bench_hydra$(EXEEXT)
 
 RAW_BENCH_FILES = \
   bench/data/blockbench.raw
 GENERATED_BENCH_FILES = $(RAW_BENCH_FILES:.raw=.raw.h)
 
-bench_bench_locktrip_SOURCES = \
+bench_bench_hydra_SOURCES = \
   $(RAW_BENCH_FILES) \
   bench/bench_bitcoin.cpp \
   bench/bench.cpp \
@@ -32,11 +32,11 @@ bench_bench_locktrip_SOURCES = \
   bench/lockedpool.cpp \
   bench/prevector.cpp
 
-nodist_bench_bench_locktrip_SOURCES = $(GENERATED_BENCH_FILES)
+nodist_bench_bench_hydra_SOURCES = $(GENERATED_BENCH_FILES)
 
-bench_bench_locktrip_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CLFAGS) $(EVENT_PTHREADS_CFLAGS) -I$(builddir)/bench/
-bench_bench_locktrip_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-bench_bench_locktrip_LDADD = \
+bench_bench_hydra_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CLFAGS) $(EVENT_PTHREADS_CFLAGS) -I$(builddir)/bench/
+bench_bench_hydra_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+bench_bench_hydra_LDADD = \
   $(LIBBITCOIN_WALLET) \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_COMMON) \
@@ -61,15 +61,15 @@ bench_bench_locktrip_LDADD = \
   $(LIBSCRYIPT)
 
 if ENABLE_ZMQ
-bench_bench_locktrip_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
+bench_bench_hydra_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
 endif
 
 if ENABLE_WALLET
-bench_bench_locktrip_SOURCES += bench/coin_selection.cpp
+bench_bench_hydra_SOURCES += bench/coin_selection.cpp
 endif
 
-bench_bench_locktrip_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(Z_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(LIBFF) $(GMP_LIBS) $(GMPXX_LIBS)
-bench_bench_locktrip_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+bench_bench_hydra_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(Z_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(LIBFF) $(GMP_LIBS) $(GMPXX_LIBS)
+bench_bench_hydra_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 CLEAN_BITCOIN_BENCH = bench/*.gcda bench/*.gcno $(GENERATED_BENCH_FILES)
 
@@ -83,7 +83,7 @@ bench: $(BENCH_BINARY) FORCE
 	$(BENCH_BINARY)
 
 bitcoin_bench_clean : FORCE
-	rm -f $(CLEAN_BITCOIN_BENCH) $(bench_bench_locktrip_OBJECTS) $(BENCH_BINARY)
+	rm -f $(CLEAN_BITCOIN_BENCH) $(bench_bench_hydra_OBJECTS) $(BENCH_BINARY)
 
 %.raw.h: %.raw
 	@$(MKDIR_P) $(@D)
