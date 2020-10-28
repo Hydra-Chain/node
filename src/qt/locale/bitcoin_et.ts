@@ -66,12 +66,12 @@
         <translation>Vastuvõtvad aadressid</translation>
     </message>
     <message>
-        <source>These are your LT addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Need on sinu LT aadressid maksete saatmiseks. Ennem müntide saatmist kontrolli alati summat ja makse saaja aadressi.</translation>
+        <source>These are your HYDRA addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Need on sinu HYDRA aadressid maksete saatmiseks. Ennem müntide saatmist kontrolli alati summat ja makse saaja aadressi.</translation>
     </message>
     <message>
-        <source>These are your LT addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Need on sinu LT aadressid sisenevate maksete vastu võtmiseks. Soovitav on iga tehingu tarbeks kasutada uut aadressi.</translation>
+        <source>These are your HYDRA addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Need on sinu HYDRA aadressid sisenevate maksete vastu võtmiseks. Soovitav on iga tehingu tarbeks kasutada uut aadressi.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -172,8 +172,8 @@
         <translation>Kinnita rahakoti krüpteerimine.</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR LTs&lt;/b&gt;!</source>
-        <translation>Hoiatus:Kui sa krüpteerid oma rahakoti ja kaotad salafraasi, siis sa&lt;b&gt;KAOTAD OMA LTs&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR HYDRAs&lt;/b&gt;!</source>
+        <translation>Hoiatus:Kui sa krüpteerid oma rahakoti ja kaotad salafraasi, siis sa&lt;b&gt;KAOTAD OMA HYDRAs&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -224,7 +224,7 @@
     </message>
     </context>
 <context>
-    <name>LTGUI</name>
+    <name>HYDRAGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Signeeri &amp;sõnum</translation>
@@ -294,8 +294,8 @@
         <translation>Kettal olevate blokkide re-indekseerimine...</translation>
     </message>
     <message>
-        <source>Send coins to a LT address</source>
-        <translation>Saada münte LT aadressile</translation>
+        <source>Send coins to a HYDRA address</source>
+        <translation>Saada münte HYDRA aadressile</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -318,8 +318,8 @@
         <translation>&amp;Kontrolli sõnumit...</translation>
     </message>
     <message>
-        <source>LT</source>
-        <translation>LT</translation>
+        <source>HYDRA</source>
+        <translation>HYDRA</translation>
     </message>
     <message>
         <source>&amp;Send</source>
@@ -342,12 +342,12 @@
         <translation>Krüpteeri oma rahakoti privaatvõtmed</translation>
     </message>
     <message>
-        <source>Sign messages with your LT addresses to prove you own them</source>
-        <translation>Omandi tõestamiseks allkirjasta sõnumid oma LT aadressiga</translation>
+        <source>Sign messages with your HYDRA addresses to prove you own them</source>
+        <translation>Omandi tõestamiseks allkirjasta sõnumid oma HYDRA aadressiga</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified LT addresses</source>
-        <translation>Kinnita sõnumid kindlustamaks et need allkirjastati määratud LT aadressiga</translation>
+        <source>Verify messages to ensure they were signed with specified HYDRA addresses</source>
+        <translation>Kinnita sõnumid kindlustamaks et need allkirjastati määratud HYDRA aadressiga</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -366,20 +366,20 @@
         <translation>Vahelehe tööriistariba</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and LT: URIs)</source>
-        <translation>Loo maksepäring (genereerib QR koodid ja LT: URId)</translation>
+        <source>Request payments (generates QR codes and HYDRA: URIs)</source>
+        <translation>Loo maksepäring (genereerib QR koodid ja HYDRA: URId)</translation>
     </message>
     <message>
-        <source>Open a LT: URI or payment request</source>
-        <translation>Ava LT: URI või maksepäring</translation>
+        <source>Open a HYDRA: URI or payment request</source>
+        <translation>Ava HYDRA: URI või maksepäring</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>Käsurea valikud</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to LT network</source>
-        <translation><numerusform>%n aktiivne ühendus LT võrku</numerusform><numerusform>%n aktiivset ühendust LT võrku</numerusform></translation>
+        <source>%n active connection(s) to HYDRA network</source>
+        <translation><numerusform>%n aktiivne ühendus HYDRA võrku</numerusform><numerusform>%n aktiivset ühendust HYDRA võrku</numerusform></translation>
     </message>
     <message>
         <source>Indexing blocks on disk...</source>
@@ -626,8 +626,8 @@
         <translation>Muuda saatvat aadressi</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid LT address.</source>
-        <translation>Sisestatud aadress "%1" ei ole korrektne LT aadress.</translation>
+        <source>The entered address "%1" is not a valid HYDRA address.</source>
+        <translation>Sisestatud aadress "%1" ei ole korrektne HYDRA aadress.</translation>
     </message>
     <message>
         <source>Could not unlock wallet.</source>
@@ -663,8 +663,8 @@
         <translation>Teretulemast</translation>
     </message>
     <message>
-        <source>LT</source>
-        <translation>LT</translation>
+        <source>HYDRA</source>
+        <translation>HYDRA</translation>
     </message>
     <message>
         <source>Error</source>
@@ -736,8 +736,8 @@
         <translation>Ekspert</translation>
     </message>
     <message>
-        <source>Automatically open the LT client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>LT kliendi pordi automaatne avamine ruuteris. Toimib, kui sinu ruuter aktsepteerib UPnP ühendust.</translation>
+        <source>Automatically open the HYDRA client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>HYDRA kliendi pordi automaatne avamine ruuteris. Toimib, kui sinu ruuter aktsepteerib UPnP ühendust.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
@@ -835,7 +835,7 @@
         <translation>Vorm</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the LT network after a connection is established, but this process has not completed yet.</source>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the HYDRA network after a connection is established, but this process has not completed yet.</source>
         <translation>Kuvatav info ei pruugi olla ajakohane. Ühenduse loomisel süngitakse sinu rahakott automaatselt Bitconi võrgustikuga, kuid see toiming on hetkel lõpetamata.</translation>
     </message>
     <message>
@@ -1341,8 +1341,8 @@
         <translation>Maksepäring aegunud.</translation>
     </message>
     <message>
-        <source>Warning: Invalid LT address</source>
-        <translation>Hoiatus: Ebakorrektne LT aadress</translation>
+        <source>Warning: Invalid HYDRA address</source>
+        <translation>Hoiatus: Ebakorrektne HYDRA aadress</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -1425,8 +1425,8 @@
         <translation>&amp;Allkirjastamise teade</translation>
     </message>
     <message>
-        <source>The LT address to sign the message with</source>
-        <translation>LT aadress millega sõnum allkirjastada</translation>
+        <source>The HYDRA address to sign the message with</source>
+        <translation>HYDRA aadress millega sõnum allkirjastada</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -1457,8 +1457,8 @@
         <translation>Kopeeri praegune signatuur vahemällu</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this LT address</source>
-        <translation>Allkirjasta sõnum LT aadressi sulle kuulumise tõestamiseks</translation>
+        <source>Sign the message to prove you own this HYDRA address</source>
+        <translation>Allkirjasta sõnum HYDRA aadressi sulle kuulumise tõestamiseks</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -1477,12 +1477,12 @@
         <translation>&amp;Kinnita Sõnum</translation>
     </message>
     <message>
-        <source>The LT address the message was signed with</source>
-        <translation>LT aadress millega sõnum on allkirjastatud</translation>
+        <source>The HYDRA address the message was signed with</source>
+        <translation>HYDRA aadress millega sõnum on allkirjastatud</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified LT address</source>
-        <translation>Kinnita sõnum tõestamaks selle allkirjastatust määratud LT aadressiga.</translation>
+        <source>Verify the message to ensure it was signed with the specified HYDRA address</source>
+        <translation>Kinnita sõnum tõestamaks selle allkirjastatust määratud HYDRA aadressiga.</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -1915,10 +1915,10 @@
     </message>
     </context>
 <context>
-    <name>LT</name>
+    <name>HYDRA</name>
     <message>
-        <source>LT</source>
-        <translation>LT</translation>
+        <source>HYDRA</source>
+        <translation>HYDRA</translation>
     </message>
     <message>
         <source>This is a pre-release test build - use at your own risk - do not use for mining or merchant applications</source>

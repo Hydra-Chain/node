@@ -66,12 +66,12 @@
         <translation>Recibiendo direcciones</translation>
     </message>
     <message>
-        <source>These are your LT addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Estas son sus direcciones LT para enviar pagos. Verifique siempre la cantidad y la dirección de recibimiento antes de enviar monedas.</translation>
+        <source>These are your HYDRA addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Estas son sus direcciones HYDRA para enviar pagos. Verifique siempre la cantidad y la dirección de recibimiento antes de enviar monedas.</translation>
     </message>
     <message>
-        <source>These are your LT addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Estas son sus direcciones LT para recibir pagos. Se recomienda utilizar una nueva dirección de recibimiento para cada transacción</translation>
+        <source>These are your HYDRA addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Estas son sus direcciones HYDRA para recibir pagos. Se recomienda utilizar una nueva dirección de recibimiento para cada transacción</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -176,8 +176,8 @@
         <translation>Confirmar encriptación del monedero</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR LTs&lt;/b&gt;!</source>
-        <translation>Advertencia: Si encripta su monedero y pierde su frase clave &lt;b&gt;PERDERÁ TODOS SUS LTs&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR HYDRAs&lt;/b&gt;!</source>
+        <translation>Advertencia: Si encripta su monedero y pierde su frase clave &lt;b&gt;PERDERÁ TODOS SUS HYDRAs&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -236,7 +236,7 @@
     </message>
 </context>
 <context>
-    <name>LTGUI</name>
+    <name>HYDRAGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Firmar &amp;mensaje...</translation>
@@ -334,8 +334,8 @@
         <translation>Reindexando bloques en disco...</translation>
     </message>
     <message>
-        <source>Send coins to a LT address</source>
-        <translation>Enviar LTs a una dirección LT</translation>
+        <source>Send coins to a HYDRA address</source>
+        <translation>Enviar HYDRAs a una dirección HYDRA</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -358,8 +358,8 @@
         <translation>&amp;Verificar mensaje...</translation>
     </message>
     <message>
-        <source>LT</source>
-        <translation>LT</translation>
+        <source>HYDRA</source>
+        <translation>HYDRA</translation>
     </message>
     <message>
         <source>&amp;Send</source>
@@ -382,12 +382,12 @@
         <translation>Cifrar las claves privadas de su monedero</translation>
     </message>
     <message>
-        <source>Sign messages with your LT addresses to prove you own them</source>
-        <translation>Firmar mensajes con sus direcciones LT para demostrar la propiedad</translation>
+        <source>Sign messages with your HYDRA addresses to prove you own them</source>
+        <translation>Firmar mensajes con sus direcciones HYDRA para demostrar la propiedad</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified LT addresses</source>
-        <translation>Verificar mensajes comprobando que están firmados con direcciones LT concretas</translation>
+        <source>Verify messages to ensure they were signed with specified HYDRA addresses</source>
+        <translation>Verificar mensajes comprobando que están firmados con direcciones HYDRA concretas</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -406,8 +406,8 @@
         <translation>Barra de pestañas</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and LT: URIs)</source>
-        <translation>Solicitar pagos (generando códigos QR e identificadores URI "LT:")</translation>
+        <source>Request payments (generates QR codes and HYDRA: URIs)</source>
+        <translation>Solicitar pagos (generando códigos QR e identificadores URI "HYDRA:")</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -418,16 +418,16 @@
         <translation>Muestra la lista de direcciones de recepción y etiquetas</translation>
     </message>
     <message>
-        <source>Open a LT: URI or payment request</source>
-        <translation>Abrir un identificador URI "LT:" o una petición de pago</translation>
+        <source>Open a HYDRA: URI or payment request</source>
+        <translation>Abrir un identificador URI "HYDRA:" o una petición de pago</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>&amp;Opciones de consola de comandos</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to LT network</source>
-        <translation><numerusform>%n conexión activa hacia la red LT</numerusform><numerusform>%n conexiones activas hacia la red LT</numerusform></translation>
+        <source>%n active connection(s) to HYDRA network</source>
+        <translation><numerusform>%n conexión activa hacia la red HYDRA</numerusform><numerusform>%n conexiones activas hacia la red HYDRA</numerusform></translation>
     </message>
     <message>
         <source>Indexing blocks on disk...</source>
@@ -470,8 +470,8 @@
         <translation>Actualizado</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible LT command-line options</source>
-        <translation>Mostrar el mensaje de ayuda %1 para obtener una lista de los posibles comandos de linea de comandos de LT</translation>
+        <source>Show the %1 help message to get a list with possible HYDRA command-line options</source>
+        <translation>Mostrar el mensaje de ayuda %1 para obtener una lista de los posibles comandos de linea de comandos de HYDRA</translation>
     </message>
     <message>
         <source>&amp;Window</source>
@@ -570,8 +570,8 @@
         <translation>El monedero está &lt;b&gt;cifrado&lt;/b&gt; y actualmente &lt;b&gt;bloqueado&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>A fatal error occurred. LT can no longer continue safely and will quit.</source>
-        <translation>Ha ocurrido un error fatal. LT no puede continuar de manera segura y se cerrará.</translation>
+        <source>A fatal error occurred. HYDRA can no longer continue safely and will quit.</source>
+        <translation>Ha ocurrido un error fatal. HYDRA no puede continuar de manera segura y se cerrará.</translation>
     </message>
 </context>
 <context>
@@ -760,8 +760,8 @@
         <translation>Editar dirección de envío</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid LT address.</source>
-        <translation>La dirección introducida "%1" no es una dirección LT válida.</translation>
+        <source>The entered address "%1" is not a valid HYDRA address.</source>
+        <translation>La dirección introducida "%1" no es una dirección HYDRA válida.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -845,8 +845,8 @@
         <translation>Utilizar un directorio de datos personalizado:</translation>
     </message>
     <message>
-        <source>LT</source>
-        <translation>LT</translation>
+        <source>HYDRA</source>
+        <translation>HYDRA</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -872,8 +872,8 @@
         <translation>Formulario</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the LT network, as detailed below.</source>
-        <translation>Las transacciones recientes podrían no ser visibles todavía, por lo que el balance de la cartera podría ser incorrecto. Esta información será correcta una vez su cartera se haya terminado de sincronizar con la red LT, como se detalla más abajo.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the HYDRA network, as detailed below.</source>
+        <translation>Las transacciones recientes podrían no ser visibles todavía, por lo que el balance de la cartera podría ser incorrecto. Esta información será correcta una vez su cartera se haya terminado de sincronizar con la red HYDRA, como se detalla más abajo.</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -1006,16 +1006,16 @@
         <translation>&amp;Gastar cambio no confirmado</translation>
     </message>
     <message>
-        <source>Automatically open the LT client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Abrir automáticamente el puerto del cliente LT en el router. Esta opción solo funciona si el router admite UPnP y está activado.</translation>
+        <source>Automatically open the HYDRA client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Abrir automáticamente el puerto del cliente HYDRA en el router. Esta opción solo funciona si el router admite UPnP y está activado.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
         <translation>Mapear el puerto mediante &amp;UPnP</translation>
     </message>
     <message>
-        <source>Connect to the LT network through a SOCKS5 proxy.</source>
-        <translation>Conectarse a la red LT a través de un proxy SOCKS5.</translation>
+        <source>Connect to the HYDRA network through a SOCKS5 proxy.</source>
+        <translation>Conectarse a la red HYDRA a través de un proxy SOCKS5.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1050,8 +1050,8 @@
         <translation>Tor</translation>
     </message>
     <message>
-        <source>Connect to the LT network through a separate SOCKS5 proxy for Tor hidden services.</source>
-        <translation>Conectar a la red LT mediante un proxy SOCKS5 por separado para los servicios ocultos de Tor.</translation>
+        <source>Connect to the HYDRA network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <translation>Conectar a la red HYDRA mediante un proxy SOCKS5 por separado para los servicios ocultos de Tor.</translation>
     </message>
     <message>
         <source>&amp;Window</source>
@@ -1087,7 +1087,7 @@
     </message>
     <message>
         <source>Choose the default subdivision unit to show in the interface and when sending coins.</source>
-        <translation>Elegir la subdivisión predeterminada para mostrar cantidades en la interfaz y cuando se envían LTs.</translation>
+        <translation>Elegir la subdivisión predeterminada para mostrar cantidades en la interfaz y cuando se envían HYDRAs.</translation>
     </message>
     <message>
         <source>Whether to show coin control features or not.</source>
@@ -1145,8 +1145,8 @@
         <translation>Formulario</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the LT network after a connection is established, but this process has not completed yet.</source>
-        <translation>La información mostrada puede estar desactualizada. Su monedero se sincroniza automáticamente con la red LT después de que se haya establecido una conexión, pero este proceso aún no se ha completado.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the HYDRA network after a connection is established, but this process has not completed yet.</source>
+        <translation>La información mostrada puede estar desactualizada. Su monedero se sincroniza automáticamente con la red HYDRA después de que se haya establecido una conexión, pero este proceso aún no se ha completado.</translation>
     </message>
     <message>
         <source>Watch-only:</source>
@@ -1220,8 +1220,8 @@
         <translation>Fallo en la solicitud de pago</translation>
     </message>
     <message>
-        <source>Cannot start LT: click-to-pay handler</source>
-        <translation>No se puede iniciar LT: encargado click-para-pagar</translation>
+        <source>Cannot start HYDRA: click-to-pay handler</source>
+        <translation>No se puede iniciar HYDRA: encargado click-para-pagar</translation>
     </message>
     <message>
         <source>URI handling</source>
@@ -1236,8 +1236,8 @@
         <translation>Dirección de pago inválida %1</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid LT address or malformed URI parameters.</source>
-        <translation>URI no puede ser analizado! Esto puede ser causado por una dirección LT inválida o parametros URI mal formados.</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid HYDRA address or malformed URI parameters.</source>
+        <translation>URI no puede ser analizado! Esto puede ser causado por una dirección HYDRA inválida o parametros URI mal formados.</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -1338,8 +1338,8 @@
         <translation>Cantidad</translation>
     </message>
     <message>
-        <source>Enter a LT address (e.g. %1)</source>
-        <translation>Introducir una dirección LT (p. ej. %1)</translation>
+        <source>Enter a HYDRA address (e.g. %1)</source>
+        <translation>Introducir una dirección HYDRA (p. ej. %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -1714,8 +1714,8 @@
         <translation>Mensaje:</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the LT network.</source>
-        <translation>Un mensaje opcional para adjuntar a la solicitud de pago, que se muestra cuando se abre la solicitud. Nota: El mensaje no se enviará con el pago por la red LT.</translation>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the HYDRA network.</source>
+        <translation>Un mensaje opcional para adjuntar a la solicitud de pago, que se muestra cuando se abre la solicitud. Nota: El mensaje no se enviará con el pago por la red HYDRA.</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address.</source>
@@ -1872,7 +1872,7 @@
     <name>SendCoinsDialog</name>
     <message>
         <source>Send Coins</source>
-        <translation>Enviar LTs</translation>
+        <translation>Enviar HYDRAs</translation>
     </message>
     <message>
         <source>Coin Control Features</source>
@@ -2075,8 +2075,8 @@
         <translation>Solicitud de pago caducada.</translation>
     </message>
     <message>
-        <source>Warning: Invalid LT address</source>
-        <translation>Alerta: dirección LT inválida</translation>
+        <source>Warning: Invalid HYDRA address</source>
+        <translation>Alerta: dirección HYDRA inválida</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -2118,8 +2118,8 @@
         <translation>Esto es un pago ordinario.</translation>
     </message>
     <message>
-        <source>The LT address to send the payment to</source>
-        <translation>Dirección LT a la que enviar el pago</translation>
+        <source>The HYDRA address to send the payment to</source>
+        <translation>Dirección HYDRA a la que enviar el pago</translation>
     </message>
     <message>
         <source>Alt+A</source>
@@ -2138,8 +2138,8 @@
         <translation>Eliminar esta transacción</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive less LTs than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>La cuota será deducida de la cantidad que sea mandada. El destinatario recibirá menos LTs de los que entres en el  </translation>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive less HYDRAs than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <translation>La cuota será deducida de la cantidad que sea mandada. El destinatario recibirá menos HYDRAs de los que entres en el  </translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
@@ -2162,8 +2162,8 @@
         <translation>Introduce una etiqueta para esta dirección para añadirla a la lista de direcciones utilizadas</translation>
     </message>
     <message>
-        <source>A message that was attached to the LT: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the LT network.</source>
-        <translation>Un mensaje que se adjuntó a la LT: URL que será almacenada con la transacción para su referencia. Nota: Este mensaje no se envía a través de la red LT.</translation>
+        <source>A message that was attached to the HYDRA: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the HYDRA network.</source>
+        <translation>Un mensaje que se adjuntó a la HYDRA: URL que será almacenada con la transacción para su referencia. Nota: Este mensaje no se envía a través de la red HYDRA.</translation>
     </message>
     <message>
         <source>Pay To:</source>
@@ -2207,12 +2207,12 @@
         <translation>&amp;Firmar mensaje</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive LTs sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <source>You can sign messages/agreements with your addresses to prove you can receive HYDRAs sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
         <translation>Puede firmar los mensajes con sus direcciones para demostrar que las posee. Tenga cuidado de no firmar cualquier cosa de manera vaga o aleatoria, pues los ataques de phishing pueden tratar de engañarle firmando su identidad a través de ellos. Sólo firme declaraciones totalmente detalladas con las que usted esté de acuerdo.</translation>
     </message>
     <message>
-        <source>The LT address to sign the message with</source>
-        <translation>Dirección LT con la que firmar el mensaje</translation>
+        <source>The HYDRA address to sign the message with</source>
+        <translation>Dirección HYDRA con la que firmar el mensaje</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -2243,8 +2243,8 @@
         <translation>Copiar la firma actual al portapapeles del sistema</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this LT address</source>
-        <translation>Firmar el mensaje para demostrar que se posee esta dirección LT</translation>
+        <source>Sign the message to prove you own this HYDRA address</source>
+        <translation>Firmar el mensaje para demostrar que se posee esta dirección HYDRA</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -2267,12 +2267,12 @@
         <translation>Introduzca la dirección para la firma, el mensaje (asegurándose de copiar tal cual los saltos de línea, espacios, tabulaciones, etc.) y la firma a continuación para verificar el mensaje. Tenga cuidado de no asumir más información de lo que dice el propio mensaje firmado para evitar fraudes basados en ataques de tipo man-in-the-middle. </translation>
     </message>
     <message>
-        <source>The LT address the message was signed with</source>
-        <translation>La dirección LT con la que se firmó el mensaje</translation>
+        <source>The HYDRA address the message was signed with</source>
+        <translation>La dirección HYDRA con la que se firmó el mensaje</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified LT address</source>
-        <translation>Verificar el mensaje para comprobar que fue firmado con la dirección LT indicada</translation>
+        <source>Verify the message to ensure it was signed with the specified HYDRA address</source>
+        <translation>Verificar el mensaje para comprobar que fue firmado con la dirección HYDRA indicada</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -2477,7 +2477,7 @@
     </message>
     <message>
         <source>Generated coins must mature %1 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to "not accepted" and it won't be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
-        <translation>Los LTs generados deben madurar %1 bloques antes de que puedan gastarse. Cuando generó este bloque, se transmitió a la red para que se añadiera a la cadena de bloques. Si no consigue entrar en la cadena, su estado cambiará a "no aceptado" y ya no se podrá gastar. Esto puede ocurrir ocasionalmente si otro nodo genera un bloque a pocos segundos del suyo.</translation>
+        <translation>Los HYDRAs generados deben madurar %1 bloques antes de que puedan gastarse. Cuando generó este bloque, se transmitió a la red para que se añadiera a la cadena de bloques. Si no consigue entrar en la cadena, su estado cambiará a "no aceptado" y ya no se podrá gastar. Esto puede ocurrir ocasionalmente si otro nodo genera un bloque a pocos segundos del suyo.</translation>
     </message>
     <message>
         <source>Debug information</source>
@@ -2829,7 +2829,7 @@
     </message>
     </context>
 <context>
-    <name>LT</name>
+    <name>HYDRA</name>
     <message>
         <source>Prune configured below the minimum of %d MiB.  Please use a higher number.</source>
         <translation>La Poda se ha configurado por debajo del minimo de %d MiB. Por favor utiliza un valor mas alto.</translation>
@@ -2855,8 +2855,8 @@
         <translation>No se ha podido comenzar el servidor HTTP. Ver debug log para detalles.</translation>
     </message>
     <message>
-        <source>LT</source>
-        <translation>LT</translation>
+        <source>HYDRA</source>
+        <translation>HYDRA</translation>
     </message>
     <message>
         <source>The %s developers</source>

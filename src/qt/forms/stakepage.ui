@@ -92,7 +92,7 @@
                                                     </font>
                                                 </property>
                                                 <property name="text">
-                                                    <string>0.000 000 00 LT</string>
+                                                    <string>0.000 000 00 HYDRA</string>
                                                 </property>
                                                 <property name="alignment">
                                                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -151,7 +151,7 @@
                                         <item>
                                             <widget class="QLabel" name="labelReward">
                                                 <property name="text">
-                                                    <string>0.4 LT/Block</string>
+                                                    <string>0.4 HYDRA/Block</string>
                                                 </property>
                                                 <property name="alignment">
                                                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

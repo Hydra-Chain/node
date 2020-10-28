@@ -88,7 +88,7 @@
     </message>
 </context>
 <context>
-    <name>LTGUI</name>
+    <name>HYDRAGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>เซ็นต์ชื่อด้วย &amp;ข้อความ...</translation>
@@ -166,8 +166,8 @@
         <translation>กำลังทำดัชนี ที่เก็บบล็อก ใหม่ ในดิสก์...</translation>
     </message>
     <message>
-        <source>Send coins to a LT address</source>
-        <translation>ส่ง coins ไปยัง ที่เก็บ LT</translation>
+        <source>Send coins to a HYDRA address</source>
+        <translation>ส่ง coins ไปยัง ที่เก็บ HYDRA</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -190,8 +190,8 @@
         <translation>&amp;ยืนยันข้อความ...</translation>
     </message>
     <message>
-        <source>LT</source>
-        <translation>LT</translation>
+        <source>HYDRA</source>
+        <translation>HYDRA</translation>
     </message>
     <message>
         <source>&amp;Send</source>
@@ -214,12 +214,12 @@
         <translation>เข้ารหัส private keys/ รหัสส่วนตัว สำหรับกระเป๋าเงินของท่าน</translation>
     </message>
     <message>
-        <source>Sign messages with your LT addresses to prove you own them</source>
-        <translation>เซ็นชื่อด้วยข้อความ ที่เก็บ LT เพื่อแสดงว่าท่านเป็นเจ้าของ LT นี้จริง</translation>
+        <source>Sign messages with your HYDRA addresses to prove you own them</source>
+        <translation>เซ็นชื่อด้วยข้อความ ที่เก็บ HYDRA เพื่อแสดงว่าท่านเป็นเจ้าของ HYDRA นี้จริง</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified LT addresses</source>
-        <translation>ตรวจสอบ ข้อความ เพื่อให้แน่ใจว่า การเซ็นต์ชื่อ ด้วยที่เก็บ LT แล้ว</translation>
+        <source>Verify messages to ensure they were signed with specified HYDRA addresses</source>
+        <translation>ตรวจสอบ ข้อความ เพื่อให้แน่ใจว่า การเซ็นต์ชื่อ ด้วยที่เก็บ HYDRA แล้ว</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -238,28 +238,28 @@
         <translation>แถบเครื่องมือ</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and LT: URIs)</source>
-        <translation>เรียกเก็บ การชำระเงิน (สร้าง QR codes และ LT: URIs)</translation>
+        <source>Request payments (generates QR codes and HYDRA: URIs)</source>
+        <translation>เรียกเก็บ การชำระเงิน (สร้าง QR codes และ HYDRA: URIs)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
-        <translation>แสดงรายการ ที่เก็บเงินที่จะส่ง LT ออก และป้ายชื่อ ที่ใช้ไปแล้ว</translation>
+        <translation>แสดงรายการ ที่เก็บเงินที่จะส่ง HYDRA ออก และป้ายชื่อ ที่ใช้ไปแล้ว</translation>
     </message>
     <message>
         <source>Show the list of used receiving addresses and labels</source>
-        <translation>แสดงรายการ ที่เก็บเงินที่จะรับ LT เข้า และป้ายชื่อ ที่ใช้ไปแล้ว</translation>
+        <translation>แสดงรายการ ที่เก็บเงินที่จะรับ HYDRA เข้า และป้ายชื่อ ที่ใช้ไปแล้ว</translation>
     </message>
     <message>
-        <source>Open a LT: URI or payment request</source>
-        <translation>เปิด LT: URI หรือ การเรียกเก็บเงิน (การเรียกให้ชำระเงิน)</translation>
+        <source>Open a HYDRA: URI or payment request</source>
+        <translation>เปิด HYDRA: URI หรือ การเรียกเก็บเงิน (การเรียกให้ชำระเงิน)</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>&amp;ตัวเลือก Command-line</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to LT network</source>
-        <translation><numerusform>%n ช่องการเชื่อมต่อที่ใช้งานได้ เพื่อเชื่อมกับเครือข่าย LT</numerusform></translation>
+        <source>%n active connection(s) to HYDRA network</source>
+        <translation><numerusform>%n ช่องการเชื่อมต่อที่ใช้งานได้ เพื่อเชื่อมกับเครือข่าย HYDRA</numerusform></translation>
     </message>
     <message>
         <source>Indexing blocks on disk...</source>
@@ -302,8 +302,8 @@
         <translation>ทันสมัย</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible LT command-line options</source>
-        <translation>แสดง %1 ข้อความช่วยเหลือ เพื่อแสดงรายการ ตัวเลือกที่เป็นไปได้สำหรับ LT command-line</translation>
+        <source>Show the %1 help message to get a list with possible HYDRA command-line options</source>
+        <translation>แสดง %1 ข้อความช่วยเหลือ เพื่อแสดงรายการ ตัวเลือกที่เป็นไปได้สำหรับ HYDRA command-line</translation>
     </message>
     <message>
         <source>&amp;Window</source>
@@ -523,8 +523,8 @@
         <translation>ใช้ไดเร็กทอรี่ข้อมูลที่ตั้งค่าเอง:</translation>
     </message>
     <message>
-        <source>LT</source>
-        <translation>LT</translation>
+        <source>HYDRA</source>
+        <translation>HYDRA</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -644,16 +644,16 @@
         <translation>&amp;ใช้เงินทอนที่ยังไม่ยืนยัน</translation>
     </message>
     <message>
-        <source>Automatically open the LT client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>เปิด LT ไคล์เอ็นท์พอร์ต/client port บน router โดยอัตโนมัติ วิธีนี้ใช้ได้เมื่อ router สนับสนุน UPnP และสถานะเปิดใช้งาน</translation>
+        <source>Automatically open the HYDRA client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>เปิด HYDRA ไคล์เอ็นท์พอร์ต/client port บน router โดยอัตโนมัติ วิธีนี้ใช้ได้เมื่อ router สนับสนุน UPnP และสถานะเปิดใช้งาน</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
         <translation>จองพอร์ต โดยใช้ &amp;UPnP</translation>
     </message>
     <message>
-        <source>Connect to the LT network through a SOCKS5 proxy.</source>
-        <translation>เชื่อมต่อกับ LT เน็ตเวิร์ก ผ่านพร็อกซี่แบบ SOCKS5</translation>
+        <source>Connect to the HYDRA network through a SOCKS5 proxy.</source>
+        <translation>เชื่อมต่อกับ HYDRA เน็ตเวิร์ก ผ่านพร็อกซี่แบบ SOCKS5</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -688,8 +688,8 @@
         <translation>Tor</translation>
     </message>
     <message>
-        <source>Connect to the LT network through a separate SOCKS5 proxy for Tor hidden services.</source>
-        <translation>เชื่อมต่อกับ เครือข่าย LT ผ่านทาง พร้อกซี่ SOCKS5 แยกต่างหาก สำหรับ Tor เซอร์วิส</translation>
+        <source>Connect to the HYDRA network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <translation>เชื่อมต่อกับ เครือข่าย HYDRA ผ่านทาง พร้อกซี่ SOCKS5 แยกต่างหาก สำหรับ Tor เซอร์วิส</translation>
     </message>
     <message>
         <source>&amp;Window</source>
@@ -843,7 +843,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>LT-core</name>
+    <name>HYDRA-core</name>
     <message>
         <source>Information</source>
         <translation>ข้อมูล</translation>

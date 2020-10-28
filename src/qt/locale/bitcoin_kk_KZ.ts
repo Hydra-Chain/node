@@ -48,7 +48,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>LTGUI</name>
+    <name>HYDRAGUI</name>
     <message>
         <source>&amp;Transactions</source>
         <translation>&amp;Транзакциялар</translation>
@@ -70,7 +70,7 @@
         <translation>Құпия сөзді өзгерту</translation>
     </message>
     <message>
-        <source>LT</source>
+        <source>HYDRA</source>
         <translation>Биткоин</translation>
     </message>
     <message>
@@ -165,7 +165,7 @@
 <context>
     <name>Intro</name>
     <message>
-        <source>LT</source>
+        <source>HYDRA</source>
         <translation>Биткоин</translation>
     </message>
     <message>
@@ -309,7 +309,7 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>LT-core</name>
+    <name>HYDRA-core</name>
     <message>
         <source>Information</source>
         <translation>Информация</translation>

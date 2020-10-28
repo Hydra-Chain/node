@@ -72,7 +72,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>LTGUI</name>
+    <name>HYDRAGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>&amp;Хабар ёзиш...</translation>
@@ -138,8 +138,8 @@
         <translation>Дискдаги блоклар қайта индексланмоқда...</translation>
     </message>
     <message>
-        <source>Send coins to a LT address</source>
-        <translation>Тангаларни LT манзилига жўнатиш</translation>
+        <source>Send coins to a HYDRA address</source>
+        <translation>Тангаларни HYDRA манзилига жўнатиш</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -162,8 +162,8 @@
         <translation>Хабарни &amp;тасдиқлаш...</translation>
     </message>
     <message>
-        <source>LT</source>
-        <translation>LT</translation>
+        <source>HYDRA</source>
+        <translation>HYDRA</translation>
     </message>
     <message>
         <source>&amp;Send</source>
@@ -186,12 +186,12 @@
         <translation>Ҳамёнингизга тегишли махфий калитларни кодлаш</translation>
     </message>
     <message>
-        <source>Sign messages with your LT addresses to prove you own them</source>
-        <translation>LT манзилидан унинг эгаси эканлигингизни исботлаш учун хабарлар ёзинг</translation>
+        <source>Sign messages with your HYDRA addresses to prove you own them</source>
+        <translation>HYDRA манзилидан унинг эгаси эканлигингизни исботлаш учун хабарлар ёзинг</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified LT addresses</source>
-        <translation>Хабарларни махсус LT манзилларингиз билан ёзилганлигига ишонч ҳосил қилиш учун уларни тасдиқланг</translation>
+        <source>Verify messages to ensure they were signed with specified HYDRA addresses</source>
+        <translation>Хабарларни махсус HYDRA манзилларингиз билан ёзилганлигига ишонч ҳосил қилиш учун уларни тасдиқланг</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -210,8 +210,8 @@
         <translation>Ички ойналар асбоблар панели</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and LT: URIs)</source>
-        <translation>Тўловлар (QR кодлари ва LT ёрдамида яратишлар: URI’лар) сўраш</translation>
+        <source>Request payments (generates QR codes and HYDRA: URIs)</source>
+        <translation>Тўловлар (QR кодлари ва HYDRA ёрдамида яратишлар: URI’лар) сўраш</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -222,16 +222,16 @@
         <translation>Фойдаланилган қабул қилинган манзиллар ва ёрлиқлар рўйхатини кўрсатиш</translation>
     </message>
     <message>
-        <source>Open a LT: URI or payment request</source>
-        <translation>LT’ни очиш: URI ёки тўлов сўрови</translation>
+        <source>Open a HYDRA: URI or payment request</source>
+        <translation>HYDRA’ни очиш: URI ёки тўлов сўрови</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>&amp;Буйруқлар сатри мосламалари</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to LT network</source>
-        <translation><numerusform>%n та LT тармоғига фаол уланиш мавжуд</numerusform></translation>
+        <source>%n active connection(s) to HYDRA network</source>
+        <translation><numerusform>%n та HYDRA тармоғига фаол уланиш мавжуд</numerusform></translation>
     </message>
     <message>
         <source>%1 behind</source>
@@ -425,8 +425,8 @@
         <translation>Бошқа маълумотлар директориясида фойдаланинг:</translation>
     </message>
     <message>
-        <source>LT</source>
-        <translation>LT</translation>
+        <source>HYDRA</source>
+        <translation>HYDRA</translation>
     </message>
     <message>
         <source>Error: Specified data directory "%1" cannot be created.</source>
@@ -581,8 +581,8 @@
         <translation>Шакл</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the LT network after a connection is established, but this process has not completed yet.</source>
-        <translation>Кўрсатилган маълумот эскирган бўлиши мумкин. Ҳамёнингиз алоқа ўрнатилгандан сўнг LT тармоқ билан автоматик тарзда синхронланади, аммо жараён ҳалигача тугалланмади.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the HYDRA network after a connection is established, but this process has not completed yet.</source>
+        <translation>Кўрсатилган маълумот эскирган бўлиши мумкин. Ҳамёнингиз алоқа ўрнатилгандан сўнг HYDRA тармоқ билан автоматик тарзда синхронланади, аммо жараён ҳалигача тугалланмади.</translation>
     </message>
     <message>
         <source>Watch-only:</source>
@@ -662,8 +662,8 @@
         <translation>Миқдори</translation>
     </message>
     <message>
-        <source>Enter a LT address (e.g. %1)</source>
-        <translation>LT манзилини киритинг (масалан.  %1)</translation>
+        <source>Enter a HYDRA address (e.g. %1)</source>
+        <translation>HYDRA манзилини киритинг (масалан.  %1)</translation>
     </message>
     <message>
         <source>%1 m</source>
@@ -1161,10 +1161,10 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>LT-core</name>
+    <name>HYDRA-core</name>
     <message>
-        <source>LT Core</source>
-        <translation>LT Core</translation>
+        <source>HYDRA Core</source>
+        <translation>HYDRA Core</translation>
     </message>
     <message>
         <source>Information</source>

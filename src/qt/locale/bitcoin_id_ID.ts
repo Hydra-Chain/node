@@ -66,12 +66,12 @@
         <translation>Alamat-alamat penerima</translation>
     </message>
     <message>
-        <source>These are your LT addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Berikut ialah alamat-alamat LT Anda yang digunakan untuk mengirimkan pembayaran. Selalu periksa jumlah dan alamat penerima sebelum mengirimkan koin.</translation>
+        <source>These are your HYDRA addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Berikut ialah alamat-alamat HYDRA Anda yang digunakan untuk mengirimkan pembayaran. Selalu periksa jumlah dan alamat penerima sebelum mengirimkan koin.</translation>
     </message>
     <message>
-        <source>These are your LT addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Berikut ialah alamat-alamat LT Anda yang digunakan untuk menerima pembayaran. Dianjurkan untuk menggunakan alamat penerimaan baru untuk setiap transaksi.</translation>
+        <source>These are your HYDRA addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Berikut ialah alamat-alamat HYDRA Anda yang digunakan untuk menerima pembayaran. Dianjurkan untuk menggunakan alamat penerimaan baru untuk setiap transaksi.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -176,8 +176,8 @@
         <translation>Konfirmasi pengenkripsian dompet</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR LTS&lt;/b&gt;!</source>
-        <translation>Peringatan: Jika Anda mengenkripsi dompet Anda dan lupa kata sandi Anda, Anda akan &lt;b&gt;KEHILANGAN SEMUA LT ANDA&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR HYDRAS&lt;/b&gt;!</source>
+        <translation>Peringatan: Jika Anda mengenkripsi dompet Anda dan lupa kata sandi Anda, Anda akan &lt;b&gt;KEHILANGAN SEMUA HYDRA ANDA&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -188,7 +188,7 @@
         <translation>Dompet terenkripsi</translation>
     </message>
     <message>
-        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your LTs from being stolen by malware infecting your computer.</source>
+        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your HYDRAs from being stolen by malware infecting your computer.</source>
         <translation>Wallet anda sekarang telah terenkripsi. Ingat bahwa enkripsi wallet anda tersebut tidak dapat sepenuhnya melindungi dari pencurian atau malware yang menyerang komputer anda. </translation>
     </message>
     <message>
@@ -240,7 +240,7 @@
     </message>
 </context>
 <context>
-    <name>LTGUI</name>
+    <name>HYDRAGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>Pesan &amp;penanda...</translation>
@@ -342,8 +342,8 @@
         <translation>Proxy di &lt;b&gt;aktifkan&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <source>Send coins to a LT address</source>
-        <translation>Kirim koin ke alamat LT</translation>
+        <source>Send coins to a HYDRA address</source>
+        <translation>Kirim koin ke alamat HYDRA</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -366,8 +366,8 @@
         <translation>&amp;Verifikasi pesan...</translation>
     </message>
     <message>
-        <source>LT</source>
-        <translation>LT</translation>
+        <source>HYDRA</source>
+        <translation>HYDRA</translation>
     </message>
     <message>
         <source>&amp;Send</source>
@@ -390,12 +390,12 @@
         <translation>Enkripsi private key yang dimiliki dompet Anda</translation>
     </message>
     <message>
-        <source>Sign messages with your LT addresses to prove you own them</source>
-        <translation>Tanda tangani sebuah pesan menggunakan alamat LT Anda untuk membuktikan bahwa Anda adalah pemilik alamat tersebut</translation>
+        <source>Sign messages with your HYDRA addresses to prove you own them</source>
+        <translation>Tanda tangani sebuah pesan menggunakan alamat HYDRA Anda untuk membuktikan bahwa Anda adalah pemilik alamat tersebut</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified LT addresses</source>
-        <translation>Verifikasi pesan untuk memastikan bahwa pesan tersebut ditanda tangani oleh suatu alamat LT tertentu</translation>
+        <source>Verify messages to ensure they were signed with specified HYDRA addresses</source>
+        <translation>Verifikasi pesan untuk memastikan bahwa pesan tersebut ditanda tangani oleh suatu alamat HYDRA tertentu</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -414,8 +414,8 @@
         <translation>Baris tab</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and LT: URIs)</source>
-        <translation>Permintaan pembayaran (membuat kode QR dan LT: URIs)</translation>
+        <source>Request payments (generates QR codes and HYDRA: URIs)</source>
+        <translation>Permintaan pembayaran (membuat kode QR dan HYDRA: URIs)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -426,16 +426,16 @@
         <translation>Tampilkan daftar alamat dan label yang diterima</translation>
     </message>
     <message>
-        <source>Open a LT: URI or payment request</source>
-        <translation>Buka URI LT: atau permintaan pembayaran</translation>
+        <source>Open a HYDRA: URI or payment request</source>
+        <translation>Buka URI HYDRA: atau permintaan pembayaran</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
         <translation>&amp;pilihan Command-line</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to LT network</source>
-        <translation><numerusform>%n koneksi aktif ke jaringan LT</numerusform></translation>
+        <source>%n active connection(s) to HYDRA network</source>
+        <translation><numerusform>%n koneksi aktif ke jaringan HYDRA</numerusform></translation>
     </message>
     <message>
         <source>Indexing blocks on disk...</source>
@@ -486,8 +486,8 @@
         <translation>&amp;Address penerima</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible LT command-line options</source>
-        <translation>Tampilkan %1 pesan bantuan untuk mendapatkan daftar opsi baris perintah LT yang memungkinkan</translation>
+        <source>Show the %1 help message to get a list with possible HYDRA command-line options</source>
+        <translation>Tampilkan %1 pesan bantuan untuk mendapatkan daftar opsi baris perintah HYDRA yang memungkinkan</translation>
     </message>
     <message>
         <source>default wallet</source>
@@ -590,8 +590,8 @@
         <translation>Dompet saat ini &lt;b&gt;terenkripsi&lt;/b&gt; dan &lt;b&gt;terkunci&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>A fatal error occurred. LT can no longer continue safely and will quit.</source>
-        <translation>Terjadi Kesalahan Fatal. LT Tidak Dapat Melanjutkan Dengan Aman Dan Akan Keluar</translation>
+        <source>A fatal error occurred. HYDRA can no longer continue safely and will quit.</source>
+        <translation>Terjadi Kesalahan Fatal. HYDRA Tidak Dapat Melanjutkan Dengan Aman Dan Akan Keluar</translation>
     </message>
 </context>
 <context>
@@ -776,8 +776,8 @@
         <translation>Ubah alamat pengirim</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid LT address.</source>
-        <translation>Alamat yang dimasukkan "%1" bukanlah alamat LT yang valid.</translation>
+        <source>The entered address "%1" is not a valid HYDRA address.</source>
+        <translation>Alamat yang dimasukkan "%1" bukanlah alamat HYDRA yang valid.</translation>
     </message>
     <message>
         <source>Address "%1" already exists as a receiving address with label "%2" and so cannot be added as a sending address.</source>
@@ -873,8 +873,8 @@
         <translation>Gunakan direktori pilihan Anda:</translation>
     </message>
     <message>
-        <source>LT</source>
-        <translation>LT</translation>
+        <source>HYDRA</source>
+        <translation>HYDRA</translation>
     </message>
     <message>
         <source>At least %1 GB of data will be stored in this directory, and it will grow over time.</source>
@@ -885,8 +885,8 @@
         <translation>%1 GB data akan disimpan di direktori ini.</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the LT block chain.</source>
-        <translation>%1 akan mengunduh dan menyimpan salinan LT block chain.</translation>
+        <source>%1 will download and store a copy of the HYDRA block chain.</source>
+        <translation>%1 akan mengunduh dan menyimpan salinan HYDRA block chain.</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -916,12 +916,12 @@
         <translation>Formulir</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the LT network, as detailed below.</source>
-        <translation>Transaksi-transaksi terkini mungkin belum terlihat dan oleh karenanya, saldo dompet Anda mungkin tidak tepat. Informasi ini akan akurat ketika dompet Anda tersinkronisasi dengan jaringan LT, seperti rincian berikut.</translation>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the HYDRA network, as detailed below.</source>
+        <translation>Transaksi-transaksi terkini mungkin belum terlihat dan oleh karenanya, saldo dompet Anda mungkin tidak tepat. Informasi ini akan akurat ketika dompet Anda tersinkronisasi dengan jaringan HYDRA, seperti rincian berikut.</translation>
     </message>
     <message>
-        <source>Attempting to spend LTs that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>Usaha untuk menggunakan LT yang dipengaruhi oleh transaksi yang belum terlihat tidak akan diterima oleh jaringan.</translation>
+        <source>Attempting to spend HYDRAs that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <translation>Usaha untuk menggunakan HYDRA yang dipengaruhi oleh transaksi yang belum terlihat tidak akan diterima oleh jaringan.</translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -1098,8 +1098,8 @@
         <translation>&amp;Perubahan saldo untuk transaksi yang belum dikonfirmasi</translation>
     </message>
     <message>
-        <source>Automatically open the LT client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>Otomatis membuka port client LT di router. Hanya berjalan apabila router anda mendukung UPnP dan di-enable.</translation>
+        <source>Automatically open the HYDRA client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <translation>Otomatis membuka port client HYDRA di router. Hanya berjalan apabila router anda mendukung UPnP dan di-enable.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
@@ -1114,8 +1114,8 @@
         <translation>Terima koneksi-koneksi masuk</translation>
     </message>
     <message>
-        <source>Connect to the LT network through a SOCKS5 proxy.</source>
-        <translation>Hubungkan ke jaringan LT melalui SOCKS5 proxy.</translation>
+        <source>Connect to the HYDRA network through a SOCKS5 proxy.</source>
+        <translation>Hubungkan ke jaringan HYDRA melalui SOCKS5 proxy.</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -1150,8 +1150,8 @@
         <translation>Tor</translation>
     </message>
     <message>
-        <source>Connect to the LT network through a separate SOCKS5 proxy for Tor hidden services.</source>
-        <translation>Koneksi ke jaringan LT melalui proxy SOCKS5 yang berbeda untuk layanan Tor tersembunyi.</translation>
+        <source>Connect to the HYDRA network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <translation>Koneksi ke jaringan HYDRA melalui proxy SOCKS5 yang berbeda untuk layanan Tor tersembunyi.</translation>
     </message>
     <message>
         <source>&amp;Window</source>
@@ -1257,8 +1257,8 @@
         <translation>Formulir</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the LT network after a connection is established, but this process has not completed yet.</source>
-        <translation>Informasi terlampir mungkin sudah kedaluwarsa. Dompet Anda secara otomatis mensinkronisasi dengan jaringan LT ketika sebuah hubungan terbentuk, namun proses ini belum selesai.</translation>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the HYDRA network after a connection is established, but this process has not completed yet.</source>
+        <translation>Informasi terlampir mungkin sudah kedaluwarsa. Dompet Anda secara otomatis mensinkronisasi dengan jaringan HYDRA ketika sebuah hubungan terbentuk, namun proses ini belum selesai.</translation>
     </message>
     <message>
         <source>Watch-only:</source>
@@ -1332,24 +1332,24 @@
         <translation>Terjadi kesalahan pada permintaan pembayaran</translation>
     </message>
     <message>
-        <source>Cannot start LT: click-to-pay handler</source>
-        <translation>Tidak bisa memulai LT: handler click-to-pay</translation>
+        <source>Cannot start HYDRA: click-to-pay handler</source>
+        <translation>Tidak bisa memulai HYDRA: handler click-to-pay</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>Pengelolaan URI</translation>
     </message>
     <message>
-        <source>'LT://' is not a valid URI. Use 'LT:' instead.</source>
-        <translation>'LT://' bukanlah alamat URI yang valid. Silakan gunakan 'LT:'.</translation>
+        <source>'HYDRA://' is not a valid URI. Use 'HYDRA:' instead.</source>
+        <translation>'HYDRA://' bukanlah alamat URI yang valid. Silakan gunakan 'HYDRA:'.</translation>
     </message>
     <message>
         <source>Payment request fetch URL is invalid: %1</source>
         <translation>URL permintaan pembayaran tidak valid: %1</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid LT address or malformed URI parameters.</source>
-        <translation>URI tidak bisa dimengerti! Hal ini bisa disebabkan karena alamat LT yang tidak sah atau parameter URI yang tidak tepat.</translation>
+        <source>URI cannot be parsed! This can be caused by an invalid HYDRA address or malformed URI parameters.</source>
+        <translation>URI tidak bisa dimengerti! Hal ini bisa disebabkan karena alamat HYDRA yang tidak sah atau parameter URI yang tidak tepat.</translation>
     </message>
     <message>
         <source>Payment request file handling</source>
@@ -1390,8 +1390,8 @@
         <translation>Nilai</translation>
     </message>
     <message>
-        <source>Enter a LT address (e.g. %1)</source>
-        <translation>Masukkan alamat LT (contoh %1)</translation>
+        <source>Enter a HYDRA address (e.g. %1)</source>
+        <translation>Masukkan alamat HYDRA (contoh %1)</translation>
     </message>
     <message>
         <source>%1 h</source>
@@ -1921,8 +1921,8 @@
         <translation>Salin tanda tangan terpilih ke sistem klipboard</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this LT address</source>
-        <translation>Tandai pesan untuk menyetujui kamu pemiliki alamat LT ini</translation>
+        <source>Sign the message to prove you own this HYDRA address</source>
+        <translation>Tandai pesan untuk menyetujui kamu pemiliki alamat HYDRA ini</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -2043,10 +2043,10 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>LT-core</name>
+    <name>HYDRA-core</name>
     <message>
-        <source>LT Core</source>
-        <translation>LT Core</translation>
+        <source>HYDRA Core</source>
+        <translation>HYDRA Core</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>

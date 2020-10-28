@@ -42,9 +42,9 @@ QString BitcoinUnits::longName(int unit)
 {
     switch(unit)
     {
-    case BTC: return QString("LT");
-    case mBTC: return QString("mLT");
-    case uBTC: return QString::fromUtf8("μLT");
+    case BTC: return QString("HYDRA");
+    case mBTC: return QString("mHYDRA");
+    case uBTC: return QString::fromUtf8("μHYDRA");
     case SAT: return QString("Satoshi (sat)");
     default: return QString("???");
     }
@@ -64,9 +64,9 @@ QString BitcoinUnits::description(int unit)
 {
     switch(unit)
     {
-    case BTC: return QString("LTs");
-    case mBTC: return QString("Milli-LTs (1 / 1" THIN_SP_UTF8 "000)");
-    case uBTC: return QString("Micro-LTs (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+    case BTC: return QString("HYDRAs");
+    case mBTC: return QString("Milli-HYDRAs (1 / 1" THIN_SP_UTF8 "000)");
+    case uBTC: return QString("Micro-HYDRAs (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
     case SAT: return QString("Satoshi (sat) (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
     default: return QString("???");
     }

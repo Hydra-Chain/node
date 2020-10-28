@@ -66,11 +66,11 @@
         <translation>כתובות לקבלה</translation>
     </message>
     <message>
-        <source>These are your LT addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <source>These are your HYDRA addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
         <translation>אלה הם כתובות הקטום שלך לשליחת תשלומים. חשוב לבדוק את הכמות של הכתובות המקבלות לפני שליחת מטבעות</translation>
     </message>
     <message>
-        <source>These are your LT addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <source>These are your HYDRA addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
         <translation>אלה הן כתובות הקטום שלך לקבלת תשלומים. מומלץ להשתמש בכתובת חדשה לכל העברה.</translation>
     </message>
     <message>
@@ -176,7 +176,7 @@
         <translation>אימות הצפנת הארנק</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR LTS&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR HYDRAS&lt;/b&gt;!</source>
         <translation>אזהרה: איבוד מילת הצופן לאחר הצפנת הארנק עשויה לגרום לכך &lt;b&gt;שכל הביטקוינים שלך יאבדו&lt;/b&gt;!</translation>
     </message>
     <message>
@@ -236,7 +236,7 @@
     </message>
 </context>
 <context>
-    <name>LTGUI</name>
+    <name>HYDRAGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation>&amp;חתימה על הודעה…</translation>
@@ -338,7 +338,7 @@
         <translation>שרת הפרוקסי &lt;b&gt;פעיל&lt;/b&gt;: %1</translation>
     </message>
     <message>
-        <source>Send coins to a LT address</source>
+        <source>Send coins to a HYDRA address</source>
         <translation>שליחת מטבעות לכתובת קטום</translation>
     </message>
     <message>
@@ -362,7 +362,7 @@
         <translation>&amp;אימות הודעה…</translation>
     </message>
     <message>
-        <source>LT</source>
+        <source>HYDRA</source>
         <translation>קטום</translation>
     </message>
     <message>
@@ -386,11 +386,11 @@
         <translation>הצפנת המפתחות הפרטיים ששייכים לארנק שלך</translation>
     </message>
     <message>
-        <source>Sign messages with your LT addresses to prove you own them</source>
+        <source>Sign messages with your HYDRA addresses to prove you own them</source>
         <translation>חתום על הודעות עם כתובות הקטום שלך כדי להוכיח שהן בבעלותך</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified LT addresses</source>
+        <source>Verify messages to ensure they were signed with specified HYDRA addresses</source>
         <translation>אמת הודעות כדי להבטיח שהן נחתמו עם כתובת קטום מסוימות</translation>
     </message>
     <message>
@@ -410,8 +410,8 @@
         <translation>סרגל כלים לשוניות</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and LT: URIs)</source>
-        <translation>בקשת תשלומים (יצירה של קודים מסוג QR וסכימות כתובות משאב של :LT)</translation>
+        <source>Request payments (generates QR codes and HYDRA: URIs)</source>
+        <translation>בקשת תשלומים (יצירה של קודים מסוג QR וסכימות כתובות משאב של :HYDRA)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -422,7 +422,7 @@
         <translation>הצגת רשימת הכתובות והתוויות הנמצאות בשימוש</translation>
     </message>
     <message>
-        <source>Open a LT: URI or payment request</source>
+        <source>Open a HYDRA: URI or payment request</source>
         <translation>פתיחת קטום: כתובת משאב או בקשת תשלום</translation>
     </message>
     <message>
@@ -430,7 +430,7 @@
         <translation>אפשרויות &amp;שורת הפקודה</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to LT network</source>
+        <source>%n active connection(s) to HYDRA network</source>
         <translation><numerusform>חיבור אחד פעיל לרשת קטום</numerusform><numerusform>%n חיבורים פעילים לרשת קטום</numerusform><numerusform>%n חיבורים פעילים לרשת קטום</numerusform><numerusform>%n חיבורים פעילים לרשת קטום</numerusform></translation>
     </message>
     <message>
@@ -470,7 +470,7 @@
         <translation>עדכני</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible LT command-line options</source>
+        <source>Show the %1 help message to get a list with possible HYDRA command-line options</source>
         <translation>יש להציג את הודעת העזרה של %1 כדי להציג רשימה עם אפשרויות שורת פקודה לקטום</translation>
     </message>
     <message>
@@ -554,7 +554,7 @@
         <translation>הארנק &lt;b&gt;מוצפן&lt;/b&gt; ו&lt;b&gt;נעול&lt;/b&gt; כרגע</translation>
     </message>
     <message>
-        <source>A fatal error occurred. LT can no longer continue safely and will quit.</source>
+        <source>A fatal error occurred. HYDRA can no longer continue safely and will quit.</source>
         <translation>אירעה שגיאה חמורה. אין אפשרות להשתמש עוד בקטום באופן מאובטח והיישום ייסגר.</translation>
     </message>
 </context>
@@ -744,7 +744,7 @@
         <translation>עריכת כתובת השליחה</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid LT address.</source>
+        <source>The entered address "%1" is not a valid HYDRA address.</source>
         <translation>הכתובת שהוקלדה „%1” היא אינה כתובת קטום תקנית.</translation>
     </message>
     <message>
@@ -841,7 +841,7 @@
         <translation>שימוש בתיקיית נתונים מותאמת אישית:</translation>
     </message>
     <message>
-        <source>LT</source>
+        <source>HYDRA</source>
         <translation>קטום</translation>
     </message>
     <message>
@@ -853,7 +853,7 @@
         <translation>מידע בנפח של כ-%1 ג׳יגה-בייט יאוחסן בתיקייה זו.</translation>
     </message>
     <message>
-        <source>%1 will download and store a copy of the LT block chain.</source>
+        <source>%1 will download and store a copy of the HYDRA block chain.</source>
         <translation>%1 תוריד ותאחסן עותק של שרשרת הבלוקים של קטום.</translation>
     </message>
     <message>
@@ -884,11 +884,11 @@
         <translation>טופס</translation>
     </message>
     <message>
-        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the LT network, as detailed below.</source>
+        <source>Recent transactions may not yet be visible, and therefore your wallet's balance might be incorrect. This information will be correct once your wallet has finished synchronizing with the HYDRA network, as detailed below.</source>
         <translation>ייתכן שהעברות שבוצעו לאחרונה לא יופיעו עדיין, ולכן המאזן בארנק שלך יהיה שגוי. המידע הנכון יוצג במלואו כאשר הארנק שלך יסיים להסתנכרן עם רשת הקטום, כמפורט למטה.</translation>
     </message>
     <message>
-        <source>Attempting to spend LTs that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <source>Attempting to spend HYDRAs that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
         <translation>הרשת תסרב לקבל הוצאת ביטקוינים במידה והם כבר נמצאים בהעברות אשר לא מוצגות עדיין.</translation>
     </message>
     <message>
@@ -1054,7 +1054,7 @@
         <translation>עודף &amp;בלתי מאושר מההשקעה</translation>
     </message>
     <message>
-        <source>Automatically open the LT client port on the router. This only works when your router supports UPnP and it is enabled.</source>
+        <source>Automatically open the HYDRA client port on the router. This only works when your router supports UPnP and it is enabled.</source>
         <translation>פתיחת הפתחה של קטום בנתב באופן אוטומטי. עובד רק אם UPnP מופעל ונתמך בנתב.</translation>
     </message>
     <message>
@@ -1070,7 +1070,7 @@
         <translation>לאפשר חיבורים &amp;נכנסים</translation>
     </message>
     <message>
-        <source>Connect to the LT network through a SOCKS5 proxy.</source>
+        <source>Connect to the HYDRA network through a SOCKS5 proxy.</source>
         <translation>התחבר לרשת הקטום דרך פרוקסי SOCKS5.</translation>
     </message>
     <message>
@@ -1106,7 +1106,7 @@
         <translation>Tor</translation>
     </message>
     <message>
-        <source>Connect to the LT network through a separate SOCKS5 proxy for Tor hidden services.</source>
+        <source>Connect to the HYDRA network through a separate SOCKS5 proxy for Tor hidden services.</source>
         <translation>התחברות לרשת קטום דרך מתווך SOCKS5 נפרד לשירותי Tor נסתרים.</translation>
     </message>
     <message>
@@ -1209,7 +1209,7 @@
         <translation>טופס</translation>
     </message>
     <message>
-        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the LT network after a connection is established, but this process has not completed yet.</source>
+        <source>The displayed information may be out of date. Your wallet automatically synchronizes with the HYDRA network after a connection is established, but this process has not completed yet.</source>
         <translation>המידע המוצג עשוי להיות מיושן. הארנק שלך מסתנכרן באופן אוטומטי עם רשת הקטום לאחר יצירת החיבור, אך התהליך טרם הסתיים.</translation>
     </message>
     <message>
@@ -1284,16 +1284,16 @@
         <translation>שגיאת בקשת תשלום</translation>
     </message>
     <message>
-        <source>Cannot start LT: click-to-pay handler</source>
-        <translation>לא ניתן להפעיל את המקשר LT: click-to-pay</translation>
+        <source>Cannot start HYDRA: click-to-pay handler</source>
+        <translation>לא ניתן להפעיל את המקשר HYDRA: click-to-pay</translation>
     </message>
     <message>
         <source>URI handling</source>
         <translation>טיפול בכתובות</translation>
     </message>
     <message>
-        <source>'LT://' is not a valid URI. Use 'LT:' instead.</source>
-        <translation>'//:LT' אינה כתובת URI תקינה. השתמשו במקום ב ':LT'.</translation>
+        <source>'HYDRA://' is not a valid URI. Use 'HYDRA:' instead.</source>
+        <translation>'//:HYDRA' אינה כתובת URI תקינה. השתמשו במקום ב ':HYDRA'.</translation>
     </message>
     <message>
         <source>Payment request fetch URL is invalid: %1</source>
@@ -1304,7 +1304,7 @@
         <translation>כתובת תשלום שגויה %1</translation>
     </message>
     <message>
-        <source>URI cannot be parsed! This can be caused by an invalid LT address or malformed URI parameters.</source>
+        <source>URI cannot be parsed! This can be caused by an invalid HYDRA address or malformed URI parameters.</source>
         <translation>לא ניתן לנתח את כתובת המשאב! מצב זה יכול לקרות עקב כתובת קטום שגויה או פרמטרים שגויים בכתובת המשאב.</translation>
     </message>
     <message>
@@ -1406,7 +1406,7 @@
         <translation>כמות</translation>
     </message>
     <message>
-        <source>Enter a LT address (e.g. %1)</source>
+        <source>Enter a HYDRA address (e.g. %1)</source>
         <translation>נא להזין כתובת קטום (למשל: %1)</translation>
     </message>
     <message>
@@ -1842,7 +1842,7 @@
         <translation>הו&amp;דעה:</translation>
     </message>
     <message>
-        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the LT network.</source>
+        <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the HYDRA network.</source>
         <translation>הודעת רשות לצירוף לבקשת התשלום שתוצג בעת פתיחת הבקשה. לתשומת לבך: ההודעה לא תישלח עם התשלום ברשת קטום.</translation>
     </message>
     <message>
@@ -2247,7 +2247,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>בקשת התשלום פגה.</translation>
     </message>
     <message>
-        <source>Warning: Invalid LT address</source>
+        <source>Warning: Invalid HYDRA address</source>
         <translation>אזהרה: כתובת ביטקיון שגויה</translation>
     </message>
     <message>
@@ -2290,7 +2290,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>זהו תשלום רגיל.</translation>
     </message>
     <message>
-        <source>The LT address to send the payment to</source>
+        <source>The HYDRA address to send the payment to</source>
         <translation>כתובת הקטום של המוטב</translation>
     </message>
     <message>
@@ -2310,7 +2310,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>הסרת רשומה זו</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive less LTs than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive less HYDRAs than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>העמלה תנוכה מהסכום שנשלח. הנמען יקבל פחות ביטקוינים ממה שהזנת בשדה הסכום. אם נבחרו מספר נמענים, העמלה תחולק באופן שווה.</translation>
     </message>
     <message>
@@ -2338,7 +2338,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>יש להזין תווית עבור כתובת זו כדי להוסיף אותה לרשימת הכתובות בשימוש</translation>
     </message>
     <message>
-        <source>A message that was attached to the LT: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the LT network.</source>
+        <source>A message that was attached to the HYDRA: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the HYDRA network.</source>
         <translation>הודעה שצורפה לקטום: כתובת שתאוחסן בהעברה לצורך מעקב מצדך. לתשומת לבך: הודעה זו לא תישלח ברשת הקטום.</translation>
     </message>
     <message>
@@ -2383,11 +2383,11 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>חתימה על הו&amp;דעה</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive LTs sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <source>You can sign messages/agreements with your addresses to prove you can receive HYDRAs sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
         <translation>באפשרותך לחתום על הודעות/הסכמים באמצעות הכתובות שלך, כדי להוכיח שאתה יכול לקבל את הביטקוינים הנשלחים אליהן. היזהר לא לחתום על תוכן עמום או אקראי, מכיוון שתקיפות פישינג עשויות לנסות לגנוב את הזהות שלך. חתום רק על הצהרות מפורטות שאתה מסכים להן.</translation>
     </message>
     <message>
-        <source>The LT address to sign the message with</source>
+        <source>The HYDRA address to sign the message with</source>
         <translation>כתובת הקטום אתה לחתום אתה את ההודעה</translation>
     </message>
     <message>
@@ -2419,7 +2419,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>העתקת החתימה הנוכחית ללוח הגזירים</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this LT address</source>
+        <source>Sign the message to prove you own this HYDRA address</source>
         <translation>ניתן לחתום על ההודעה כדי להוכיח שכתובת הקטום הזו בבעלותך.</translation>
     </message>
     <message>
@@ -2439,11 +2439,11 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>&amp;אימות הודעה</translation>
     </message>
     <message>
-        <source>The LT address the message was signed with</source>
+        <source>The HYDRA address the message was signed with</source>
         <translation>כתובת הקטום שאתה נחתמה ההודעה</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified LT address</source>
+        <source>Verify the message to ensure it was signed with the specified HYDRA address</source>
         <translation>ניתן לאמת את ההודעה כדי להבטיח שהיא נחתמה עם כתובת הקטום הנתונה</translation>
     </message>
     <message>
@@ -3045,7 +3045,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
     </message>
 </context>
 <context>
-    <name>LT-core</name>
+    <name>HYDRA-core</name>
     <message>
         <source>Error: A fatal internal error occurred, see debug.log for details</source>
         <translation>שגיאה: סניה קלמה קריטית פנימית קרטה, פנה ל debug.log לפרטים</translation>
@@ -3055,7 +3055,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>שרת ה HTTP לא עלה. ראו את ה debug לוג לפרטים.</translation>
     </message>
     <message>
-        <source>LT Core</source>
+        <source>HYDRA Core</source>
         <translation>ליבת קטום</translation>
     </message>
     <message>

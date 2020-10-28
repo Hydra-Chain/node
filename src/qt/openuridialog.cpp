@@ -20,7 +20,7 @@ OpenURIDialog::OpenURIDialog(QWidget *parent) :
     SetObjectStyleSheet(ui->buttonBox->button(QDialogButtonBox::Cancel), StyleSheetNames::ButtonWhite);
     SetObjectStyleSheet(ui->buttonBox->button(QDialogButtonBox::Ok), StyleSheetNames::ButtonBlue);
 
-    ui->uriEdit->setPlaceholderText("locktrip:");
+    ui->uriEdit->setPlaceholderText("hydra:");
 }
 
 OpenURIDialog::~OpenURIDialog()

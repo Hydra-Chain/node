@@ -778,7 +778,7 @@ void SendCoinsDialog::coinControlChangeEdited(const QString& text)
         }
         else if (!IsValidDestination(dest)) // Invalid address
         {
-            ui->labelCoinControlChangeLabel->setText(tr("Warning: Invalid LT address"));
+            ui->labelCoinControlChangeLabel->setText(tr("Warning: Invalid HYDRA address"));
         }
         else // Valid address
         {

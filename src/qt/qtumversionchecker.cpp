@@ -8,7 +8,7 @@
 #include <QRegularExpression>
 #include <QRegularExpressionMatchIterator>
 
-#define paternVersion "locktrip-([0-9]+\\.)?([0-9]+\\.)?([0-9]+)-"
+#define paternVersion "hydra-([0-9]+\\.)?([0-9]+\\.)?([0-9]+)-"
 
 QtumVersionChecker::QtumVersionChecker(QObject *parent) : QObject(parent)
 {

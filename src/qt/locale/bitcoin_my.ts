@@ -48,7 +48,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>LTGUI</name>
+    <name>HYDRAGUI</name>
     </context>
 <context>
     <name>CoinControlDialog</name>
@@ -158,6 +158,6 @@
     </message>
     </context>
 <context>
-    <name>LT-core</name>
+    <name>HYDRA-core</name>
     </context>
 </TS>

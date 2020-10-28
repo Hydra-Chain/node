@@ -62,8 +62,8 @@
         <translation>Dirección destino</translation>
     </message>
     <message>
-        <source>These are your LT addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Estas son tus direcciones LT para enviar pagos. Chequea siempre el monto y la dirección destino antes de mandar monedas.
+        <source>These are your HYDRA addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Estas son tus direcciones HYDRA para enviar pagos. Chequea siempre el monto y la dirección destino antes de mandar monedas.
 </translation>
     </message>
     <message>
@@ -170,7 +170,7 @@
     <name>BanTableModel</name>
     </context>
 <context>
-    <name>LTGUI</name>
+    <name>HYDRAGUI</name>
     </context>
 <context>
     <name>CoinControlDialog</name>
@@ -321,6 +321,6 @@
     <name>WalletView</name>
     </context>
 <context>
-    <name>LT</name>
+    <name>HYDRA</name>
     </context>
 </TS>

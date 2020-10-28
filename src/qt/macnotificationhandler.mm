@@ -13,7 +13,7 @@
 - (NSString *)__bundleIdentifier
 {
     if (self == [NSBundle mainBundle]) {
-        return @"org.LockTrip.LockTrip-Qt";
+        return @"org.HYDRA.HYDRA-Qt";
     } else {
         return [self __bundleIdentifier];
     }
