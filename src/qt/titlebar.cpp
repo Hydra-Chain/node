@@ -8,6 +8,7 @@
 #include <qt/platformstyle.h>
 
 #include <iostream>
+#include <string>
 
 //namespace TitleBar_NS {
 //const int titleHeight = 50;
@@ -119,6 +120,6 @@ void TitleBar::setBalanceLabel(const interfaces::WalletBalances &balances)
 {
     if(m_model && m_model->getOptionsModel())
     {
-        ui->lblBalance->setText(BitcoinUnits::formatWithUnit(m_model->getOptionsModel()->getDisplayUnit(), balances.balance));
+        ui->lblBalance->setText(BitcoinUnits::formatWithUnitTitleBar(m_model->getOptionsModel()->getDisplayUnit(), balances.balance));
     }
 }

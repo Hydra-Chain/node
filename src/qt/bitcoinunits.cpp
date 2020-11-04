@@ -156,6 +156,12 @@ QString BitcoinUnits::formatWithUnit(int unit, const CAmount& amount, bool pluss
     return format(unit, amount, plussign, separators) + QString(" ") + shortName(unit);
 }
 
+QString BitcoinUnits::formatWithUnitTitleBar(int unit, const CAmount& amount, bool plussign, SeparatorStyle separators)
+{
+    return format(unit, amount, plussign, separators);
+}
+
+
 QString BitcoinUnits::formatHtmlWithUnit(int unit, const CAmount& amount, bool plussign, SeparatorStyle separators)
 {
     QString str(formatWithUnit(unit, amount, plussign, separators));
