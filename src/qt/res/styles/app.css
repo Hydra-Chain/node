@@ -1005,7 +1005,7 @@ QFrame#frameRecentTransactions {
     border: 5px solid #d87a61
 }
 /*--------------------------------------------
-LRC token send
+HRC token send
 --------------------------------------------*/
 QLabel#labelAmount,#labelPayTo,#labelGasLimit,#labelGasPrice,#labelDescription {
     color: #1f2427;
