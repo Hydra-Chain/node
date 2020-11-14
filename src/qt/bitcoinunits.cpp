@@ -64,9 +64,9 @@ QString BitcoinUnits::description(int unit)
 {
     switch(unit)
     {
-    case BTC: return QString("HYDRAs");
-    case mBTC: return QString("Milli-HYDRAs (1 / 1" THIN_SP_UTF8 "000)");
-    case uBTC: return QString("Micro-HYDRAs (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+    case BTC: return QString("HYDRA");
+    case mBTC: return QString("Milli-HYDRA (1 / 1" THIN_SP_UTF8 "000)");
+    case uBTC: return QString("Micro-HYDRA (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
     case SAT: return QString("Satoshi (sat) (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
     default: return QString("???");
     }

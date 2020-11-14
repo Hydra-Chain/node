@@ -177,7 +177,7 @@ Var vänlig och försök igen.</translation>
         <translation>Bekräfta kryptering av plånbok</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR HYDRAS&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR HYDRA&lt;/b&gt;!</source>
         <translation>VARNING: Om du krypterar din plånbok och glömmer ditt lösenord, kommer du att &lt;b&gt;FÖRLORA ALLA DINA HYDRA&lt;/b&gt;!</translation>
     </message>
     <message>
@@ -189,7 +189,7 @@ Var vänlig och försök igen.</translation>
         <translation>Plånbok krypterad</translation>
     </message>
     <message>
-        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your HYDRAs from being stolen by malware infecting your computer.</source>
+        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your HYDRA from being stolen by malware infecting your computer.</source>
         <translation>Din plånbok är nu krypterad. Kom ihåg att kryptering av plånboken inte helt skyddar dina HYDRA från att stjälas av skadlig kod som infekterat din dator.</translation>
     </message>
     <message>
@@ -949,7 +949,7 @@ Var vänlig och försök igen.</translation>
         <translation>Nyligen gjorda transaktioner visas inte korrekt och därför kan din plånboks saldo visas felaktigt. Denna information kommer att visas korrekt så snart din plånbok har synkroniserat klart med HYDRA-nätverket enligt detaljer nedan.</translation>
     </message>
     <message>
-        <source>Attempting to spend HYDRAs that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <source>Attempting to spend HYDRA that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
         <translation>Att försöka spendera HYDRA som påverkas av transaktioner som ännu inte visas kommer inte accepteras av nätverket. </translation>
     </message>
     <message>
@@ -2419,7 +2419,7 @@ Notera: Då avgiften beräknas per byte kommer en avgift på 50 satoshi tas ut f
         <translation>Radera denna post</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive less HYDRAs than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive less HYDRA than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>Avgiften dras från beloppet som skickas. Mottagaren kommer att ta emot mindre HYDRA än du angivit i beloppsfältet. Om flera mottagare valts kommer avgiften att fördelas jämt.</translation>
     </message>
     <message>
@@ -2492,7 +2492,7 @@ Notera: Då avgiften beräknas per byte kommer en avgift på 50 satoshi tas ut f
         <translation>&amp;Signera Meddelande</translation>
     </message>
     <message>
-        <source>You can sign messages/agreements with your addresses to prove you can receive HYDRAs sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
+        <source>You can sign messages/agreements with your addresses to prove you can receive HYDRA sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
         <translation>Du kan signera meddelanden/avtal med dina adresser för att bevisa att du kan ta emot HYDRA som skickats till dem. Var försiktig så du inte signerar något oklart eller konstigt, eftersom phishing-angrepp kan försöka få dig att signera över din identitet till dem. Signera endast väldetaljerade meddelanden som du godkänner.</translation>
     </message>
     <message>
@@ -3107,7 +3107,7 @@ Notera: Då avgiften beräknas per byte kommer en avgift på 50 satoshi tas ut f
     <name>WalletModel</name>
     <message>
         <source>Send Coins</source>
-        <translation>Skicka HYDRAs</translation>
+        <translation>Skicka HYDRA</translation>
     </message>
     <message>
         <source>Fee bump error</source>
@@ -3639,7 +3639,7 @@ Notera: Då avgiften beräknas per byte kommer en avgift på 50 satoshi tas ut f
     </message>
     <message>
         <source>Insufficient funds</source>
-        <translation>Otillräckligt med HYDRAs</translation>
+        <translation>Otillräckligt med HYDRA</translation>
     </message>
     <message>
         <source>Cannot upgrade a non HD split wallet without upgrading to support pre split keypool. Please use -upgradewallet=169900 or -upgradewallet with no version specified.</source>

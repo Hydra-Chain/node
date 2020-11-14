@@ -164,7 +164,7 @@
         <translation>பணப்பை குறியாக்கத்தை உறுதிப்படுத்துக</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR HYDRAS&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR HYDRA&lt;/b&gt;!</source>
         <translation>எச்சரிக்கை: உங்கள் பணப்பையை குறியாக்கி உங்கள் கடவுச்சொற்றொடரை இழந்தால், நீங்கள் உங்கள் பைட்கோனை இழக்கலாம்!</translation>
     </message>
     <message>
@@ -176,7 +176,7 @@
         <translation>கைப்பை குறியாக்கம் செய்யப்பட்டது</translation>
     </message>
     <message>
-        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your HYDRAs from being stolen by malware infecting your computer.</source>
+        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your HYDRA from being stolen by malware infecting your computer.</source>
         <translation>உங்கள் பணப்பை இப்போது குறியாக்கப்பட்டுள்ளது. உங்கள் கணினியைப் பாதிக்கும் தீம்பொருளால் திருடப்பட்டதில் இருந்து உங்கள் பணப்பை முழுவதையும் பாதுகாக்க முடியாது என்பதை நினைவில் கொள்க.</translation>
     </message>
     <message>
@@ -776,7 +776,7 @@
         <translation>சமீபத்திய பரிவர்த்தனைகள் இன்னும் காணப்படாமல் இருக்கலாம், எனவே உங்கள் பணப்பையின் சமநிலை தவறாக இருக்கலாம். கீழே விவரிக்கப்பட்டுள்ளபடி, உங்கள் பணப்பை பிட்ஃபோனை நெட்வொர்க்குடன் ஒத்திசைக்க முடிந்ததும் இந்த தகவல் சரியாக இருக்கும்.</translation>
     </message>
     <message>
-        <source>Attempting to spend HYDRAs that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
+        <source>Attempting to spend HYDRA that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
         <translation>இதுவரை காட்டப்படாத பரிவர்த்தனைகளால் பாதிக்கப்படும் பிட்னிக்களை செலவிடுவதற்கு முயற்சி பிணையத்தால் ஏற்கப்படாது.</translation>
     </message>
     <message>

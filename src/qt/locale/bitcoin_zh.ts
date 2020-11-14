@@ -140,7 +140,7 @@
         <translation>确认钱包密码</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR HYDRAS&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR HYDRA&lt;/b&gt;!</source>
         <translation>注意：如果你加密了钱包，丢失了密码，您将&lt;b&gt;丢失所有的HYDRA。</translation>
     </message>
     <message>
@@ -152,7 +152,7 @@
         <translation>加密钱包</translation>
     </message>
     <message>
-        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your HYDRAs from being stolen by malware infecting your computer.</source>
+        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your HYDRA from being stolen by malware infecting your computer.</source>
         <translation>您的钱包现在加密了。记住，加密您的钱包并不能完全保护您的HYDRA不被恶意软件窃取。</translation>
     </message>
     <message>
@@ -753,7 +753,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>支付到的HYDRA地址</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive less HYDRAs than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive less HYDRA than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>手续费将从发出的总额中扣除。接受者收到的HYDRA将少于你输入的金额字段。如果选择了多个接受者，手续费将平均分配。</translation>
     </message>
     <message>

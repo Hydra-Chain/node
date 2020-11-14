@@ -56,7 +56,7 @@ Patch0:		hydra-0.12.0-libressl.patch
 %description
 Bitcoin is a digital cryptographic currency that uses peer-to-peer technology to
 operate with no central authority or banks; managing transactions and the
-issuing of hydras is carried out collectively by the network.
+issuing of HYDRA is carried out collectively by the network.
 
 %if %{_buildqt}
 %package core
@@ -81,7 +81,7 @@ BuildRequires:	%{_bindir}/convert
 %description core
 Bitcoin is a digital cryptographic currency that uses peer-to-peer technology to
 operate with no central authority or banks; managing transactions and the
-issuing of hydras is carried out collectively by the network.
+issuing of HYDRA is carried out collectively by the network.
 
 This package contains the Qt based graphical client and node. If you are looking
 to run a Bitcoin wallet, this is probably the package you want.

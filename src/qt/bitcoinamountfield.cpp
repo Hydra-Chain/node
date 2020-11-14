@@ -220,7 +220,7 @@ BitcoinAmountField::BitcoinAmountField(QWidget *parent) :
     //unit->setModel(new BitcoinUnits(this));
     //unit->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     //unit->setMinimumWidth(120);
-    unit->setText("HYDRAs");
+    unit->setText("HYDRA");
     layout->addWidget(unit);
     layout->setContentsMargins(0,0,0,0);
 

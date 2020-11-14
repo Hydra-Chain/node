@@ -184,7 +184,7 @@
         <translation>کیف پول رمزنگاری شد</translation>
     </message>
     <message>
-        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your HYDRAs from being stolen by malware infecting your computer.</source>
+        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your HYDRA from being stolen by malware infecting your computer.</source>
         <translation>کیف بیت کوین رمزنگاری شد. به یاد داشته باشید رمزنگار کردن کیف بیت کوین نمیتواند به صورت کامل بیت کوین شما را در مقابل سرقت آنها توسط بدافزارهایی که ممکن است بر روی کامپیوتر شما نصب شوند، محافظت نماید.</translation>
     </message>
     <message>

@@ -208,17 +208,17 @@ VotingPage::~VotingPage()
 
 void VotingPage::voteButton(bool isYesVote) {
 	QStringList formatted;
-	QString questionString = tr("Please select the amount of HYDRAs to use for voting.");
+	QString questionString = tr("Please select the amount of HYDRA to use for voting.");
 	questionString.append("<br /><br />%1");
 	questionString.append("<hr /><span style='color:#aa0000;'>");
 	questionString.append("</span> ");
-	questionString.append("Your vote weight will be proportional to the amount of HYDRAs spent.");
+	questionString.append("Your vote weight will be proportional to the amount of HYDRA spent.");
 
 	questionString.append("<hr /><span style='color:#aa0000;'>");
-	questionString.append("The HYDRAs used for voting will be burned and cannot be retrieved!");
+	questionString.append("The HYDRA used for voting will be burned and cannot be retrieved!");
 	questionString.append("</span>");
 	questionString.append("<hr /><span style='color:#03aa00;font-size: 12px;'>");
-	questionString.append("Transaction fee (approximately): -" + QString::number((double)(VOTE_GAS_LIMIT * nGasPrice) / (double)LOC_COIN) + " HYDRAs" );
+	questionString.append("Transaction fee (approximately): -" + QString::number((double)(VOTE_GAS_LIMIT * nGasPrice) / (double)LOC_COIN) + " HYDRA" );
 	questionString.append("</span>");
 
 	SendVotingConfirmationDialog confirmationDialog(
@@ -254,7 +254,7 @@ void VotingPage::voteButton(bool isYesVote) {
 			ExecRPCCommand::appendParam(lstParams, PARAM_ADDRESS, QString::fromStdString(LockTripDgpContract.hex()));
 	        ExecRPCCommand::appendParam(lstParams, PARAM_DATAHEX, strFuncData);
 	        double LOCs = confirmationDialog.locAmount->text().toDouble();
-	        LogPrintf("HYDRAs: %ul\n", confirmationDialog.locAmount->text().toDouble());
+	        LogPrintf("HYDRA: %ul\n", confirmationDialog.locAmount->text().toDouble());
 	        ExecRPCCommand::appendParam(lstParams, PARAM_AMOUNT, QString::number(LOCs, 'f', 9));
 	        ExecRPCCommand::appendParam(lstParams, PARAM_GASLIMIT, QString::number(VOTE_GAS_LIMIT));
 		    bool smartContractSucceed = execRPCCommand->exec(model->node(), model->wallet(), lstParams, result, resultJson, errorMessage);
@@ -347,7 +347,7 @@ int SendVotingConfirmationDialog::exec()
     QHBoxLayout* hlayout = new QHBoxLayout(qobject_cast<QWidget*>(this->children()[2]));
     locAmount = new QLineEdit(qobject_cast<QWidget*>(this->children()[2]));
     locAmount->setFixedWidth(200);
-    locAmount->setPlaceholderText(tr("number of HYDRAs to burn"));
+    locAmount->setPlaceholderText(tr("number of HYDRA to burn"));
     locAmount->setText(QString::number(0.00000000, 'f', 8));
 
     QLocale lo(QLocale::C);
@@ -384,7 +384,7 @@ void SendVotingConfirmationDialog::customSlot(const QString& text)
 	if(locAmount->text().toDouble() == 0)
 	{
 		yesButton->setEnabled(false);
-		yesButton->setText(tr("Yes") + " (No HYDRAs)");
+		yesButton->setText(tr("Yes") + " (No HYDRA)");
 	}
 	else
 	{
@@ -418,7 +418,7 @@ void SendVotingConfirmationDialog::updateYesButton()
     	if(locAmount->text().toDouble() == 0)
     	{
     		yesButton->setEnabled(false);
-    		yesButton->setText(tr("Yes") + " (No HYDRAs)");
+    		yesButton->setText(tr("Yes") + " (No HYDRA)");
     	}
     }
 }
