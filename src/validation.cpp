@@ -2364,7 +2364,7 @@ bool CheckMinGasPrice(std::vector<EthTransactionParams>& etps, const uint64_t& m
 
 bool CheckReward(const CBlock &block, CValidationState &state, int nHeight, const Consensus::Params &consensusParams,
                  CAmount nFees, CAmount gasRefunds, CAmount contractOwnersDividents, CAmount nActualStakeReward,
-                 const std::vector<CTxOut> &vouts, uint64_t cached_coinBurnPercentage) {
+                 const std::vector<CTxOut> &vouts, uint64_t cached_coinBurnPercentage, uint64_t nValueOut, uint64_t nValueIn) {
     size_t offset = block.IsProofOfStake() ? 1 : 0;
     std::vector<CTxOut> vTempVouts=block.vtx[offset]->vout;
     std::vector<CTxOut>::iterator it;
@@ -2400,13 +2400,18 @@ bool CheckReward(const CBlock &block, CValidationState &state, int nHeight, cons
     }
     else
     {
+        CAmount subsidy = GetBlockSubsidy(nHeight, consensusParams);
         // Check full reward
-        CAmount blockReward = nFeesAfterBurn + GetBlockSubsidy(nHeight, consensusParams);
+        CAmount blockReward = nFeesAfterBurn + subsidy;
         if (nActualStakeReward > blockReward)
             return state.DoS(100,
                              error("CheckReward(): coinstake pays too much (actual=%d vs limit=%d)",
                                    nActualStakeReward, blockReward),
                              REJECT_INVALID, "bad-cs-amount");
+        uint64_t actualReward = nValueOut - nValueIn;
+        if (actualReward != subsidy)
+            return state.DoS(100, error("CheckReward(): Unknown error caused actual block reward to be different than the expected one"),
+                             REJECT_INVALID, "incorrect-block-reward");
 
         // The first proof-of-stake blocks get full reward, the rest of them are split between recipients
         int rewardRecipients = 1;
@@ -3625,7 +3630,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     }
 
     if (!CheckReward(block, state, pindex->nHeight, chainparams.GetConsensus(), nFees, gasRefunds,
-                     contractOwnersDividents, nActualStakeReward, checkVouts, cached_coinBurnPercentage))
+                     contractOwnersDividents, nActualStakeReward, checkVouts, cached_coinBurnPercentage, nValueOut, nValueIn))
         return state.DoS(100, error("ConnectBlock(): Reward check failed"));
 
     if (!control.Wait())
@@ -3711,14 +3716,6 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 //////////////////////////////////////////////////////////////////
 
     pindex->nMoneySupply = (pindex->pprev? pindex->pprev->nMoneySupply : 0) + nValueOut - nValueIn;
-    //only start checking this error after block 5000 and only on testnet and mainnet, not regtest
-    if(pindex->nHeight > 5000 && !Params().MineBlocksOnDemand()) {
-        //sanity check in case an exploit happens that allows new coins to be minted
-        if(pindex->nMoneySupply > (uint64_t)(100000000 + ((pindex->nHeight - 5000) * 4)) * COIN){
-            return state.DoS(100, error("ConnectBlock(): Unknown error caused actual money supply to exceed expected money supply"),
-                             REJECT_INVALID, "incorrect-money-supply");
-        }
-    }
 
     if (!WriteUndoDataForBlock(blockundo, state, pindex, chainparams))
         return false;

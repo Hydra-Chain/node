@@ -988,7 +988,8 @@ inline bool IsBlockPruned(const CBlockIndex* pblockindex)
     return (fHavePruned && !(pblockindex->nStatus & BLOCK_HAVE_DATA) && pblockindex->nTx > 0);
 }
 
-bool CheckReward(const CBlock& block, CValidationState& state, int nHeight, const Consensus::Params& consensusParams, CAmount nFees, CAmount gasRefunds, CAmount nActualStakeReward, const std::vector<CTxOut>& vouts);
+bool CheckReward(const CBlock& block, CValidationState& state, int nHeight, const Consensus::Params& consensusParams, CAmount nFees, CAmount gasRefunds,
+        CAmount nActualStakeReward, const std::vector<CTxOut>& vouts, uint64_t cached_coinBurnPercentage, uint64_t nValueOut, uint64_t nValueIn);
 
 bool RemoveStateBlockIndex(CBlockIndex *pindex);
 
