@@ -9,8 +9,8 @@ It features a Proof of Stake consensus mechanism, high transaction throughput, d
 HYDRA is [GPLv3 licensed](https://www.gnu.org/licenses/gpl-3.0.html)
 
 # Resources
-Devnet explorer: http://explorer.locktrip.com/
-Devnet faucet: http://faucet.locktrip.com
+Devnet explorer: http://explorer.hydrachain.org/
+Devnet faucet: http://faucet.hydrachain.org
 Wallet downloads: https://github.com/LockTrip/Blockchain/releases
 
 # Building HYDRA Blockchain

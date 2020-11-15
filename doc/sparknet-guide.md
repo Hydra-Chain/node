@@ -1,6 +1,6 @@
 # HYDRA Testnet Usage and Information
 
-HYDRA is a decentralized blockchain project built on Bitcoin's UTXO model, but with support for Ethereum Virtual Machine based smart contracts. It achieves this through the revolutionary Account Abstraction Layer. For more general information about HYDRA as well as links to join our community, go to https://locktrip.com
+HYDRA is a decentralized blockchain project built on Bitcoin's UTXO model, but with support for Ethereum Virtual Machine based smart contracts. It achieves this through the revolutionary Account Abstraction Layer. For more general information about HYDRA as well as links to join our community, go to https://hydrachain.org
 
 Welcome to HYDRA Testnet, the first public testnet for the HYDRA blockchain. The testnet is designed primarily for developers, and as such documentation at this point will be technical and suited more for developers. Testnet tokens do not hold any value and should not be traded for any monetary instruments. The testnet can be reset or forked at anytime as deemed necessary for development.
 

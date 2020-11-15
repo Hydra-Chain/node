@@ -46,10 +46,10 @@ static const int MAX_URI_LENGTH = 255;
 static const double LOC_GRANULARITY = 100000000;
 
 /* Mainnet hydra explorer uri */
-static const QString QTUM_INFO_MAINNET = "<a href='https://explorer.locktrip.com/%1/%2'>%2</a>";
+static const QString QTUM_INFO_MAINNET = "<a href='https://explorer.hydrachain.org/%1/%2'>%2</a>";
 
 /* Testnet hydra explorer uri */
-static const QString QTUM_INFO_TESTNET = "<a href='https://explorer.locktrip.com/%1/%2'>%2</a>";
+static const QString QTUM_INFO_TESTNET = "<a href='https://explorer.hydrachain.org/%1/%2'>%2</a>";
 
 /* QRCodeDialog -- size of exported QR Code image */
 #define QR_IMAGE_SIZE 300
@@ -58,7 +58,7 @@ static const QString QTUM_INFO_TESTNET = "<a href='https://explorer.locktrip.com
 #define SPINNER_FRAMES 36
 
 #define QAPP_ORG_NAME "HYDRA"
-#define QAPP_ORG_DOMAIN "locktrip.com"
+#define QAPP_ORG_DOMAIN "hydrachain.org"
 #define QAPP_APP_NAME_DEFAULT "HYDRA-Qt"
 #define QAPP_APP_NAME_TESTNET "HYDRA-Qt-testnet"
 #define QAPP_APP_NAME_REGTEST "HYDRA-Qt-regtest"
