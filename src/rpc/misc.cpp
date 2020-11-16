@@ -179,6 +179,9 @@ UniValue getdgpinfo(const JSONRPCRequest& request)
     voteinfo.pushKV("voteinprogress", voteInProgress);
 
     if(voteInProgress) {
+        uint64_t thresholdInSatoshis;
+        dgp.convertFiatThresholdToLoc(currentVote.threshold, thresholdInSatoshis);
+
         voteinfo.pushKV("param", VOTE_HEADLINES.begin()[currentVote.param]);
 
         if(currentVote.param < 2) {
@@ -191,7 +194,7 @@ UniValue getdgpinfo(const JSONRPCRequest& request)
         voteinfo.pushKV("startingblock", currentVote.start_block);
         voteinfo.pushKV("endingblock", currentVote.start_block + currentVote.blocksExpiration);
         voteinfo.pushKV("durationblocks", currentVote.blocksExpiration);
-        voteinfo.pushKV("votethreshold", currentVote.threshold);
+        voteinfo.pushKV("votethreshold", thresholdInSatoshis);
         voteinfo.pushKV("votesfor", currentVote.votesFor);
         voteinfo.pushKV("votesagainst", currentVote.votesAgainst);
     }
