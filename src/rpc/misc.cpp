@@ -97,8 +97,22 @@ UniValue getdgpinfo(const JSONRPCRequest& request)
                                    "  \"blockgaslimit\": xxxxx,     (numeric) current block gas limit\n"
                                    "  \"fiatgasprice\": xxxxx,           (numeric) current fiat gas price in dollar satoshis (1$ = 100000000 dollar satoshi)\n"
                                    "  \"fiatbyteprice\": xxxxx,     (numeric) current fiat byte price in dollar satoshis (1$ = 100000000 dollar satoshi)\n"
-                                   "  \"locgasprice\": xxxxx,     (numeric) current gas price in HYDRA satoshis\n"
-                                   "  \"locbyteprice\": xxxxx,     (numeric) current byte price in HYDRA satoshis\n"
+                                   "  \"hydragasprice\": xxxxx,     (numeric) current gas price in HYDRA satoshis\n"
+                                   "  \"hydrabyteprice\": xxxxx,     (numeric) current byte price in HYDRA satoshis\n"
+                                   "  \"rewardpercentage\": xxxxx,     (numeric) current block reward percentage\n"
+                                   "  \"voteinfo\":\n"
+                                   "  {\n"
+                                   "    \"voteinprogress\": xxxxx,           (bool) is there a vote in progress\n"
+                                   "    \"param\": xxxxx,          (text) which dgp param is voted\n"
+                                   "    \"value\": xxxxx,          (numeric) what is the voted value\n"
+                                   "    \"votecreator\": xxxxx,          (address) which admin address is the creator\n"
+                                   "    \"startingblock\": xxxxx,          (numeric) vote starting block\n"
+                                   "    \"endingblock\": xxxxx,          (numeric) vote ending block\n"
+                                   "    \"durationblocks\": xxxxx,          (numeric) vote duration in blocks\n"
+                                   "    \"votethreshold\": xxxxx,          (numeric) threshold in satoshis for a vote to be valid\n"
+                                   "    \"votesfor\": xxxxx,          (numeric) count of votes for\n"
+                                   "    \"votesagainst\": xxxxx,          (numeric) count of votes against\n"
+                                   "  }\n"
                                    "}\n"
                            },
                            RPCExamples{
@@ -116,7 +130,7 @@ UniValue getdgpinfo(const JSONRPCRequest& request)
     uint64_t blockSize = DEFAULT_BLOCK_SIZE_DGP;
     uint64_t blockGasLimit = DEFAULT_BLOCK_GAS_LIMIT_DGP;
     uint64_t fiatBytePrice = DGP_CACHE_FIAT_BYTE_PRICE;
-    uint64_t gasPrice, bytePrice;
+    uint64_t gasPrice, bytePrice, rewardPercentage;
 
     Dgp dgp;
 
@@ -140,11 +154,18 @@ UniValue getdgpinfo(const JSONRPCRequest& request)
     dgp.getDgpParam(FIAT_BYTE_PRICE, fiatBytePrice);
     if(fiatBytePrice < DEFAULT_MIN_BYTE_PRICE_DGP) fiatBytePrice = DGP_CACHE_FIAT_BYTE_PRICE;
 
+    bool voteInProgress = false;
+    dgp_currentVote currentVote;
+    dgp.hasVoteInProgress(voteInProgress);
+    dgp.getCurrentVote(currentVote);
+    dgp.fillBlockRewardPercentageInfo();
+
     PriceOracle oracle;
     oracle.getPrice(gasPrice);
     oracle.getBytePrice(bytePrice);
 
     UniValue obj(UniValue::VOBJ);
+    UniValue voteinfo(UniValue::VOBJ);
 
     obj.pushKV("burnrate", burnRate);
     obj.pushKV("economyreimbursement", economyDividend);
@@ -152,8 +173,30 @@ UniValue getdgpinfo(const JSONRPCRequest& request)
     obj.pushKV("blockgaslimit", blockGasLimit);
     obj.pushKV("fiatgasprice", fiatGasPrice);
     obj.pushKV("fiatbyteprice", fiatBytePrice);
-    obj.pushKV("locgasprice", gasPrice);
-    obj.pushKV("locbyteprice", bytePrice);
+    obj.pushKV("hydragasprice", gasPrice);
+    obj.pushKV("hydrabyteprice", bytePrice);
+    obj.pushKV("rewardpercentage", dgp.blockRewardVotePercentages.back());
+    voteinfo.pushKV("voteinprogress", voteInProgress);
+
+    if(voteInProgress) {
+        voteinfo.pushKV("param", VOTE_HEADLINES.begin()[currentVote.param]);
+
+        if(currentVote.param < 2) {
+            voteinfo.pushKV("value", currentVote.newAdmin.hex());
+        } else {
+            voteinfo.pushKV("value", currentVote.param_value);
+        }
+
+        voteinfo.pushKV("votecreator", currentVote.vote_creator.hex());
+        voteinfo.pushKV("startingblock", currentVote.start_block);
+        voteinfo.pushKV("endingblock", currentVote.start_block + currentVote.blocksExpiration);
+        voteinfo.pushKV("durationblocks", currentVote.blocksExpiration);
+        voteinfo.pushKV("votethreshold", currentVote.threshold);
+        voteinfo.pushKV("votesfor", currentVote.votesFor);
+        voteinfo.pushKV("votesagainst", currentVote.votesAgainst);
+    }
+
+    obj.pushKV("voteinfo", voteinfo);
 
     return obj;
 }
