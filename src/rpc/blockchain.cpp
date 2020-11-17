@@ -2439,7 +2439,8 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     obj.pushKV("headers",               pindexBestHeader ? pindexBestHeader->nHeight : -1);
     obj.pushKV("bestblockhash",         tip->GetBlockHash().GetHex());
     obj.pushKV("difficulty",            (double)GetDifficulty(tip));
-    obj.pushKV("moneysupply",           pindexBestHeader->nMoneySupply / COIN);
+    obj.pushKV("moneysupply",           std::to_string(pindexBestHeader->nMoneySupply / COIN) + "." + std::to_string(pindexBestHeader->nMoneySupply % COIN));
+    obj.pushKV("burnedcoins",           std::to_string(pindexBestHeader->nBurnedCoins / COIN) + "." + std::to_string(pindexBestHeader->nBurnedCoins % COIN));
     obj.pushKV("mediantime",            (int64_t)tip->GetMedianTimePast());
     obj.pushKV("verificationprogress",  GuessVerificationProgress(Params().TxData(), tip));
     obj.pushKV("initialblockdownload",  IsInitialBlockDownload());
