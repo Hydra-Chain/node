@@ -2364,7 +2364,7 @@ bool CheckMinGasPrice(std::vector<EthTransactionParams>& etps, const uint64_t& m
 
 bool CheckReward(const CBlock &block, CValidationState &state, int nHeight, const Consensus::Params &consensusParams,
                  CAmount nFees, CAmount gasRefunds, CAmount contractOwnersDividents, CAmount nActualStakeReward,
-                 const std::vector<CTxOut> &vouts, uint64_t cached_coinBurnPercentage, uint64_t nValueOut, uint64_t nValueIn) {
+                 const std::vector<CTxOut> &vouts, uint64_t cached_coinBurnPercentage, uint64_t nValueOut, uint64_t nValueIn, CAmount& burnedCoins) {
     size_t offset = block.IsProofOfStake() ? 1 : 0;
     std::vector<CTxOut> vTempVouts=block.vtx[offset]->vout;
     std::vector<CTxOut>::iterator it;
@@ -2386,6 +2386,7 @@ bool CheckReward(const CBlock &block, CValidationState &state, int nHeight, cons
     }
 
     auto coinAmountThatSouldBeBurned = ((nFees - gasRefunds - contractOwnersDividents) / 100) * coinBurnPercentage;
+    burnedCoins = coinAmountThatSouldBeBurned;
     CAmount nFeesAfterBurn = nFees - coinAmountThatSouldBeBurned;
     // Check block reward
     if (block.IsProofOfWork())
@@ -2409,7 +2410,7 @@ bool CheckReward(const CBlock &block, CValidationState &state, int nHeight, cons
                                    nActualStakeReward, blockReward),
                              REJECT_INVALID, "bad-cs-amount");
         uint64_t actualReward = nValueOut - nValueIn;
-        if (actualReward != subsidy)
+        if (actualReward != subsidy - coinAmountThatSouldBeBurned)
             return state.DoS(100, error("CheckReward(): Unknown error caused actual block reward to be different than the expected one"),
                              REJECT_INVALID, "incorrect-block-reward");
 
@@ -3629,8 +3630,10 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
         }
     }
 
+    CAmount burnedCoins = 0;
+
     if (!CheckReward(block, state, pindex->nHeight, chainparams.GetConsensus(), nFees, gasRefunds,
-                     contractOwnersDividents, nActualStakeReward, checkVouts, cached_coinBurnPercentage, nValueOut, nValueIn))
+                     contractOwnersDividents, nActualStakeReward, checkVouts, cached_coinBurnPercentage, nValueOut, nValueIn, burnedCoins))
         return state.DoS(100, error("ConnectBlock(): Reward check failed"));
 
     if (!control.Wait())
@@ -3716,6 +3719,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 //////////////////////////////////////////////////////////////////
 
     pindex->nMoneySupply = (pindex->pprev? pindex->pprev->nMoneySupply : 0) + nValueOut - nValueIn;
+    pindex->nBurnedCoins = (pindex->pprev? pindex->pprev->nBurnedCoins : 0) + burnedCoins;
 
     if (!WriteUndoDataForBlock(blockundo, state, pindex, chainparams))
         return false;

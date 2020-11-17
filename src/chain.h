@@ -232,6 +232,7 @@ public:
     COutPoint prevoutStake;
     uint256 hashProof; // qtum
     uint64_t nMoneySupply;
+    uint64_t nBurnedCoins;
 
     //! (memory only) Sequential id assigned to distinguish order in which blocks are received.
     int32_t nSequenceId;
@@ -268,6 +269,7 @@ public:
         hashProof = uint256();
         prevoutStake.SetNull();
         nMoneySupply = 0;
+        nBurnedCoins = 0;
     }
 
     CBlockIndex()
@@ -285,6 +287,7 @@ public:
         nBits          = block.nBits;
         nNonce         = block.nNonce;
         nMoneySupply   = 0;
+        nBurnedCoins   = 0;
         hashStateRoot  = block.hashStateRoot; // qtum
         hashUTXORoot   = block.hashUTXORoot; // qtum
         nStakeModifier = uint256();
@@ -456,6 +459,7 @@ public:
         if (nStatus & BLOCK_HAVE_UNDO)
             READWRITE(VARINT(nUndoPos));
         READWRITE(VARINT(nMoneySupply));
+        READWRITE(VARINT(nBurnedCoins));
 
         // block header
         READWRITE(this->nVersion);

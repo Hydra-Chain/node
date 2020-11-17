@@ -1464,7 +1464,8 @@ UniValue getinfo(const JSONRPCRequest& request)
     diff.pushKV("proof-of-stake",       GetDifficulty(GetLastBlockIndex(pindexBestHeader, true)));
     obj.pushKV("difficulty",    diff);
     obj.pushKV("testnet",       Params().NetworkIDString() == CBaseChainParams::TESTNET);
-    obj.pushKV("moneysupply",       pindexBestHeader->nMoneySupply / COIN);
+    obj.pushKV("moneysupply",       std::to_string(pindexBestHeader->nMoneySupply / COIN) + "." + std::to_string(pindexBestHeader->nMoneySupply % COIN));
+    obj.pushKV("burnedcoins",       std::to_string(pindexBestHeader->nBurnedCoins / COIN) + "." + std::to_string(pindexBestHeader->nBurnedCoins % COIN));
 #ifdef ENABLE_WALLET
     if (pwallet) {
         obj.pushKV("keypoololdest", pwallet->GetOldestKeyPoolTime());

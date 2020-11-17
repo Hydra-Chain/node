@@ -989,7 +989,7 @@ inline bool IsBlockPruned(const CBlockIndex* pblockindex)
 }
 
 bool CheckReward(const CBlock& block, CValidationState& state, int nHeight, const Consensus::Params& consensusParams, CAmount nFees, CAmount gasRefunds,
-        CAmount nActualStakeReward, const std::vector<CTxOut>& vouts, uint64_t cached_coinBurnPercentage, uint64_t nValueOut, uint64_t nValueIn);
+        CAmount nActualStakeReward, const std::vector<CTxOut>& vouts, uint64_t cached_coinBurnPercentage, uint64_t nValueOut, uint64_t nValueIn, CAmount& burnedCoins);
 
 bool RemoveStateBlockIndex(CBlockIndex *pindex);
 
