@@ -102,7 +102,7 @@ This means you cannot use a directory that located directly on the host Windows 
 
 Acquire the source in the usual way:
 
-    git clone https://github.com/locktrip/Blockchain HYDRA --recursive
+    git clone https://github.com/Hydra-Chain/node HYDRA --recursive
 
 Then build using:
 

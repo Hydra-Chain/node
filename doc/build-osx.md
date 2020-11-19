@@ -43,7 +43,7 @@ Build HYDRA
 
 1. Clone the HYDRA source code and cd into `HYDRA`
 
-        git clone --recursive https://github.com/LockTrip/Blockchain.git HYDRA
+        git clone --recursive https://github.com/Hydra-Chain/node.git HYDRA
         cd HYDRA
         git submodule update --init --recursive
 

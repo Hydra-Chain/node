@@ -44,11 +44,11 @@ related to the DNS seed operation.
 If these expectations cannot be satisfied the operator should
 discontinue providing services and contact the active HYDRA
 development team as well as posting on
-[issues page](https://github.com/LockTrip/Blockchain/issues).
+[issues page](https://github.com/Hydra-Chain/node/issues).
 
 Behavior outside of these expectations may be reasonable in some
 situations but should be discussed in public in advance.
 
 See also
 ----------
-- [hydra-seeder](https://github.com/LockTrip/Seeder) is a reference implementation of a DNS seed.
+- [hydra-seeder](https://github.com/Hydra-Chain/Seeder) is a reference implementation of a DNS seed.

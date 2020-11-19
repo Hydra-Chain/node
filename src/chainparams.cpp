@@ -164,7 +164,9 @@ public:
         assert(genesis.hashMerkleRoot == uint256S("0xbc4480addd2d1c0bf7ff88574831c52cd472c7f1caf1427d082b4e974748e8eb"));
 
 		bech32_hrp = "qc";
-        vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
+        vFixedSeeds.clear();
+        vSeeds.clear();
+        vSeeds.push_back("mainnet.locktrip.com");
 
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;

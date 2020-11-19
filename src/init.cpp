@@ -585,7 +585,7 @@ void SetupServerArgs()
 
 std::string LicenseInfo()
 {
-    const std::string URL_SOURCE_CODE = "<https://github.com/LockTrip/Blockchain>";
+    const std::string URL_SOURCE_CODE = "<https://github.com/Hydra-Chain/node>";
     const std::string URL_WEBSITE = "<https://hydrachain.org>";
 
     return CopyrightHolders(strprintf(_("Copyright (C) %i"), COPYRIGHT_YEAR) + " ") + "\n" +

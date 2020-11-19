@@ -33,10 +33,10 @@ If you're using the automated script (found in [contrib/gitian-build.sh](/contri
 Check out the source code in the following directory hierarchy.
 
     cd /path/to/your/toplevel/build
-    git clone https://github.com/LockTrip/Gitian-Sigs.git
-    git clone https://github.com/LockTrip/Detached-Sigs.git
+    git clone https://github.com/Hydra-Chain/Gitian-Sigs.git
+    git clone https://github.com/Hydra-Chain/Detached-Sigs.git
     git clone https://github.com/devrandom/gitian-builder.git
-    git clone https://github.com/LockTrip/Blockchain.git
+    git clone https://github.com/Hydra-Chain/node.git
 
 ### HYDRA maintainers/release engineers, suggestion for writing release notes
 
@@ -192,7 +192,7 @@ Codesigner only: Commit the detached codesign payloads:
 Non-codesigners: wait for Windows/OS X detached signatures:
 
 - Once the Windows/OS X builds each have 3 matching signatures, they will be signed with their respective release keys.
-- Detached signatures will then be committed to the [HYDRA Detached Sigs](https://github.com/LockTrip/Detached-Sigs) repository, which can be combined with the unsigned apps to create signed binaries.
+- Detached signatures will then be committed to the [HYDRA Detached Sigs](https://github.com/Hydra-Chain/Detached-Sigs) repository, which can be combined with the unsigned apps to create signed binaries.
 
 Create (and optionally verify) the signed OS X binary:
 
@@ -271,6 +271,6 @@ curl -XGET --header "PRIVATE-TOKEN: <PRIVATE_TOKEN>" "https://gitlab.com/api/v4/
 
   - Archive release notes for the new version to `doc/release-notes/` (branch `master` and branch of the release)
 
-  - Create a [new GitHub release](https://github.com/LockTrip/Blockchain/releases/new) with a link to the archived release notes.
+  - Create a [new GitHub release](https://github.com/Hydra-Chain/node/releases/new) with a link to the archived release notes.
 
   - Celebrate

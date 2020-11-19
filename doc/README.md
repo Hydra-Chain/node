@@ -5,7 +5,7 @@ Setup
 ---------------------
 HYDRA is the original HYDRA Blockchain client and it builds the backbone of the network. It downloads and, by default, stores the entire history of HYDRA transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
 
-To download HYDRA, visit [the download page](https://github.com/LockTrip/Blockchain/releases).
+To download HYDRA, visit [the download page](https://github.com/Hydra-Chain/node/releases).
 
 Running
 ---------------------
@@ -30,7 +30,7 @@ Drag HYDRA to your applications folder, and then run HYDRA.
 
 <!--* See the documentation at the [Bitcoin Wiki](https://en.bitcoin.it/wiki/Main_Page)-->
 <!--for help and more information.-->
-* Ask for help on the [issues page](https://github.com/LockTrip/Blockchain/issues).
+* Ask for help on the [issues page](https://github.com/Hydra-Chain/node/issues).
 
 Building
 ---------------------

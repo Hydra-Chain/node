@@ -37,9 +37,9 @@ packages:
 - "libmicrohttpd-dev"
 - "libminiupnpc-dev"
 remotes:
-- "url": "https://github.com/LockTrip/Blockchain.git"
+- "url": "https://github.com/Hydra-Chain/node.git"
   "dir": "HYDRA"
-- "url": "https://github.com/LockTrip/cpp-ethereum.git"
+- "url": "https://github.com/Hydra-Chain/cpp-ethereum.git"
   "dir": "cpp-ethereum"
 files: []
 script: |

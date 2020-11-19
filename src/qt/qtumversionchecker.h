@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#define QTUM_RELEASES "https://github.com/LockTrip/Blockchain/releases"
+#define QTUM_RELEASES "https://github.com/Hydra-Chain/node/releases"
 
 class Version {
 

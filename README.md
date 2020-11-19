@@ -11,7 +11,7 @@ HYDRA is [GPLv3 licensed](https://www.gnu.org/licenses/gpl-3.0.html)
 # Resources
 Devnet explorer: http://explorer.hydrachain.org/
 Devnet faucet: http://faucet.hydrachain.org
-Wallet downloads: https://github.com/LockTrip/Blockchain/releases
+Wallet downloads: https://github.com/Hydra-Chain/node/releases
 
 # Building HYDRA Blockchain
 
@@ -28,7 +28,7 @@ Wallet downloads: https://github.com/LockTrip/Blockchain/releases
     # If you want to build the Qt GUI:
     sudo apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler qrencode
 
-    git clone https://github.com/LockTrip/Blockchain.git --recursive HYDRA
+    git clone https://github.com/Hydra-Chain/node.git --recursive HYDRA
     cd HYDRA
 
     # Note autogen will prompt to install some more dependencies if needed
@@ -58,7 +58,7 @@ Here is a brief description for compiling HYDRA on CentOS
     sudo yum install qt5-qttools-devel protobuf-devel qrencode-devel
     
     # Building HYDRA
-    git clone https://github.com/LockTrip/Blockchain.git --recursive HYDRA
+    git clone https://github.com/Hydra-Chain/node.git --recursive HYDRA
     cd HYDRA
     ./autogen.sh
     ./configure
@@ -89,7 +89,7 @@ NOTE: Building with Qt4 is still supported, however, could result in a broken UI
 
 1. Clone the HYDRA source code and cd into `HYDRA`
 
-        git clone https://github.com/LockTrip/Blockchain.git --recursive HYDRA
+        git clone https://github.com/Hydra-Chain/node.git --recursive HYDRA
         cd HYDRA
 
 2.  Build HYDRA:
