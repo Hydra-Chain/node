@@ -222,7 +222,7 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back("testnetseed.hydrachain.org");
+        vSeeds.push_back("testnetseeder.hydrachain.org");
 		bech32_hrp = "th";
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
