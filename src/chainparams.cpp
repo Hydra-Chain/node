@@ -166,7 +166,7 @@ public:
 		bech32_hrp = "qc";
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back("mainnet.locktrip.com");
+        vSeeds.push_back("mainnet.hydrachain.org");
 
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
@@ -222,7 +222,7 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back("testnet2.locktrip.com");
+        vSeeds.push_back("testnet.hydrachain.org");
 		bech32_hrp = "tq";
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
