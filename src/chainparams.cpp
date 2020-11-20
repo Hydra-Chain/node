@@ -163,10 +163,10 @@ public:
         assert(consensus.hashGenesisBlock == uint256S("0x0000680af5389365703eeb6e4f26f8913d9d8b87344a38b06030a06c23bac26a"));
         assert(genesis.hashMerkleRoot == uint256S("0xbc4480addd2d1c0bf7ff88574831c52cd472c7f1caf1427d082b4e974748e8eb"));
 
-		bech32_hrp = "qc";
+		bech32_hrp = "hc";
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back("mainnet.hydrachain.org");
+        vSeeds.push_back("mainnetseeder.hydrachain.org");
 
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
@@ -222,8 +222,8 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back("testnet.hydrachain.org");
-		bech32_hrp = "tq";
+        vSeeds.push_back("testnetseed.hydrachain.org");
+		bech32_hrp = "th";
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
 
