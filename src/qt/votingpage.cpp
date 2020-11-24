@@ -35,7 +35,7 @@ static const QString PARAM_AMOUNT = "amount";
 static const QString PARAM_GASLIMIT = "gaslimit";
 
 static const uint64_t LOC_COIN = 100000000;
-static const uint64_t VOTE_GAS_LIMIT = 50000;
+static const uint64_t VOTE_GAS_LIMIT = 250000;
 static const QString VOTE_FINISHED = "Voting has just finished";
 
 
