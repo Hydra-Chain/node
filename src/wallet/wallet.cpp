@@ -35,6 +35,7 @@
 #include <wallet/fees.h>
 #include <pos.h>
 #include <miner.h>
+#include <locktrip/price-oracle.h>
 
 #include <algorithm>
 #include <assert.h>
@@ -3243,7 +3244,20 @@ bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std
                     return false;
                 }
 
+
+                if(nGasFee == 0) {
+                    PriceOracle oracle;
+                    uint64_t bytePrice = 0 ;
+                    oracle.getBytePrice(bytePrice);
+                    nGasFee = bytePrice * nBytes;
+                }
+
                 nFeeNeeded = GetMinimumFee(*this, nBytes, coin_control, ::mempool, ::feeEstimator, &feeCalc)+nGasFee;
+
+                if(nGasFee == 0) {
+                    nFeeNeeded = std::max(nGasFee, nFeeNeeded);
+                }
+
                 if (feeCalc.reason == FeeReason::FALLBACK && !m_allow_fallback_fee) {
                     // eventually allow a fallback fee
                     strFailReason = _("Fee estimation failed. Fallbackfee is disabled. Wait a few blocks or enable -fallbackfee.");
