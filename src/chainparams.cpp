@@ -115,8 +115,8 @@ CChainParams::CChainParams()
 
     chainTxData = ChainTxData{
             // Data as of block 31a3df9b8215730cfe5999669c9bc0e7d682bb9f5b533ab9fdf852eaa21b6a4c (height 8424)
-            1605350176, // * UNIX timestamp of last known number of transactions
-            343792, // * total number of transactions between genesis and that timestamp
+            1606727083, // * UNIX timestamp of last known number of transactions
+            10613, // * total number of transactions between genesis and that timestamp
             //   (the tx=... number in the SetBestChain debug.log lines)
             1.17  // * estimated number of transactions per second after that timestamp
     };
@@ -175,6 +175,7 @@ public:
         checkpointData = (CCheckpointData) {
             {
                 { 0, uint256S("0x000058b8d49cd33ae70558978ff60269d4de7d4b50ac1f733631765e4207a457")},
+                { 5000, uint256S("0x0000a93f9349490201a1877db655f010415874fb2be833565c7f96984e8b046c")}
             }
         };
 
