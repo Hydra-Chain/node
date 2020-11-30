@@ -16,7 +16,7 @@
 
 static const uint64_t DEFAULT_BURN_RATE_PERCENTAGE = 0;
 static const uint64_t MIN_BURN_RATE_PERCENTAGE = 0;
-static const uint64_t MAX_BURN_RATE_PERCENTAGE = 50;
+static const uint64_t MAX_BURN_RATE_PERCENTAGE = 100;
 
 static const uint64_t DEFAULT_ECONOMY_DIVIDEND_PERCENTAGE = 50;
 static const uint64_t MIN_ECONOMY_DIVIDEND_PERCENTAGE = 0;
