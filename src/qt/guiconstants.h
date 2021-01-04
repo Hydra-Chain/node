@@ -49,7 +49,7 @@ static const double LOC_GRANULARITY = 100000000;
 static const QString QTUM_INFO_MAINNET = "<a href='https://explorer.hydrachain.org/%1/%2'>%2</a>";
 
 /* Testnet hydra explorer uri */
-static const QString QTUM_INFO_TESTNET = "<a href='https://explorer.hydrachain.org/%1/%2'>%2</a>";
+static const QString QTUM_INFO_TESTNET = "<a href='https://testexplorer.hydrachain.org/%1/%2'>%2</a>";
 
 /* QRCodeDialog -- size of exported QR Code image */
 #define QR_IMAGE_SIZE 300

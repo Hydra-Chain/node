@@ -693,7 +693,7 @@ CMutableTransaction ConstructTransaction(const UniValue& inputs_in, const UniVal
                     throw JSONRPCError(RPC_TYPE_ERROR, "Invalid bytecode (bytecode not hex)");
 
                 // Add create contract output
-                scriptPubKey = CScript() << CScriptNum(VersionVM::GetEVMDefault().toRaw()) << CScriptNum(nGasLimit) << CScriptNum(nGasPrice) << ParseHex(bytecodehex) <<OP_CREATE;
+                scriptPubKey = CScript() << CScriptNum(VersionVM::GetEVMDefault().toRaw()) << CScriptNum(nGasLimit) << ParseHex(bytecodehex) << OP_CREATE;
             }
             else
             {
@@ -725,7 +725,7 @@ CMutableTransaction ConstructTransaction(const UniValue& inputs_in, const UniVal
                 }
 
                 // Add call contract output
-                scriptPubKey = CScript() << CScriptNum(VersionVM::GetEVMDefault().toRaw()) << CScriptNum(nGasLimit) << CScriptNum(nGasPrice) << ParseHex(datahex) << ParseHex(contractaddress) << OP_CALL;
+                scriptPubKey = CScript() << CScriptNum(VersionVM::GetEVMDefault().toRaw()) << CScriptNum(nGasLimit) << ParseHex(datahex) << ParseHex(contractaddress) << OP_CALL;
             }
 
             // Build op_sender script
