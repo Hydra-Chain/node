@@ -9,7 +9,7 @@ dev::eth::EVMSchedule QtumDGP::getGasSchedule(unsigned int blockHeight){
 
 uint32_t QtumDGP::getBlockSize(unsigned int blockHeight){
     uint64_t blockSize = DEFAULT_BLOCK_SIZE_DGP;
-    if(blockHeight < 100000){ // bug fix
+    if(blockHeight < 2){ // bug fix
         return blockSize;
     }
 
@@ -34,7 +34,7 @@ uint64_t QtumDGP::getMinGasPrice(unsigned int blockHeight){
 
 uint64_t QtumDGP::getBlockGasLimit(unsigned int blockHeight){
     uint64_t blockGasLimit = DEFAULT_BLOCK_GAS_LIMIT_DGP;
-    if(blockHeight < 100000){ // bug fix
+    if(blockHeight < 2){ // bug fix
         return blockGasLimit;
     }
 

@@ -143,3 +143,5 @@ cmake-build-debug/
 
 src/.vscode/c_cpp_properties.json
 src/.vscode/settings.json
+
+release*

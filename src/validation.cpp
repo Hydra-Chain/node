@@ -2647,33 +2647,33 @@ bool ByteCodeExec::processingResults(ByteCodeExecResult& resultBCE){
 
             resultBCE.usedGas += gasUsed;
             int64_t amount = txs[i].getTransactionFee() - (gasUsed * gasPrice);
-            if (result[i].tx == CTransaction()) {
-                Dgp dgp;
-                uint64_t dividendPercentage;
-                dgp.getDgpParam(ECONOMY_DIVIDEND, dividendPercentage);
-                if (dividendPercentage > MAX_ECONOMY_DIVIDEND_PERCENTAGE ||
-                    dividendPercentage < MIN_ECONOMY_DIVIDEND_PERCENTAGE) {
-                    dividendPercentage = DEFAULT_ECONOMY_DIVIDEND_PERCENTAGE;
-                }
 
-                CAmount dividend =
-                        static_cast<CAmount>(result[i].execRes.gasUsed * txs[i].gasPrice() / 100) * dividendPercentage;
-                if (!txs[i].isCreation()) {
-                    if (this->dividendByContract.count(txs[i].receiveAddress())) {
-                        this->dividendByContract[txs[i].receiveAddress()] += dividend;
-                    } else {
-                        this->dividendByContract.insert(
-                                std::pair<dev::Address, CAmount>(txs[i].receiveAddress(), dividend));
-                    }
+            Dgp dgp;
+            uint64_t dividendPercentage;
+            dgp.getDgpParam(ECONOMY_DIVIDEND, dividendPercentage);
+            if (dividendPercentage > MAX_ECONOMY_DIVIDEND_PERCENTAGE ||
+                dividendPercentage < MIN_ECONOMY_DIVIDEND_PERCENTAGE) {
+                dividendPercentage = DEFAULT_ECONOMY_DIVIDEND_PERCENTAGE;
+            }
+
+            CAmount dividend =
+                    static_cast<CAmount>(result[i].execRes.gasUsed * txs[i].gasPrice() / 100) * dividendPercentage;
+            if (!txs[i].isCreation()) {
+                if (this->dividendByContract.count(txs[i].receiveAddress())) {
+                    this->dividendByContract[txs[i].receiveAddress()] += dividend;
                 } else {
-                    if(result[i].execRes.excepted == dev::eth::TransactionException::None) {
-                        auto newContractAddress = result[i].execRes.newAddress;
-                        auto contractOwnerAddress = txs[i].sender();
-                        resultBCE.contractAddresses.emplace_back(newContractAddress);
-                        resultBCE.contractOwners.emplace_back(contractOwnerAddress);
-                    }
+                    this->dividendByContract.insert(
+                            std::pair<dev::Address, CAmount>(txs[i].receiveAddress(), dividend));
+                }
+            } else {
+                if(result[i].execRes.excepted == dev::eth::TransactionException::None) {
+                    auto newContractAddress = result[i].execRes.newAddress;
+                    auto contractOwnerAddress = txs[i].sender();
+                    resultBCE.contractAddresses.emplace_back(newContractAddress);
+                    resultBCE.contractOwners.emplace_back(contractOwnerAddress);
                 }
             }
+
             if (amount < 0) {
                 return false;
             }
