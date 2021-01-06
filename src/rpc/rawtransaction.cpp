@@ -653,22 +653,6 @@ CMutableTransaction ConstructTransaction(const UniValue& inputs_in, const UniVal
                     throw JSONRPCError(RPC_TYPE_ERROR, "Invalid value for gasLimit");
             }
 
-            // Get gas price
-            if (Contract.exists("gasPrice")){
-                UniValue uGasPrice = Contract["gasPrice"];
-                if(!ParseMoney(uGasPrice.getValStr(), nGasPrice))
-                {
-                    throw JSONRPCError(RPC_TYPE_ERROR, "Invalid value for gasPrice");
-                }
-                CAmount maxRpcGasPrice = gArgs.GetArg("-rpcmaxgasprice", MAX_RPC_GAS_PRICE);
-                if (nGasPrice > (int64_t)maxRpcGasPrice)
-                    throw JSONRPCError(RPC_TYPE_ERROR, "Invalid value for gasPrice, Maximum allowed in RPC calls is: "+FormatMoney(maxRpcGasPrice)+" (use -rpcmaxgasprice to change it)");
-                if (nGasPrice < (int64_t)minGasPrice)
-                    throw JSONRPCError(RPC_TYPE_ERROR, "Invalid value for gasPrice (Minimum is: "+FormatMoney(minGasPrice)+")");
-                if (nGasPrice <= 0)
-                    throw JSONRPCError(RPC_TYPE_ERROR, "Invalid value for gasPrice");
-            }
-
             // Get sender address
             bool fHasSender=false;
             CTxDestination senderAddress;
@@ -810,7 +794,6 @@ static UniValue createrawtransaction(const JSONRPCRequest& request)
                                     {"data", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "Hex data to add in the call output"},
                                     {"amount", RPCArg::Type::AMOUNT,  /* default */ "0", "Value in HYDRA to send with the call, should be a valid amount, default 0"},
                                     {"gasLimit", RPCArg::Type::NUM,  RPCArg::Optional::OMITTED, "The gas limit for the transaction"},
-                                    {"gasPrice", RPCArg::Type::NUM,  RPCArg::Optional::OMITTED, "The gas price for the transaction"},
                                     {"senderaddress", RPCArg::Type::STR_HEX, RPCArg::Optional::OMITTED, "The HYDRA address that will be used to create the contract."},
                                 },
                                 },
@@ -818,7 +801,6 @@ static UniValue createrawtransaction(const JSONRPCRequest& request)
                              {
                                      {"bytecode", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "contract bytcode."},
                                      {"gasLimit", RPCArg::Type::NUM,  RPCArg::Optional::OMITTED, "The gas limit for the transaction"},
-                                     {"gasPrice", RPCArg::Type::NUM,  RPCArg::Optional::OMITTED, "The gas price for the transaction"},
                                      {"senderaddress", RPCArg::Type::STR_HEX, RPCArg::Optional::OMITTED, "The quantum address that will be used to create the contract."},
                              },
                             },
@@ -835,15 +817,15 @@ static UniValue createrawtransaction(const JSONRPCRequest& request)
                     HelpExampleCli("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\" \"[{\\\"address\\\":0.01}]\"")
             + HelpExampleCli("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\" \"[{\\\"data\\\":\\\"00010203\\\"}]\"")
             + HelpExampleCli("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\" \"[{\\\"contract\\\":{\\\"contractAddress\\\":\\\"mycontract\\\","
-                                                     "\\\"data\\\":\\\"00\\\", \\\"gasLimit\\\":250000, \\\"gasPrice\\\":0.00000040, \\\"amount\\\":0}}]\"")
+                                                     "\\\"data\\\":\\\"00\\\", \\\"gasLimit\\\":250000, \\\"amount\\\":0}}]\"")
             + HelpExampleCli("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\" \"[{\\\"contract\\\":{\\\"bytecode\\\":\\\"contractbytecode\\\","
-                                                     "\\\"gasLimit\\\":2500000, \\\"gasPrice\\\":0.00000040, \\\"senderaddress\\\":\\\"HBvKE1Vk4gDgu5j7TZUX9P3QMAhVErMYoC\\\"}}]\"")
+                                                     "\\\"gasLimit\\\":2500000, \\\"senderaddress\\\":\\\"HBvKE1Vk4gDgu5j7TZUX9P3QMAhVErMYoC\\\"}}]\"")
             + HelpExampleRpc("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\", \"[{\\\"address\\\":0.01}]\"")
             + HelpExampleRpc("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\", \"[{\\\"data\\\":\\\"00010203\\\"}]\"")
             + HelpExampleRpc("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\", \"[{\\\"contract\\\":{\\\"contractAddress\\\":\\\"mycontract\\\","
-                                                     "\\\"data\\\":\\\"00\\\", \\\"gasLimit\\\":250000, \\\"gasPrice\\\":0.00000040, \\\"amount\\\":0}}]\"")
+                                                     "\\\"data\\\":\\\"00\\\", \\\"gasLimit\\\":250000, \\\"amount\\\":0}}]\"")
             + HelpExampleRpc("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\" \"[{\\\"contract\\\":{\\\"bytecode\\\":\\\"contractbytecode\\\","
-                                                     "\\\"gasLimit\\\":2500000, \\\"gasPrice\\\":0.00000040, \\\"senderaddress\\\":\\\"HBvKE1Vk4gDgu5j7TZUX9P3QMAhVErMYoC\\\"}}]\"")
+                                                     "\\\"gasLimit\\\":2500000, \\\"senderaddress\\\":\\\"HBvKE1Vk4gDgu5j7TZUX9P3QMAhVErMYoC\\\"}}]\"")
                 },
             }.ToString());
     }
