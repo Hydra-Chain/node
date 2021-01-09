@@ -1211,6 +1211,53 @@ static UniValue signmessage(const JSONRPCRequest& request)
     return EncodeBase64(vchSig.data(), vchSig.size());
 }
 
+static UniValue getbalanceofaddress(const JSONRPCRequest& request)
+{
+    std::shared_ptr<CWallet> const wallet = GetWalletForJSONRPCRequest(request);
+    CWallet* const pwallet = wallet.get();
+
+    if (!EnsureWalletIsAvailable(pwallet, request.fHelp)) {
+        return NullUniValue;
+    }
+
+    if (request.fHelp || request.params.size() != 1)
+        throw std::runtime_error(
+            RPCHelpMan{"getbalanceofaddress",
+            "\nReturns the balance of an address",
+            {
+                {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The HYDRA address that will be used."},
+            },
+            RPCResult{
+                "[\n"
+                "  [\n"
+                "    [\n"
+                "      \"address\",            (string) The HYDRA address\n"
+                "      amount,                 (numeric) The amount in " + CURRENCY_UNIT + "\n"
+                "      \"label\"               (string, optional) The label\n"
+                "    ]\n"
+                "    ,...\n"
+                "  ]\n"
+                "  ,...\n"
+                "]\n"
+            },
+            RPCExamples{
+                HelpExampleCli("getbalanceofaddress", "HBvKE1Vk4gDgu5j7TZUX9P3QMAhVErMYoC")
+                + HelpExampleRpc("getbalanceofaddress", "HBvKE1Vk4gDgu5j7TZUX9P3QMAhVErMYoC")
+            },
+        }.ToString());
+
+    // Make sure the results are valid at least up to the most recent block
+    // the user could have gotten from another RPC command prior to now
+    pwallet->BlockUntilSyncedToCurrentChain();
+
+    auto locked_chain = pwallet->chain().lock();
+    LOCK(pwallet->cs_wallet);
+
+    std::string strAddress = request.params[0].get_str();
+    std::map<CTxDestination, CAmount> balances = pwallet->GetAddressBalances(*locked_chain);
+    return ValueFromAmount(balances[DecodeDestination(strAddress)]);
+}
+
 static UniValue getreceivedbyaddress(const JSONRPCRequest& request)
 {
     std::shared_ptr<CWallet> const wallet = GetWalletForJSONRPCRequest(request);
@@ -5140,6 +5187,7 @@ static const CRPCCommand commands[] =
     { "wallet",             "getaddressesbylabel",              &getaddressesbylabel,           {"label"} },
     { "wallet",             "getaddressinfo",                   &getaddressinfo,                {"address"} },
     { "wallet",             "getbalance",                       &getbalance,                    {"dummy","minconf","include_watchonly"} },
+    { "wallet",             "getbalanceofaddress",              &getbalanceofaddress,           {"address"} },
     { "wallet",             "getnewaddress",                    &getnewaddress,                 {"label","address_type"} },
     { "wallet",             "getrawchangeaddress",              &getrawchangeaddress,           {"address_type"} },
     { "wallet",             "getreceivedbyaddress",             &getreceivedbyaddress,          {"address","minconf"} },

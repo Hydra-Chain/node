@@ -98,7 +98,7 @@ static const unsigned int DEFAULT_TX_CONFIRM_TARGET = 6;
 static const bool DEFAULT_WALLET_RBF = false;
 static const bool DEFAULT_WALLETBROADCAST = true;
 static const bool DEFAULT_DISABLE_WALLET = false;
-static const bool DEFAULT_USE_CHANGE_ADDRESS = true;
+static const bool DEFAULT_USE_CHANGE_ADDRESS = false;
 static const CAmount DEFAULT_RESERVE_BALANCE = 0;
 
 //! Pre-calculated constants for input size estimation in *virtual size*

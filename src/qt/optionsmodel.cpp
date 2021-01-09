@@ -154,11 +154,6 @@ void OptionsModel::Init(bool resetSettings)
     if (!m_node.softSetBoolArg("-upnp", settings.value("fUseUPnP").toBool()))
         addOverriddenOption("-upnp");
 
-    if (!settings.contains("fEnableSTUN"))
-        settings.setValue("fEnableSTUN", false);
-    if (!gArgs.SoftSetBoolArg("-enablestun", settings.value("fEnableSTUN").toBool()))
-        addOverriddenOption("-enablestun");
-
     if (!settings.contains("fListen"))
         settings.setValue("fListen", DEFAULT_LISTEN);
     if (!m_node.softSetBoolArg("-listen", settings.value("fListen").toBool()))
@@ -346,8 +341,6 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return settings.value("nThreadsScriptVerif");
         case Listen:
             return settings.value("fListen");
-        case EnableSTUN:
-            return settings.value("fEnableSTUN");
         case UseChangeAddress:
             return settings.value("fUseChangeAddress");
         case CheckForUpdates:
@@ -514,12 +507,6 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
         case Listen:
             if (settings.value("fListen") != value) {
                 settings.setValue("fListen", value);
-                setRestartRequired(true);
-            }
-            break;
-        case EnableSTUN:
-            if (settings.value("fEnableSTUN") != value) {
-                settings.setValue("fEnableSTUN", value);
                 setRestartRequired(true);
             }
             break;

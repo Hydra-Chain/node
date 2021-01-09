@@ -424,13 +424,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="enableSTUN">
-         <property name="text">
-          <string>Enable STUN</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QCheckBox" name="connectSocks">
          <property name="toolTip">
           <string>Connect to the Bitcoin network through a SOCKS5 proxy.</string>

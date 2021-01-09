@@ -61,7 +61,6 @@ public:
         UseChangeAddress,    // bool
         CheckForUpdates,        // bool
         ReserveBalance,         // CAmount
-		EnableSTUN,             // bool
         OptionIDRowCount,
     };
 

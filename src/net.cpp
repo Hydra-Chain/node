@@ -20,7 +20,6 @@
 #include <scheduler.h>
 #include <ui_interface.h>
 #include <util/strencodings.h>
-#include "ministun.h"
 
 #ifdef WIN32
 #include <string.h>
@@ -80,7 +79,6 @@ static const uint64_t RANDOMIZER_ID_LOCALHOSTNONCE = 0xd93e69e2bbfa5735ULL; // S
 //
 bool fDiscover = true;
 bool fListen = true;
-bool fEnableSTUN = false;
 bool g_relay_txes = !DEFAULT_BLOCKSONLY;
 CCriticalSection cs_mapLocalHost;
 std::map<CNetAddr, LocalServiceInfo> mapLocalHost GUARDED_BY(cs_mapLocalHost);
@@ -2192,9 +2190,6 @@ bool CConnman::Start(CScheduler& scheduler, const Options& connOptions)
         nMaxOutboundTotalBytesSentInCycle = 0;
         nMaxOutboundCycleStartTime = 0;
     }
-	
-	if(fListen && fDiscover && fEnableSTUN)
-    	GetSTUNAddress(GetListenPort());
 
     if (fListen && !InitBinds(connOptions.vBinds, connOptions.vWhiteBinds)) {
         if (clientInterface) {

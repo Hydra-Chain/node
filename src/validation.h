@@ -154,7 +154,7 @@ static const bool DEFAULT_TXINDEX = false;
 #ifdef ENABLE_BITCORE_RPC
 static const bool DEFAULT_ADDRINDEX = false;
 #endif
-static const bool DEFAULT_LOGEVENTS = false;
+static const bool DEFAULT_LOGEVENTS = true;
 static const unsigned int DEFAULT_BANSCORE_THRESHOLD = 100;
 /** Default for -persistmempool */
 static const bool DEFAULT_PERSIST_MEMPOOL = true;
