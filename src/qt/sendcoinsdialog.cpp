@@ -16,6 +16,7 @@
 #include <qt/guiconstants.h>
 #include <qt/styleSheet.h>
 #include "locktrip/dgp.h"
+#include "locktrip/price-oracle.h"
 
 #include <chainparams.h>
 #include <interfaces/node.h>
@@ -264,6 +265,11 @@ void SendCoinsDialog::on_sendButton_clicked()
 
     prepareStatus = model->prepareTransaction(currentTransaction, ctrl);
 
+    PriceOracle oracle;
+    uint64_t bytePrice = 0;
+    oracle.getBytePrice(bytePrice);
+    currentTransaction.setTransactionFee(bytePrice * currentTransaction.getTransactionSize());
+    
     // process prepareStatus and on error generate message shown to user
     processSendCoinsReturn(prepareStatus,
         BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), currentTransaction.getTransactionFee()));
