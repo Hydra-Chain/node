@@ -21,7 +21,9 @@ CAmount GetRequiredFee(const CWallet& wallet, unsigned int nTxBytes)
 
 CAmount GetMinimumFee(const CWallet& wallet, unsigned int nTxBytes, const CCoinControl& coin_control, const CTxMemPool& pool, const CBlockPolicyEstimator& estimator, FeeCalculation* feeCalc)
 {
-    CAmount fee_needed = GetMinimumFeeRate(wallet, coin_control, pool, estimator, feeCalc).GetFee(nTxBytes);
+    CCoinControl c_control = coin_control;
+    c_control.SetNull();
+    CAmount fee_needed = GetMinimumFeeRate(wallet, c_control, pool, estimator, feeCalc).GetFee(nTxBytes);
     // Always obey the maximum
     if (fee_needed > maxTxFee) {
         fee_needed = maxTxFee;
@@ -35,7 +37,7 @@ CFeeRate GetRequiredFeeRate(const CWallet& wallet)
     return std::max(wallet.m_min_fee, ::minRelayTxFee);
 }
 
-CFeeRate GetMinimumFeeRate(const CWallet& wallet, const CCoinControl& coin_control, const CTxMemPool& pool, const CBlockPolicyEstimator& estimator, FeeCalculation* feeCalc)
+CFeeRate GetMinimumFeeRate(const CWallet& wallet, const CCoinControl& c_control, const CTxMemPool& pool, const CBlockPolicyEstimator& estimator, FeeCalculation* feeCalc)
 {
     /* User control of how to calculate fee uses the following parameter precedence:
        1. coin_control.m_feerate
@@ -44,6 +46,8 @@ CFeeRate GetMinimumFeeRate(const CWallet& wallet, const CCoinControl& coin_contr
        4. m_confirm_target (user-set member variable of wallet)
        The first parameter that is set is used.
     */
+    CCoinControl coin_control = c_control;
+    coin_control.SetNull();
     CFeeRate feerate_needed;
     if (coin_control.m_feerate) { // 1.
         feerate_needed = *(coin_control.m_feerate);
