@@ -111,10 +111,10 @@ CreateContract::~CreateContract()
 void CreateContract::setLinkLabels()
 {
     ui->labelSolidity->setOpenExternalLinks(true);
-    ui->labelSolidity->setText("<a href=\"https://qmix.qtum.org/\">Solidity compiler</a>");
+    ui->labelSolidity->setText("<a href=\"https://docs.soliditylang.org/en/v0.5.0/\">Solidity compiler</a>");
 
     ui->labelToken->setOpenExternalLinks(true);
-    ui->labelToken->setText("<a href=\"https://ethereum.org/token#the-code\">Token template</a>");
+    ui->labelToken->setText("<a href=\"https://docs.hydrachain.org/hrc20-tokens\">Token template</a>");
 }
 
 void CreateContract::setModel(WalletModel *_model)
