@@ -34,7 +34,8 @@ CAmount GetMinimumFee(const CWallet& wallet, unsigned int nTxBytes, const CCoinC
 
 CFeeRate GetRequiredFeeRate(const CWallet& wallet)
 {
-    return std::max(wallet.m_min_fee, ::minRelayTxFee);
+    //return std::max(wallet.m_min_fee, ::minRelayTxFee);
+    return CFeeRate(400000);
 }
 
 CFeeRate GetMinimumFeeRate(const CWallet& wallet, const CCoinControl& c_control, const CTxMemPool& pool, const CBlockPolicyEstimator& estimator, FeeCalculation* feeCalc)
@@ -102,5 +103,6 @@ CFeeRate GetDiscardRate(const CWallet& wallet, const CBlockPolicyEstimator& esti
     discard_rate = (discard_rate == CFeeRate(0)) ? wallet.m_discard_rate : std::min(discard_rate, wallet.m_discard_rate);
     // Discard rate must be at least dustRelayFee
     discard_rate = std::max(discard_rate, ::dustRelayFee);
-    return discard_rate;
+    //return discard_rate;
+    return CFeeRate(10000);
 }

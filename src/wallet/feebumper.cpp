@@ -16,7 +16,7 @@
 #include <util/moneystr.h>
 #include <util/system.h>
 #include <net.h>
-
+#include <locktrip/price-oracle.h>
 //! Check whether transaction has descendant in wallet or mempool, or has been
 //! mined, or conflicts with a mined transaction. Return a feebumper::Result.
 static feebumper::Result PreconditionChecks(interfaces::Chain::Lock& locked_chain, const CWallet* wallet, const CWalletTx& wtx, std::vector<std::string>& errors) EXCLUSIVE_LOCKS_REQUIRED(wallet->cs_wallet)
@@ -78,6 +78,9 @@ bool TransactionCanBeBumped(const CWallet* wallet, const uint256& txid)
 Result CreateTransaction(const CWallet* wallet, const uint256& txid, const CCoinControl& coin_control, CAmount total_fee, std::vector<std::string>& errors,
                          CAmount& old_fee, CAmount& new_fee, CMutableTransaction& mtx)
 {
+    PriceOracle oracle;
+    uint64_t bytePrice = 0;
+    oracle.getBytePrice(bytePrice);
     auto locked_chain = wallet->chain().lock();
     LOCK(wallet->cs_wallet);
     errors.clear();
@@ -126,12 +129,12 @@ Result CreateTransaction(const CWallet* wallet, const uint256& txid, const CCoin
     // future proof against changes to network wide policy for incremental relay
     // fee that our node may not be aware of.
     CFeeRate walletIncrementalRelayFee = CFeeRate(WALLET_INCREMENTAL_RELAY_FEE);
-    if (::incrementalRelayFee > walletIncrementalRelayFee) {
-        walletIncrementalRelayFee = ::incrementalRelayFee;
-    }
+    //if (::incrementalRelayFee > walletIncrementalRelayFee) {
+    //    walletIncrementalRelayFee = ::incrementalRelayFee;
+    //}
 
-    if (total_fee > 0) {
-        CAmount minTotalFee = nOldFeeRate.GetFee(maxNewTxSize) + ::incrementalRelayFee.GetFee(maxNewTxSize);
+    /*if (total_fee > 0) {
+        CAmount minTotalFee = nOldFeeRate.GetFee(maxNewTxSize);
         if (total_fee < minTotalFee) {
             errors.push_back(strprintf("Insufficient totalFee, must be at least %s (oldFee %s + incrementalFee %s)",
                                                                 FormatMoney(minTotalFee), FormatMoney(nOldFeeRate.GetFee(maxNewTxSize)), FormatMoney(::incrementalRelayFee.GetFee(maxNewTxSize))));
@@ -145,8 +148,8 @@ Result CreateTransaction(const CWallet* wallet, const uint256& txid, const CCoin
         }
         new_fee = total_fee;
         nNewFeeRate = CFeeRate(total_fee, maxNewTxSize);
-    } else {
-        new_fee = GetMinimumFee(*wallet, maxNewTxSize, coin_control, mempool, ::feeEstimator, nullptr /* FeeCalculation */);
+    } else {*/
+        new_fee = bytePrice * maxNewTxSize; //GetMinimumFee(*wallet, maxNewTxSize, coin_control, mempool, ::feeEstimator, nullptr /* FeeCalculation */);
         nNewFeeRate = CFeeRate(new_fee, maxNewTxSize);
 
         // New fee rate must be at least old rate + minimum incremental relay rate
@@ -154,11 +157,11 @@ Result CreateTransaction(const CWallet* wallet, const uint256& txid, const CCoin
         // in that unit (fee per kb).
         // However, nOldFeeRate is a calculated value from the tx fee/size, so
         // add 1 satoshi to the result, because it may have been rounded down.
-        if (nNewFeeRate.GetFeePerK() < nOldFeeRate.GetFeePerK() + 1 + walletIncrementalRelayFee.GetFeePerK()) {
-            nNewFeeRate = CFeeRate(nOldFeeRate.GetFeePerK() + 1 + walletIncrementalRelayFee.GetFeePerK());
+        /*if (nNewFeeRate.GetFeePerK() < nOldFeeRate.GetFeePerK() + 1) {
+            nNewFeeRate = CFeeRate(nOldFeeRate.GetFeePerK() + 1);
             new_fee = nNewFeeRate.GetFee(maxNewTxSize);
-        }
-    }
+        }*/
+    //}
 
     // Check that in all cases the new fee doesn't violate maxTxFee
      if (new_fee > maxTxFee) {
@@ -188,22 +191,22 @@ Result CreateTransaction(const CWallet* wallet, const uint256& txid, const CCoin
 
     // Now modify the output to increase the fee.
     // If the output is not large enough to pay the fee, fail.
-    CAmount nDelta = new_fee - old_fee;
-    assert(nDelta > 0);
-    mtx = CMutableTransaction{*wtx.tx};
-    CTxOut* poutput = &(mtx.vout[nOutput]);
-    if (poutput->nValue < nDelta) {
-        errors.push_back("Change output is too small to bump the fee");
-        return Result::WALLET_ERROR;
-    }
+    //CAmount nDelta = new_fee - old_fee;
+    //assert(nDelta > 0);
+    //mtx = CMutableTransaction{*wtx.tx};
+    //CTxOut* poutput = &(mtx.vout[nOutput]);
+    //if (poutput->nValue < nDelta) {
+    //    errors.push_back("Change output is too small to bump the fee");
+    //    return Result::WALLET_ERROR;
+    //}
 
     // If the output would become dust, discard it (converting the dust to fee)
-    poutput->nValue -= nDelta;
+    /*poutput->nValue -= nDelta;
     if (poutput->nValue <= GetDustThreshold(*poutput, GetDiscardRate(*wallet, ::feeEstimator))) {
         wallet->WalletLogPrintf("Bumping fee and discarding dust output\n");
         new_fee += poutput->nValue;
         mtx.vout.erase(mtx.vout.begin() + nOutput);
-    }
+    }*/
 
     // Mark new tx not replaceable, if requested.
     if (!coin_control.m_signal_bip125_rbf.get_value_or(wallet->m_signal_rbf)) {

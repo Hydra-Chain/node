@@ -3000,6 +3000,10 @@ OutputType CWallet::TransactionChangeType(OutputType change_type, const std::vec
 bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std::vector<CRecipient>& vecSend, CTransactionRef& tx, CReserveKey& reservekey, CAmount& nFeeRet,
                          int& nChangePosInOut, std::string& strFailReason, const CCoinControl& coin_control, bool sign, CAmount nGasFee, bool hasSender, const CTxDestination& signSenderAddress)
 {
+    PriceOracle oracle;
+    uint64_t bytePrice = 0;
+    oracle.getBytePrice(bytePrice);
+
     CAmount nValue = 0;
     int nChangePosRequest = nChangePosInOut;
     unsigned int nSubtractFeeFromAmount = 0;
@@ -3246,13 +3250,10 @@ bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std
 
 
                 if(nGasFee == 0) {
-                    PriceOracle oracle;
-                    uint64_t bytePrice = 0 ;
-                    oracle.getBytePrice(bytePrice);
                     nGasFee = bytePrice * nBytes;
                 }
 
-                nFeeNeeded = GetMinimumFee(*this, nBytes, coin_control, ::mempool, ::feeEstimator, &feeCalc)+nGasFee;
+                nFeeNeeded = nBytes*bytePrice; //+nGasFee;
 
                 if(nGasFee == 0) {
                     nFeeNeeded = std::max(nGasFee, nFeeNeeded);
