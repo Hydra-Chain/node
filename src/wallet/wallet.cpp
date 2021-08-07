@@ -3253,10 +3253,10 @@ bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std
                     nGasFee = bytePrice * nBytes;
                 }
 
-                nFeeNeeded = nBytes*bytePrice; //+nGasFee;
-
                 if(nGasFee == 0) {
-                    nFeeNeeded = std::max(nGasFee, nFeeNeeded);
+                    nFeeNeeded = nBytes*bytePrice; //+nGasFee;
+                } else {
+                    nFeeNeeded = nGasFee;
                 }
 
                 if (feeCalc.reason == FeeReason::FALLBACK && !m_allow_fallback_fee) {
