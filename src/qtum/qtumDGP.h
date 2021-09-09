@@ -12,7 +12,7 @@ public:
 
     QtumDGP(QtumState* _state, bool _dgpevm = true) {}
 
-    dev::eth::EVMSchedule getGasSchedule(unsigned int blockHeight);
+    dev::eth::EVMSchedule getGasSchedule(unsigned int blockHeight, const Consensus::Params& consensusParams, const std::string& networkID);
 
     uint32_t getBlockSize(unsigned int blockHeight);
 
