@@ -36,9 +36,9 @@ public:
 
     void setClientModel(ClientModel *clientModel);
 
-    bool addWallet(WalletModel *walletModel);
-    bool setCurrentWallet(const QString& name);
-    bool removeWallet(const QString &name);
+    void addWallet(WalletModel *walletModel);
+    void setCurrentWallet(const QString& name);
+    void removeWallet(const QString &name);
     void removeAllWallets();
 
     bool handlePaymentRequest(const SendCoinsRecipient& recipient);
@@ -90,6 +90,10 @@ public Q_SLOTS:
     void gotoAddTokenPage();
     /** Switch to stake page */
     void gotoStakePage();
+    /** Switch to delegation page */
+    void gotoDelegationPage();
+    /** Switch to super staker page */
+    void gotoSuperStakerPage();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

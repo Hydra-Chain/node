@@ -123,9 +123,12 @@ CChainParams::CChainParams()
 
     consensus.nLastPOWBlock = 5000;
     consensus.nMPoSRewardRecipients = 1;
+    consensus.nCheckpointSpan = COINBASE_MATURITY;
     consensus.nFirstMPoSBlock = consensus.nLastPOWBlock +
                                 consensus.nMPoSRewardRecipients +
                                 COINBASE_MATURITY;
+
+    consensus.delegationsAddress = uint160(ParseHex("0000000000000000000000000000000000000093")); // Delegations contract for offline staking
 }
 
 /**
@@ -186,6 +189,8 @@ public:
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
 
         consensus.MuirGlacierHeight = 202000;
+        consensus.nOfflineStakeHeight = 248000;
+        consensus.nLastMPoSBlock = 247999;
 
         consensus.BIP34Hash = uint256S("0x000058b8d49cd33ae70558978ff60269d4de7d4b50ac1f733631765e4207a457");
         // consensus.BIP65Height: 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
@@ -248,6 +253,8 @@ public:
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
 
         consensus.MuirGlacierHeight = 0;
+        consensus.nOfflineStakeHeight = 0x7fffffff;
+        consensus.nLastMPoSBlock = 0x7fffffff;
 
         // consensus.BIP65Height - 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
         // consensus.BIP66Height - 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182

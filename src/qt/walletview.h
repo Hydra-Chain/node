@@ -25,6 +25,8 @@ class SendToContract;
 class CallContract;
 class QRCToken;
 class StakePage;
+class DelegationPage;
+class SuperStakerPage;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
@@ -79,10 +81,12 @@ private:
     CallContract* callContractPage;
     QRCToken* QRCTokenPage;
     StakePage *stakePage;
+    DelegationPage* delegationPage;
+    SuperStakerPage* superStakerPage;
 
     TransactionView *transactionView;
 
-    QProgressDialog *progressDialog;
+    QProgressDialog* progressDialog{nullptr};
     const PlatformStyle *platformStyle;
 
 public Q_SLOTS:
@@ -110,6 +114,10 @@ public Q_SLOTS:
     void gotoAddTokenPage();
     /** Switch to stake page */
     void gotoStakePage();
+    /** Switch to delegation page */
+    void gotoDelegationPage();
+    /** Switch to super staker page */
+    void gotoSuperStakerPage();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

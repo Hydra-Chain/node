@@ -44,16 +44,13 @@ void WalletFrame::setClientModel(ClientModel *_clientModel)
     this->clientModel = _clientModel;
 }
 
-bool WalletFrame::addWallet(WalletModel *walletModel)
+void WalletFrame::addWallet(WalletModel *walletModel)
 {
-    if (!gui || !clientModel || !walletModel) {
-        return false;
-    }
+    if (!gui || !clientModel || !walletModel) return;
 
     const QString name = walletModel->getWalletName();
-    if (mapWalletViews.count(name) > 0) {
-        return false;
-    }
+    
+    if (mapWalletViews.count(name) > 0) return;
 
     if(walletModel->wallet().getAddresses().size() == 0)
     {
@@ -83,31 +80,25 @@ bool WalletFrame::addWallet(WalletModel *walletModel)
     connect(walletView, SIGNAL(outOfSyncWarningClicked()), this, SLOT(outOfSyncWarningClicked()));
 
     connect(walletView, SIGNAL(currentChanged(int)), this, SLOT(pageChanged(int)));
-
-    return true;
 }
 
-bool WalletFrame::setCurrentWallet(const QString& name)
+void WalletFrame::setCurrentWallet(const QString& name)
 {
-    if (mapWalletViews.count(name) == 0)
-        return false;
+    if (mapWalletViews.count(name) == 0) return;
 
     WalletView *walletView = mapWalletViews.value(name);
     walletStack->setCurrentWidget(walletView);
     assert(walletView);
     walletView->updateEncryptionStatus();
-    return true;
 }
 
-bool WalletFrame::removeWallet(const QString &name)
+void WalletFrame::removeWallet(const QString &name)
 {
-    if (mapWalletViews.count(name) == 0)
-        return false;
+    if (mapWalletViews.count(name) == 0) return;
 
     WalletView *walletView = mapWalletViews.take(name);
     walletStack->removeWidget(walletView);
     delete walletView;
-    return true;
 }
 
 void WalletFrame::removeAllWallets()
@@ -168,6 +159,20 @@ void WalletFrame::gotoAddTokenPage()
     QMap<QString, WalletView*>::const_iterator i;
     for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
         i.value()->gotoAddTokenPage();
+}
+
+void WalletFrame::gotoDelegationPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoDelegationPage();
+}
+
+void WalletFrame::gotoSuperStakerPage()
+{
+    QMap<QString, WalletView*>::const_iterator i;
+    for (i = mapWalletViews.constBegin(); i != mapWalletViews.constEnd(); ++i)
+        i.value()->gotoSuperStakerPage();
 }
 
 void WalletFrame::gotoReceiveCoinsPage()

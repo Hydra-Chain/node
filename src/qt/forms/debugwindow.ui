@@ -598,6 +598,9 @@
          </item>
          <item>
           <widget class="QLineEdit" name="lineEdit">
+           <property name="maxLength">
+            <number>20000000</number>
+           </property>
            <property name="placeholderText">
             <string/>
            </property>

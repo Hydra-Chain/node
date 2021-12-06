@@ -81,8 +81,8 @@ public:
         The wallet model represents a bitcoin wallet, and offers access to the list of transactions, address book and sending
         functionality.
     */
-    bool addWallet(WalletModel *walletModel);
-    bool removeWallet(WalletModel* walletModel);
+    void addWallet(WalletModel *walletModel);
+    void removeWallet(WalletModel* walletModel);
     void removeAllWallets();
     void setTabBarInfo(QObject* into);
 #endif // ENABLE_WALLET
@@ -149,6 +149,9 @@ private:
     QAction* sendTokenAction = nullptr;
     QAction* receiveTokenAction = nullptr;
     QAction* addTokenAction = nullptr;
+    QAction* delegationAction = nullptr;
+    QAction* superStakerAction = nullptr;
+    QAction* walletStakeAction = nullptr;
     QAction* stakeAction = nullptr;
 
     QLabel *m_wallet_selector_label = nullptr;
@@ -220,8 +223,8 @@ public Q_SLOTS:
     void message(const QString &title, const QString &message, unsigned int style, bool *ret = nullptr);
 
 #ifdef ENABLE_WALLET
-    bool setCurrentWallet(const QString& name);
-    bool setCurrentWalletBySelectorIndex(int index);
+    void setCurrentWallet(const QString& name);
+    void setCurrentWalletBySelectorIndex(int index);
     /** Set the UI status indicators based on the currently selected wallet.
     */
 //    void updateWalletStatus();
@@ -274,6 +277,10 @@ private Q_SLOTS:
     void gotoAddTokenPage();
     /** Switch to stake page */
     void gotoStakePage();
+    /** Switch to delegation page */
+    void gotoDelegationPage();
+    /** Switch to super staker page */
+    void gotoSuperStakerPage();
 
     /** Show Sign/Verify Message dialog and switch to sign message tab */
     void gotoSignMessageTab(QString addr = "");

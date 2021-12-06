@@ -69,6 +69,8 @@ struct Params {
     int QIP9Height;
     /** Block height at which Muir Glacier fork becomse active*/
     int MuirGlacierHeight;
+    /** Block height at which Offline Staking becomes active */
+    int nOfflineStakeHeight;
 
     /**
      * Minimum blocks including miner confirmation of the total of 2016 blocks in a retargeting period,
@@ -103,6 +105,10 @@ struct Params {
     int nMPoSRewardRecipients;
     int nFixUTXOCacheHFHeight;
     int nEnableHeaderSignatureHeight;
+    int nCheckpointSpan;
+    uint160 delegationsAddress;
+    int nLastMPoSBlock;
+
 };
 } // namespace Consensus
 

@@ -116,8 +116,7 @@ static std::string DummyAddress(const CChainParams &params)
 void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent)
 {
     parent->setFocusProxy(widget);
-
-    widget->setFont(fixedPitchFont());
+    
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
     widget->setPlaceholderText(QObject::tr("Enter a HYDRA address (e.g. %1)").arg(
@@ -271,6 +270,11 @@ QList<QModelIndex> getEntryData(QAbstractItemView *view, int column)
     if(!view || !view->selectionModel())
         return QList<QModelIndex>();
     return view->selectionModel()->selectedRows(column);
+}
+
+QString getDefaultDataDirectory()
+{
+    return boostPathToQString(GetDefaultDataDir());
 }
 
 QString getSaveFileName(QWidget *parent, const QString &caption, const QString &dir,
@@ -672,7 +676,7 @@ fs::path static GetAutostartFilePath()
     std::string chain = gArgs.GetChainName();
     if (chain == CBaseChainParams::MAIN)
         return GetAutostartDir() / "hydra.desktop";
-    return GetAutostartDir() / strprintf("hydra-%s.lnk", chain);
+    return GetAutostartDir() / strprintf("hydra-%s.desktop", chain);
 }
 
 bool GetStartOnSystemStartup()
@@ -991,6 +995,15 @@ void formatToolButtons(QToolButton *btn1, QToolButton *btn2, QToolButton *btn3)
         QToolButton* btn = btnList[i];
         btn->setIconSize(QSize(16, 16));
     }
+}
+
+QString cutString(const QString &text, int length)
+{
+    if(text.length() > length + 3)
+    {
+        return text.left(length) + "...";
+    }
+    return text;
 }
 
 } // namespace GUIUtil

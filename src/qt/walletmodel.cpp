@@ -14,6 +14,9 @@
 #include <qt/tokenitemmodel.h>
 #include <qt/tokentransactiontablemodel.h>
 #include <qt/contracttablemodel.h>
+#include <qt/delegationitemmodel.h>
+#include <qt/superstakeritemmodel.h>
+#include <qt/delegationstakeritemmodel.h>
 
 #include <interfaces/handler.h>
 #include <interfaces/node.h>
@@ -61,6 +64,9 @@ WalletModel::WalletModel(std::unique_ptr<interfaces::Wallet> wallet, interfaces:
     recentRequestsTableModel(0),
     tokenItemModel(0),
     tokenTransactionTableModel(0),
+    delegationItemModel(nullptr),
+    superStakerItemModel(nullptr),
+    delegationStakerItemModel(nullptr),
     cachedEncryptionStatus(Unencrypted),
     cachedNumBlocks(0),
     nWeight(0),
@@ -76,6 +82,9 @@ WalletModel::WalletModel(std::unique_ptr<interfaces::Wallet> wallet, interfaces:
     recentRequestsTableModel = new RecentRequestsTableModel(this);
     tokenItemModel = new TokenItemModel(this);
     tokenTransactionTableModel = new TokenTransactionTableModel(platformStyle, this);
+    delegationItemModel = new DelegationItemModel(this);
+    superStakerItemModel = new SuperStakerItemModel(this);
+    delegationStakerItemModel = new DelegationStakerItemModel(this);
 
     // This timer will be fired repeatedly to update the balance
     WalletWorker * worker = new WalletWorker(this);
@@ -152,6 +161,8 @@ void WalletModel::pollBalanceChanged()
         if(cachedNumBlocksChanged)
         {
             checkTokenBalanceChanged();
+            checkDelegationChanged();
+            checkSuperStakerChanged();
         }
 
         if(balanceChanged)
@@ -188,6 +199,22 @@ void WalletModel::checkTokenBalanceChanged()
     if(tokenItemModel)
     {
         tokenItemModel->checkTokenBalanceChanged();
+    }
+}
+
+void WalletModel::checkDelegationChanged()
+{
+    if(delegationItemModel)
+    {
+        delegationItemModel->checkDelegationChanged();
+    }
+}
+
+void WalletModel::checkSuperStakerChanged()
+{
+    if(superStakerItemModel)
+    {
+        superStakerItemModel->checkSuperStakerChanged();
     }
 }
 
@@ -314,8 +341,9 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
         // reject absurdly high fee. (This can never happen because the
         // wallet caps the fee at maxTxFee. This merely serves as a
         // belt-and-suspenders check)
-        if (nFeeRequired > m_node.getMaxTxFee())
+        if (nFeeRequired > m_node.getMaxTxFee()) {
             return AbsurdFee;
+        }
     }
 
     return SendCoinsReturn(OK);
@@ -347,11 +375,11 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction &tran
 
         auto& newTx = transaction.getWtx();
         std::string rejectReason;
-        if (!newTx->commit({} /* mapValue */, std::move(vOrderForm), rejectReason))
+        if (!wallet().commitTransaction(newTx, {} /* mapValue */, std::move(vOrderForm), rejectReason))
             return SendCoinsReturn(TransactionCommitFailed, QString::fromStdString(rejectReason));
 
         CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
-        ssTx << newTx->get();
+        ssTx << *newTx;
         transaction_array.append(&(ssTx[0]), ssTx.size());
     }
 
@@ -420,6 +448,21 @@ TokenItemModel *WalletModel::getTokenItemModel()
 TokenTransactionTableModel *WalletModel::getTokenTransactionTableModel()
 {
     return tokenTransactionTableModel;
+}
+
+DelegationItemModel *WalletModel::getDelegationItemModel()
+{
+    return delegationItemModel;
+}
+
+SuperStakerItemModel *WalletModel::getSuperStakerItemModel()
+{
+    return superStakerItemModel;
+}
+
+DelegationStakerItemModel *WalletModel::getDelegationStakerItemModel()
+{
+    return delegationStakerItemModel;
 }
 
 WalletModel::EncryptionStatus WalletModel::getEncryptionStatus() const

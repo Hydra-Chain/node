@@ -21,9 +21,7 @@
 #include <wallet/rpcwallet.h>
 #include <wallet/wallet.h>
 #include <pow.h>
-#ifdef ENABLE_BITCORE_RPC
 #include <txmempool.h>
-#endif
 #include <util/system.h>
 #include <util/strencodings.h>
 #include <locktrip/dgp.h>
@@ -205,7 +203,6 @@ UniValue getdgpinfo(const JSONRPCRequest& request)
 }
 
 /////////////////////////////////////////////////////////////////////// // qtum
-#ifdef ENABLE_BITCORE_RPC
 bool getAddressesFromParams(const UniValue& params, std::vector<std::pair<uint256, int> > &addresses)
 {
     if (params[0].isStr()) {
@@ -843,7 +840,6 @@ UniValue getaddresstxids(const JSONRPCRequest& request)
     return result;
 }
 ///////////////////////////////////////////////////////////////////////
-#endif
 
 static UniValue createmultisig(const JSONRPCRequest& request)
 {
@@ -1512,7 +1508,6 @@ static const CRPCCommand commands[] =
     { "hidden",             "echo",                   &echo,                   {"arg0","arg1","arg2","arg3","arg4","arg5","arg6","arg7","arg8","arg9"}},
     { "hidden",             "echojson",               &echo,                   {"arg0","arg1","arg2","arg3","arg4","arg5","arg6","arg7","arg8","arg9"}},
 
-#ifdef ENABLE_BITCORE_RPC
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////// // qtum
     { "control",            "getdgpinfo",             &getdgpinfo,             {} },
     { "util",               "getaddresstxids",        &getaddresstxids,        {"addresses"} },
@@ -1523,7 +1518,6 @@ static const CRPCCommand commands[] =
     { "util",               "getblockhashes",         &getblockhashes,         {"high","low","options"} },
     { "util",               "getspentinfo",           &getspentinfo,           {"argument"} },
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#endif
 };
 // clang-format on
 

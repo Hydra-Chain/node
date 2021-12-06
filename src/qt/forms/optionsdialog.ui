@@ -259,6 +259,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="superStaking">
+         <property name="text">
+          <string>Enable s&amp;uper staking</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="reindexButton">
          <property name="toolTip">
           <string>Reindex the blockchain from the beginning and reconstruct the wallet transactions.</string>

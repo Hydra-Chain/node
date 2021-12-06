@@ -55,6 +55,7 @@ public:
         PruneSize,              // int
         DatabaseCache,          // int
         LogEvents,              // bool
+        SuperStaking,           // bool
         SpendZeroConfChange,    // bool
         ZeroBalanceAddressToken,// bool
         Listen,                 // bool
@@ -85,6 +86,9 @@ public:
     bool getCheckForUpdates() const { return fCheckForUpdates; }
     bool getZeroBalanceAddressToken() const { return bZeroBalanceAddressToken; }
     void setWalletReindex();
+
+    /* Explicit setters */
+    void SetPrune(bool prune, bool force = false);
 
     /* Restart flag helper */
     void setRestartRequired(bool fRequired);

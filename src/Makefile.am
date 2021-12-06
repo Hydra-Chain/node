@@ -211,6 +211,8 @@ BITCOIN_CORE_H = \
   util/moneystr.h \
   util/time.h \
   util/convert.h \
+  util/signstr.h \
+  util/contractabi.h \
   validation.h \
   validationinterface.h \
   versionbits.h \
@@ -239,6 +241,8 @@ BITCOIN_CORE_H = \
   qtum/qtumDGP.h \
   qtum/storageresults.h \
   qtum/qtumutils.h \
+  qtum/qtumdelegation.h \
+  util/contractabi.cpp \
   locktrip/economy.h \
   locktrip/contract-proxy.h \
   locktrip/dgp.h \
@@ -315,6 +319,7 @@ libbitcoin_server_a_SOURCES = \
   locktrip/price-oracle.cpp \
   consensus/consensus.cpp \
   qtum/storageresults.cpp \
+  qtum/qtumdelegation.cpp \
   $(BITCOIN_CORE_H)
 
 if !ENABLE_WALLET

@@ -66,7 +66,6 @@ static void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& 
     }
 }
 
-#ifdef ENABLE_BITCORE_RPC
 void TxToJSONExpanded(const CTransaction& tx, const uint256 hashBlock, UniValue& entry,
                       int nHeight = 0, int nConfirmations = 0, int nBlockTime = 0)
 {
@@ -161,7 +160,6 @@ void TxToJSONExpanded(const CTransaction& tx, const uint256 hashBlock, UniValue&
         }
     }
 }
-#endif
 
 static UniValue gethexaddress(const JSONRPCRequest& request) {
     if (request.fHelp || request.params.size() < 1 || request.params.size() > 1)
@@ -359,12 +357,11 @@ static UniValue getrawtransaction(const JSONRPCRequest& request)
         return EncodeHexTx(*tx, RPCSerializationFlags());
     }
 
-#ifdef ENABLE_BITCORE_RPC
     //////////////////////////////////////////////////////// // qtum
     int nHeight = 0;
     int nConfirmations = 0;
     int nBlockTime = 0;
-    {
+    if(fAddressIndex) {
         LOCK(cs_main);
         BlockMap::iterator mi = mapBlockIndex.find(hash_block);
         if (mi != mapBlockIndex.end() && (*mi).second) {
@@ -381,16 +378,15 @@ static UniValue getrawtransaction(const JSONRPCRequest& request)
         }
     }
     ////////////////////////////////////////////////////////
-#endif
 
     UniValue result(UniValue::VOBJ);
     if (blockindex) result.pushKV("in_active_chain", in_active_chain);
-#ifdef ENABLE_BITCORE_RPC
-    result.pushKV("hex", EncodeHexTx(*tx, RPCSerializationFlags()));
-    TxToJSONExpanded(*tx, hash_block, result, nHeight, nConfirmations, nBlockTime);
-#else
-    TxToJSON(*tx, hash_block, result);
-#endif
+    if(fAddressIndex) {
+        result.pushKV("hex", EncodeHexTx(*tx, RPCSerializationFlags()));
+        TxToJSONExpanded(*tx, hash_block, result, nHeight, nConfirmations, nBlockTime);
+    } else {
+        TxToJSON(*tx, hash_block, result);
+    }
     return result;
 }
 

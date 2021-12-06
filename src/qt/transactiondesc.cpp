@@ -26,6 +26,7 @@
 #include <policy/policy.h>
 #include <consensus/params.h>
 #include <qt/guiconstants.h>
+#include <wallet/ismine.h>
 
 #include <stdint.h>
 #include <string>

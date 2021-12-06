@@ -23,6 +23,9 @@ static const int MIN_PEER_PROTO_VERSION = 70018;
 //! disconnect from peers older than this proto version after QIP7
 static const int MIN_PEER_PROTO_VERSION_AFTER_QIP7 = 70018;
 
+//! disconnect from peers older than this proto version after offline stake
+static const int MIN_PEER_PROTO_VERSION_AFTER_OFFLINESTAKE = 70018;
+
 //! nTime field added to CAddress, starting with this version;
 //! if possible, avoid requesting addresses nodes older than this
 static const int CADDR_TIME_VERSION = 31402;

@@ -63,4 +63,10 @@ static const QString QTUM_INFO_TESTNET = "<a href='https://testexplorer.hydracha
 #define QAPP_APP_NAME_TESTNET "HYDRA-Qt-testnet"
 #define QAPP_APP_NAME_REGTEST "HYDRA-Qt-regtest"
 
+/* One gigabyte (GB) in bytes */
+static constexpr uint64_t GB_BYTES{1000000000};
+
+// Default prune target displayed in GUI.
+static constexpr int DEFAULT_PRUNE_TARGET_GB{2};
+
 #endif // BITCOIN_QT_GUICONSTANTS_H

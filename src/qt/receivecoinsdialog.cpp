@@ -110,12 +110,12 @@ void ReceiveCoinsDialog::setModel(WalletModel *_model)
         columnResizingFixer = new GUIUtil::TableViewLastColumnResizingFixer(tableView, AMOUNT_MINIMUM_COLUMN_WIDTH, DATE_COLUMN_WIDTH, this);
 
         if (model->wallet().getDefaultAddressType() == OutputType::BECH32) {
-            ui->useBech32->setCheckState(Qt::Checked);
+            ui->useLegacyAddress->setCheckState(Qt::Unchecked);
         } else {
-            ui->useBech32->setCheckState(Qt::Unchecked);
+            ui->useLegacyAddress->setCheckState(Qt::Checked);
         }
 
-        ui->useBech32->setVisible(model->wallet().getDefaultAddressType() != OutputType::LEGACY);
+        ui->useLegacyAddress->setVisible(model->wallet().getDefaultAddressType() != OutputType::LEGACY);
 
         // eventually disable the main receive button if private key operations are disabled
         ui->receiveButton->setEnabled(!model->privateKeysDisabled());
@@ -209,7 +209,7 @@ void ReceiveCoinsDialog::on_receiveButton_clicked()
         }
     } else {
         /* Generate new receiving address */
-		if (ui->useBech32->isChecked()) {
+		if (!ui->useLegacyAddress->isChecked()) {
 	        address_type = OutputType::BECH32;
 	    } else {
 	        address_type = model->wallet().getDefaultAddressType();

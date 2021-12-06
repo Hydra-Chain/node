@@ -6,111 +6,12 @@ bin_PROGRAMS += qt/hydra-qt
 EXTRA_LIBRARIES += qt/libbitcoinqt.a
 
 # bitcoin qt core #
-QT_TS = \
-  qt/locale/bitcoin_af.ts \
-  qt/locale/bitcoin_af_ZA.ts \
-  qt/locale/bitcoin_ar.ts \
-  qt/locale/bitcoin_be_BY.ts \
-  qt/locale/bitcoin_bg_BG.ts \
-  qt/locale/bitcoin_bg.ts \
-  qt/locale/bitcoin_bn.ts \
-  qt/locale/bitcoin_bs.ts \
-  qt/locale/bitcoin_ca_ES.ts \
-  qt/locale/bitcoin_ca.ts \
-  qt/locale/bitcoin_ca@valencia.ts \
-  qt/locale/bitcoin_cs.ts \
-  qt/locale/bitcoin_cy.ts \
-  qt/locale/bitcoin_da.ts \
-  qt/locale/bitcoin_de_DE.ts \
-  qt/locale/bitcoin_de.ts \
-  qt/locale/bitcoin_el_GR.ts \
-  qt/locale/bitcoin_el.ts \
-  qt/locale/bitcoin_en_AU.ts \
-  qt/locale/bitcoin_en_GB.ts \
-  qt/locale/bitcoin_en.ts \
-  qt/locale/bitcoin_en_US.ts \
-  qt/locale/bitcoin_eo.ts \
-  qt/locale/bitcoin_es_419.ts \
-  qt/locale/bitcoin_es_AR.ts \
-  qt/locale/bitcoin_es_CL.ts \
-  qt/locale/bitcoin_es_CO.ts \
-  qt/locale/bitcoin_es_DO.ts \
-  qt/locale/bitcoin_es_ES.ts \
-  qt/locale/bitcoin_es_MX.ts \
-  qt/locale/bitcoin_es.ts \
-  qt/locale/bitcoin_es_UY.ts \
-  qt/locale/bitcoin_es_VE.ts \
-  qt/locale/bitcoin_et_EE.ts \
-  qt/locale/bitcoin_et.ts \
-  qt/locale/bitcoin_eu_ES.ts \
-  qt/locale/bitcoin_fa_IR.ts \
-  qt/locale/bitcoin_fa.ts \
-  qt/locale/bitcoin_fi.ts \
-  qt/locale/bitcoin_fr_CA.ts \
-  qt/locale/bitcoin_fr_FR.ts \
-  qt/locale/bitcoin_fr.ts \
-  qt/locale/bitcoin_gl.ts \
-  qt/locale/bitcoin_he_IL.ts \
-  qt/locale/bitcoin_he.ts \
-  qt/locale/bitcoin_hi_IN.ts \
-  qt/locale/bitcoin_hr.ts \
-  qt/locale/bitcoin_hu.ts \
-  qt/locale/bitcoin_id_ID.ts \
-  qt/locale/bitcoin_id.ts \
-  qt/locale/bitcoin_it_IT.ts \
-  qt/locale/bitcoin_it.ts \
-  qt/locale/bitcoin_ja_JP.ts \
-  qt/locale/bitcoin_ja.ts \
-  qt/locale/bitcoin_ka.ts \
-  qt/locale/bitcoin_kk_KZ.ts \
-  qt/locale/bitcoin_ko_KR.ts \
-  qt/locale/bitcoin_ku_IQ.ts \
-  qt/locale/bitcoin_ky.ts \
-  qt/locale/bitcoin_la.ts \
-  qt/locale/bitcoin_lt.ts \
-  qt/locale/bitcoin_lv_LV.ts \
-  qt/locale/bitcoin_mk_MK.ts \
-  qt/locale/bitcoin_mn.ts \
-  qt/locale/bitcoin_ms_MY.ts \
-  qt/locale/bitcoin_my.ts \
-  qt/locale/bitcoin_nb_NO.ts \
-  qt/locale/bitcoin_nb.ts \
-  qt/locale/bitcoin_ne.ts \
-  qt/locale/bitcoin_nl_NL.ts \
-  qt/locale/bitcoin_nl.ts \
-  qt/locale/bitcoin_pam.ts \
-  qt/locale/bitcoin_pl.ts \
-  qt/locale/bitcoin_pt_BR.ts \
-  qt/locale/bitcoin_pt_PT.ts \
-  qt/locale/bitcoin_ro_RO.ts \
-  qt/locale/bitcoin_ro.ts \
-  qt/locale/bitcoin_ru_RU.ts \
-  qt/locale/bitcoin_ru.ts \
-  qt/locale/bitcoin_si.ts \
-  qt/locale/bitcoin_sk.ts \
-  qt/locale/bitcoin_sl_SI.ts \
-  qt/locale/bitcoin_sq.ts \
-  qt/locale/bitcoin_sr@latin.ts \
-  qt/locale/bitcoin_sr.ts \
-  qt/locale/bitcoin_sv.ts \
-  qt/locale/bitcoin_ta.ts \
-  qt/locale/bitcoin_te.ts \
-  qt/locale/bitcoin_th_TH.ts \
-  qt/locale/bitcoin_th.ts \
-  qt/locale/bitcoin_tr_TR.ts \
-  qt/locale/bitcoin_tr.ts \
-  qt/locale/bitcoin_uk.ts \
-  qt/locale/bitcoin_ur_PK.ts \
-  qt/locale/bitcoin_uz@Cyrl.ts \
-  qt/locale/bitcoin_vi.ts \
-  qt/locale/bitcoin_vi_VN.ts \
-  qt/locale/bitcoin_zh_CN.ts \
-  qt/locale/bitcoin_zh_HK.ts \
-  qt/locale/bitcoin_zh.ts \
-  qt/locale/bitcoin_zh_TW.ts
+include Makefile.qt_locale.include
 
 QT_FORMS_UI = \
+  qt/forms/adddelegationpage.ui \
   qt/forms/addressbookpage.ui \
+  qt/forms/addsuperstakerpage.ui \
   qt/forms/addtokenpage.ui \
   qt/forms/askpassphrasedialog.ui \
   qt/forms/callcontract.ui \
@@ -118,8 +19,12 @@ QT_FORMS_UI = \
   qt/forms/contractbookpage.ui \
   qt/forms/contractresult.ui \
   qt/forms/createcontract.ui \
+  qt/forms/delegationitemwidget.ui \
+  qt/forms/delegationpage.ui \
+  qt/forms/delegationsstakerdialog.ui \
   qt/forms/editaddressdialog.ui \
   qt/forms/editcontractinfodialog.ui \
+  qt/forms/editsuperstakerdialog.ui \
   qt/forms/helpmessagedialog.ui \
   qt/forms/intro.ui \
   qt/forms/modaloverlay.ui \
@@ -130,6 +35,7 @@ QT_FORMS_UI = \
   qt/forms/receivecoinsdialog.ui \
   qt/forms/receiverequestdialog.ui \
   qt/forms/receivetokenpage.ui \
+  qt/forms/removedelegationpage.ui \
   qt/forms/restoredialog.ui \
   qt/forms/debugwindow.ui \
   qt/forms/stakepage.ui \
@@ -139,6 +45,10 @@ QT_FORMS_UI = \
   qt/forms/sendtocontract.ui \
   qt/forms/sendtokenpage.ui \
   qt/forms/signverifymessagedialog.ui \
+  qt/forms/splitutxopage.ui \
+  qt/forms/superstakeritemwidget.ui \
+  qt/forms/superstakerconfigdialog.ui \
+  qt/forms/superstakerpage.ui \
   qt/forms/titlebar.ui \
   qt/forms/tokendescdialog.ui \
   qt/forms/transactiondescdialog.ui
@@ -148,9 +58,11 @@ QT_MOC_CPP = \
   qt/moc_abiparam.cpp \
   qt/moc_abiparamitem.cpp \
   qt/moc_abiparamsfield.cpp \
+  qt/moc_adddelegationpage.cpp \
   qt/moc_addressbookpage.cpp \
   qt/moc_addressfield.cpp \
   qt/moc_addresstablemodel.cpp \
+  qt/moc_addsuperstakerpage.cpp \
   qt/moc_addtokenpage.cpp \
   qt/moc_askpassphrasedialog.cpp \
   qt/moc_bantablemodel.cpp \
@@ -168,8 +80,16 @@ QT_MOC_CPP = \
   qt/moc_contracttablemodel.cpp \
   qt/moc_createcontract.cpp \
   qt/moc_csvmodelwriter.cpp \
+  qt/moc_delegationfilterproxy.cpp \
+  qt/moc_delegationitemmodel.cpp \
+  qt/moc_delegationitemwidget.cpp \
+  qt/moc_delegationlistwidget.cpp \
+  qt/moc_delegationpage.cpp \
+  qt/moc_delegationsstakerdialog.cpp \
+  qt/moc_delegationstakeritemmodel.cpp \
   qt/moc_editaddressdialog.cpp \
   qt/moc_editcontractinfodialog.cpp \
+  qt/moc_editsuperstakerdialog.cpp \
   qt/moc_guiutil.cpp \
   qt/moc_intro.cpp \
   qt/moc_macdockiconhandler.cpp \
@@ -192,9 +112,11 @@ QT_MOC_CPP = \
   qt/moc_receiverequestdialog.cpp \
   qt/moc_receivetokenpage.cpp \
   qt/moc_recentrequeststablemodel.cpp \
+  qt/moc_removedelegationpage.cpp \
   qt/moc_restoredialog.cpp \
   qt/moc_rpcconsole.cpp \
   qt/moc_stakepage.cpp \
+  qt/moc_stakerdelegationview.cpp \
   qt/moc_sendcoinsdialog.cpp \
   qt/moc_votingpage.cpp \
   qt/moc_sendcoinsentry.cpp \
@@ -202,6 +124,12 @@ QT_MOC_CPP = \
   qt/moc_sendtokenpage.cpp \
   qt/moc_signverifymessagedialog.cpp \
   qt/moc_splashscreen.cpp \
+  qt/moc_splitutxopage.cpp \
+  qt/moc_superstakeritemwidget.cpp \
+  qt/moc_superstakerlistwidget.cpp \
+  qt/moc_superstakerconfigdialog.cpp \
+  qt/moc_superstakerpage.cpp \
+  qt/moc_superstakeritemmodel.cpp \
   qt/moc_tabbarinfo.cpp \
   qt/moc_titlebar.cpp \
   qt/moc_tokenamountfield.cpp \
@@ -236,6 +164,8 @@ QT_MOC = \
   qt/rpcconsole.moc \
   qt/tokenamountfield.moc \
   qt/tokenitemmodel.moc \
+  qt/delegationitemmodel.moc \
+  qt/superstakeritemmodel.moc \
   qt/walletmodel.moc
 
 QT_QRC_CPP = qt/qrc_bitcoin.cpp
@@ -252,9 +182,11 @@ BITCOIN_QT_H = \
   qt/abiparam.h \
   qt/abiparamitem.h \
   qt/abiparamsfield.h \
+  qt/adddelegationpage.h \
   qt/addressbookpage.h \
   qt/addressfield.h \
   qt/addresstablemodel.h \
+  qt/addsuperstakerpage.h \
   qt/addtokenpage.h \
   qt/askpassphrasedialog.h \
   qt/bantablemodel.h \
@@ -267,14 +199,22 @@ BITCOIN_QT_H = \
   qt/clientmodel.h \
   qt/coincontroldialog.h \
   qt/coincontroltreewidget.h \
-  qt/contractabi.h \
+  qt/contractutil.h \
   qt/contractbookpage.h \
   qt/contractresult.h \
   qt/contracttablemodel.h \
   qt/createcontract.h \
   qt/csvmodelwriter.h \
+  qt/delegationfilterproxy.h \
+  qt/delegationitemwidget.h \
+  qt/delegationlistwidget.h \
+  qt/delegationitemmodel.h \
+  qt/delegationpage.h \
+  qt/delegationsstakerdialog.h \
+  qt/delegationstakeritemmodel.h \
   qt/editaddressdialog.h \
   qt/editcontractinfodialog.h \
+  qt/editsuperstakerdialog.h \
   qt/eventlog.h \
   qt/execrpccommand.h \
   qt/guiconstants.h \
@@ -303,6 +243,7 @@ BITCOIN_QT_H = \
   qt/receiverequestdialog.h \
   qt/receivetokenpage.h \
   qt/recentrequeststablemodel.h \
+  qt/removedelegationpage.h \
   qt/restoredialog.h \
   qt/rpcconsole.h \
   qt/runguard.h \
@@ -313,8 +254,15 @@ BITCOIN_QT_H = \
   qt/sendtokenpage.h \
   qt/signverifymessagedialog.h \
   qt/splashscreen.h \
+  qt/splitutxopage.h \
   qt/stakepage.h \
+  qt/stakerdelegationview.h \
   qt/styleSheet.h \
+  qt/superstakeritemwidget.h \
+  qt/superstakeritemmodel.h \
+  qt/superstakerlistwidget.h \
+  qt/superstakerconfigdialog.h \
+  qt/superstakerpage.h \
   qt/tabbarinfo.h \
   qt/titlebar.h \
   qt/token.h \
@@ -361,11 +309,13 @@ RES_ICONS = \
   qt/res/icons/connect2.png \
   qt/res/icons/connect3.png \
   qt/res/icons/connect4.png \
+  qt/res/icons/configure.png \
   qt/res/icons/debugwindow.png \
   qt/res/icons/edit.png \
   qt/res/icons/editcopy.png \
   qt/res/icons/editpaste.png \
   qt/res/icons/export.png \
+  qt/res/icons/import.png \
   qt/res/icons/eye.png \
   qt/res/icons/eye_minus.png \
   qt/res/icons/eye_plus.png \
@@ -414,7 +364,10 @@ RES_ICONS = \
   qt/res/icons/send_to.png \
   qt/res/icons/voting.png \
   qt/res/icons/show.png \
-  qt/res/icons/token.png
+  qt/res/icons/token.png \
+  qt/res/icons/split.png \
+  qt/res/icons/delegate.png \
+  qt/res/icons/superstake.png
 
 BITCOIN_QT_BASE_CPP = \
   qt/bantablemodel.cpp \
@@ -424,6 +377,8 @@ BITCOIN_QT_BASE_CPP = \
   qt/bitcoinunits.cpp \
   qt/clientmodel.cpp \
   qt/csvmodelwriter.cpp \
+  qt/delegationitemmodel.cpp \
+  qt/delegationstakeritemmodel.cpp \
   qt/guiutil.cpp \
   qt/intro.cpp \
   qt/modaloverlay.cpp \
@@ -441,12 +396,14 @@ BITCOIN_QT_BASE_CPP = \
   qt/qvaluecombobox.cpp \
   qt/rpcconsole.cpp \
   qt/splashscreen.cpp \
+  qt/splitutxopage.cpp \
   qt/styleSheet.cpp \
   qt/tabbarinfo.cpp \
   qt/titlebar.cpp \
   qt/token.cpp \
   qt/tokenamountfield.cpp \
   qt/tokenitemmodel.cpp \
+  qt/superstakeritemmodel.cpp \
   qt/trafficgraphwidget.cpp \
   qt/utilitydialog.cpp \
   qt/qtumversionchecker.cpp
@@ -458,23 +415,31 @@ BITCOIN_QT_WALLET_CPP = \
   qt/abiparam.cpp \
   qt/abiparamitem.cpp \
   qt/abiparamsfield.cpp \
+  qt/adddelegationpage.cpp \
   qt/addressbookpage.cpp \
   qt/addressfield.cpp \
   qt/addresstablemodel.cpp \
+  qt/addsuperstakerpage.cpp \
   qt/addtokenpage.cpp \
   qt/askpassphrasedialog.cpp \
   qt/callcontract.cpp \
   qt/coincontroldialog.cpp \
   qt/coincontroltreewidget.cpp \
-  qt/contractabi.cpp \
+  qt/contractutil.cpp \
   qt/contractbookpage.cpp \
   qt/contractresult.cpp \
   qt/contracttablemodel.cpp \
   qt/createcontract.cpp \
+  qt/delegationfilterproxy.cpp \
+  qt/delegationitemwidget.cpp \
+  qt/delegationlistwidget.cpp \
+  qt/delegationpage.cpp \
+  qt/delegationsstakerdialog.cpp \
   qt/eventlog.cpp \
   qt/execrpccommand.cpp \
   qt/editaddressdialog.cpp \
   qt/editcontractinfodialog.cpp \
+  qt/editsuperstakerdialog.cpp \
   qt/openuridialog.cpp \
   qt/overviewpage.cpp \
   qt/paymentrequestplus.cpp \
@@ -484,14 +449,20 @@ BITCOIN_QT_WALLET_CPP = \
   qt/receiverequestdialog.cpp \
   qt/receivetokenpage.cpp \
   qt/recentrequeststablemodel.cpp \
+  qt/removedelegationpage.cpp \
   qt/restoredialog.cpp \
   qt/stakepage.cpp \
+  qt/stakerdelegationview.cpp \
   qt/sendcoinsdialog.cpp \
   qt/votingpage.cpp \
   qt/sendcoinsentry.cpp \
   qt/sendtocontract.cpp \
   qt/sendtokenpage.cpp \
   qt/signverifymessagedialog.cpp \
+  qt/superstakeritemwidget.cpp \
+  qt/superstakerlistwidget.cpp \
+  qt/superstakerconfigdialog.cpp \
+  qt/superstakerpage.cpp \
   qt/tokendescdialog.cpp \
   qt/tokenfilterproxy.cpp \
   qt/tokentransactionview.cpp \

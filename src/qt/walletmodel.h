@@ -32,9 +32,12 @@ class PlatformStyle;
 class RecentRequestsTableModel;
 class TransactionTableModel;
 class WalletModelTransaction;
-class TokenItemModel;
+class DelegationItemModel;
 class TokenTransactionTableModel;
 class ContractTableModel;
+class TokenItemModel;
+class SuperStakerItemModel;
+class DelegationStakerItemModel;
 
 class CCoinControl;
 class CKeyID;
@@ -148,6 +151,9 @@ public:
     RecentRequestsTableModel *getRecentRequestsTableModel();
     TokenItemModel *getTokenItemModel();
     TokenTransactionTableModel *getTokenTransactionTableModel();
+    DelegationItemModel *getDelegationItemModel();
+    SuperStakerItemModel *getSuperStakerItemModel();
+    DelegationStakerItemModel *getDelegationStakerItemModel();
 
     EncryptionStatus getEncryptionStatus() const;
 
@@ -251,6 +257,9 @@ private:
     RecentRequestsTableModel *recentRequestsTableModel;
     TokenItemModel *tokenItemModel;
     TokenTransactionTableModel *tokenTransactionTableModel;
+    DelegationItemModel *delegationItemModel;
+    SuperStakerItemModel *superStakerItemModel;
+    DelegationStakerItemModel *delegationStakerItemModel;
 
     // Cache some values to be able to detect changes
     interfaces::WalletBalances m_cached_balances;
@@ -273,6 +282,8 @@ private:
     void unsubscribeFromCoreSignals();
     bool checkBalanceChanged(const interfaces::WalletBalances& new_balances);
     void checkTokenBalanceChanged();
+    void checkDelegationChanged();
+    void checkSuperStakerChanged();
 
 Q_SIGNALS:
     // Signal that balance in wallet changed
