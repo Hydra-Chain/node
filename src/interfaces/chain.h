@@ -5,7 +5,8 @@
 #ifndef BITCOIN_INTERFACES_CHAIN_H
 #define BITCOIN_INTERFACES_CHAIN_H
 
-#include <optional.h>
+#include <optional.h>               // For Optional and nullopt
+#include <primitives/transaction.h> // For CTransactionRef
 
 #include <memory>
 #include <stdint.h>

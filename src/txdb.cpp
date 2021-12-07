@@ -13,6 +13,7 @@
 #include <uint256.h>
 #include <util/system.h>
 #include <ui_interface.h>
+#include <validation.h>
 
 #include <stdint.h>
 

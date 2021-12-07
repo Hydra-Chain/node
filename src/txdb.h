@@ -10,6 +10,8 @@
 #include <dbwrapper.h>
 #include <chain.h>
 #include <primitives/block.h>
+#include <libdevcore/Common.h>
+#include <libdevcore/FixedHash.h>
 
 #include <map>
 #include <memory>
@@ -17,11 +19,13 @@
 #include <utility>
 #include <vector>
 
-#include <validation.h> // temp
+//#include <validation.h> // temp
 
 class CBlockIndex;
 class CCoinsViewDBCursor;
 class uint256;
+struct CHeightTxIndexKey;
+struct CHeightTxIndexIteratorKey;
 
 //////////////////////////////////// //qtum
 struct CAddressIndexKey;
@@ -32,6 +36,8 @@ struct CTimestampIndexKey;
 struct CTimestampBlockIndexKey;
 struct CTimestampBlockIndexValue;
 ////////////////////////////////////
+
+using valtype = std::vector<unsigned char>;
 
 //! Compensate for extra memory peak (x1.5-x1.9) at flush time.
 static constexpr int DB_PEAK_USAGE_FACTOR = 2;

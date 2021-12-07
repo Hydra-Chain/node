@@ -272,8 +272,6 @@ void Shutdown(InitInterfaces& interfaces)
         g_txindex->Stop();
         g_txindex.reset();
     }
-    ForEachBlockFilterIndex([](BlockFilterIndex& index) { index.Stop(); });
-    DestroyAllBlockFilterIndexes();
 
     // Any future callbacks will be dropped. This should absolutely be safe - if
     // missing a callback results in an unrecoverable situation, unclean shutdown
@@ -584,8 +582,8 @@ void SetupServerArgs()
     gArgs.AddArg("-headerspamfilterignoreport=<n>", strprintf("Ignore the port in the ip address when looking for header spam, determine whether or not multiple nodes can be on the same IP (default: %u)", DEFAULT_HEADER_SPAM_FILTER_IGNORE_PORT), false, OptionsCategory::OPTIONS);
     gArgs.AddArg("-cleanblockindex=<true/false>", "Clean block index (enabled by default)", false, OptionsCategory::OPTIONS);
     gArgs.AddArg("-cleanblockindextimeout=<n>", "Clean block index periodically after some time (default 600 seconds)", false, OptionsCategory::OPTIONS);
-    gArgs.AddArg("-stakingwhitelist=<address>", "Allow list delegate address. Can be specified multiple times to add multiple addresses.", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
-    gArgs.AddArg("-stakingblacklist=<address>", "Exclude list delegate address. Can be specified multiple times to add multiple addresses.", ArgsManager::ALLOW_ANY, OptionsCategory::OPTIONS);
+    gArgs.AddArg("-stakingwhitelist=<address>", "Allow list delegate address. Can be specified multiple times to add multiple addresses.", false, OptionsCategory::OPTIONS);
+    gArgs.AddArg("-stakingblacklist=<address>", "Exclude list delegate address. Can be specified multiple times to add multiple addresses.", false, OptionsCategory::OPTIONS);
 
 
     // Add the hidden options
@@ -940,7 +938,7 @@ void InitLogging()
     LogInstance().m_log_timestamps = gArgs.GetBoolArg("-logtimestamps", DEFAULT_LOGTIMESTAMPS);
     LogInstance().m_log_time_micros = gArgs.GetBoolArg("-logtimemicros", DEFAULT_LOGTIMEMICROS);
     LogInstance().m_show_evm_logs = gArgs.GetBoolArg("-showevmlogs", DEFAULT_SHOWEVMLOGS);
-    dev::g_logPost = [&](std::string const& s, char const* c){ LogInstance().LogPrintStr(s + '\n', true); 
+    dev::g_logPost = [&](std::string const& s, char const* c){ LogInstance().LogPrintStr(s + '\n', true); };
 
     fLogIPs = gArgs.GetBoolArg("-logips", DEFAULT_LOGIPS);
 

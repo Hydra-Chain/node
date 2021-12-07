@@ -10,7 +10,7 @@
 #include <vector>
 
 #include <cpp-ethereum/libdevcrypto/Common.h>
-#include "contractabi-base.h"
+#include "util/contractabi.h"
 #include "validation.h"
 #include "contract-proxy.h"
 

@@ -294,10 +294,6 @@ void OptionsModel::SetPrune(bool prune, bool force)
     // Convert prune size from GB to MiB:
     const uint64_t nPruneSizeMiB = (settings.value("nPruneSize").toInt() * GB_BYTES) >> 20;
     std::string prune_val = prune ? std::to_string(nPruneSizeMiB) : "0";
-    if (force) {
-        m_node.forceSetArg("-prune", prune_val);
-        return;
-    }
     if (!m_node.softSetArg("-prune", prune_val)) {
         addOverriddenOption("-prune");
     }

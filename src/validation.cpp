@@ -2443,7 +2443,7 @@ bool CheckReward(const CBlock &block, CValidationState &state, int nHeight, cons
             CAmount nValueDelegate = delegateOutputExist ? block.vtx[offset]->vout[2].nValue : 0;
             CAmount nMinedReward = nValueStaker + nValueDelegate - nValueCoinPrev;
             if(nReward != nMinedReward)
-                return state.Invalid(ValidationInvalidReason::CONSENSUS, error("CheckReward(): The block reward is not split correctly between the staker and the delegate"), REJECT_INVALID, "bad-cs-delegate-reward");
+                return state.Invalid(error("CheckReward(): The block reward is not split correctly between the staker and the delegate"), REJECT_INVALID, "bad-cs-delegate-reward");
         }
 
         //if only 1 then no MPoS logic required
@@ -2618,7 +2618,7 @@ bool ByteCodeExec::performByteCode(dev::eth::Permanence type){
         if(!tx.isCreation() && !globalState->addressInUse(tx.receiveAddress())){
             dev::eth::ExecutionResult execRes;
             execRes.excepted = dev::eth::TransactionException::Unknown;
-            result.push_back(ResultExecute{execRes, dev::eth::TransactionReceipt(dev::h256(), dev::u256(), dev::eth::LogEntries()), 
+            result.push_back(ResultExecute{execRes, QtumTransactionReceipt(dev::h256(), dev::h256(), dev::u256(), dev::eth::LogEntries()), 
 											CTransaction()});
             continue;
         }
@@ -3008,7 +3008,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
     bool delegateOutputExist = false;
     if (!CheckDelegationOutput(block, delegateOutputExist)) {
-        return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-delegate-output", strprintf("%s : delegation output check failed", __func__));
+        return state.Invalid(false, REJECT_INVALID, "bad-delegate-output", strprintf("%s : delegation output check failed", __func__));
     }
 
     if (block.IsProofOfStake() && pindex->nHeight > chainparams.GetConsensus().nEnableHeaderSignatureHeight && !CheckBlockInputPubKeyMatchesOutputPubKey(block, view, delegateOutputExist)) {
@@ -3232,7 +3232,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     {
         Coin coin;
         if(!view.GetCoin(block.vtx[1]->vin[0].prevout, coin)){
-            return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "stake-prevout-not-exist", strprintf("ConnectBlock() : Stake prevout does not exist %s", block.vtx[1]->vin[0].prevout.hash.ToString()));
+            return state.Invalid(false, REJECT_INVALID, "stake-prevout-not-exist", strprintf("ConnectBlock() : Stake prevout does not exist %s", block.vtx[1]->vin[0].prevout.hash.ToString()));
         }
         nValueCoinPrev = coin.out.nValue;
     }
@@ -5193,7 +5193,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
         {
             //prevoutStake must exactly match the coinstake in the block body
             if(block.vtx[1]->vin.empty() || block.prevoutStake != block.vtx[1]->vin[0].prevout){
-                return state.Invalid(ValidationInvalidReason::CONSENSUS, false, REJECT_INVALID, "bad-cs-invalid", "prevoutStake in block header does not match coinstake in block body");
+                return state.Invalid(false, REJECT_INVALID, "bad-cs-invalid", "prevoutStake in block header does not match coinstake in block body");
             }
         }
 

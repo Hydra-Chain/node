@@ -31,7 +31,6 @@
 #include <util/moneystr.h>
 #include <util/convert.h>
 #include <util/system.h>
-#include <txdb.h>
 #include <wallet/fees.h>
 #include <pos.h>
 #include <miner.h>
@@ -2636,9 +2635,6 @@ bool CWallet::AvailableDelegateCoinsForStaking(interfaces::Chain::Lock& locked_c
             throw error("No information available for address");
         }
 
-        // Sort address utxos
-        std::sort(unspentOutputs.begin(), unspentOutputs.end(), heightUtxoSort);
-
         // Add the utxos to the list if they are mature and at least the minimum value
         for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
 
@@ -3609,11 +3605,12 @@ uint64_t CWallet::GetStakeWeight(interfaces::Chain::Lock& locked_chain) const
     {
         // Get the weight of the delegated coins
         std::vector<COutPoint> vDelegateCoins;
-        SelectDelegateCoinsForStaking(locked_chain, vDelegateCoins);
+        std::map<uint160, CAmount> mDelegateWeight;
+        SelectDelegateCoinsForStaking(locked_chain, vDelegateCoins, mDelegateWeight);
         for(const COutPoint &prevout : vDelegateCoins)
         {
             Coin coinPrev;
-            if(!::ChainstateActive().CoinsTip().GetCoin(prevout, coinPrev)){
+            if(!pcoinsTip->GetCoin(prevout, coinPrev)){
                 continue;
             }
 
@@ -3624,7 +3621,7 @@ uint64_t CWallet::GetStakeWeight(interfaces::Chain::Lock& locked_chain) const
     return nWeight;
 }
 
-bool CWallet::CreateCoinStakeFromMine(interfaces::Chain::Lock& locked_chain, const FillableSigningProvider& keystore, unsigned int nBits, const CAmount& nTotalFees, uint32_t nTimeBlock, CMutableTransaction& tx, CKey& key, std::set<std::pair<const CWalletTx*,unsigned int> >& setCoins, COutPoint& headerPrevout)
+bool CWallet::CreateCoinStakeFromMine(interfaces::Chain::Lock& locked_chain, const CKeyStore& keystore, unsigned int nBits, const CAmount& nTotalFees, uint32_t nTimeBlock, CMutableTransaction& tx, CKey& key, std::set<std::pair<const CWalletTx*,unsigned int> >& setCoins, COutPoint& headerPrevout)
 {
     CBlockIndex* pindexPrev = chainActive.Tip();
     arith_uint256 bnTargetPerCoinDay;
@@ -3834,7 +3831,7 @@ bool CWallet::CreateCoinStakeFromMine(interfaces::Chain::Lock& locked_chain, con
     return true;
 }
 
-bool CWallet::CreateCoinStakeFromDelegate(interfaces::Chain::Lock& locked_chain, const FillableSigningProvider &keystore, unsigned int nBits, const CAmount& nTotalFees, uint32_t nTimeBlock, CMutableTransaction& tx, CKey& key, std::set<std::pair<const CWalletTx*,unsigned int> >& setCoins, std::vector<COutPoint>& setDelegateCoins, std::vector<unsigned char>& vchPoD, COutPoint& headerPrevout)
+bool CWallet::CreateCoinStakeFromDelegate(interfaces::Chain::Lock& locked_chain, const CKeyStore &keystore, unsigned int nBits, const CAmount& nTotalFees, uint32_t nTimeBlock, CMutableTransaction& tx, CKey& key, std::set<std::pair<const CWalletTx*,unsigned int> >& setCoins, std::vector<COutPoint>& setDelegateCoins, std::vector<unsigned char>& vchPoD, COutPoint& headerPrevout)
 {
     CBlockIndex* pindexPrev = chainActive.Tip();
     arith_uint256 bnTargetPerCoinDay;
@@ -4086,7 +4083,7 @@ bool CWallet::CanSuperStake(const std::set<std::pair<const CWalletTx*,unsigned i
     return canSuperStake;
 }
 
-bool CWallet::CreateCoinStake(interfaces::Chain::Lock& locked_chain, const FillableSigningProvider& keystore, unsigned int nBits, const CAmount& nTotalFees, uint32_t nTimeBlock, CMutableTransaction& tx, CKey& key, std::set<std::pair<const CWalletTx*,unsigned int> >& setCoins, std::vector<COutPoint>& setDelegateCoins, std::vector<unsigned char>& vchPoD, COutPoint& headerPrevout)
+bool CWallet::CreateCoinStake(interfaces::Chain::Lock& locked_chain, const CKeyStore& keystore, unsigned int nBits, const CAmount& nTotalFees, uint32_t nTimeBlock, CMutableTransaction& tx, CKey& key, std::set<std::pair<const CWalletTx*,unsigned int> >& setCoins, std::vector<COutPoint>& setDelegateCoins, std::vector<unsigned char>& vchPoD, COutPoint& headerPrevout)
 {
     // Can super stake
     bool canSuperStake = CanSuperStake(setCoins, setDelegateCoins);
@@ -5309,7 +5306,7 @@ std::shared_ptr<CWallet> CWallet::CreateWalletFromFile(interfaces::Chain& chain,
         int nStakingMinFee = gArgs.GetArg("-stakingminfee", DEFAULT_STAKING_MIN_FEE);
         if(nStakingMinFee < 0 || nStakingMinFee > 100)
         {
-            chain.initError(strprintf(_("Invalid percentage value for -stakingminfee=<n>: '%d' (must be between 0 and 100)"), nStakingMinFee));
+            InitError(strprintf(_("Invalid percentage value for -stakingminfee=<n>: '%d' (must be between 0 and 100)"), nStakingMinFee));
             return nullptr;
         }
         walletInstance->m_staking_min_fee = nStakingMinFee;
@@ -5958,7 +5955,7 @@ bool CWallet::AddDelegationEntry(const CDelegationInfo& delegation, bool fFlushO
     CDelegationInfo wdelegation = delegation;
     if(!fInsertedNew)
     {
-        wdelegation.nCreateTime = chain().getAdjustedTime();
+        wdelegation.nCreateTime = GetAdjustedTime();
     }
     else
     {
@@ -6038,7 +6035,7 @@ bool CWallet::AddSuperStakerEntry(const CSuperStakerInfo& superStaker, bool fFlu
     CSuperStakerInfo wsuperStaker = superStaker;
     if(!fInsertedNew)
     {
-        wsuperStaker.nCreateTime = chain().getAdjustedTime();
+        wsuperStaker.nCreateTime = GetAdjustedTime();
     }
     else
     {
@@ -6246,7 +6243,7 @@ void CWallet::GetStakerAddressBalance(interfaces::Chain::Lock &locked_chain, con
         if (nDepth < 1)
             continue;
 
-        uint256 hashBlock = pcoin->m_confirm.hashBlock;
+        uint256 hashBlock = pcoin->hashBlock;
         bool fHasProofOfDelegation = false;
         CBlockIndex* blockIndex = LookupBlockIndex(hashBlock);
         if(!blockIndex)

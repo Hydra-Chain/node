@@ -366,8 +366,8 @@ QString AddressTableModel::addRow(const QString &type, const QString &label, con
     else if(type == Receive)
     {
         // Generate a new address to associate with given label
-        CTxDestination dest;
-        if(!walletModel->wallet().getNewDestination(address_type, strLabel, dest))
+        CPubKey newKey;
+        if(!walletModel->wallet().getKeyFromPool(false /* internal */, newKey))
         {
             WalletModel::UnlockContext ctx(walletModel->requestUnlock());
             if(!ctx.isValid())
@@ -376,13 +376,14 @@ QString AddressTableModel::addRow(const QString &type, const QString &label, con
                 editStatus = WALLET_UNLOCK_FAILURE;
                 return QString();
             }
-            if(!walletModel->wallet().getNewDestination(address_type, strLabel, dest))
+            if(!walletModel->wallet().getKeyFromPool(false /* internal */, newKey))
             {
                 editStatus = KEY_GENERATION_FAILURE;
                 return QString();
             }
         }
-        strAddress = EncodeDestination(dest);
+        walletModel->wallet().learnRelatedScripts(newKey, address_type);
+        strAddress = EncodeDestination(GetDestinationForKey(newKey, address_type));
     }
     else
     {

@@ -246,8 +246,8 @@ BITCOIN_CORE_H = \
   locktrip/economy.h \
   locktrip/contract-proxy.h \
   locktrip/dgp.h \
-  locktrip/price-oracle.h \
-  locktrip/contractabi-base.h
+  locktrip/price-oracle.h
+  #locktrip/contractabi-base.h
 
 
 obj/build.h: FORCE
@@ -312,7 +312,6 @@ libbitcoin_server_a_SOURCES = \
   qtum/qtumstate.cpp \
   qtum/qtumtransaction.cpp \
   qtum/qtumDGP.cpp \
-  locktrip/contractabi-base.cpp \
   locktrip/economy.cpp \
   locktrip/contract-proxy.cpp \
   locktrip/dgp.cpp \
@@ -473,7 +472,6 @@ libbitcoin_common_a_SOURCES = \
   base58.cpp \
   locktrip/dgp.cpp \
   locktrip/contract-proxy.cpp \
-  locktrip/contractabi-base.cpp \
   pow.cpp \
   bech32.cpp \
   chainparams.cpp \

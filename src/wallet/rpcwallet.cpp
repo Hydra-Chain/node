@@ -520,9 +520,10 @@ static CTransactionRef SplitUTXOs(interfaces::Chain::Lock& locked_chain, CWallet
 
     // Create the transaction
     CTransactionRef tx;
-    if((nTxAmount + pwallet->m_default_max_tx_fee) <= nTotal)
+    CReserveKey reservekey(pwallet);
+    if((nTxAmount + ::maxTxFee) <= nTotal)
     {
-        if (!pwallet->CreateTransaction(locked_chain, vecSend, tx, nFeeRequired, nChangePosRet, strError, coin_control, true, 0, true)) {
+        if (!pwallet->CreateTransaction(locked_chain, vecSend, tx, reservekey, nFeeRequired, nChangePosRet, strError, coin_control, true, 0, true)) {
             throw JSONRPCError(RPC_WALLET_ERROR, strError);
         }
         nSplited = nFeeRequired;
@@ -533,7 +534,7 @@ static CTransactionRef SplitUTXOs(interfaces::Chain::Lock& locked_chain, CWallet
         CRecipient lastRecipient = vecSend[vecSend.size() - 1];
         lastRecipient.fSubtractFeeFromAmount = true;
         vecSend[vecSend.size() - 1] = lastRecipient;
-        if (!pwallet->CreateTransaction(locked_chain, vecSend, tx, nFeeRequired, nChangePosRet, strError, coin_control, true, 0, true)) {
+        if (!pwallet->CreateTransaction(locked_chain, vecSend, tx, reservekey, nFeeRequired, nChangePosRet, strError, coin_control, true, 0, true)) {
             throw JSONRPCError(RPC_WALLET_ERROR, strError);
         }
 
@@ -565,7 +566,7 @@ static CTransactionRef SplitUTXOs(interfaces::Chain::Lock& locked_chain, CWallet
                     SplitRemainder(vecSend, nValueLast2, maxValue);
                 }
 
-                if((!pwallet->CreateTransaction(locked_chain, vecSend, tx, nFeeRequired, nChangePosRet, strError, coin_control, true, 0, true))) {
+                if((!pwallet->CreateTransaction(locked_chain, vecSend, tx, reservekey, nFeeRequired, nChangePosRet, strError, coin_control, true, 0, true))) {
                     throw JSONRPCError(RPC_WALLET_ERROR, strError);
                 }
                 if(payFeeRemainder)
@@ -584,7 +585,7 @@ static CTransactionRef SplitUTXOs(interfaces::Chain::Lock& locked_chain, CWallet
 
     // Send the transaction
     CValidationState state;
-    if (!pwallet->CommitTransaction(tx, {} /* mapValue */, {} /* orderForm */, state)) {
+    if (!pwallet->CommitTransaction(tx, {} /* mapValue */, {} /* orderForm */, reservekey, g_connman.get(), state)) {
         strError = strprintf("Error: The transaction was rejected! Reason given: %s", FormatStateMessage(state));
         throw JSONRPCError(RPC_WALLET_ERROR, strError);
     }
@@ -1156,7 +1157,7 @@ UniValue SendToContract(interfaces::Chain::Lock& locked_chain, CWallet* const pw
 
     bool fBroadcast=true;
     if (params.size() > 5){
-        fBroadcast=request.params[5].get_bool();
+        fBroadcast=params[5].get_bool();
     }
 
     bool fChangeToSender=true;
@@ -1224,7 +1225,7 @@ UniValue SendToContract(interfaces::Chain::Lock& locked_chain, CWallet* const pw
 
     CAmount nGasFee=nGasPrice*nGasLimit;
 
-    CAmount curBalance = pwallet->GetBalance().m_mine_trusted;
+    CAmount curBalance = pwallet->GetBalance();
 
     // Check amount
     if (nGasFee <= 0)
@@ -1266,10 +1267,11 @@ UniValue SendToContract(interfaces::Chain::Lock& locked_chain, CWallet* const pw
     int nChangePosRet = -1;
     CRecipient recipient = {scriptPubKey, nAmount, false};
     vecSend.push_back(recipient);
+    CReserveKey reservekey(pwallet);
 
     CTransactionRef tx;
-    if (!pwallet->CreateTransaction(locked_chain, vecSend, tx, nFeeRequired, nChangePosRet, strError, coinControl, true, nGasFee, true, signSenderAddress)) {
-        if (nFeeRequired > pwallet->GetBalance().m_mine_trusted)
+    if (!pwallet->CreateTransaction(locked_chain, vecSend, tx, reservekey, nFeeRequired, nChangePosRet, strError, coinControl, true, nGasFee, true, signSenderAddress)) {
+        if (nFeeRequired > pwallet->GetBalance())
             strError = strprintf("Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds!", FormatMoney(nFeeRequired));
         throw JSONRPCError(RPC_WALLET_ERROR, strError);
     }
@@ -1287,7 +1289,7 @@ UniValue SendToContract(interfaces::Chain::Lock& locked_chain, CWallet* const pw
 
 
         CValidationState state;
-        if (!pwallet->CommitTransaction(tx, {}, {}, state))
+        if (!pwallet->CommitTransaction(tx, {}, {}, reservekey, g_connman.get(), state))
             throw JSONRPCError(RPC_WALLET_ERROR, "Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of the wallet and coins were spent in the copy but not marked as spent here.");
 
         std::string txId=tx->GetHash().GetHex();
@@ -1314,6 +1316,9 @@ static UniValue sendtocontract(const JSONRPCRequest& request)
     if (!EnsureWalletIsAvailable(pwallet, request.fHelp)) {
         return NullUniValue;
     }
+
+    QtumDGP qtumDGP(globalState.get(), fGettingValuesDGP);
+    uint64_t blockGasLimit = qtumDGP.getBlockGasLimit(chainActive.Height());
 
     auto locked_chain = pwallet->chain().lock();
     LOCK(pwallet->cs_wallet);
@@ -2184,7 +2189,7 @@ static UniValue sendmanywithdupes(const JSONRPCRequest& request)
     }
 
     if (!request.params[6].isNull()) {
-        coin_control.m_confirm_target = ParseConfirmTarget(request.params[6], pwallet->chain().estimateMaxBlocks());
+        coin_control.m_confirm_target = ParseConfirmTarget(request.params[6]);
     }
 
     if (!request.params[7].isNull()) {
