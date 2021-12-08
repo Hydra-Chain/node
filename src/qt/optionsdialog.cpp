@@ -94,6 +94,9 @@ OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
     /* remove Wallet tab in case of -disablewallet */
     if (!enableWallet) {
         ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabWallet));
+        ui->reserveBalanceLabel->setVisible(false);
+        ui->reserveBalance->setVisible(false);
+        ui->superStaking->setVisible(false);
     }
 
     /* Display elements init */

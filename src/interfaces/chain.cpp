@@ -136,20 +136,7 @@ class LockImpl : public Chain::Lock
     std::map<COutPoint, uint32_t> getImmatureStakes() override
     {
         LockAnnotation lock(::cs_main);
-        std::map<COutPoint, uint32_t> immatureStakes;
-        int height = ::chainActive.Height();
-        for(int i = 0; i < COINBASE_MATURITY -1; i++) {
-            CBlockIndex* block = ::chainActive[height - i];
-            if(block)
-            {
-                immatureStakes[block->prevoutStake] = block->nTime;
-            }
-            else
-            {
-                break;
-            }
-        }
-        return immatureStakes;
+        return GetImmatureStakes();
     }
 
 };

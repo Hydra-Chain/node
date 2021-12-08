@@ -1403,6 +1403,30 @@ bool CheckStake(const std::shared_ptr<const CBlock> pblock, CWallet& wallet)
     return true;
 }
 
+bool SleepStaker(CWallet *pwallet, u_int64_t milliseconds)
+{
+    u_int64_t seconds = milliseconds / 1000;
+    milliseconds %= 1000;
+
+    for(unsigned int i = 0; i < seconds; i++)
+    {
+        if(!pwallet->IsStakeClosing())
+            UninterruptibleSleep(std::chrono::seconds{1});
+        else
+            return false;
+    }
+
+    if(milliseconds)
+    {
+        if(!pwallet->IsStakeClosing())
+            UninterruptibleSleep(std::chrono::milliseconds{milliseconds});
+        else
+            return false;
+    }
+
+    return !pwallet->IsStakeClosing();
+}
+
 void ThreadStakeMiner(CWallet *pwallet, CConnman* connman)
 {
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
@@ -1429,25 +1453,25 @@ void ThreadStakeMiner(CWallet *pwallet, CConnman* connman)
     int nOfflineStakeHeight = Params().GetConsensus().nOfflineStakeHeight;
     bool fDelegationsContract = !Params().GetConsensus().delegationsAddress.IsNull();
 
-    while (true)
+    while (pwallet && !pwallet->IsStakeClosing())
     {
         while (pwallet->IsLocked() || !pwallet->m_enabled_staking || fReindex || fImporting)
         {
             pwallet->m_last_coin_stake_search_interval = 0;
-            MilliSleep(10000);
+            if(!SleepStaker(pwallet, 10000)) return;
         }
         //don't disable PoS mining for no connections if in regtest mode
 //        if(!regtestMode && !gArgs.GetBoolArg("-emergencystaking", false)) {
 //            while (connman->GetNodeCount(CConnman::CONNECTIONS_ALL) == 0 || IsInitialBlockDownload()) {
 //                pwallet->m_last_coin_stake_search_interval = 0;
 //                fTryToSync = true;
-//                MilliSleep(1000);
+//                if(!SleepStaker(pwallet, 1000)) return;
 //            }
 //            if (fTryToSync) {
 //                fTryToSync = false;
 //                if (connman->GetNodeCount(CConnman::CONNECTIONS_ALL) < 3 ||
 //                	chainActive.Tip()->GetBlockTime() < GetTime() - 10 * 60) {
-//                    MilliSleep(60000);
+//                    if(!SleepStaker(pwallet, 60000)) return;
 //                    continue;
 //                }
 //            }
@@ -1462,6 +1486,7 @@ void ThreadStakeMiner(CWallet *pwallet, CConnman* connman)
         std::vector<COutPoint> setDelegateCoins;
         int64_t start = GetAdjustedTime();
         {
+            if(pwallet->IsStakeClosing()) return;
             auto locked_chain = pwallet->chain().lock();
             LOCK(pwallet->cs_wallet);
             int32_t nHeight = chainActive.Height();
@@ -1544,10 +1569,10 @@ void ThreadStakeMiner(CWallet *pwallet, CConnman* connman)
                                     //if being agressive, then check more often to publish immediately when valid. This might allow you to find more blocks, 
                                     //but also increases the chance of broadcasting invalid blocks and getting DoS banned by nodes,
                                     //or receiving more stale/orphan blocks than normal. Use at your own risk.
-                                    MilliSleep(100);
+                                    if(!SleepStaker(pwallet, 100)) return;
                                 }else{
                                     //too early, so wait 3 seconds and try again
-                                    MilliSleep(3000);
+                                    if(!SleepStaker(pwallet, 3000)) return;
                                 }
                                 continue;
                             }
@@ -1565,7 +1590,7 @@ void ThreadStakeMiner(CWallet *pwallet, CConnman* connman)
                 }
             }
         }
-        MilliSleep(nMinerSleep);
+        if(!SleepStaker(pwallet, nMinerSleep)) return;
     }
 }
 
@@ -1574,6 +1599,7 @@ void StakeQtums(bool fStake, CWallet *pwallet, CConnman* connman, boost::thread_
     if (stakeThread != nullptr)
     {
         stakeThread->interrupt_all();
+        stakeThread->join_all();
         delete stakeThread;
         stakeThread = nullptr;
     }

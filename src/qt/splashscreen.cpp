@@ -22,6 +22,7 @@
 #include <QCloseEvent>
 #include <QDesktopWidget>
 #include <QPainter>
+#include <QPainterPath>
 #include <QRadialGradient>
 
 SplashScreen::SplashScreen(interfaces::Node& node, Qt::WindowFlags f, const NetworkStyle *networkStyle) :
