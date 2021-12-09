@@ -326,7 +326,7 @@ public:
         block.nNonce         = nNonce;
         block.hashStateRoot  = hashStateRoot; // qtum
         block.hashUTXORoot   = hashUTXORoot; // qtum
-        block.vchBlockSigDlgt    = block.vchBlockSigDlgt; // qtum
+        block.vchBlockSigDlgt    = vchBlockSigDlgt; // qtum
         block.prevoutStake   = prevoutStake;
         return block;
     }
