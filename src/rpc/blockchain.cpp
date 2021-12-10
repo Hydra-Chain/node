@@ -435,6 +435,24 @@ private:
     uint160 address;
 };
 
+uint64_t getDelegateWeight(const uint160& keyid, const std::map<COutPoint, uint32_t>& immatureStakes, int height)
+{
+    // Decode address
+    uint256 hashBytes;
+    int type = 0;
+    if (!DecodeIndexKey(EncodeDestination(PKHash(keyid)), hashBytes, type)) {
+        return 0;
+    }
+
+    // Get address weight
+    uint64_t weight = 0;
+    if (!GetAddressWeight(hashBytes, type, immatureStakes, height, weight)) {
+        return 0;
+    }
+
+    return weight;
+}
+
 UniValue getdelegationsforstaker(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size() != 1)
@@ -447,10 +465,11 @@ UniValue getdelegationsforstaker(const JSONRPCRequest& request)
                 },
                 RPCResult{
                 "[{\n"
-                "  \"delegate\": \"address\",                 (string)   Delegate address\n"
+                "  \"delegate\": \"address\",               (string)   Delegate address\n"
                 "  \"staker\": \"address\",                 (string)   Staker address\n"
                 "  \"fee\": n,                            (numeric)  Percentage of the reward\n"
                 "  \"blockHeight\": n,                    (numeric)  Block height\n"
+                "  \"weight\": n,                         (numeric)  Delegate weight, displayed when address index is enabled\n"
                 "  \"PoD\": \"hex\",                        (string)   Proof of delegation\n"
                 "}]\n"
                 },
@@ -488,6 +507,10 @@ UniValue getdelegationsforstaker(const JSONRPCRequest& request)
     }
     std::map<uint160, Delegation> delegations = qtumDelegation.DelegationsFromEvents(events);
 
+    // Get chain parameters
+    std::map<COutPoint, uint32_t> immatureStakes = GetImmatureStakes();
+    int height = chainActive.Height();
+
     // Fill the json object with information
     UniValue result(UniValue::VARR);
     for (std::map<uint160, Delegation>::iterator it=delegations.begin(); it!=delegations.end(); it++){
@@ -496,6 +519,10 @@ UniValue getdelegationsforstaker(const JSONRPCRequest& request)
         delegation.pushKV("staker", EncodeDestination(CKeyID(it->second.staker)));
         delegation.pushKV("fee", (int64_t)it->second.fee);
         delegation.pushKV("blockHeight", (int64_t)it->second.blockHeight);
+        if(fAddressIndex)
+        {
+            delegation.pushKV("weight", getDelegateWeight(it->first, immatureStakes, height));
+        }
         delegation.pushKV("PoD", HexStr(it->second.PoD));
         result.push_back(delegation);
     }
@@ -1447,12 +1474,13 @@ UniValue callcontract(const JSONRPCRequest& request)
     if (request.fHelp || request.params.size() < 2 || request.params.size() > 4)
         throw std::runtime_error(
             RPCHelpMan{"callcontract",
-                "\nCall contract methods offline.\n",
+                "\nCall contract methods offline, or test contract deployment offline.\n",
                 {
-                    {"address", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The contract address"},
+                    {"address", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The contract address, or empty address \"\""},
                     {"data", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The data hex string"},
                     {"senderAddress", RPCArg::Type::STR, RPCArg::Optional::OMITTED_NAMED_ARG, "The sender address string"},
                     {"gasLimit", RPCArg::Type::NUM, RPCArg::Optional::OMITTED_NAMED_ARG, "The gas limit for executing the contract."},
+                    {"amount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED_NAMED_ARG, "The amount in " + CURRENCY_UNIT + " to send. eg 0.1, default: 0"},
                 },
                 RPCResult{
             "{\n"
@@ -1486,7 +1514,9 @@ UniValue callcontract(const JSONRPCRequest& request)
                 },
                 RPCExamples{
                     HelpExampleCli("callcontract", "eb23c0b3e6042821da281a2e2364feb22dd543e3 06fdde03")
+            + HelpExampleCli("callcontract", "\"\" 60606040525b33600060006101000a81548173ffffffffffffffffffffffffffffffffffffffff02191690836c010000000000000000000000009081020402179055506103786001600050819055505b600c80605b6000396000f360606040526008565b600256")
             + HelpExampleRpc("callcontract", "eb23c0b3e6042821da281a2e2364feb22dd543e3 06fdde03")
+            + HelpExampleRpc("callcontract", "\"\" 60606040525b33600060006101000a81548173ffffffffffffffffffffffffffffffffffffffff02191690836c010000000000000000000000009081020402179055506103786001600050819055505b600c80605b6000396000f360606040526008565b600256")
                 },
             }.ToString());
  
@@ -1498,12 +1528,16 @@ UniValue callcontract(const JSONRPCRequest& request)
     if(data.size() % 2 != 0 || !CheckHex(data))
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid data (data not hex)");
 
-    if(strAddr.size() != 40 || !CheckHex(strAddr))
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Incorrect address");
- 
-    dev::Address addrAccount(strAddr);
-    if(!globalState->addressInUse(addrAccount))
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Address does not exist");
+    dev::Address addrAccount;
+    if(strAddr.size() > 0)
+    {
+        if(strAddr.size() != 40 || !CheckHex(strAddr))
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Incorrect address");
+
+        addrAccount = dev::Address(strAddr);
+        if(!globalState->addressInUse(addrAccount))
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Address does not exist");
+    }
     
     dev::Address senderAddress;
     if(request.params.size() >= 3){
@@ -1521,8 +1555,14 @@ UniValue callcontract(const JSONRPCRequest& request)
         gasLimit = request.params[3].get_int64();
     }
 
+    CAmount nAmount = 0;
+    if (request.params.size() >= 5){
+        nAmount = AmountFromValue(request.params[4]);
+        if (nAmount < 0)
+            throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount for send");
+    }
 
-    std::vector<ResultExecute> execResults = CallContract(addrAccount, ParseHex(data), senderAddress, gasLimit);
+    std::vector<ResultExecute> execResults = CallContract(addrAccount, ParseHex(data), senderAddress, gasLimit, nAmount);
 
     if(fRecordLogOpcodes){
         writeVMlog(execResults);
@@ -3607,7 +3647,7 @@ static const CRPCCommand commands[] =
     { "blockchain",         "getstorage",             &getstorage,             {"address, index, blockNum"} },
     { "blockchain",         "preciousblock",          &preciousblock,          {"blockhash"} },
     { "blockchain",         "scantxoutset",           &scantxoutset,           {"action", "scanobjects"} },
-    { "blockchain",         "callcontract",           &callcontract,           {"address","data", "senderAddress", "gasLimit"} },
+    { "blockchain",         "callcontract",           &callcontract,           {"address","data", "senderAddress", "gasLimit", "amount"} },
     /* Not shown in help */
     { "hidden",             "invalidateblock",        &invalidateblock,        {"blockhash"} },
     { "hidden",             "reconsiderblock",        &reconsiderblock,        {"blockhash"} },

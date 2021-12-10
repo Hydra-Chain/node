@@ -2319,7 +2319,8 @@ bool CheckSenderScript(const CCoinsViewCache& view, const CTransaction& tx){
 }
 
 std::vector<ResultExecute> CallContract(const dev::Address& addrContract, std::vector<unsigned char> opcode,
-										const dev::Address& sender, uint64_t gasLimit, uint64_t blockGasLimit){
+										const dev::Address& sender, uint64_t gasLimit, uint64_t blockGasLimit, 
+                                        CAmount nAmount){
     CBlock block;
     CMutableTransaction tx;
 
@@ -2342,10 +2343,18 @@ std::vector<ResultExecute> CallContract(const dev::Address& addrContract, std::v
     }
 
     dev::Address senderAddress = sender == dev::Address() ? dev::Address("ffffffffffffffffffffffffffffffffffffffff") : sender;
-    tx.vout.push_back(CTxOut(0, CScript() << OP_DUP << OP_HASH160 << senderAddress.asBytes() << OP_EQUALVERIFY << OP_CHECKSIG));
+    tx.vout.push_back(CTxOut(nAmount, CScript() << OP_DUP << OP_HASH160 << senderAddress.asBytes() << OP_EQUALVERIFY << OP_CHECKSIG));
     block.vtx.push_back(MakeTransactionRef(CTransaction(tx)));
  
-    QtumTransaction callTransaction(0, 1, dev::u256(gasLimit), addrContract, opcode, dev::u256(0));
+    QtumTransaction callTransaction;
+    if(addrContract == dev::Address())
+    {
+        callTransaction = QtumTransaction(nAmount, 1, dev::u256(gasLimit), opcode, dev::u256(0));
+    }
+    else
+    {
+        callTransaction = QtumTransaction(nAmount, 1, dev::u256(gasLimit), addrContract, opcode, dev::u256(0));
+    }
     callTransaction.forceSender(senderAddress);
     callTransaction.setVersion(VersionVM::GetEVMDefault());
 
@@ -2926,7 +2935,7 @@ bool CheckDgp(std::vector<QtumTransaction> qtumTransactions, CValidationState &s
 
 ///////////////////////////////////////////////////////////////////////
 
-bool CheckDelegationOutput(const CBlock& block, bool& delegateOutputExist)
+bool CheckDelegationOutput(const CBlock& block, bool& delegateOutputExist, CCoinsViewCache& view)
 {
     if(block.IsProofOfStake() && block.HasProofOfDelegation())
     {
@@ -2937,7 +2946,7 @@ bool CheckDelegationOutput(const CBlock& block, bool& delegateOutputExist)
             staker = uint160(ToByteVector(CPubKey(vchPubKey).GetID()));
             uint160 address;
             uint8_t fee = 0;
-            if(GetBlockDelegation(block, staker, address, fee))
+            if(GetBlockDelegation(block, staker, address, fee, view))
             {
                 delegateOutputExist = IsDelegateOutputExist(fee);
                 return true;
@@ -3007,7 +3016,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     }
 
     bool delegateOutputExist = false;
-    if (!CheckDelegationOutput(block, delegateOutputExist)) {
+    if (!CheckDelegationOutput(block, delegateOutputExist, view)) {
         return state.Invalid(false, REJECT_INVALID, "bad-delegate-output", strprintf("%s : delegation output check failed", __func__));
     }
 
@@ -3817,7 +3826,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
             {
                 uint160 address;
                 uint8_t fee = 0;
-                GetBlockDelegation(block, pkh, address, fee);
+                GetBlockDelegation(block, pkh, address, fee, view);
                 pblocktree->WriteDelegateIndex(pindex->nHeight, address, fee);
             }
         }else{
@@ -4946,6 +4955,7 @@ bool SignBlock(std::shared_ptr<CBlock> pblock, CWallet& wallet, const CAmount& n
     //original line:
     //int64_t nSearchInterval = IsProtocolV2(nBestHeight+1) ? 1 : nSearchTime - nLastCoinStakeSearchTime;
     //IsProtocolV2 mean POS 2 or higher, so the modified line is:
+    if(wallet.IsStakeClosing()) return false;
     auto locked_chain = wallet.chain().lock();
     LOCK(wallet.cs_wallet);
     if (wallet.CreateCoinStake(*locked_chain, wallet, pblock->nBits, nTotalFees, nTimeBlock, txCoinStake, key, 
@@ -5039,7 +5049,7 @@ bool GetBlockPublicKey(const CBlock& block, std::vector<unsigned char>& vchPubKe
     return false;
 }
 
-bool GetBlockDelegation(const CBlock& block, const uint160& staker, uint160& address, uint8_t& fee)
+bool GetBlockDelegation(const CBlock& block, const uint160& staker, uint160& address, uint8_t& fee, CCoinsViewCache& view)
 {
     // Check block parameters
     if (block.IsProofOfWork())
@@ -5073,10 +5083,8 @@ bool GetBlockDelegation(const CBlock& block, const uint160& staker, uint160& add
         return false;
 
     // Get the staker fee
-    CCoinsViewCache cache(pcoinsTip.get());
     COutPoint prevout = block.vtx[1]->vin[0].prevout;
-
-    CAmount nValueCoin = cache.AccessCoin(prevout).out.nValue;
+    CAmount nValueCoin = view.AccessCoin(prevout).out.nValue;
     if(nValueCoin <= 0)
         return false;
 
@@ -7416,5 +7424,82 @@ bool GetTimestampIndex(const unsigned int &high, const unsigned int &low, const 
         return error("Unable to get hashes for timestamps");
 
     return true;
+}
+
+bool GetAddressWeight(uint256 addressHash, int type, const std::map<COutPoint, uint32_t>& immatureStakes, int32_t nHeight, uint64_t& nWeight)
+{
+    nWeight = 0;
+
+    if (!fAddressIndex)
+        return error("address index not enabled");
+
+    // Get address utxos
+    std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
+    if (!GetAddressUnspent(addressHash, type, unspentOutputs)) {
+        throw error("No information available for address");
+    }
+
+    // Add the utxos to the list if they are mature
+    for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
+
+        int nDepth = nHeight - i->second.blockHeight + 1;
+        if (nDepth < COINBASE_MATURITY)
+            continue;
+
+        if(i->second.satoshis < 0)
+            continue;
+
+        COutPoint prevout = COutPoint(i->first.txhash, i->first.index);
+        if(immatureStakes.find(prevout) == immatureStakes.end())
+        {
+            nWeight+= i->second.satoshis;
+        }
+    }
+
+    return true;
+}
+
+std::map<COutPoint, uint32_t> GetImmatureStakes()
+{
+    std::map<COutPoint, uint32_t> immatureStakes;
+    int height = chainActive.Height();
+    for(int i = 0; i < COINBASE_MATURITY -1; i++) {
+        CBlockIndex* block = chainActive[height - i];
+        if(block)
+        {
+            immatureStakes[block->prevoutStake] = block->nTime;
+        }
+        else
+        {
+            break;
+        }
+    }
+    return immatureStakes;
+}
+
+CAmount GetTxGasFee(const CMutableTransaction& _tx)
+{
+    CTransaction tx(_tx);
+    CAmount nGasFee = 0;
+    if(tx.HasCreateOrCall())
+    {
+        CCoinsViewCache& view = pcoinsTip.get();
+        const CChainParams& chainparams = Params();
+        unsigned int contractflags = GetContractScriptFlags(GetSpendHeight(view), chainparams.GetConsensus());
+        QtumTxConverter convert(tx, NULL, NULL, contractflags);
+
+        ExtractQtumTX resultConvertQtumTX;
+        if(!convert.extractionQtumTransactions(resultConvertQtumTX)){
+            return nGasFee;
+        }
+
+        dev::u256 sumGas = dev::u256(0);
+        for(QtumTransaction& qtx : resultConvertQtumTX.first){
+            sumGas += qtx.gas() * qtx.gasPrice();
+        }
+
+        nGasFee = (CAmount) sumGas;
+    }
+    return nGasFee;
 }
 //////////////////////////////////////////////////////////////////////////////////

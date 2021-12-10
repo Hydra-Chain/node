@@ -865,6 +865,10 @@ bool GetAddressUnspent(uint256 addressHash, int type,
                        std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > &unspentOutputs);
 
 bool GetTimestampIndex(const unsigned int &high, const unsigned int &low, const bool fActiveOnly, std::vector<std::pair<uint256, unsigned int> > &hashes);
+
+bool GetAddressWeight(uint256 addressHash, int type, const std::map<COutPoint, uint32_t>& immatureStakes, int32_t nHeight, uint64_t& nWeight);
+
+std::map<COutPoint, uint32_t> GetImmatureStakes();
 /////////////////////////////////////////////////////////////////
 
 /** Functions for disk access for blocks */
@@ -882,7 +886,7 @@ bool CheckIndexProof(const CBlockIndex& block, const Consensus::Params& consensu
 bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true, bool fCheckMerkleRoot = true, bool fCheckSig=true);
 bool CheckDgp(std::vector<QtumTransaction> qtumTransactions, CValidationState& state, CBlockIndex* pindex);
 bool GetBlockPublicKey(const CBlock& block, std::vector<unsigned char>& vchPubKey);
-bool GetBlockDelegation(const CBlock& block, const uint160& staker, uint160& address, uint8_t& fee);
+bool GetBlockDelegation(const CBlock& block, const uint160& staker, uint160& address, uint8_t& fee, CCoinsViewCache& view);
 bool SignBlock(std::shared_ptr<CBlock> pblock, CWallet& wallet, const CAmount& nTotalFees, uint32_t nTime, std::set<std::pair<const CWalletTx*,unsigned int> >& setCoins, std::vector<COutPoint>& setDelegateCoins);
 bool CheckCanonicalBlockSignature(const CBlockHeader* pblock);
 
@@ -988,6 +992,9 @@ inline bool IsBlockPruned(const CBlockIndex* pblockindex)
     return (fHavePruned && !(pblockindex->nStatus & BLOCK_HAVE_DATA) && pblockindex->nTx > 0);
 }
 
+//! Get transaction gas fee
+CAmount GetTxGasFee(const CMutableTransaction& tx);
+
 bool CheckReward(const CBlock& block, CValidationState& state, int nHeight, const Consensus::Params& consensusParams, 
         CAmount nFees, CAmount gasRefunds, CAmount nActualStakeReward, const std::vector<CTxOut>& vouts, 
         uint64_t cached_coinBurnPercentage, uint64_t nValueOut, uint64_t nValueIn, CAmount& burnedCoins, 
@@ -1002,7 +1009,7 @@ bool GetSpentCoinFromBlock(const CBlockIndex* pindex, COutPoint prevout, Coin* c
 
 bool GetSpentCoinFromMainChain(const CBlockIndex* pforkPrev, COutPoint prevoutStake, Coin* coin);
 
-std::vector<ResultExecute> CallContract(const dev::Address& addrContract, std::vector<unsigned char> opcode, const dev::Address& sender = dev::Address(), uint64_t gasLimit=0, uint64_t blockGasLimit = 0);
+std::vector<ResultExecute> CallContract(const dev::Address& addrContract, std::vector<unsigned char> opcode, const dev::Address& sender = dev::Address(), uint64_t gasLimit=0, CAmount nAmount=0);
 
 bool CheckOpSender(const CTransaction& tx, const CChainParams& chainparams, int nHeight);
 

@@ -89,9 +89,11 @@ std::shared_ptr<CWallet> GetWallet(const std::string& name)
     return nullptr;
 }
 
+static Mutex g_loading_wallet_mutex;
 static Mutex g_wallet_release_mutex;
 static std::condition_variable g_wallet_release_cv;
-static std::set<CWallet*> g_unloading_wallet_set;
+static std::set<CWallet*> g_loading_wallet_set GUARDED_BY(g_loading_wallet_mutex);
+static std::set<CWallet*> g_unloading_wallet_set  GUARDED_BY(g_wallet_release_mutex);
 
 // Custom deleter for shared_ptr<CWallet>.
 static void ReleaseWallet(CWallet* wallet)
@@ -138,7 +140,8 @@ void UnloadWallet(std::shared_ptr<CWallet>&& wallet)
     }
 }
 
-std::shared_ptr<CWallet> LoadWallet(interfaces::Chain& chain, const WalletLocation& location, std::string& error, std::string& warning)
+namespace {
+std::shared_ptr<CWallet> LoadWalletInternal(interfaces::Chain& chain, const WalletLocation& location, std::string& error, std::vector<std::string>& warnings)
 {
     if (!CWallet::Verify(chain, location, false, error, warning)) {
         error = "Wallet file verification failed: " + error;
@@ -153,6 +156,19 @@ std::shared_ptr<CWallet> LoadWallet(interfaces::Chain& chain, const WalletLocati
     }
     AddWallet(wallet);
     wallet->postInitProcess(scheduler);
+    return wallet;
+}
+} // namespace
+
+std::shared_ptr<CWallet> LoadWallet(interfaces::Chain& chain, const WalletLocation& location, std::string& error, std::vector<std::string>& warnings)
+{
+    auto result = WITH_LOCK(g_loading_wallet_mutex, return g_loading_wallet_set.insert(location.GetName()));
+    if (!result.second) {
+        error = "Wallet already being loading.";
+        return nullptr;
+    }
+    auto wallet = LoadWalletInternal(chain, location, error, warnings);
+    WITH_LOCK(g_loading_wallet_mutex, g_loading_wallet_set.erase(result.first));
     return wallet;
 }
 
@@ -2994,8 +3010,9 @@ bool CWallet::FundTransaction(CMutableTransaction& tx, CAmount& nFeeRet, int& nC
     LOCK(cs_wallet);
 
     CReserveKey reservekey(this);
+    CAmount nGasFee = GetTxGasFee(tx);
     CTransactionRef tx_new;
-    if (!CreateTransaction(*locked_chain, vecSend, tx_new, reservekey, nFeeRet, nChangePosInOut, strFailReason, coinControl, false)) {
+    if (!CreateTransaction(*locked_chain, vecSend, tx_new, reservekey, nFeeRet, nChangePosInOut, strFailReason, coinControl, false, nGasFee)) {
         return false;
     }
 
@@ -3564,9 +3581,13 @@ bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std
     return true;
 }
 
-uint64_t CWallet::GetStakeWeight(interfaces::Chain::Lock& locked_chain) const
+uint64_t CWallet::GetStakeWeight(interfaces::Chain::Lock& locked_chain, uint64_t* pStakerWeight, uint64_t* pDelegateWeight) const
 {
     uint64_t nWeight = 0;
+    uint64_t nStakerWeight = 0;
+    uint64_t nDelegateWeight = 0;
+    if(pStakerWeight) *pStakerWeight = nStakerWeight;
+    if(pDelegateWeight) *pDelegateWeight = nDelegateWeight;
 
     // Choose coins to use
     CAmount nBalance = GetBalance();
@@ -3593,7 +3614,7 @@ uint64_t CWallet::GetStakeWeight(interfaces::Chain::Lock& locked_chain) const
         {
             // Compute staker weight
             CAmount nValue = pcoin.first->tx->vout[pcoin.second].nValue;
-            nWeight += nValue;
+            nStakerWeight += nValue;
 
             // Check if the staker can super stake
             if(!canSuperStake && nValue >= DEFAULT_STAKING_MIN_UTXO_VALUE)
@@ -3614,9 +3635,13 @@ uint64_t CWallet::GetStakeWeight(interfaces::Chain::Lock& locked_chain) const
                 continue;
             }
 
-            nWeight += coinPrev.out.nValue;
+            nDelegateWeight += coinPrev.out.nValue;
         }
     }
+
+    nWeight = nStakerWeight + nDelegateWeight;
+    if(pStakerWeight) *pStakerWeight = nStakerWeight;
+    if(pDelegateWeight) *pDelegateWeight = nDelegateWeight;
 
     return nWeight;
 }
@@ -6104,14 +6129,27 @@ void CWallet::StartStake(CConnman *connman)
 
 void CWallet::StopStake()
 {
-    m_enabled_staking = false;
-    if(stakeThread)
+    if(!stakeThread)
+    {
+        if(m_enabled_staking)
+            m_enabled_staking = false;
+    }
+    else
     {
         auto locked_chain = chain().lock();
         LOCK(cs_wallet);
+
+        m_stop_staking_thread = true;
+        m_enabled_staking = false;
         StakeQtums(false, 0);
+        stakeThread = 0;
+        m_stop_staking_thread = false;
     }
-    stakeThread = 0;
+}
+
+bool CWallet::IsStakeClosing()
+{
+    return chain().shutdownRequested() || m_stop_staking_thread;
 }
 
 void CWallet::updateDelegationsStaker(const std::map<uint160, Delegation> &delegations_staker)
