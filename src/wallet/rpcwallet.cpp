@@ -1542,11 +1542,11 @@ UniValue GetJsonSuperStakerConfig(const CSuperStakerInfo& superStaker)
         {
             addressList.push_back(EncodeDestination(CKeyID(address)));
         }
-        if(interfaces::AllowList == superStaker.nDelegateAddressType)
+        if(interfaces::WhiteList == superStaker.nDelegateAddressType)
         {
             result.pushKV("allow", addressList);
         }
-        if(interfaces::ExcludeList == superStaker.nDelegateAddressType)
+        if(interfaces::BlackList == superStaker.nDelegateAddressType)
         {
             result.pushKV("exclude", addressList);
         }
@@ -1647,12 +1647,12 @@ static UniValue setsuperstakervaluesforaddress(const JSONRPCRequest& request){
     if(params.exists("allow"))
     {
         addressList = params["allow"].get_array().getValues();
-        nDelegateAddressType = interfaces::AllowList;
+        nDelegateAddressType = interfaces::WhiteList;
     }
     else if(params.exists("exclude"))
     {
         addressList = params["exclude"].get_array().getValues();
-        nDelegateAddressType = interfaces::ExcludeList;
+        nDelegateAddressType = interfaces::BlackList;
     }
     std::vector<uint160> delegateAddressList;
     for(UniValue address : addressList)
@@ -1765,7 +1765,7 @@ static UniValue listsuperstakervaluesforaddress(const JSONRPCRequest& request){
                 {
                     {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The super staker HYDRA address."},
                 },
-                RPCResults{
+                RPCResult{
                     "{\n"
                     "  \"staker\" : (string) Address of the staker.\n"
                     "  \"customConfig\" : (bool) Custom configuration exist.\n"
@@ -1828,7 +1828,7 @@ static UniValue removesuperstakervaluesforaddress(const JSONRPCRequest& request)
                 {
                     {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The super staker HYDRA address."},
                 },
-                RPCResults{},
+                RPCResult{""},
                 RPCExamples{
                 HelpExampleCli("removesuperstakervaluesforaddress", "HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd")
                 + HelpExampleRpc("removesuperstakervaluesforaddress", "HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd")
@@ -2113,7 +2113,7 @@ static UniValue getreceivedbyaddress(const JSONRPCRequest& request)
     CAmount nAmount = 0;
     for (const std::pair<const uint256, CWalletTx>& pairWtx : pwallet->mapWallet) {
         const CWalletTx& wtx = pairWtx.second;
-        if (wtx.IsCoinBase() || wtx.IsCoinStake() || !CheckFinalTx(*wtx.tx)) {
+        if (wtx.IsCoinBase() || wtx.IsCoinStake() || !CheckFinalTx(*wtx.tx))
             continue;
 
         for (const CTxOut& txout : wtx.tx->vout)

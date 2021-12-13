@@ -89,11 +89,9 @@ std::shared_ptr<CWallet> GetWallet(const std::string& name)
     return nullptr;
 }
 
-static Mutex g_loading_wallet_mutex;
 static Mutex g_wallet_release_mutex;
 static std::condition_variable g_wallet_release_cv;
-static std::set<CWallet*> g_loading_wallet_set GUARDED_BY(g_loading_wallet_mutex);
-static std::set<CWallet*> g_unloading_wallet_set  GUARDED_BY(g_wallet_release_mutex);
+static std::set<CWallet*> g_unloading_wallet_set;
 
 // Custom deleter for shared_ptr<CWallet>.
 static void ReleaseWallet(CWallet* wallet)
@@ -140,8 +138,7 @@ void UnloadWallet(std::shared_ptr<CWallet>&& wallet)
     }
 }
 
-namespace {
-std::shared_ptr<CWallet> LoadWalletInternal(interfaces::Chain& chain, const WalletLocation& location, std::string& error, std::vector<std::string>& warnings)
+std::shared_ptr<CWallet> LoadWallet(interfaces::Chain& chain, const WalletLocation& location, std::string& error, std::string& warning)
 {
     if (!CWallet::Verify(chain, location, false, error, warning)) {
         error = "Wallet file verification failed: " + error;
@@ -156,19 +153,6 @@ std::shared_ptr<CWallet> LoadWalletInternal(interfaces::Chain& chain, const Wall
     }
     AddWallet(wallet);
     wallet->postInitProcess(scheduler);
-    return wallet;
-}
-} // namespace
-
-std::shared_ptr<CWallet> LoadWallet(interfaces::Chain& chain, const WalletLocation& location, std::string& error, std::vector<std::string>& warnings)
-{
-    auto result = WITH_LOCK(g_loading_wallet_mutex, return g_loading_wallet_set.insert(location.GetName()));
-    if (!result.second) {
-        error = "Wallet already being loading.";
-        return nullptr;
-    }
-    auto wallet = LoadWalletInternal(chain, location, error, warnings);
-    WITH_LOCK(g_loading_wallet_mutex, g_loading_wallet_set.erase(result.first));
     return wallet;
 }
 
@@ -6149,7 +6133,7 @@ void CWallet::StopStake()
 
 bool CWallet::IsStakeClosing()
 {
-    return chain().shutdownRequested() || m_stop_staking_thread;
+    return ShutdownRequested() || m_stop_staking_thread;
 }
 
 void CWallet::updateDelegationsStaker(const std::map<uint160, Delegation> &delegations_staker)

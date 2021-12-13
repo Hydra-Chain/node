@@ -440,7 +440,7 @@ uint64_t getDelegateWeight(const uint160& keyid, const std::map<COutPoint, uint3
     // Decode address
     uint256 hashBytes;
     int type = 0;
-    if (!DecodeIndexKey(EncodeDestination(PKHash(keyid)), hashBytes, type)) {
+    if (!DecodeIndexKey(EncodeDestination(CKeyID(keyid)), hashBytes, type)) {
         return 0;
     }
 

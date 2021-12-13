@@ -14,6 +14,9 @@
 #include <boost/thread.hpp>
 #include <ctime>
 #include <tinyformat.h>
+#include <thread>
+
+void UninterruptibleSleep(const std::chrono::microseconds& n) { std::this_thread::sleep_for(n); }
 
 static std::atomic<int64_t> nMockTime(0); //!< For unit testing
 
