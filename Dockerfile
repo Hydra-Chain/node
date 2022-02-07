@@ -37,7 +37,7 @@ COPY . .
 # Build and Install Hydra
 RUN ./autogen.sh
 RUN ./configure --without-gui BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
-RUN make -j48
+RUN make
 RUN make install
 
 EXPOSE ${RPC_PORT}
