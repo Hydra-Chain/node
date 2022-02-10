@@ -1,4 +1,4 @@
-name: Create and publish the coin's containers
+name: Docker Build
 on:
   push:
     branches: ['hydra']
