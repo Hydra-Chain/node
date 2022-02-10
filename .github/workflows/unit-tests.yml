@@ -1,18 +1,21 @@
 name: Create and publish the coin's containers
 on: push
 jobs:
-  build_coins:
+  build_and_test:
     runs-on: ubuntu-20.04
+    container:
+      image: gostartups/ubuntu-leveldb4.8:latest
     steps:
       -
         name: Checkout
         uses: actions/checkout@v2
+        with:
+          submodules: true
       -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      -
-        name: Build and run tests
-        run: docker build -t hydra:latest . && docker run --entrypoint=make hydra:latest check
+        name: Build and execute tests
+        run: |
+          git submodule update --init --recursive
+          ./autogen.sh
+          ./configure --without-gui BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
+          make
+          make check

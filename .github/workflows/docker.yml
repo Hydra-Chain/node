@@ -3,12 +3,14 @@ on:
   push:
     branches: ['hydra']
 jobs:
-  build_coins:
+  build:
     runs-on: ubuntu-20.04
     steps:
       -
         name: Checkout
         uses: actions/checkout@v2
+        with: 
+          submodules: true
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
