@@ -163,17 +163,6 @@ bool FunctionABI::abiIn(const std::vector<std::vector<std::string>> &values, std
     return ret;
 }
 
-std::string deserialiseString(dev::bytesConstRef& io_t, unsigned p)
-{
-    unsigned o = (uint16_t)dev::u256(dev::h256(io_t.cropped(0, 32))) - p;
-    unsigned s = (uint16_t)dev::u256(dev::h256(io_t.cropped(o, 32)));
-    std::string ret;
-    ret.resize(s);
-    io_t.cropped(o + 32, s).populate(dev::bytesRef((byte*)ret.data(), s));
-    io_t = io_t.cropped(32);
-    return ret;
-}
-
 bool FunctionABI::abiOut(const std::string &data, std::vector<std::vector<std::string>> &values, std::vector<ParameterABI::ErrorType>& errors) const
 {
     size_t pos = 0;
@@ -384,7 +373,7 @@ bool ParameterABI::abiOutBasic(ParameterType::Type abiType, const std::string &d
     {
         dev::bytes rawData = dev::fromHex(data.substr(pos, HEX_INSTRUCTION_SIZE));
         dev::bytesConstRef o(&rawData);
-        std::string outData = deserialiseString(o, pos/2);
+        std::string outData = dev::toString(dev::eth::ABIDeserialiser<dev::string32>::deserialise(o));
         value = dev::toHex(outData);
     }
         break;
@@ -506,6 +495,17 @@ bool ParameterABI::abiIn(const std::vector<std::string> &value, std::string &dat
     return true;
 }
 
+std::string deserialiseString(dev::bytesConstRef& io_t, unsigned p)
+{
+    unsigned o = (uint16_t)dev::u256(dev::h256(io_t.cropped(0, 32))) - p;
+    unsigned s = (uint16_t)dev::u256(dev::h256(io_t.cropped(o, 32)));
+    std::string ret;
+    ret.resize(s);
+    io_t.cropped(o + 32, s).populate(dev::bytesRef((byte*)ret.data(), s));
+    io_t = io_t.cropped(32);
+    return ret;
+}
+
 bool ParameterABI::abiOut(const std::string &data, size_t &pos, std::vector<std::string> &value) const
 {
     try
@@ -520,7 +520,7 @@ bool ParameterABI::abiOut(const std::string &data, size_t &pos, std::vector<std:
             {
                 dev::bytes rawData = dev::fromHex(data.substr(pos));
                 dev::bytesConstRef o(&rawData);
-                std::string outData = dev::eth::ABIDeserialiser<std::string>::deserialise(o);
+                std::string outData = deserialiseString(o, pos/2);
                 value.push_back(dev::toHex(outData));
             }
                 break;
@@ -528,7 +528,7 @@ bool ParameterABI::abiOut(const std::string &data, size_t &pos, std::vector<std:
             {
                 dev::bytes rawData = dev::fromHex(data.substr(pos));
                 dev::bytesConstRef o(&rawData);
-                value.push_back(dev::eth::ABIDeserialiser<std::string>::deserialise(o));
+                deserialiseString(o, pos/2);
             }
                 break;
             default:
