@@ -13,7 +13,7 @@ dev::eth::EVMSchedule QtumDGP::getGasSchedule(unsigned int blockHeight, const Co
 }
 
 uint32_t QtumDGP::getBlockSize(unsigned int blockHeight){
-    uint64_t blockSize = DEFAULT_BLOCK_SIZE_DGP;
+    uint64_t blockSize = DEFAULT_BLOCK_SIZE_DGP / Params().GetConsensus().BlocktimeDownscaleFactor(blockHeight);
     if(blockHeight < 2){ // bug fix
         return blockSize;
     }

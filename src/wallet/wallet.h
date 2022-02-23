@@ -108,6 +108,9 @@ static constexpr size_t DUMMY_NESTED_P2WPKH_INPUT_SIZE = 91;
 //! -stakingminfee default
 static const uint8_t DEFAULT_STAKING_MIN_FEE = 10;
 
+//! -minstakerutxosize default
+static const CAmount DEFAULT_STAKER_MIN_UTXO_SIZE{COIN/10};
+
 class CCoinControl;
 class COutput;
 class CReserveKey;
@@ -1080,6 +1083,7 @@ public:
     int64_t m_last_coin_stake_search_interval{0};
     std::atomic<bool> m_enabled_staking{false};
     CAmount m_staking_min_utxo_value{DEFAULT_STAKING_MIN_UTXO_VALUE};
+    CAmount m_staker_min_utxo_size{DEFAULT_STAKER_MIN_UTXO_SIZE};
     uint8_t m_staking_min_fee{DEFAULT_STAKING_MIN_FEE};
     std::atomic<bool> m_stop_staking_thread{false};
 
@@ -1396,6 +1400,9 @@ public:
 
     /* Is staking closing */
     bool IsStakeClosing();
+
+    /* Clean coinstake transactions */
+    void CleanCoinStake();
 
     /* Clean token transaction entries in the wallet */
     bool CleanTokenTxEntries(bool fFlushOnClose=true);

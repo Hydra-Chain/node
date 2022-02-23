@@ -213,6 +213,14 @@ void Shutdown(InitInterfaces& interfaces)
     /// Be sure that anything that writes files or flushes caches only does this if the respective
     /// module was initialized.
     RenameThread("hydra-shutoff");
+
+#ifdef ENABLE_WALLET
+    // Force stop the stakers before any other components
+    for (const std::shared_ptr<CWallet>& pwallet : GetWallets()) {
+        pwallet->StopStake();
+    }
+#endif
+
     mempool.AddTransactionsUpdated(1);
 
     StopHTTPRPC();
@@ -426,6 +434,7 @@ void SetupServerArgs()
     gArgs.AddArg("-addrindex", strprintf("Maintain a full address index (default: %u)", DEFAULT_ADDRINDEX), false, OptionsCategory::OPTIONS);
 
     gArgs.AddArg("-deleteblockchaindata", "Delete the local copy of the block chain data", false, OptionsCategory::OPTIONS);
+    gArgs.AddArg("-forceinitialblocksdownloadmode", strprintf("Force initial blocks download mode for the node (default: %u)", DEFAULT_FORCE_INITIAL_BLOCKS_DOWNLOAD_MODE), false, OptionsCategory::OPTIONS);
 
     gArgs.AddArg("-addnode=<ip>", "Add a node to connect to and attempt to keep the connection open (see the `addnode` RPC command help for more info). This option can be specified multiple times to add multiple nodes.", false, OptionsCategory::CONNECTION);
     gArgs.AddArg("-banscore=<n>", strprintf("Threshold for disconnecting misbehaving peers (default: %u)", DEFAULT_BANSCORE_THRESHOLD), false, OptionsCategory::CONNECTION);
@@ -739,6 +748,13 @@ static void ThreadImport(std::vector<fs::path> vImportFiles)
         LogPrintf("Reindexing finished\n");
         // To avoid ending up in a situation without genesis block, re-try initializing (no-op if reindexing worked):
         LoadGenesisBlock(chainparams);
+
+#ifdef ENABLE_WALLET
+        // Clean not reverted coinstake transactions
+        for (const std::shared_ptr<CWallet>& pwallet : GetWallets()) {
+            pwallet->CleanCoinStake();
+        }
+#endif
     }
 
     // hardcoded $DATADIR/bootstrap.dat

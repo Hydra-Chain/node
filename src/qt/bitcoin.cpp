@@ -516,6 +516,7 @@ void BitcoinApplication::initializeResult(bool success)
     returnValue = success ? EXIT_SUCCESS : EXIT_FAILURE;
     if(success)
     {
+        LOCK(cs_main);
         // Log this only after AppInitMain finishes, as then logging setup is guaranteed complete
         qWarning() << "Platform customization:" << platformStyle->getName();
 #ifdef ENABLE_WALLET
@@ -565,6 +566,8 @@ void BitcoinApplication::initializeResult(bool success)
         QTimer::singleShot(100, paymentServer, SLOT(uiReady()));
 #endif
         pollShutdownTimer->start(200);
+
+        processEvents();
     } else {
         Q_EMIT splashFinished(window); // Make sure splash screen doesn't stick around during shutdown
         quit(); // Exit first main loop invocation

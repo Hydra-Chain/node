@@ -99,6 +99,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QRadioButton" name="rbInitialBlocksDownload">
+          <property name="text">
+           <string>Force initial blocks download mode - fix the blockchain data.</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>

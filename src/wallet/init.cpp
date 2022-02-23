@@ -77,6 +77,7 @@ void WalletInit::AddWalletOptions() const
     gArgs.AddArg("-stakingminutxovalue=<amt>", strprintf("The min value of utxo (in %s) selected for super staking (default: %s)", CURRENCY_UNIT, FormatMoney(DEFAULT_STAKING_MIN_UTXO_VALUE)), false, OptionsCategory::WALLET);
     gArgs.AddArg("-stakingminfee=<n>", strprintf("The min fee (in percentage) to accept when super staking (default: %u)", DEFAULT_STAKING_MIN_FEE), false, OptionsCategory::WALLET);
     gArgs.AddArg("-superstaking=<true/false>", strprintf("Enables or disables super staking (default: %u)", DEFAULT_SUPER_STAKE), false, OptionsCategory::WALLET);
+    gArgs.AddArg("-minstakerutxosize=<amt>", strprintf("The min value of utxo (in %s) selected for staking (default: %s)", CURRENCY_UNIT, FormatMoney(DEFAULT_STAKER_MIN_UTXO_SIZE)), false, OptionsCategory::WALLET);
 }
 
 bool WalletInit::ParameterInteraction() const

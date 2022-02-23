@@ -59,7 +59,8 @@ SendCoinsDialog::SendCoinsDialog(const PlatformStyle *_platformStyle, QWidget *p
     clientModel(0),
     model(0),
     fNewRecipientAllowed(true),
-    platformStyle(_platformStyle)
+    platformStyle(_platformStyle),
+    targetSpacing(0)
 {
     ui->setupUi(this);
 
@@ -134,6 +135,12 @@ void SendCoinsDialog::setClientModel(ClientModel *_clientModel)
     this->clientModel = _clientModel;
 
     if (_clientModel) {
+        int headersTipHeight = clientModel->getHeaderTipHeight();
+        targetSpacing = Params().GetConsensus().TargetSpacing(headersTipHeight);
+        for (const int n : confTargets) {
+            ui->confTargetSelector->addItem(targetSelectorItemText(n));
+        }
+
         connect(_clientModel, SIGNAL(numBlocksChanged(int,QDateTime,double,bool)), this, SLOT(updateSmartFeeLabel()));
     }
 }
@@ -166,9 +173,6 @@ void SendCoinsDialog::setModel(WalletModel *_model)
         coinControlUpdateLabels();
 
         // fee section
-        for (const int &n : confTargets) {
-            ui->confTargetSelector->addItem(tr("%1 (%2 blocks)").arg(GUIUtil::formatNiceTimeOffset(n*Params().GetConsensus().nPowTargetSpacing)).arg(n));
-        }
         connect(ui->confTargetSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(updateSmartFeeLabel()));
         connect(ui->confTargetSelector, SIGNAL(currentIndexChanged(int)), this, SLOT(coinControlUpdateLabels()));
         connect(ui->groupFee, SIGNAL(buttonClicked(int)), this, SLOT(updateFeeSectionControls()));
@@ -689,6 +693,18 @@ void SendCoinsDialog::updateSmartFeeLabel()
         ui->labelFeeEstimation->setText(tr("Estimated to begin confirmation within %n block(s).", "", returned_target));
         ui->fallbackFeeWarningLabel->setVisible(false);
     }
+
+    if (confTargets.size() == ui->confTargetSelector->count()) {
+        int headersTipHeight = clientModel->getHeaderTipHeight();
+        int64_t targetSpacingTmp = Params().GetConsensus().TargetSpacing(headersTipHeight);
+        if(targetSpacing != targetSpacingTmp) {
+            targetSpacing = targetSpacingTmp;
+            int index = 0;
+            for (const int n : confTargets) {
+                ui->confTargetSelector->setItemText(index++, targetSelectorItemText(n));
+            }
+        }
+    }
 }
 
 // Coin Control: copy label "Quantity" to clipboard
@@ -862,6 +878,11 @@ void SendCoinsDialog::coinControlUpdateLabels()
         ui->widgetCoinControl->hide();
         ui->labelCoinControlInsuffFunds->hide();
     }
+}
+
+QString SendCoinsDialog::targetSelectorItemText(const int n)
+{
+    return tr("%1 (%2 blocks)").arg(GUIUtil::formatNiceTimeOffset(n*targetSpacing)).arg(n);
 }
 
 SendConfirmationDialog::SendConfirmationDialog(const QString &title, const QString &text, int _secDelay,

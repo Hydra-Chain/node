@@ -89,9 +89,12 @@ CChainParams::CChainParams()
     consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
     consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
     consensus.QIP9PosLimit = uint256S("0000000000001fffffffffffffffffffffffffffffffffffffffffffffffffff"); // The new POS-limit activated after QIP9
+    consensus.RBTPosLimit = uint256S("0000000000003fffffffffffffffffffffffffffffffffffffffffffffffffff");
     consensus.nPowTargetTimespan = 16 * 60; // 16 minutes
     consensus.nPowTargetTimespanV2 = 4000; // 5.59 hours
+    consensus.nRBTPowTargetTimespan = 1000;
     consensus.nPowTargetSpacing = 2 * 64;
+    consensus.nRBTPowTargetSpacing = 32;
     consensus.fPowNoRetargeting = true;
     consensus.fPoSNoRetargeting = false;
     consensus.fPowAllowMinDifficultyBlocks = false;
@@ -123,12 +126,18 @@ CChainParams::CChainParams()
 
     consensus.nLastPOWBlock = 5000;
     consensus.nMPoSRewardRecipients = 1;
-    consensus.nCheckpointSpan = COINBASE_MATURITY;
+    consensus.nCoinbaseMaturity = 500;
+    consensus.nBlocktimeDownscaleFactor = 4;
+    consensus.nRBTCoinbaseMaturity = consensus.nBlocktimeDownscaleFactor*500;
+    consensus.nCheckpointSpan = consensus.nCoinbaseMaturity;
+    consensus.nRBTCheckpointSpan = consensus.nRBTCoinbaseMaturity;
     consensus.nFirstMPoSBlock = consensus.nLastPOWBlock +
                                 consensus.nMPoSRewardRecipients +
-                                COINBASE_MATURITY;
+                                consensus.nCoinbaseMaturity;
 
     consensus.delegationsAddress = uint160(ParseHex("0000000000000000000000000000000000000093")); // Delegations contract for offline staking
+    consensus.nStakeTimestampMask = 15;
+    consensus.nRBTStakeTimestampMask = 3;
 }
 
 /**
@@ -190,6 +199,7 @@ public:
 
         consensus.MuirGlacierHeight = 202000;
         consensus.nOfflineStakeHeight = 248000;
+        consensus.nReduceBlocktimeHeight = 0x7fffffff;
         consensus.nLastMPoSBlock = 247999;
 
         consensus.BIP34Hash = uint256S("0x000058b8d49cd33ae70558978ff60269d4de7d4b50ac1f733631765e4207a457");
@@ -254,6 +264,7 @@ public:
 
         consensus.MuirGlacierHeight = 0;
         consensus.nOfflineStakeHeight = 0x7fffffff;
+        consensus.nReduceBlocktimeHeight = 0x7fffffff;
         consensus.nLastMPoSBlock = 0x7fffffff;
 
         // consensus.BIP65Height - 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6

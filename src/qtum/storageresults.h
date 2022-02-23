@@ -20,6 +20,9 @@ struct TransactionReceiptInfo{
     dev::eth::LogEntries logs;
     dev::eth::TransactionException excepted;
     std::string exceptedMessage;
+    dev::eth::LogBloom bloom;
+    dev::h256 stateRoot;
+    dev::h256 utxoRoot;
 };
 
 struct TransactionReceiptInfoSerialized{
@@ -35,6 +38,9 @@ struct TransactionReceiptInfoSerialized{
     std::vector<logEntriesSerializ> logs;
     std::vector<uint32_t> excepted;
     std::vector<std::string> exceptedMessage;
+    std::vector<dev::h2048> blooms;
+    std::vector<dev::h256> stateRoots;
+    std::vector<dev::h256> utxoRoots;
 };
 
 class StorageResults{
