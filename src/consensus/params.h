@@ -151,7 +151,7 @@ struct Params {
             }
             else
             {
-                return nPowTargetTimespanV2
+                return nPowTargetTimespanV2;
             }
         }
         else if (height >= nReduceBlocktimeHeight)

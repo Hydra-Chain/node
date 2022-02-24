@@ -97,7 +97,7 @@ void StorageResults::commitResults(){
 
                 dev::RLPStream streamRLP(15);
                 streamRLP << tris.blockHashes << tris.blockNumbers << tris.transactionHashes << tris.transactionIndexes << tris.senders;
-                streamRLP << tris.receivers << tris.cumulativeGasUsed << tris.gasUsed << tris.contractAddresses << tris.logs << tris.excepted << tris.exceptedMessage << << tris.blooms << tris.stateRoots << tris.utxoRoots;
+                streamRLP << tris.receivers << tris.cumulativeGasUsed << tris.gasUsed << tris.contractAddresses << tris.logs << tris.excepted << tris.exceptedMessage << tris.blooms << tris.stateRoots << tris.utxoRoots;
 
                 dev::bytes data = streamRLP.out();
                 std::string stringData(data.begin(), data.end());

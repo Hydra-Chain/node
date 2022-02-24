@@ -2529,7 +2529,7 @@ void CWallet::AvailableCoinsForStaking(interfaces::Chain::Lock& locked_chain, st
 
     vCoins.clear();
 
-    int nHeight = GetLastBlockHeight() + 1;
+    int nHeight = chainActive.Height() + 1;
     int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(nHeight);
     std::map<COutPoint, uint32_t> immatureStakes = locked_chain.getImmatureStakes();
     for (std::map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it)
@@ -3599,12 +3599,12 @@ uint64_t CWallet::GetStakeWeight(interfaces::Chain::Lock& locked_chain, uint64_t
     if (setCoins.empty())
         return nWeight;
 
-    int nHeight = GetLastBlockHeight() + 1;
+    int nHeight = chainActive.Height() + 1;
     int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(nHeight);
     bool canSuperStake = false;
     for(std::pair<const CWalletTx*,unsigned int> pcoin : setCoins)
     {
-        if (pcoin.first->GetDepthInMainChain() >= coinbaseMaturity)
+        if (pcoin.first->GetDepthInMainChain(locked_chain) >= coinbaseMaturity)
         {
             // Compute staker weight
             CAmount nValue = pcoin.first->tx->vout[pcoin.second].nValue;
@@ -5622,7 +5622,7 @@ int CMerkleTx::GetBlocksToMaturity(interfaces::Chain::Lock& locked_chain) const
     if (!(IsCoinBase() || IsCoinStake()))
         return 0;
     int chain_depth = GetDepthInMainChain(locked_chain);
-    int nHeight = pwallet->GetLastBlockHeight() + 1;
+    int nHeight = chainActive.Height() + 1;
     int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(nHeight);
     return std::max(0, (coinbaseMaturity+1) - chain_depth);
 }
@@ -6272,7 +6272,7 @@ void CWallet::GetStakerAddressBalance(interfaces::Chain::Lock &locked_chain, con
     balance = 0;
     stake = 0;
     weight = 0;
-    int nHeight = GetLastBlockHeight() + 1;
+    int nHeight = chainActive.Height() + 1;
     int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(nHeight);
     std::map<COutPoint, uint32_t> immatureStakes = locked_chain.getImmatureStakes();
     for (std::map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it)
@@ -6348,14 +6348,14 @@ void CWallet::CleanCoinStake()
     for (std::map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it)
     {
         const CWalletTx* wtx = &(*it).second;
-        if (wtx && wtx->m_confirm.hashBlock.IsNull() && wtx->m_confirm.nIndex <= 0)
+        if (wtx && wtx->hashBlock.IsNull() && wtx->nIndex <= 0)
         {
             // Wallets need to refund inputs when disconnecting coinstake
             const CTransaction& tx = *(wtx->tx);
             if (tx.IsCoinStake() && IsFromMe(tx) && !wtx->isAbandoned())
             {
                 WalletLogPrintf("%s: Revert coinstake tx %s\n", __func__, wtx->GetHash().ToString());
-                DisableTransaction(tx);
+                DisableTransaction(*locked_chain, tx);
             }
         }
     }

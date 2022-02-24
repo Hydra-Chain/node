@@ -81,6 +81,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         // then allow mining of a min-difficulty block.
         int nHeight = pindexLast->nHeight + 1;
         if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.TargetSpacing(nHeight)*2)
+        {
             return nTargetLimit;
         }
         else
@@ -108,7 +109,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
             return pindexLast->nBits;
     }
     // Limit adjustment step
-    iint nHeight = pindexLast->nHeight + 1;
+    int nHeight = pindexLast->nHeight + 1;
     int64_t nTargetSpacing = params.TargetSpacing(nHeight);
     int64_t nActualSpacing = pindexLast->GetBlockTime() - nFirstBlockTime;
 	// Retarget
@@ -118,7 +119,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
     arith_uint256 bnNew;
     bnNew.SetCompact(pindexLast->nBits);
     bool ignore = CheckQIP9BlockTimeDiff(pindexLast);
-    int64_t nInterval = params.DifficultyAdjustmentInterval(nHeight); 
+    int64_t nInterval = params.DifficultyAdjustmentInterval(nHeight, ignore); 
 
     if (nHeight < params.QIP9Height) {
         if (nActualSpacing < 0)

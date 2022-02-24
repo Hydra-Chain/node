@@ -241,7 +241,7 @@ bool BlockAssembler::ExecuteCoinstakeContractCalls(CWallet& wallet, int64_t* pTo
     CKey key;
     CMutableTransaction txCoinStake(*pblock->vtx[1]);
     uint32_t nTimeBlock = txProofTime;
-    nTimeBlock &= ~STAKE_TIMESTAMP_MASK;
+    nTimeBlock &= ~chainparams.GetConsensus().StakeTimestampMask(nHeight);
     auto locked_chain = wallet.chain().lock();
     std::vector<unsigned char> vchPoD;
     COutPoint headerPrevout;

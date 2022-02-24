@@ -2225,7 +2225,7 @@ bool GetSpentCoinFromMainChain(const CBlockIndex* pforkPrev, COutPoint prevoutSt
     const CBlockIndex* pforkBase = chainActive.FindFork(pforkPrev);
 
     // If the forkbase is more than coinbaseMaturity blocks in the past, do not attempt to scan the main chain.
-    int nHeight = ChainActive().Tip()->nHeight;
+    int nHeight = chainActive.Tip()->nHeight;
     int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(nHeight);
     if(nHeight - pforkBase->nHeight > coinbaseMaturity) {
         return error("The fork's base is behind by more than 500 blocks");
