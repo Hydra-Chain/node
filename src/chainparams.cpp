@@ -199,7 +199,7 @@ public:
 
         consensus.MuirGlacierHeight = 202000;
         consensus.nOfflineStakeHeight = 248000;
-        consensus.nReduceBlocktimeHeight = 0x7fffffff;
+        consensus.nReduceBlocktimeHeight = 251000;
         consensus.nLastMPoSBlock = 247999;
 
         consensus.BIP34Hash = uint256S("0x000058b8d49cd33ae70558978ff60269d4de7d4b50ac1f733631765e4207a457");
