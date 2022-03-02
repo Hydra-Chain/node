@@ -95,6 +95,7 @@ struct Params {
     int64_t nPowTargetTimespan;
     int64_t nPowTargetTimespanV2;
     int64_t nRBTPowTargetTimespan;
+    int64_t nRBTPowTargetTimespanV2;
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;
     int nLastPOWBlock;
@@ -154,9 +155,16 @@ struct Params {
                 return nPowTargetTimespanV2;
             }
         }
-        else if (height >= nReduceBlocktimeHeight)
+        else
         {
-            return nRBTPowTargetTimespan;
+            if (ignore)
+            {
+                return nRBTPowTargetTimespan;
+            }
+            else
+            {
+                return nRBTPowTargetTimespanV2;
+            }
         }
     }
     int CheckpointSpan(int height) const

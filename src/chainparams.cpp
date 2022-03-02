@@ -92,7 +92,8 @@ CChainParams::CChainParams()
     consensus.RBTPosLimit = uint256S("0000000000003fffffffffffffffffffffffffffffffffffffffffffffffffff");
     consensus.nPowTargetTimespan = 16 * 60; // 16 minutes
     consensus.nPowTargetTimespanV2 = 4000; // 5.59 hours
-    consensus.nRBTPowTargetTimespan = 1000;
+    consensus.nRBTPowTargetTimespan = 4 * 60;
+    consensus.nRBTPowTargetTimespanV2 = 1000;
     consensus.nPowTargetSpacing = 2 * 64;
     consensus.nRBTPowTargetSpacing = 32;
     consensus.fPowNoRetargeting = true;

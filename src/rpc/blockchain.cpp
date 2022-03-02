@@ -131,7 +131,9 @@ bool CheckQIP9BlockTimeDiff(const CBlockIndex* pindex)
 
     bool result = false;
 
-    if (nStakesTime > 2 * consensusParams.nPowTargetSpacing * nStakesHandled)
+    int64_t targetSpacing = consensusParams.TargetSpacing(pindex ? pindex->nHeight : 0);
+
+    if (nStakesTime > 2 * targetSpacing * nStakesHandled)
         result = true;
 
     return result;
