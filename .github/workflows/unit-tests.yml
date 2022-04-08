@@ -1,0 +1,21 @@
+name: CI Tests
+on: push
+jobs:
+  build_and_test:
+    runs-on: ubuntu-20.04
+    container:
+      image: gostartups/ubuntu-leveldb4.8:latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      -
+        name: Build and execute tests
+        run: |
+          git submodule update --init --recursive
+          ./autogen.sh
+          ./configure --without-gui BDB_LIBS="-L${BDB_PREFIX}/lib -ldb_cxx-4.8" BDB_CFLAGS="-I${BDB_PREFIX}/include"
+          make
+          make check
