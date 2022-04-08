@@ -68,6 +68,7 @@ ResultExecute QtumState::execute(EnvInfo const& _envInfo, SealEngineFace const& 
         e.finalize();
         if (_p == Permanence::Reverted){
             m_cache.clear();
+            m_changeLog.clear();
             cacheUTXO.clear();
         } else {
             deleteAccounts(_sealEngine.deleteAddresses);

@@ -45,7 +45,11 @@ const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfSta
 inline arith_uint256 GetLimit(int nHeight, const Consensus::Params& params, bool fProofOfStake)
 {
     if(fProofOfStake) {
-        return UintToArith256(params.posLimit);
+        if(nHeight < params.nReduceBlocktimeHeight || nHeight > 252065) {
+            return UintToArith256(params.posLimit);
+        } else {
+            return UintToArith256(params.RBTPosLimit);
+        }
     } else {
         return UintToArith256(params.powLimit);
     }
