@@ -366,6 +366,8 @@ public:
         return (HasOpCall() ? OpCode::OpCall : 0) + (HasOpCreate() ? OpCode::OpCreate : 0);
     }
 
+    bool HasOpCall() const;
+
     bool HasOpSender() const;
 
     bool IsCoinBase() const

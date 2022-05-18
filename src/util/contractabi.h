@@ -171,6 +171,8 @@ public:
 
     std::string selector() const;
 
+    int numIndexed() const;
+
     static std::string defaultSelector();
 
     std::string errorMessage(std::vector<ParameterABI::ErrorType>& errors, bool in) const;

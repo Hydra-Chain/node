@@ -2358,15 +2358,16 @@ std::vector<ResultExecute> CallContract(const dev::Address& addrContract, std::v
     dev::Address senderAddress = sender == dev::Address() ? dev::Address("ffffffffffffffffffffffffffffffffffffffff") : sender;
     tx.vout.push_back(CTxOut(nAmount, CScript() << OP_DUP << OP_HASH160 << senderAddress.asBytes() << OP_EQUALVERIFY << OP_CHECKSIG));
     block.vtx.push_back(MakeTransactionRef(CTransaction(tx)));
+    dev::u256 nonce = globalState->getNonce(senderAddress);
  
     QtumTransaction callTransaction;
     if(addrContract == dev::Address())
     {
-        callTransaction = QtumTransaction(nAmount, 1, dev::u256(gasLimit), opcode, dev::u256(0));
+        callTransaction = QtumTransaction(nAmount, 1, dev::u256(gasLimit), opcode, nonce);
     }
     else
     {
-        callTransaction = QtumTransaction(nAmount, 1, dev::u256(gasLimit), addrContract, opcode, dev::u256(0));
+        callTransaction = QtumTransaction(nAmount, 1, dev::u256(gasLimit), addrContract, opcode, nonce);
     }
     callTransaction.forceSender(senderAddress);
     callTransaction.setVersion(VersionVM::GetEVMDefault());
@@ -3879,7 +3880,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
         if (logicalTS <= prevLogicalTS) {
             logicalTS = prevLogicalTS + 1;
-            LogPrintf("%s: Previous logical timestamp is newer Actual[%d] prevLogical[%d] Logical[%d]\n", __func__, pindex->nTime, prevLogicalTS, logicalTS);
+            LogPrint(BCLog::INDEX, "%s: Previous logical timestamp is newer Actual[%d] prevLogical[%d] Logical[%d]\n", __func__, pindex->nTime, prevLogicalTS, logicalTS);
         }
 
         if (!pblocktree->WriteTimestampIndex(CTimestampIndexKey(logicalTS, pindex->GetBlockHash())))

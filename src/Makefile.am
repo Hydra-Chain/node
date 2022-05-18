@@ -182,6 +182,7 @@ BITCOIN_CORE_H = \
   rpc/rawtransaction.h \
   rpc/register.h \
   rpc/util.h \
+  rpc/contract_util.h \
   scheduler.h \
   script/descriptor.h \
   script/ismine.h \
@@ -213,6 +214,7 @@ BITCOIN_CORE_H = \
   util/convert.h \
   util/signstr.h \
   util/contractabi.h \
+  util/tokenstr.h \
   validation.h \
   validationinterface.h \
   versionbits.h \
@@ -242,6 +244,7 @@ BITCOIN_CORE_H = \
   qtum/storageresults.h \
   qtum/qtumutils.h \
   qtum/qtumdelegation.h \
+  qtum/qtumtoken.h \
   util/contractabi.cpp \
   locktrip/economy.h \
   locktrip/contract-proxy.h \
@@ -299,6 +302,7 @@ libbitcoin_server_a_SOURCES = \
   rpc/rawtransaction.cpp \
   rpc/server.cpp \
   rpc/util.cpp \
+  rpc/contract_util.cpp \
   script/sigcache.cpp \
   shutdown.cpp \
   timedata.cpp \
@@ -319,6 +323,7 @@ libbitcoin_server_a_SOURCES = \
   consensus/consensus.cpp \
   qtum/storageresults.cpp \
   qtum/qtumdelegation.cpp \
+  qtum/qtumtoken.cpp \
   $(BITCOIN_CORE_H)
 
 if !ENABLE_WALLET
@@ -781,6 +786,7 @@ libbitcoin_util_a_SOURCES = \
   util/moneystr.cpp \
   util/strencodings.cpp \
   util/time.cpp \
+  util/tokenstr.cpp \
   $(BITCOIN_CORE_H)
 
 if GLIBC_BACK_COMPAT

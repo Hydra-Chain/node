@@ -22,6 +22,7 @@ QT_FORMS_UI = \
   qt/forms/delegationitemwidget.ui \
   qt/forms/delegationpage.ui \
   qt/forms/delegationsstakerdialog.ui \
+  qt/forms/derivationpathdialog.ui \
   qt/forms/editaddressdialog.ui \
   qt/forms/editcontractinfodialog.ui \
   qt/forms/editsuperstakerdialog.ui \
@@ -87,6 +88,7 @@ QT_MOC_CPP = \
   qt/moc_delegationpage.cpp \
   qt/moc_delegationsstakerdialog.cpp \
   qt/moc_delegationstakeritemmodel.cpp \
+  qt/moc_derivationpathdialog.cpp \
   qt/moc_editaddressdialog.cpp \
   qt/moc_editcontractinfodialog.cpp \
   qt/moc_editsuperstakerdialog.cpp \
@@ -147,6 +149,7 @@ QT_MOC_CPP = \
   qt/moc_transactionview.cpp \
   qt/moc_utilitydialog.cpp \
   qt/moc_qtumversionchecker.cpp \
+  qt/moc_waitmessagebox.cpp \
   qt/moc_walletframe.cpp \
   qt/moc_walletmodel.cpp \
   qt/moc_walletview.cpp
@@ -212,6 +215,7 @@ BITCOIN_QT_H = \
   qt/delegationpage.h \
   qt/delegationsstakerdialog.h \
   qt/delegationstakeritemmodel.h \
+  qt/derivationpathdialog.h \
   qt/editaddressdialog.h \
   qt/editcontractinfodialog.h \
   qt/editsuperstakerdialog.h \
@@ -283,6 +287,7 @@ BITCOIN_QT_H = \
   qt/transactionview.h \
   qt/utilitydialog.h \
   qt/qtumversionchecker.h \
+  qt/waitmessagebox.h \
   qt/walletframe.h \
   qt/walletmodel.h \
   qt/walletmodeltransaction.h \
@@ -435,6 +440,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/delegationlistwidget.cpp \
   qt/delegationpage.cpp \
   qt/delegationsstakerdialog.cpp \
+  qt/derivationpathdialog.cpp \
   qt/eventlog.cpp \
   qt/execrpccommand.cpp \
   qt/editaddressdialog.cpp \
@@ -475,6 +481,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/transactionrecord.cpp \
   qt/transactiontablemodel.cpp \
   qt/transactionview.cpp \
+  qt/waitmessagebox.cpp \
   qt/walletframe.cpp \
   qt/walletmodel.cpp \
   qt/walletmodeltransaction.cpp \

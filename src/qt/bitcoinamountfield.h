@@ -60,6 +60,9 @@ public:
     CAmount minimum() const;
     void setMinimum(const CAmount& min);
 
+    /** Notify always for valueChanged when it the same*/
+    void setNotifyAlways(bool value);
+
 Q_SIGNALS:
     void valueChanged();
 

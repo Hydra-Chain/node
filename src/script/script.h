@@ -648,6 +648,10 @@ public:
         return ReplaceParam(OP_SENDER, 1, scriptSig, scriptRet);
     }
 
+    bool GetData(std::vector<unsigned char>& data) const;
+
+    bool SetData(const std::vector<unsigned char>& data, CScript& scriptRet) const;
+
     CScript WithoutSenderSig() const
     {
         std::vector<unsigned char> scriptSig;
