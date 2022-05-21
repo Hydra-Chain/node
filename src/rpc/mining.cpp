@@ -211,7 +211,7 @@ static UniValue getsubsidy(const JSONRPCRequest& request)
                     {"height", RPCArg::Type::NUM, RPCArg::Optional::OMITTED_NAMED_ARG, "Specify block height."},
                 },
                 RPCResult{
-            "subsidy             (numeric)  Subsidy value for the specified target\n"
+                    RPCResult::Type::NUM, "subsidy", "Subsidy value for the specified target"
                 },
                 RPCExamples{
                     HelpExampleCli("getsubsidy", "")
@@ -306,18 +306,19 @@ static UniValue getstakinginfo(const JSONRPCRequest& request)
                 "\nReturns an object containing staking-related information.",
                 {},
                 RPCResult{
-                           "{\n"
-                           "  \"enabled\": xxx,             (bool) 'true' if staking is enabled\n"
-                           "  \"staking\": xxx,             (bool) 'true' if wallet is currently staking\n"
-                           "  \"errors\": nnn,              (string) \n"
-                           "  \"pooledtx\": n               (numeric) The size of the mempool\n"
-                           "  \"difficulty\": xxx.xxxxx     (numeric) The current difficulty\n"
-                           "  \"search-interval\": nnn,     (numeric) \n"
-                           "  \"weight\": \"xxxx\",         (numeric) \n"
-                           "  \"netstakeweight\": \"...\"   (numeric) \n"
-                           "  \"expectedtime\": \"...\"     (numeric) Expected time to earn reward\n"
-                           "}\n"
-                       },
+                    RPCResult::Type::OBJ, "", "",
+                    {
+                        {RPCResult::Type::BOOL, "enabled", "'true' if staking is enabled"},
+                        {RPCResult::Type::BOOL, "staking", "'true' if wallet is currently staking"},
+                        {RPCResult::Type::STR, "errors", "error messages"},
+                        {RPCResult::Type::NUM, "pooledtx", "The size of the mempool"},
+                        {RPCResult::Type::NUM, "difficulty", "The current difficulty"},
+                        {RPCResult::Type::NUM, "search-interval", "The staker search interval"},
+                        {RPCResult::Type::NUM, "weight", "The staker weight"},
+                        {RPCResult::Type::NUM, "netstakeweight", "Network stake weight"},
+                        {RPCResult::Type::NUM, "expectedtime", "Expected time to earn reward"},
+                    }
+                },
                 RPCExamples{
                     HelpExampleCli("getstakinginfo", "")
             + HelpExampleRpc("getstakinginfo", "")

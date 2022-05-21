@@ -334,14 +334,14 @@ UniValue getdelegationinfoforaddress(const JSONRPCRequest& request)
                     {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The HYDRA address string"},
                 },
                 RPCResult{
-            "{\n"
-            "  \"staker\": \"address\",                 (string)   Staker address\n"
-            "  \"fee\": n,                            (numeric)  Percentage of the reward\n"
-            "  \"blockHeight\": n,                    (numeric)  Block height\n"
-            "  \"PoD\": \"hex\",                        (string)   Proof of delegation\n"
-            "  \"verified\" : true|false              (boolean)  Verify delegation\n"
-            "}\n"
-                },
+                    RPCResult::Type::OBJ, "", "",
+                    {
+                        {RPCResult::Type::STR, "staker", "The staker address"},
+                        {RPCResult::Type::NUM, "fee", "The percentage of the reward"},
+                        {RPCResult::Type::NUM, "blockHeight", "The block height"},
+                        {RPCResult::Type::STR_HEX, "PoD", "The proof of delegation"},
+                        {RPCResult::Type::BOOL, "verified", "Verify delegation"},
+                    }},
                 RPCExamples{
                     HelpExampleCli("getdelegationinfoforaddress", "HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd")
             + HelpExampleRpc("getdelegationinfoforaddress", "HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd")
@@ -429,15 +429,18 @@ UniValue getdelegationsforstaker(const JSONRPCRequest& request)
                     {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The HYDRA address string for staker"},
                 },
                 RPCResult{
-                "[{\n"
-                "  \"delegate\": \"address\",               (string)   Delegate address\n"
-                "  \"staker\": \"address\",                 (string)   Staker address\n"
-                "  \"fee\": n,                            (numeric)  Percentage of the reward\n"
-                "  \"blockHeight\": n,                    (numeric)  Block height\n"
-                "  \"weight\": n,                         (numeric)  Delegate weight, displayed when address index is enabled\n"
-                "  \"PoD\": \"hex\",                        (string)   Proof of delegation\n"
-                "}]\n"
-                },
+                RPCResult::Type::ARR, "", "",
+                {
+                    {RPCResult::Type::OBJ, "", "",
+                        {
+                            {RPCResult::Type::STR, "delegate", "The delegate address"},
+                            {RPCResult::Type::STR, "staker", "The staker address"},
+                            {RPCResult::Type::NUM, "fee", "The percentage of the reward"},
+                            {RPCResult::Type::NUM, "blockHeight", "The block height"},
+                            {RPCResult::Type::NUM, "weight", "Delegate weight, displayed when address index is enabled"},
+                            {RPCResult::Type::STR_HEX, "PoD", "The proof of delegation"},
+                        }}
+                }},
                 RPCExamples{
                     HelpExampleCli("getdelegationsforstaker", "HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd")
             + HelpExampleRpc("getdelegationsforstaker", "HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd")
@@ -522,8 +525,7 @@ static UniValue getestimatedannualroi(const JSONRPCRequest& request)
                            "\nReturns the estimated annual roi.\n",
                            {},
                            RPCResult{
-                                   "n    (numeric) The current estimated annual roi\n"
-                           },
+                               RPCResult::Type::NUM, "", "The current estimated annual roi"},
                            RPCExamples{
                                    HelpExampleCli("getestimatedannualroi", "")
                                    + HelpExampleRpc("getestimatedannualroi", "")
@@ -1116,13 +1118,13 @@ static UniValue getaccountinfo(const JSONRPCRequest& request)
                     {"address", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The contract address"},
                 },
                 RPCResult{
-            "{\n"
-            "  \"address\": \"contract address\",    (string)  address of the contract\n"
-            "  \"balance\": n,                     (numeric) balance of the contract\n"
-            "  \"storage\": {...},                 (object)  storage data of the contract\n"
-            "  \"code\": \"bytecode\"                (string)  bytecode of the contract\n"
-            "}\n"
-                },
+                    RPCResult::Type::OBJ, "", "",
+                    {
+                        {RPCResult::Type::STR, "address", "The address of the contract"},
+                        {RPCResult::Type::STR_AMOUNT, "balance", "The balance of the contract"},
+                        {RPCResult::Type::STR, "storage", "The storage data of the contract"},
+                        {RPCResult::Type::STR_HEX, "code", "The bytecode of the contract"},
+                    }},
                 RPCExamples{
                     HelpExampleCli("getaccountinfo", "eb23c0b3e6042821da281a2e2364feb22dd543e3")
             + HelpExampleRpc("getaccountinfo", "eb23c0b3e6042821da281a2e2364feb22dd543e3")
@@ -1182,7 +1184,7 @@ static UniValue getstorage(const JSONRPCRequest& request)
                     {"index", RPCArg::Type::NUM, RPCArg::Optional::OMITTED_NAMED_ARG, "Zero-based index position of the storage"},
                 },
                 RPCResult{
-            "(object)  storage data of the contract\n"
+                    RPCResult::Type::STR, "", "The storage data of the contract"},
                 },
                 RPCExamples{
                     HelpExampleCli("getstorage", "eb23c0b3e6042821da281a2e2364feb22dd543e3")
@@ -1442,35 +1444,35 @@ UniValue callcontract(const JSONRPCRequest& request)
                     {"amount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED_NAMED_ARG, "The amount in " + CURRENCY_UNIT + " to send. eg 0.1, default: 0"},
                 },
                 RPCResult{
-            "{\n"
-            "  \"address\": \"contract address\",             (string)  address of the contract\n"
-            "  \"executionResult\": {                       (object)  method execution result\n"
-            "    \"gasUsed\": n,                            (numeric) gas used\n"
-            "    \"excepted\": \"exception\",                 (string)  thrown exception\n"
-            "    \"newAddress\": \"contract address\",        (string)  new address of the contract\n"
-            "    \"output\": \"data\",                        (string)  returned data from the method\n"
-            "    \"codeDeposit\": n,                        (numeric) code deposit\n"
-            "    \"gasRefunded\": n,                        (numeric) gas refunded\n"
-            "    \"depositSize\": n,                        (numeric) deposit size\n"
-            "    \"gasForDeposit\": n                       (numeric) gas for deposit\n"
-            "  },\n"
-            "  \"transactionReceipt\": {                    (object)  transaction receipt\n"
-            "    \"stateRoot\": \"hash\",                     (string)  state root hash\n"
-            "    \"gasUsed\": n,                            (numeric) gas used\n"
-            "    \"bloom\": \"bloom\",                        (string)  bloom\n"
-            "    \"log\": [                                 (array)  logs from the receipt\n"
-            "      {\n"
-            "        \"address\": \"address\",                (string)  contract address\n"
-            "        \"topics\":                            (array)  topics\n"
-            "        [\n"
-            "          \"topic\",                           (string)  topic\n"
-            "        ],\n"
-            "        \"data\": \"data\"                       (string)  logged data\n"
-            "      }\n"
-            "    ]\n"
-            "  }\n"
-            "}\n"
-                },
+                    RPCResult::Type::OBJ, "", "",
+                    {
+                        {RPCResult::Type::STR, "address", "The address of the contract"},
+                        {RPCResult::Type::OBJ, "executionResult", "The method execution result",
+                            {
+                                {RPCResult::Type::NUM, "gasUsed", "The gas used"},
+                                {RPCResult::Type::NUM, "excepted", "The thrown exception"},
+                                {RPCResult::Type::STR, "newAddress", "The new address of the contract"},
+                                {RPCResult::Type::STR_HEX, "output", "The returned data from the method"},
+                                {RPCResult::Type::NUM, "codeDeposit", "The code deposit"},
+                                {RPCResult::Type::NUM, "gasRefunded", "The gas refunded"},
+                                {RPCResult::Type::NUM, "depositSize", "The deposit size"},
+                                {RPCResult::Type::NUM, "gasForDeposit", "The gas for deposit"},
+                            }},
+                        {RPCResult::Type::OBJ, "transactionReceipt", "The transaction receipt",
+                            {
+                                {RPCResult::Type::STR_HEX, "stateRoot", "The state root hash"},
+                                {RPCResult::Type::NUM, "gasUsed", "The gas used"},
+                                {RPCResult::Type::STR, "bloom", "The bloom"},
+                                {RPCResult::Type::ARR, "log", "The logs from the receipt",
+                                    {
+                                        {RPCResult::Type::STR, "address", "The contract address"},
+                                        {RPCResult::Type::ARR, "topics", "The topic",
+                                            {{RPCResult::Type::STR_HEX, "topic", "The topic"}}},
+                                        {RPCResult::Type::STR_HEX, "data", "The logged data"},
+                                    }},
+
+                            }},
+                    }},
                 RPCExamples{
                     HelpExampleCli("callcontract", "eb23c0b3e6042821da281a2e2364feb22dd543e3 06fdde03")
             + HelpExampleCli("callcontract", "\"\" 60606040525b33600060006101000a81548173ffffffffffffffffffffffffffffffffffffffff02191690836c010000000000000000000000009081020402179055506103786001600050819055505b600c80605b6000396000f360606040526008565b600256")
@@ -1533,19 +1535,20 @@ UniValue waitforlogs(const JSONRPCRequest& request_) {
                     {"minconf", RPCArg::Type::NUM, /* default */ "6", "Minimal number of confirmations before a log is returned"},
                 },
                 RPCResult{
-                "An object with the following properties:\n"
-                "1. logs (LogEntry[]) Array of matchiing log entries. This may be empty if `filter` removed all entries."
-                "2. count (int) How many log entries are returned."
-                "3. nextBlock (int) To wait for new log entries haven't seen before, use this number as `fromBlock`"
-                "\nUsage:\n"
-                "`waitforlogs` waits for new logs, starting from the tip of the chain.\n"
-                "`waitforlogs 600` waits for new logs, but starting from block 600. If there are logs available, this call will return immediately.\n"
-                "`waitforlogs 600 700` waits for new logs, but only up to 700th block\n"
-                "`waitforlogs null null` this is equivalent to `waitforlogs`, using default parameter values\n"
-                "`waitforlogs null null` { \"addresses\": [ \"ff0011...\" ], \"topics\": [ \"c0fefe\"] }` waits for logs in the future matching the specified conditions\n"
-                "\nSample Output:\n"
-                "{\n  \"entries\": [\n    {\n      \"blockHash\": \"56d5f1f5ec239ef9c822d9ed600fe9aa63727071770ac7c0eabfc903bf7316d4\",\n      \"blockNumber\": 3286,\n      \"transactionHash\": \"00aa0f041ce333bc3a855b2cba03c41427cda04f0334d7f6cb0acad62f338ddc\",\n      \"transactionIndex\": 2,\n      \"from\": \"3f6866e2b59121ada1ddfc8edc84a92d9655675f\",\n      \"to\": \"8e1ee0b38b719abe8fa984c986eabb5bb5071b6b\",\n      \"cumulativeGasUsed\": 23709,\n      \"gasUsed\": 23709,\n      \"contractAddress\": \"8e1ee0b38b719abe8fa984c986eabb5bb5071b6b\",\n      \"topics\": [\n        \"f0e1159fa6dc12bb31e0098b7a1270c2bd50e760522991c6f0119160028d9916\",\n        \"0000000000000000000000000000000000000000000000000000000000000002\"\n      ],\n      \"data\": \"00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000003\"\n    }\n  ],\n\n  \"count\": 7,\n  \"nextblock\": 801\n}\n"
-                },
+                    RPCResult::Type::STR, "", 
+                        "An object with the following properties:\n"
+                        "1. logs (LogEntry[]) Array of matchiing log entries. This may be empty if `filter` removed all entries."
+                        "2. count (int) How many log entries are returned."
+                        "3. nextBlock (int) To wait for new log entries haven't seen before, use this number as `fromBlock`"
+                        "\nUsage:\n"
+                        "`waitforlogs` waits for new logs, starting from the tip of the chain.\n"
+                        "`waitforlogs 600` waits for new logs, but starting from block 600. If there are logs available, this call will return immediately.\n"
+                        "`waitforlogs 600 700` waits for new logs, but only up to 700th block\n"
+                        "`waitforlogs null null` this is equivalent to `waitforlogs`, using default parameter values\n"
+                        "`waitforlogs null null` { \"addresses\": [ \"ff0011...\" ], \"topics\": [ \"c0fefe\"] }` waits for logs in the future matching the specified conditions\n"
+                        "\nSample Output:\n"
+                        "{\n  \"entries\": [\n    {\n      \"blockHash\": \"56d5f1f5ec239ef9c822d9ed600fe9aa63727071770ac7c0eabfc903bf7316d4\",\n      \"blockNumber\": 3286,\n      \"transactionHash\": \"00aa0f041ce333bc3a855b2cba03c41427cda04f0334d7f6cb0acad62f338ddc\",\n      \"transactionIndex\": 2,\n      \"from\": \"3f6866e2b59121ada1ddfc8edc84a92d9655675f\",\n      \"to\": \"8e1ee0b38b719abe8fa984c986eabb5bb5071b6b\",\n      \"cumulativeGasUsed\": 23709,\n      \"gasUsed\": 23709,\n      \"contractAddress\": \"8e1ee0b38b719abe8fa984c986eabb5bb5071b6b\",\n      \"topics\": [\n        \"f0e1159fa6dc12bb31e0098b7a1270c2bd50e760522991c6f0119160028d9916\",\n        \"0000000000000000000000000000000000000000000000000000000000000002\"\n      ],\n      \"data\": \"00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000003\"\n    }\n  ],\n\n  \"count\": 7,\n  \"nextblock\": 801\n}\n"
+                    },
                 RPCExamples{
                     HelpExampleCli("waitforlogs", "") + HelpExampleCli("waitforlogs", "600") + HelpExampleCli("waitforlogs", "600 700") + HelpExampleCli("waitforlogs", "null null")
                     + HelpExampleCli("waitforlogs", "null null '{ \"addresses\": [ \"12ae42729af478ca92c8c66773a3e32115717be4\" ], \"topics\": [ \"b436c2bf863ccd7b8f63171201efd4792066b4ce8e543dde9c3e9e9ab98e216c\"] }'")
@@ -1696,30 +1699,29 @@ UniValue searchlogs(const JSONRPCRequest& request)
                     {"minconf", RPCArg::Type::NUM, /* default */ "0", "Minimal number of confirmations before a log is returned"},
                 },
                 RPCResult{
-            "[\n"
-            "  {\n"
-            "    \"blockHash\": \"hash\",             (string)  block hash\n"
-            "    \"blockNumber\": n,                (numeric)  block number\n"
-            "    \"transactionHash\": \"hash\",       (string)  transaction hash\n"
-            "    \"transactionIndex\": n,           (numeric)  transaction index\n"
-            "    \"from\": \"address\",               (string)  from address\n"
-            "    \"to\": \"address\",                 (string)  to address\n"
-            "    \"cumulativeGasUsed\": n,          (numeric)  cumulative gas used\n"
-            "    \"gasUsed\": n,                    (numeric)  gas used\n"
-            "    \"contractAddress\": \"address\",    (string)  contract address\n"
-            "    \"excepted\": \"exception\",         (string)  thrown exception\n"
-            "    \"log\": [                         (array)  logs from the receipt\n"
-            "      {\n"
-            "        \"address\": \"address\",        (string)  contract address\n"
-            "        \"topics\":                    (array)  topics\n"
-            "        [\n"
-            "          \"topics\",                  (string)  topic\n"
-            "        ],\n"
-            "        \"data\": \"data\"               (string)  logged data\n"
-            "      }\n"
-            "    ]\n"
-            "  }\n"
-            "]\n"
+                    RPCResult::Type::ARR, "", "",
+                    {
+                        {RPCResult::Type::OBJ, "", "",
+                            {
+                                {RPCResult::Type::STR_HEX, "blockHash", "The block hash"},
+                                {RPCResult::Type::NUM, "blockNumber", "The block number"},
+                                {RPCResult::Type::STR_HEX, "transactionHash", "The transaction hash"},
+                                {RPCResult::Type::NUM, "transactionIndex", "The transaction index"},
+                                {RPCResult::Type::STR, "from", "The from address"},
+                                {RPCResult::Type::STR, "to", "The to address"},
+                                {RPCResult::Type::NUM, "cumulativeGasUsed", "The cumulative gas used"},
+                                {RPCResult::Type::NUM, "gasUsed", "The gas used"},
+                                {RPCResult::Type::STR_HEX, "contractAddress", "The contract address"},
+                                {RPCResult::Type::STR, "excepted", "The thrown exception"},
+                                {RPCResult::Type::ARR, "log", "The logs from the receipt",
+                                    {
+                                        {RPCResult::Type::STR, "address", "The contract address"},
+                                        {RPCResult::Type::ARR, "topics", "The topic",
+                                            {{RPCResult::Type::STR_HEX, "topic", "The topic"}}},
+                                        {RPCResult::Type::STR_HEX, "data", "The logged data"},
+                                    }},
+                            }}
+                    }
                 },
                 RPCExamples{
                     HelpExampleCli("searchlogs", "0 100 '{\"addresses\": [\"12ae42729af478ca92c8c66773a3e32115717be4\"]}' '{\"topics\": [\"null\",\"b436c2bf863ccd7b8f63171201efd4792066b4ce8e543dde9c3e9e9ab98e216c\"]}'")
@@ -1740,31 +1742,30 @@ UniValue gettransactionreceipt(const JSONRPCRequest& request)
                     {"hash", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The transaction hash"},
                 },
                 RPCResult{
-            "[\n"
-            "  {\n"
-            "    \"blockHash\": \"hash\",             (string)  block hash\n"
-            "    \"blockNumber\": n,                (numeric)  block number\n"
-            "    \"transactionHash\": \"hash\",       (string)  transaction hash\n"
-            "    \"transactionIndex\": n,           (numeric)  transaction index\n"
-            "    \"from\": \"address\",               (string)  from address\n"
-            "    \"to\": \"address\",                 (string)  to address\n"
-            "    \"cumulativeGasUsed\": n,          (numeric)  cumulative gas used\n"
-            "    \"gasUsed\": n,                    (numeric)  gas used\n"
-            "    \"contractAddress\": \"address\",    (string)  contract address\n"
-            "    \"excepted\": \"exception\",         (string)  thrown exception\n"
-            "    \"bloom\": \"bloom\",         (hex string)  Bloom filter for light clients to quickly retrieve related logs\n"
-            "    \"log\": [                         (array)  logs from the receipt\n"
-            "      {\n"
-            "        \"address\": \"address\",        (string)  contract address\n"
-            "        \"topics\":                    (array)  topics\n"
-            "        [\n"
-            "          \"topic\",                   (string)  topic\n"
-            "        ],\n"
-            "        \"data\": \"data\"               (string)  logged data\n"
-            "      }\n"
-            "    ]\n"
-            "  }\n"
-            "]\n"
+                    RPCResult::Type::ARR, "", "",
+                    {
+                        {RPCResult::Type::OBJ, "", "",
+                            {
+                                {RPCResult::Type::STR_HEX, "blockHash", "The block hash"},
+                                {RPCResult::Type::NUM, "blockNumber", "The block number"},
+                                {RPCResult::Type::STR_HEX, "transactionHash", "The transaction hash"},
+                                {RPCResult::Type::NUM, "transactionIndex", "The transaction index"},
+                                {RPCResult::Type::STR, "from", "The from address"},
+                                {RPCResult::Type::STR, "to", "The to address"},
+                                {RPCResult::Type::NUM, "cumulativeGasUsed", "The cumulative gas used"},
+                                {RPCResult::Type::NUM, "gasUsed", "The gas used"},
+                                {RPCResult::Type::STR_HEX, "contractAddress", "The contract address"},
+                                {RPCResult::Type::STR, "excepted", "The thrown exception"},
+                                {RPCResult::Type::STR_HEX, "bloom", "Bloom filter for light clients to quickly retrieve related logs"},
+                                {RPCResult::Type::ARR, "log", "The logs from the receipt",
+                                    {
+                                        {RPCResult::Type::STR, "address", "The contract address"},
+                                        {RPCResult::Type::ARR, "topics", "The topic",
+                                            {{RPCResult::Type::STR_HEX, "topic", "The topic"}}},
+                                        {RPCResult::Type::STR_HEX, "data", "The logged data"},
+                                    }},
+                            }}
+                    }
                 },
                 RPCExamples{
                     HelpExampleCli("gettransactionreceipt", "3b04bc73afbbcf02cfef2ca1127b60fb0baf5f8946a42df67f1659671a2ec53c")
@@ -1807,10 +1808,10 @@ UniValue listcontracts(const JSONRPCRequest& request)
                     {"maxDisplay", RPCArg::Type::NUM, /* default */ "20", "Max accounts to list"},
                 },
                 RPCResult{
-            "{\n"
-            "  \"account\": n,                            (numeric) balance for the account\n"
-            "  ...\n"
-            "}\n"
+                    RPCResult::Type::OBJ, "", "",
+                    {
+                        {RPCResult::Type::NUM, "account", "The balance for the account"},
+                    }
                 },
                 RPCExamples{
                     HelpExampleCli("listcontracts", "")
@@ -2217,49 +2218,55 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
                 "Returns an object containing various state info regarding blockchain processing.\n",
                 {},
                 RPCResult{
-            "{\n"
-            "  \"chain\": \"xxxx\",              (string) current network name as defined in BIP70 (main, test, regtest)\n"
-            "  \"blocks\": xxxxxx,             (numeric) the current number of blocks processed in the server\n"
-            "  \"headers\": xxxxxx,            (numeric) the current number of headers we have validated\n"
-            "  \"bestblockhash\": \"...\",       (string) the hash of the currently best block\n"
-            "  \"difficulty\": xxxxxx,         (numeric) the current difficulty\n"
-            "  \"mediantime\": xxxxxx,         (numeric) median time for the current best block\n"
-            "  \"verificationprogress\": xxxx, (numeric) estimate of verification progress [0..1]\n"
-            "  \"initialblockdownload\": xxxx, (bool) (debug information) estimate of whether this node is in Initial Block Download mode.\n"
-            "  \"chainwork\": \"xxxx\"           (string) total amount of work in active chain, in hexadecimal\n"
-            "  \"size_on_disk\": xxxxxx,       (numeric) the estimated size of the block and undo files on disk\n"
-            "  \"pruned\": xx,                 (boolean) if the blocks are subject to pruning\n"
-            "  \"pruneheight\": xxxxxx,        (numeric) lowest-height complete block stored (only present if pruning is enabled)\n"
-            "  \"automatic_pruning\": xx,      (boolean) whether automatic pruning is enabled (only present if pruning is enabled)\n"
-            "  \"prune_target_size\": xxxxxx,  (numeric) the target size used by pruning (only present if automatic pruning is enabled)\n"
-            "  \"softforks\": [                (array) status of softforks in progress\n"
-            "     {\n"
-            "        \"id\": \"xxxx\",           (string) name of softfork\n"
-            "        \"version\": xx,          (numeric) block version\n"
-            "        \"reject\": {             (object) progress toward rejecting pre-softfork blocks\n"
-            "           \"status\": xx,        (boolean) true if threshold reached\n"
-            "        },\n"
-            "     }, ...\n"
-            "  ],\n"
-            "  \"bip9_softforks\": {           (object) status of BIP9 softforks in progress\n"
-            "     \"xxxx\" : {                 (string) name of the softfork\n"
-            "        \"status\": \"xxxx\",       (string) one of \"defined\", \"started\", \"locked_in\", \"active\", \"failed\"\n"
-            "        \"bit\": xx,              (numeric) the bit (0-28) in the block version field used to signal this softfork (only for \"started\" status)\n"
-            "        \"startTime\": xx,        (numeric) the minimum median time past of a block at which the bit gains its meaning\n"
-            "        \"timeout\": xx,          (numeric) the median time past of a block at which the deployment is considered failed if not yet locked in\n"
-            "        \"since\": xx,            (numeric) height of the first block to which the status applies\n"
-            "        \"statistics\": {         (object) numeric statistics about BIP9 signalling for a softfork (only for \"started\" status)\n"
-            "           \"period\": xx,        (numeric) the length in blocks of the BIP9 signalling period \n"
-            "           \"threshold\": xx,     (numeric) the number of blocks with the version bit set required to activate the feature \n"
-            "           \"elapsed\": xx,       (numeric) the number of blocks elapsed since the beginning of the current period \n"
-            "           \"count\": xx,         (numeric) the number of blocks with the version bit set in the current period \n"
-            "           \"possible\": xx       (boolean) returns false if there are not enough blocks left in this period to pass activation threshold \n"
-            "        }\n"
-            "     }\n"
-            "  }\n"
-            "  \"warnings\" : \"...\",           (string) any network and blockchain warnings.\n"
-            "}\n"
-                },
+                    RPCResult::Type::OBJ, "", "",
+                    {
+                        {RPCResult::Type::STR, "chain", "current network name (main, test, regtest)"},
+                        {RPCResult::Type::NUM, "blocks", "the height of the most-work fully-validated chain. The genesis block has height 0"},
+                        {RPCResult::Type::NUM, "headers", "the current number of headers we have validated"},
+                        {RPCResult::Type::STR, "bestblockhash", "the hash of the currently best block"},
+                        {RPCResult::Type::NUM, "difficulty", "the current difficulty"},
+                        {RPCResult::Type::NUM, "mediantime", "median time for the current best block"},
+                        {RPCResult::Type::NUM, "verificationprogress", "estimate of verification progress [0..1]"},
+                        {RPCResult::Type::BOOL, "initialblockdownload", "(debug information) estimate of whether this node is in Initial Block Download mode"},
+                        {RPCResult::Type::STR_HEX, "chainwork", "total amount of work in active chain, in hexadecimal"},
+                        {RPCResult::Type::NUM, "size_on_disk", "the estimated size of the block and undo files on disk"},
+                        {RPCResult::Type::BOOL, "pruned", "if the blocks are subject to pruning"},
+                        {RPCResult::Type::NUM, "pruneheight", "lowest-height complete block stored (only present if pruning is enabled)"},
+                        {RPCResult::Type::BOOL, "automatic_pruning", "whether automatic pruning is enabled (only present if pruning is enabled)"},
+                        {RPCResult::Type::NUM, "prune_target_size", "the target size used by pruning (only present if automatic pruning is enabled)"},
+                        {RPCResult::Type::OBJ_DYN, "softforks", "status of softforks",
+                        {
+                            {RPCResult::Type::OBJ, "", "",
+                                {
+                                    {RPCResult::Type::STR, "id", "name of the softfork"},
+                                    {RPCResult::Type::NUM, "version", "block version"},
+                                    {RPCResult::Type::OBJ, "reject", "progress toward rejecting pre-softfork blocks",
+                                        {
+                                            {RPCResult::Type::BOOL, "status", "true if threshold reached"},
+                                        }},
+                                }},
+                        }},
+                        {RPCResult::Type::OBJ_DYN, "bip9_softforks", "status of BIP9 softforks in progress",
+                        {
+                            {RPCResult::Type::OBJ, "xxx", "name of the softfork",
+                                {
+                                    {RPCResult::Type::STR, "status", "one of \"defined\", \"started\", \"locked_in\", \"active\", \"failed\""},
+                                    {RPCResult::Type::NUM, "bit", "the bit (0-28) in the block version field used to signal this softfork (only for \"started\" status)"},
+                                    {RPCResult::Type::NUM, "startTime", "the minimum median time past of a block at which the bit gains its meaning"},
+                                    {RPCResult::Type::NUM, "timeout", "the median time past of a block at which the deployment is considered failed if not yet locked in"},
+                                    {RPCResult::Type::NUM, "since", "height of the first block to which the status applies"},
+                                    {RPCResult::Type::OBJ, "statistics", "numeric statistics about BIP9 signalling for a softfork (only for \"started\" status)",
+                                        {
+                                            {RPCResult::Type::NUM, "period", "the length in blocks of the BIP9 signalling period"},
+                                            {RPCResult::Type::NUM, "threshold", "the number of blocks with the version bit set required to activate the feature"},
+                                            {RPCResult::Type::NUM, "elapsed", "the number of blocks elapsed since the beginning of the current period"},
+                                            {RPCResult::Type::NUM, "count", "the number of blocks with the version bit set in the current period"},
+                                            {RPCResult::Type::BOOL, "possible", "returns false if there are not enough blocks left in this period to pass activation threshold"},
+                                        }},
+                                }},
+                        }},
+                        {RPCResult::Type::STR, "warnings", "any network and blockchain warnings."},
+                }},
                 RPCExamples{
                     HelpExampleCli("getblockchaininfo", "")
             + HelpExampleRpc("getblockchaininfo", "")

@@ -170,7 +170,7 @@ static UniValue gethexaddress(const JSONRPCRequest& request) {
                             {"address", RPCArg::Type::STR_HEX, RPCArg::Optional::NO, "The base58 address"},
                         },
                         RPCResult{
-                            "\"hexaddress\"      (string) The raw hex pubkeyhash address for use in smart contracts\n"
+                            RPCResult::Type::STR_HEX, "hexaddress", "The raw hex pubkeyhash address for use in smart contracts"},
                         },
                         RPCExamples{
                         HelpExampleCli("gethexaddress", "\"address\"")
@@ -200,7 +200,7 @@ static UniValue fromhexaddress(const JSONRPCRequest& request) {
                             {"hexaddress", RPCArg::Type::STR_HEX, RPCArg::Optional::NO,  "The raw hex address"},
                         },
                         RPCResult{
-                        "\"address\"      (string) The base58 pubkeyhash address\n"
+                            RPCResult::Type::STR, "address", "The base58 pubkeyhash address"},
                         },
                         RPCExamples{
                         HelpExampleCli("fromhexaddress", "\"hexaddress\"")
@@ -1456,18 +1456,20 @@ static UniValue signrawsendertransactionwithkey(const JSONRPCRequest& request)
                                    },
                            },
                            RPCResult{
-                                   "{\n"
-                                   "  \"hex\" : \"value\",                  (string) The hex-encoded raw transaction with signature(s)\n"
-                                   "  \"complete\" : true|false,          (boolean) If the transaction has a complete set of signatures\n"
-                                   "  \"errors\" : [                      (json array of objects) Script verification errors (if there are any)\n"
-                                   "    {\n"
-                                   "      \"amount\" : n,                   (numeric) The amount of the output\n"
-                                   "      \"scriptPubKey\" : \"hex\",          (string) The hex-encoded public key script of the output\n"
-                                   "      \"error\" : \"text\"              (string) Verification or signing error related to the output\n"
-                                   "    }\n"
-                                   "    ,...\n"
-                                   "  ]\n"
-                                   "}\n"
+                                RPCResult::Type::OBJ, "", "",
+                                {
+                                    {RPCResult::Type::STR_HEX, "hex", "The hex-encoded raw transaction with signature(s)"},
+                                    {RPCResult::Type::BOOL, "complete", "If the transaction has a complete set of signatures"},
+                                    {RPCResult::Type::ARR, "errors", "Script verification errors (if there are any)",
+                                    {
+                                        {RPCResult::Type::OBJ, "", "",
+                                        {
+                                            {RPCResult::Type::NUM, "amount", "The amount of the output"},
+                                            {RPCResult::Type::STR_HEX, "scriptPubKey", "The hex-encoded public key script of the output"},
+                                            {RPCResult::Type::STR, "error", "Verification or signing error related to the output"},
+                                        }},
+                                    }},
+                                }
                            },
                            RPCExamples{
                                    HelpExampleCli("signrawsendertransactionwithkey", "\"myhex\" \"[\\\"key1\\\",\\\"key2\\\"]\"")
@@ -1521,14 +1523,15 @@ static UniValue sendrawtransaction(const JSONRPCRequest& request)
                         RPCResult::Type::STR_HEX, "", "The transaction hash in hex"
                     },
                     RPCResult{"for create contract with showcontractdata = true",
-                        "{\n"
-                        "  \"txid\": \"hash\",                      (string) The transaction hash in hex\n"
-                        "  \"contracts\": [\n"
-                        "    {\n"
-                        "      \"address\": \"contract address\",   (string) The expected contract address \n"
-                        "      \"index\": n                       (numeric) The index of the output\n"
-                        "    }\n"
-                        "}\n"
+                        RPCResult::Type::OBJ, "", "",
+                        {
+                            {RPCResult::Type::STR_HEX, "txid", "The transaction hash in hex"},
+                            {RPCResult::Type::ARR, "contracts", "",
+                            {
+                                {RPCResult::Type::STR, "address", "The expected contract address"},
+                                {RPCResult::Type::NUM, "index", "The index of the output"},
+                            }},
+                        }
                     }
                 },
                 RPCExamples{

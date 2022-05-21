@@ -736,11 +736,12 @@ static UniValue splitutxosforaddress(const JSONRPCRequest& request)
                     {"maxOutputs", RPCArg::Type::NUM, RPCArg::Optional::NO, "Maximum outputs to create"},
                 },
                 RPCResult{
-                    "{\n"
-                    "  \"txid\" : \"value\",                  (string) The hex-encoded transaction id\n"
-                    "  \"selected\" : \"value\",              (string) Selected amount of coins\n"
-                    "  \"splited\" : \"value\",               (string) Splited amount of coins\n"
-                    "}\n"
+                    RPCResult::Type::OBJ, "", "",
+                    {
+                        {RPCResult::Type::STR_HEX, "txid", "The hex-encoded transaction id"},
+                        {RPCResult::Type::STR_AMOUNT, "selected", "Selected amount of coins"},
+                        {RPCResult::Type::STR_AMOUNT, "splited", "Splited amount of coins"},
+                    }
                 },
                 RPCExamples{
                     HelpExampleCli("splitutxosforaddress", "\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 100 200")
@@ -866,14 +867,16 @@ static UniValue createcontract(const JSONRPCRequest& request){
                     {"changeToSender", RPCArg::Type::BOOL, RPCArg::Optional::OMITTED, "Return the change to the sender."},
                 },
                 RPCResult{
-                "[\n"
-                "  {\n"
-                "    \"txid\" : (string) The transaction id.\n"
-                "    \"sender\" : (string) " + CURRENCY_UNIT + " address of the sender.\n"
-                "    \"hash160\" : (string) ripemd-160 hash of the sender.\n"
-                "    \"address\" : (string) expected contract address.\n"
-                "  }\n"
-                "]\n"
+                    RPCResult::Type::ARR, "", "",
+                    {
+                        {RPCResult::Type::OBJ, "", "",
+                        {
+                            {RPCResult::Type::STR_HEX, "txid", "The transaction id. Only returned when wallet private keys are enabled."},
+                            {RPCResult::Type::STR, "sender", CURRENCY_UNIT + " address of the sender"},
+                            {RPCResult::Type::STR_HEX, "hash160", "Ripemd-160 hash of the sender"},
+                            {RPCResult::Type::STR, "address", "Expected contract address"},
+                        }},
+                    }
                 },
                 RPCExamples{
                 HelpExampleCli("createcontract", "\"60606040525b33600060006101000a81548173ffffffffffffffffffffffffffffffffffffffff02191690836c010000000000000000000000009081020402179055506103786001600050819055505b600c80605b6000396000f360606040526008565b600256\"")
@@ -1427,13 +1430,16 @@ static UniValue sendtocontract(const JSONRPCRequest& request)
                     {"changeToSender", RPCArg::Type::BOOL, RPCArg::Optional::OMITTED, "Return the change to the sender."},
                 },
                 RPCResult{
-                "[\n"
-                "  {\n"
-                "    \"txid\" : (string) The transaction id.\n"
-                "    \"sender\" : (string) " + CURRENCY_UNIT + " address of the sender.\n"
-                "    \"hash160\" : (string) ripemd-160 hash of the sender.\n"
-                "  }\n"
-                "]\n"
+                    RPCResult::Type::ARR, "", "",
+                    {
+                        {RPCResult::Type::OBJ, "", "",
+                            {   
+                                {RPCResult::Type::STR_HEX, "txid", "The transaction id. Only returned when wallet private keys are enabled."},
+                                {RPCResult::Type::STR, "sender", CURRENCY_UNIT + " address of the sender"},
+                                {RPCResult::Type::STR_HEX, "hash160", "Ripemd-160 hash of the sender"},
+                            }
+                        },
+                    }
                 },
                 RPCExamples{
                 HelpExampleCli("sendtocontract", "\"c6ca2697719d00446d4ea51f6fac8fd1e9310214\" \"54f6127f\"")
@@ -1478,13 +1484,16 @@ static UniValue removedelegationforaddress(const JSONRPCRequest& request){
                     {"gasLimit", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "gasLimit, default: "+i64tostr(DEFAULT_GAS_LIMIT_OP_SEND)+", max: "+i64tostr(blockGasLimit)},
                 },
                 RPCResult{
-                "[\n"
-                "  {\n"
-                "    \"txid\" : (string) The transaction id.\n"
-                "    \"sender\" : (string) " + CURRENCY_UNIT + " address of the sender.\n"
-                "    \"hash160\" : (string) ripemd-160 hash of the sender.\n"
-                "  }\n"
-                "]\n"
+                    RPCResult::Type::ARR, "", "",
+                    {
+                        {RPCResult::Type::OBJ, "", "",
+                            {
+                                {RPCResult::Type::STR_HEX, "txid", "The transaction id. Only returned when wallet private keys are enabled."},
+                                {RPCResult::Type::STR, "sender", CURRENCY_UNIT + " address of the sender"},
+                                {RPCResult::Type::STR_HEX, "hash160", "Ripemd-160 hash of the sender"},
+                            }
+                        },
+                    }
                 },
                 RPCExamples{
                 HelpExampleCli("removedelegationforaddress", " \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 6000000")
@@ -1546,13 +1555,16 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request){
                     {"gasLimit", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "gasLimit, default: "+i64tostr(DEFAULT_GAS_LIMIT_OP_CREATE)+", max: "+i64tostr(blockGasLimit)},
                 },
                 RPCResult{
-                "[\n"
-                "  {\n"
-                "    \"txid\" : (string) The transaction id.\n"
-                "    \"sender\" : (string) " + CURRENCY_UNIT + " address of the sender.\n"
-                "    \"hash160\" : (string) ripemd-160 hash of the sender.\n"
-                "  }\n"
-                "]\n"
+                    RPCResult::Type::ARR, "", "",
+                    {
+                        {RPCResult::Type::OBJ, "", "",
+                            {
+                                {RPCResult::Type::STR_HEX, "txid", "The transaction id. Only returned when wallet private keys are enabled."},
+                                {RPCResult::Type::STR, "sender", CURRENCY_UNIT + " address of the sender"},
+                                {RPCResult::Type::STR_HEX, "hash160", "Ripemd-160 hash of the sender"},
+                            }
+                        },
+                    }
                 },
                 RPCExamples{
                 HelpExampleCli("setdelegateforaddress", " \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 10 \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" 6000000")
@@ -1679,14 +1691,28 @@ static UniValue setsuperstakervaluesforaddress(const JSONRPCRequest& request){
                         },
                 },
                 RPCResult{
-                    "{\n"
-                    "  \"address\" : (string) Address of the staker.\n"
-                    "  \"customconfig\" : (bool) Custom configuration exist.\n"
-                    "  \"stakingminfee\" : (numeric) Minimum fee for delegate.\n"
-                    "  \"stakingminutxovalue\" : (numeric) Minimum UTXO value for delegate.\n"
-                    "  \"allow\" : (array) List of allowed delegate addresses.\n"
-                    "  \"exclude\" : (array) List of excluded delegate addresses.\n"
-                    "}\n"
+                    RPCResult::Type::ARR, "", "",
+                    {
+                        {
+                            RPCResult::Type::OBJ, "", "",
+                            {
+                                {RPCResult::Type::STR, "address", "Address of the staker."},
+                                {RPCResult::Type::BOOL, "customconfig", "Custom configuration exist."},
+                                {RPCResult::Type::NUM, "stakingminfee", "Minimum fee for delegate."},
+                                {RPCResult::Type::NUM, "stakingminutxovalue", "Minimum UTXO value for delegate."},
+                                {RPCResult::Type::ARR, "allow", "List of allowed delegate addresses.",
+                                    {
+                                        {RPCResult::Type::STR, "address", "The delegate address"},
+                                    },
+                                },
+                                {RPCResult::Type::ARR, "exclude", "List of excluded delegate addresses.",
+                                    {
+                                        {RPCResult::Type::STR, "address", "The delegate address"},
+                                    },
+                                },
+                            }
+                        },
+                    }
                 },
                 RPCExamples{
                     HelpExampleCli("setsuperstakervaluesforaddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10}\"")
@@ -1805,14 +1831,27 @@ static UniValue listsuperstakercustomvalues(const JSONRPCRequest& request){
                 HelpRequiringPassphrase(pwallet) + "\n",
                 {},
                 RPCResult{
-                    "[\n"
-                    "  \"staker\" : (string) Address of the staker.\n"
-                    "  \"customConfig\" : (bool) Custom configuration exist.\n"
-                    "  \"minFee\" : (numeric) Minimum fee for delegate.\n"
-                    "  \"minUtxoValue\" : (numeric) Minimum UTXO value for delegate.\n"
-                    "  \"allow\" : (array) List of allowed delegate addresses.\n"
-                    "  \"exclude\" : (array) List of excluded delegate addresses.\n"
-                    "]\n"
+                    RPCResult::Type::ARR, "", "",
+                    {
+                        {RPCResult::Type::OBJ, "", "",
+                            {
+                                {RPCResult::Type::STR, "address", "Address of the staker."},
+                                {RPCResult::Type::BOOL, "customconfig", "Custom configuration exist."},
+                                {RPCResult::Type::NUM, "stakingminfee", "Minimum fee for delegate."},
+                                {RPCResult::Type::NUM, "stakingminutxovalue", "Minimum UTXO value for delegate."},
+                                {RPCResult::Type::ARR, "allow", "List of allowed delegate addresses.",
+                                    {
+                                        {RPCResult::Type::STR, "address", "The delegate address"},
+                                    },
+                                },
+                                {RPCResult::Type::ARR, "exclude", "List of excluded delegate addresses.",
+                                    {
+                                        {RPCResult::Type::STR, "address", "The delegate address"},
+                                    },
+                                },
+                            }
+                        },
+                    }
                 },
                 RPCExamples{
                 HelpExampleCli("listsuperstakercustomvalues", "")
@@ -1854,14 +1893,27 @@ static UniValue listsuperstakervaluesforaddress(const JSONRPCRequest& request){
                     {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The super staker HYDRA address."},
                 },
                 RPCResult{
-                    "{\n"
-                    "  \"staker\" : (string) Address of the staker.\n"
-                    "  \"customConfig\" : (bool) Custom configuration exist.\n"
-                    "  \"minFee\" : (numeric) Minimum fee for delegate.\n"
-                    "  \"minUtxoValue\" : (numeric) Minimum UTXO value for delegate.\n"
-                    "  \"allow\" : (array) List of allowed delegate addresses.\n"
-                    "  \"exclude\" : (array) List of excluded delegate addresses.\n"
-                    "}\n"
+                    RPCResult::Type::ARR, "", "",
+                    {
+                        {RPCResult::Type::OBJ, "", "",
+                            {
+                                {RPCResult::Type::STR, "address", "Address of the staker."},
+                                {RPCResult::Type::BOOL, "customconfig", "Custom configuration exist."},
+                                {RPCResult::Type::NUM, "stakingminfee", "Minimum fee for delegate."},
+                                {RPCResult::Type::NUM, "stakingminutxovalue", "Minimum UTXO value for delegate."},
+                                {RPCResult::Type::ARR, "allow", "List of allowed delegate addresses.",
+                                    {
+                                        {RPCResult::Type::STR, "address", "The delegate address"},
+                                    },
+                                },
+                                {RPCResult::Type::ARR, "exclude", "List of excluded delegate addresses.",
+                                    {
+                                        {RPCResult::Type::STR, "address", "The delegate address"},
+                                    },
+                                },
+                            }
+                        },
+                    }
                 },
                 RPCExamples{
                 HelpExampleCli("listsuperstakervaluesforaddress", "HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd")
@@ -1916,7 +1968,7 @@ static UniValue removesuperstakervaluesforaddress(const JSONRPCRequest& request)
                 {
                     {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The super staker HYDRA address."},
                 },
-                RPCResult{""},
+                RPCResults{},
                 RPCExamples{
                 HelpExampleCli("removesuperstakervaluesforaddress", "HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd")
                 + HelpExampleRpc("removesuperstakervaluesforaddress", "HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd")
@@ -2113,17 +2165,18 @@ static UniValue getbalanceofaddress(const JSONRPCRequest& request)
                 {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The HYDRA address that will be used."},
             },
             RPCResult{
-                "[\n"
-                "  [\n"
-                "    [\n"
-                "      \"address\",            (string) The HYDRA address\n"
-                "      amount,                 (numeric) The amount in " + CURRENCY_UNIT + "\n"
-                "      \"label\"               (string, optional) The label\n"
-                "    ]\n"
-                "    ,...\n"
-                "  ]\n"
-                "  ,...\n"
-                "]\n"
+                RPCResult::Type::ARR, "", "",
+                {
+                    {RPCResult::Type::ARR, "", "",
+                    {
+                        {RPCResult::Type::ARR, "", "",
+                        {
+                            {RPCResult::Type::STR, "address", "The HYDRA address"},
+                            {RPCResult::Type::STR_AMOUNT, "amount", "The amount in " + CURRENCY_UNIT},
+                            {RPCResult::Type::STR, "label", /* optional */ true, "The label"},
+                        }},
+                    }},
+                }
             },
             RPCExamples{
                 HelpExampleCli("getbalanceofaddress", "HBvKE1Vk4gDgu5j7TZUX9P3QMAhVErMYoC")
@@ -2583,8 +2636,8 @@ static UniValue sendmanywithdupes(const JSONRPCRequest& request)
         "       \"CONSERVATIVE\""},
             },
             RPCResult{
-            "\"txid\"                   (string) The transaction id for the send. Only 1 transaction is created regardless of \n"
-            "                                    the number of addresses.\n"
+                RPCResult::Type::STR_HEX, "txid", "The transaction id for the send. Only 1 transaction is created regardless of\n"
+                "the number of addresses."
             },
             RPCExamples{
             "\nSend two amounts to two different addresses:\n"
@@ -4586,12 +4639,11 @@ static UniValue resendwallettransactions(const JSONRPCRequest& request)
             RPCHelpMan{"resendwallettransactions",
                 "Immediately re-broadcast unconfirmed wallet transactions to all peers.\n"
                 "Intended only for testing; the wallet code periodically re-broadcasts\n"
-                "automatically.\n",
+                "automatically.\n"
+                "Returns an RPC error if -walletbroadcast is set to false.\n"
+                "Returns array of transaction ids that were re-broadcast.\n",
                 {},
-                RPCResult{
-            "Returns an RPC error if -walletbroadcast is set to false.\n"
-            "Returns array of transaction ids that were re-broadcast.\n"
-                },
+                RPCResults{},
                  RPCExamples{""},
              }.ToString()
             );
@@ -5139,18 +5191,20 @@ UniValue signrawsendertransactionwithwallet(const JSONRPCRequest& request)
                                                                                            "       \"SINGLE|ANYONECANPAY\""},
                            },
                            RPCResult{
-                                   "{\n"
-                                   "  \"hex\" : \"value\",                  (string) The hex-encoded raw transaction with signature(s)\n"
-                                   "  \"complete\" : true|false,          (boolean) If the transaction has a complete set of signatures\n"
-                                   "  \"errors\" : [                      (json array of objects) Script verification errors (if there are any)\n"
-                                   "    {\n"
-                                   "      \"amount\" : n,                   (numeric) The amount of the output\n"
-                                   "      \"scriptPubKey\" : \"hex\",          (string) The hex-encoded public key script of the output\n"
-                                   "      \"error\" : \"text\"              (string) Verification or signing error related to the output\n"
-                                   "    }\n"
-                                   "    ,...\n"
-                                   "  ]\n"
-                                   "}\n"
+                                RPCResult::Type::OBJ, "", "",
+                                {
+                                    {RPCResult::Type::STR_HEX, "hex", "The hex-encoded raw transaction with signature(s)"},
+                                    {RPCResult::Type::BOOL, "complete", "If the transaction has a complete set of signatures"},
+                                    {RPCResult::Type::ARR, "errors", "Script verification errors (if there are any)",
+                                    {
+                                        {RPCResult::Type::OBJ, "", "",
+                                        {
+                                            {RPCResult::Type::STR_AMOUNT, "amount", "The amount of the output"},
+                                            {RPCResult::Type::STR_HEX, "scriptPubKey", "The hex-encoded public key script of the output"},
+                                            {RPCResult::Type::STR, "error", "Verification or signing error related to the output"},
+                                        }},
+                                    }},
+                                }
                            },
                            RPCExamples{
                                    HelpExampleCli("signrawsendertransactionwithwallet", "\"myhex\"")
@@ -5351,7 +5405,11 @@ UniValue generate(const JSONRPCRequest& request)
                     {"maxtries", RPCArg::Type::NUM, /* default */ "1000000", "How many iterations to try."},
                 },
                 RPCResult{
-            "[ blockhashes ]     (array) hashes of blocks generated\n"
+                    {RPCResult::Type::ARR, "blockhashes", "hashes of blocks generated",
+                        {
+                            {RPCResult::Type::STR_HEX, "", "block hash"},
+                        }
+                    },
                 },
                 RPCExamples{
             "\nGenerate 11 blocks\n"
