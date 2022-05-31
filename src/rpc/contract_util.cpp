@@ -70,7 +70,7 @@ UniValue CallToContract(const UniValue& params)
     if(params.size() >= 3){
         CTxDestination qtumSenderAddress = DecodeDestination(params[2].get_str());
         if (IsValidDestination(qtumSenderAddress)) {
-            const PKHash *keyid = boost::get<PKHash>(&qtumSenderAddress);
+            const CKeyID *keyid = boost::get<CKeyID>(&qtumSenderAddress);
             senderAddress = dev::Address(HexStr(valtype(keyid->begin(),keyid->end())));
         }else{
             senderAddress = dev::Address(params[2].get_str());
@@ -109,7 +109,6 @@ void assignJSON(UniValue& entry, const TransactionReceiptInfo& resExec) {
     entry.pushKV("blockNumber", uint64_t(resExec.blockNumber));
     entry.pushKV("transactionHash", resExec.transactionHash.GetHex());
     entry.pushKV("transactionIndex", uint64_t(resExec.transactionIndex));
-    entry.pushKV("outputIndex", uint64_t(resExec.outputIndex));
     entry.pushKV("from", resExec.from.hex());
     entry.pushKV("to", resExec.to.hex());
     entry.pushKV("cumulativeGasUsed", CAmount(resExec.cumulativeGasUsed));

@@ -6361,7 +6361,7 @@ void CWallet::CleanCoinStake()
     }
 }
 
-bool GetSenderDest(const CTransactionRef& tx, CTxDestination& txSenderDest) const
+bool CWallet::GetSenderDest(const CTransactionRef& tx, CTxDestination& txSenderDest) const
 {
     // Initialize variables
     CScript senderPubKey;

@@ -171,7 +171,6 @@ static UniValue gethexaddress(const JSONRPCRequest& request) {
                         },
                         RPCResult{
                             RPCResult::Type::STR_HEX, "hexaddress", "The raw hex pubkeyhash address for use in smart contracts"},
-                        },
                         RPCExamples{
                         HelpExampleCli("gethexaddress", "\"address\"")
                         + HelpExampleRpc("gethexaddress", "\"address\"")
@@ -201,7 +200,6 @@ static UniValue fromhexaddress(const JSONRPCRequest& request) {
                         },
                         RPCResult{
                             RPCResult::Type::STR, "address", "The base58 pubkeyhash address"},
-                        },
                         RPCExamples{
                         HelpExampleCli("fromhexaddress", "\"hexaddress\"")
                         + HelpExampleRpc("fromhexaddress", "\"hexaddress\"")
@@ -938,6 +936,16 @@ static UniValue decoderawtransaction(const JSONRPCRequest& request)
     TxToUniv(CTransaction(std::move(mtx)), uint256(), result, false);
 
     return result;
+}
+
+static std::string GetAllOutputTypes()
+{
+    std::string ret;
+    for (int i = TX_NONSTANDARD; i <= TX_WITNESS_UNKNOWN; ++i) {
+        if (i != TX_NONSTANDARD) ret += ", ";
+        ret += GetTxnOutputType(static_cast<txnouttype>(i));
+    }
+    return ret;
 }
 
 static UniValue decodescript(const JSONRPCRequest& request)

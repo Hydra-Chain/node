@@ -28,6 +28,8 @@ struct Sections;
 //! state to RPC method implementations.
 extern InitInterfaces* g_rpc_interfaces;
 
+extern const std::string UNIX_EPOCH_TIME;
+
 CPubKey HexToPubKey(const std::string& hex_in);
 CPubKey AddrToPubKey(CKeyStore* const keystore, const std::string& addr_in);
 CTxDestination AddAndGetMultisigDestination(const int required, const std::vector<CPubKey>& pubkeys, OutputType type, CKeyStore& keystore, CScript& script_out);
@@ -231,11 +233,6 @@ struct RPCResult {
 struct RPCResults {
     const std::vector<RPCResult> m_results;
 
-    RPCResults()
-        : m_results{}
-    {
-    }
-
     RPCResults(RPCResult result)
         : m_results{{result}}
     {
@@ -254,7 +251,7 @@ struct RPCResults {
 
 struct RPCExamples {
     const std::string m_examples;
-    RPCExamples(
+    explicit RPCExamples(
         std::string examples)
         : m_examples(std::move(examples))
     {

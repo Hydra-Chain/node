@@ -573,6 +573,7 @@ bool QtumToken::exec(const std::vector<std::string> &input, int func, std::vecto
     d->txid = "";
     if(d->tokenExec == 0 || !(d->tokenExec->execValid(func, sendTo)))
         return false;
+
     std::string strData;
     FunctionABI function = d->ABI->functions[func];
     std::vector<std::vector<std::string>> values;

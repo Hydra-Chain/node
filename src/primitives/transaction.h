@@ -443,6 +443,8 @@ struct CMutableTransaction
 
     bool HasOpSender() const;
 
+    bool HasOpCall() const;
+
     bool HasWitness() const
     {
         for (size_t i = 0; i < vin.size(); i++) {

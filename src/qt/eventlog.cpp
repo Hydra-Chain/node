@@ -90,7 +90,7 @@ bool EventLog::search(interfaces::Node& node, const WalletModel* wallet_model, i
 
     QString resultJson;
     QString errorMessage;
-    if(!m_RPCCommand->exec(node, wallet_model, m_lstParams, result, resultJson, errorMessage))
+    if(!m_RPCCommand->exec(node, wallet_model->wallet(), m_lstParams, result, resultJson, errorMessage))
         return false;
     return true;
 }

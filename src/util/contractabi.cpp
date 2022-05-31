@@ -549,7 +549,7 @@ bool ParameterABI::abiOut(const std::string &data, size_t &pos, std::vector<std:
             {
                 dev::bytes rawData = dev::fromHex(data.substr(pos));
                 dev::bytesConstRef o(&rawData);
-                deserialiseString(o, pos/2);
+                value.push_back(deserialiseString(o, pos/2));
             }
                 break;
             default:

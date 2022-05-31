@@ -748,7 +748,6 @@ static UniValue getdifficulty(const JSONRPCRequest& request)
                 {},
                 RPCResult{
                     RPCResult::Type::NUM, "", "the proof-of-work difficulty as a multiple of the minimum difficulty."},
-                },
                 RPCExamples{
                     HelpExampleCli("getdifficulty", "")
             + HelpExampleRpc("getdifficulty", "")
@@ -929,10 +928,8 @@ static UniValue getmempoolancestors(const JSONRPCRequest& request)
                     RPCResult{"for verbose = false",
                         RPCResult::Type::ARR, "", "",
                         {{RPCResult::Type::STR_HEX, "", "The transaction id of an in-mempool ancestor transaction"}}},
-                    },
                     RPCResult{"for verbose = true",
                         RPCResult::Type::OBJ_DYN, "transactionid", "", MempoolEntryDescription()},
-                    },
                 },
                 RPCExamples{
                     HelpExampleCli("getmempoolancestors", "\"mytxid\"")
@@ -993,13 +990,11 @@ static UniValue getmempooldescendants(const JSONRPCRequest& request)
                     RPCResult{"for verbose = false",
                         RPCResult::Type::ARR, "", "",
                         {{RPCResult::Type::STR_HEX, "", "The transaction id of an in-mempool descendant transaction"}}},
-                    },
                     RPCResult{"for verbose = true",
                         RPCResult::Type::OBJ, "", "",
                         {
                             {RPCResult::Type::OBJ_DYN, "transactionid", "", MempoolEntryDescription()},
                         }},
-                    },
                 },
                 RPCExamples{
                     HelpExampleCli("getmempooldescendants", "\"mytxid\"")
@@ -1057,7 +1052,6 @@ static UniValue getmempoolentry(const JSONRPCRequest& request)
                 },
                 RPCResult{
                     RPCResult::Type::OBJ_DYN, "", "", MempoolEntryDescription()},
-                },
                 RPCExamples{
                     HelpExampleCli("getmempoolentry", "\"mytxid\"")
             + HelpExampleRpc("getmempoolentry", "\"mytxid\"")
@@ -1091,7 +1085,6 @@ static UniValue getblockhash(const JSONRPCRequest& request)
                 },
                 RPCResult{
                     RPCResult::Type::STR_HEX, "", "The block hash"},
-                },
                 RPCExamples{
                     HelpExampleCli("getblockhash", "1000")
             + HelpExampleRpc("getblockhash", "1000")
@@ -1185,7 +1178,6 @@ static UniValue getstorage(const JSONRPCRequest& request)
                 },
                 RPCResult{
                     RPCResult::Type::STR, "", "The storage data of the contract"},
-                },
                 RPCExamples{
                     HelpExampleCli("getstorage", "eb23c0b3e6042821da281a2e2364feb22dd543e3")
             + HelpExampleRpc("getstorage", "eb23c0b3e6042821da281a2e2364feb22dd543e3")
@@ -1283,7 +1275,6 @@ static UniValue getblockheader(const JSONRPCRequest& request)
                         }},
                     RPCResult{"for verbose=false",
                         RPCResult::Type::STR_HEX, "", "A string that is serialized, hex-encoded data for block 'hash'"},
-                    },
                 },
                 RPCExamples{
                     HelpExampleCli("getblockheader", "\"00000000c937983704a73af28acdec37b049d214adbda81d7e2a3dd146f6ed09\"")
@@ -1354,7 +1345,6 @@ static UniValue getblock(const JSONRPCRequest& request)
                 {
                     RPCResult{"for verbosity = 0",
                         RPCResult::Type::STR_HEX, "", "A string that is serialized, hex-encoded data for block 'hash'"},
-                    },
                     RPCResult{"for verbosity = 1",
                         RPCResult::Type::OBJ, "", "",
                         {
@@ -1937,7 +1927,6 @@ static UniValue pruneblockchain(const JSONRPCRequest& request)
                 },
                 RPCResult{
                     RPCResult::Type::NUM, "", "Height of the last block pruned"},
-                },
                 RPCExamples{
                     HelpExampleCli("pruneblockchain", "1000")
             + HelpExampleRpc("pruneblockchain", "1000")
@@ -2122,7 +2111,6 @@ static UniValue verifychain(const JSONRPCRequest& request)
                 },
                 RPCResult{
                     RPCResult::Type::BOOL, "", "Verified or not"},
-                },
                 RPCExamples{
                     HelpExampleCli("verifychain", "")
             + HelpExampleRpc("verifychain", "")
@@ -3268,7 +3256,7 @@ static UniValue qrc20name(const JSONRPCRequest& request)
                     HelpExampleCli("hrc20name", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\"")
             + HelpExampleRpc("hrc20name", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\"")
                 },
-            }.ToString();
+            }.ToString());
 
     // Set contract address
     CallToken token;
@@ -3297,7 +3285,7 @@ static UniValue qrc20symbol(const JSONRPCRequest& request)
                     HelpExampleCli("hrc20symbol", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\"")
             + HelpExampleRpc("hrc20symbol", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\"")
                 },
-            }.ToString();
+            }.ToString());
 
     // Set contract address
     CallToken token;
@@ -3326,7 +3314,7 @@ static UniValue qrc20totalsupply(const JSONRPCRequest& request)
                     HelpExampleCli("hrc20totalsupply", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\"")
             + HelpExampleRpc("hrc20totalsupply", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\"")
                 },
-            }.ToString();
+            }.ToString());
 
     // Set contract address
     CallToken token;
@@ -3365,7 +3353,7 @@ static UniValue qrc20decimals(const JSONRPCRequest& request)
                     HelpExampleCli("hrc20decimals", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\"")
             + HelpExampleRpc("hrc20decimals", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\"")
                 },
-            }.ToString();
+            }.ToString());
 
     // Set contract address
     CallToken token;
@@ -3395,7 +3383,7 @@ static UniValue qrc20balanceof(const JSONRPCRequest& request)
                     HelpExampleCli("hrc20balanceof", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\"")
             + HelpExampleRpc("hrc20balanceof", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\"")
                 },
-            }.ToString();
+            }.ToString());
 
     // Get parameters
     CallToken token;
@@ -3438,7 +3426,7 @@ static UniValue qrc20allowance(const JSONRPCRequest& request)
                     HelpExampleCli("hrc20allowance", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\"")
             + HelpExampleRpc("hrc20allowance", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\"")
                 },
-            }.ToString();
+            }.ToString());
 
     // Set contract address
     CallToken token;
@@ -3498,7 +3486,7 @@ static UniValue qrc20listtransactions(const JSONRPCRequest& request)
             + HelpExampleRpc("hrc20listtransactions", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\"")
             + HelpExampleRpc("hrc20listtransactions", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" 0 6")
                 },
-            }.ToString();
+            }.ToString());
 
     // Get parameters
     CallToken token;
@@ -3546,7 +3534,7 @@ static UniValue qrc20listtransactions(const JSONRPCRequest& request)
         obj.pushKV("confirmations", confirms);
         obj.pushKV("blockHash", event.blockHash.GetHex());
         obj.pushKV("blockNumber", event.blockNumber);
-        obj.pushKV("blocktime", ::ChainActive()[event.blockNumber]->GetBlockTime());
+        obj.pushKV("blocktime", chainActive[event.blockNumber]->GetBlockTime());
         obj.pushKV("transactionHash", event.transactionHash.GetHex());
         res.push_back(obj);
     }

@@ -106,7 +106,7 @@ bool Token::exec(const bool &sendTo, const std::map<std::string, std::string> &l
     QVariant resultVar;
     QString resultJson;
     QString errorMessage;
-    if(!cmd->exec(d->model->node(), d->model, ContractUtil::fromStdMap(lstParams), resultVar, resultJson, errorMessage))
+    if(!cmd->exec(d->model->node(), d->model->wallet(), ContractUtil::fromStdMap(lstParams), resultVar, resultJson, errorMessage))
     {
         message = errorMessage.toStdString();
         return false;

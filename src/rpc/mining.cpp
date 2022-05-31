@@ -100,7 +100,6 @@ static UniValue getnetworkhashps(const JSONRPCRequest& request)
                 },
                 RPCResult{
                     RPCResult::Type::NUM, "", "Hashes per second estimated"},
-                },
                 RPCExamples{
                     HelpExampleCli("getnetworkhashps", "")
             + HelpExampleRpc("getnetworkhashps", "")

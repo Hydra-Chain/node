@@ -5405,12 +5405,10 @@ UniValue generate(const JSONRPCRequest& request)
                     {"maxtries", RPCArg::Type::NUM, /* default */ "1000000", "How many iterations to try."},
                 },
                 RPCResult{
-                    {RPCResult::Type::ARR, "blockhashes", "hashes of blocks generated",
-                        {
-                            {RPCResult::Type::STR_HEX, "", "block hash"},
-                        }
-                    },
-                },
+                    RPCResult::Type::ARR, "", "hashes of blocks generated",
+                    {
+                        {RPCResult::Type::STR_HEX, "", "blockhash"},
+                    }}, 
                 RPCExamples{
             "\nGenerate 11 blocks\n"
             + HelpExampleCli("generate", "11")
@@ -6226,7 +6224,7 @@ static UniValue qrc20approve(const JSONRPCRequest& request)
             + HelpExampleRpc("hrc20approve", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 0.1")
             + HelpExampleRpc("hrc20approve", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 0.1 "+i64tostr(DEFAULT_GAS_LIMIT_OP_SEND)+" true")
                 },
-            }.ToString();
+            }.ToString());
 
     // Get mandatory parameters
     std::string contract = request.params[0].get_str();
@@ -6245,7 +6243,7 @@ static UniValue qrc20approve(const JSONRPCRequest& request)
     }
 
     // Set token parameters
-    SendToken token(*locked_chain, pwallet, spk_man);
+    SendToken token(*locked_chain, pwallet);
     token.setAddress(contract);
     token.setSender(owner);
     token.setGasLimit(i64tostr(nGasLimit));
@@ -6301,6 +6299,7 @@ static UniValue qrc20transfer(const JSONRPCRequest& request)
     CAmount gasPriceBuffer;
     dgp.calculateGasPriceBuffer(defaultGasPrice, gasPriceBuffer);
     CAmount nGasPrice = gasPriceBuffer + defaultGasPrice;
+    uint64_t nGasLimit=DEFAULT_GAS_LIMIT_OP_SEND;
     bool fCheckOutputs = true;
 
     if (request.fHelp || request.params.size() < 3 || request.params.size() > 6)
@@ -6319,14 +6318,14 @@ static UniValue qrc20transfer(const JSONRPCRequest& request)
                     RPCResult::Type::OBJ, "", "",
                     {
                         {RPCResult::Type::STR_HEX, "txid", "The transaction id"},
-                    }
+                    }},
                 RPCExamples{
                     HelpExampleCli("hrc20transfer", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 0.1")
             + HelpExampleCli("hrc20transfer", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 0.1 "+i64tostr(DEFAULT_GAS_LIMIT_OP_SEND)+" true")
             + HelpExampleRpc("hrc20transfer", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 0.1")
             + HelpExampleRpc("hrc20transfer", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 0.1 "+i64tostr(DEFAULT_GAS_LIMIT_OP_SEND)+" true")
                 },
-            }.ToString();
+            }.ToString());
 
     // Get mandatory parameters
     std::string contract = request.params[0].get_str();
@@ -6345,7 +6344,7 @@ static UniValue qrc20transfer(const JSONRPCRequest& request)
     }
 
     // Set token parameters
-    SendToken token(*locked_chain, pwallet, spk_man);
+    SendToken token(*locked_chain, pwallet);
     token.setAddress(contract);
     token.setSender(owner);
     token.setGasLimit(i64tostr(nGasLimit));
@@ -6439,7 +6438,7 @@ static UniValue qrc20transferfrom(const JSONRPCRequest& request)
             + HelpExampleRpc("hrc20transferfrom", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" \"HhZThdumK8EFRX8MziWzvjCdiQWRt7Mxdz\" 0.1")
             + HelpExampleRpc("hrc20transferfrom", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" \"HhZThdumK8EFRX8MziWzvjCdiQWRt7Mxdz\" 0.1 "+i64tostr(DEFAULT_GAS_LIMIT_OP_SEND)+" true")
                 },
-            }.ToString();
+            }.ToString());
 
     // Get mandatory parameters
     std::string contract = request.params[0].get_str();
@@ -6459,7 +6458,7 @@ static UniValue qrc20transferfrom(const JSONRPCRequest& request)
     }
 
     // Set token parameters
-    SendToken token(*locked_chain, pwallet, spk_man);
+    SendToken token(*locked_chain, pwallet);
     token.setAddress(contract);
     token.setSender(spender);
     token.setGasLimit(i64tostr(nGasLimit));
@@ -6551,7 +6550,7 @@ static UniValue qrc20burn(const JSONRPCRequest& request)
             + HelpExampleRpc("hrc20burn", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 0.1")
             + HelpExampleRpc("hrc20burn", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 0.1 "+i64tostr(DEFAULT_GAS_LIMIT_OP_SEND)+" true")
                 },
-            }.ToString();
+            }.ToString());
 
     // Get mandatory parameters
     std::string contract = request.params[0].get_str();
@@ -6569,7 +6568,7 @@ static UniValue qrc20burn(const JSONRPCRequest& request)
     }
 
     // Set token parameters
-    SendToken token(*locked_chain, pwallet, spk_man);
+    SendToken token(*locked_chain, pwallet);
     token.setAddress(contract);
     token.setSender(owner);
     token.setGasLimit(i64tostr(nGasLimit));
@@ -6662,7 +6661,7 @@ static UniValue qrc20burnfrom(const JSONRPCRequest& request)
             + HelpExampleRpc("hrc20burnfrom", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 0.1")
             + HelpExampleRpc("hrc20burnfrom", "\"eb23c0b3e6042821da281a2e2364feb22dd543e3\" \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 0.1 "+i64tostr(DEFAULT_GAS_LIMIT_OP_SEND)+" true")
                 },
-            }.ToString();
+            }.ToString());
 
     // Get mandatory parameters
     std::string contract = request.params[0].get_str();
@@ -6681,7 +6680,7 @@ static UniValue qrc20burnfrom(const JSONRPCRequest& request)
     }
 
     // Set token parameters
-    SendToken token(*locked_chain, pwallet, spk_man);
+    SendToken token(*locked_chain, pwallet);
     token.setAddress(contract);
     token.setSender(spender);
     token.setGasLimit(i64tostr(nGasLimit));
