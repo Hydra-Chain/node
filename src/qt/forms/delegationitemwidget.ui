@@ -118,7 +118,10 @@
                   <number>0</number>
                  </property>
                  <item alignment="Qt::AlignLeft">
-                  <widget class="QLabel" name="labelFee">
+         	  <widget class="QLabel" name="labelFee">
+	           <property name="styleSheet">
+                    <string notr="true">background: transparent; color: black</string>
+                   </property>
                    <property name="text">
                     <string>fee</string>
                    </property>
@@ -128,7 +131,10 @@
                   </widget>
                  </item>
                  <item alignment="Qt::AlignLeft">
-                  <widget class="QLabel" name="labelStaker">
+		  <widget class="QLabel" name="labelStaker">
+		   <property name="styleSheet">
+                    <string notr="true">background: transparent; color: black</string>
+                   </property>
                    <property name="text">
                     <string>staker</string>
                    </property>
@@ -157,7 +163,10 @@
                </widget>
               </item>
               <item alignment="Qt::AlignLeft">
-               <widget class="QLabel" name="labelAddress">
+	       <widget class="QLabel" name="labelAddress">
+                <property name="styleSheet">
+                 <string notr="true">background: transparent; color: black</string>
+                </property>
                 <property name="text">
                  <string>address</string>
                 </property>
@@ -213,7 +222,10 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QLabel" name="labelAssetsText">
+		<widget class="QLabel" name="labelAssetsText">
+	         <property name="styleSheet">
+                  <string notr="true">background: transparent; color: black</string>
+                 </property>
                  <property name="text">
                   <string>Offline staking assets</string>
                  </property>
@@ -252,7 +264,10 @@
                   <number>6</number>
                  </property>
                  <item>
-                  <widget class="QLabel" name="labelStakeText">
+		  <widget class="QLabel" name="labelStakeText">
+ 		   <property name="styleSheet">
+                    <string notr="true">background: transparent; color: black</string>
+                   </property>
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                      <horstretch>0</horstretch>
@@ -268,7 +283,10 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="labelStake">
+	          <widget class="QLabel" name="labelStake">
+		   <property name="styleSheet">
+                    <string notr="true">background: transparent; color: black</string>
+                   </property>
                    <property name="text">
                     <string>0.000 000 00 QTUM</string>
                    </property>
@@ -348,6 +366,9 @@
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
            <widget class="QLabel" name="labelNewDelegation">
+            <property name="styleSheet">
+             <string notr="true">background: transparent; color: black</string>
+            </property>
             <property name="text">
              <string>Add new delegations</string>
             </property>
