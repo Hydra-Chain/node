@@ -168,6 +168,9 @@
          </item>
          <item>
           <widget class="QFrame" name="frameStakerConfig">
+           <property name="styleSheet">
+            <string notr="true">background: transparent</string>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -185,14 +188,20 @@
              <number>30</number>
             </property>
             <item row="1" column="0">
-             <widget class="QLabel" name="labelMinUtxo">
+	     <widget class="QLabel" name="labelMinUtxo">
+	      <property name="styleSheet">
+               <string notr="true">background: transparent; color: black</string>
+              </property>
               <property name="text">
                <string>Minimum UTXO value</string>
               </property>
              </widget>
             </item>
             <item row="2" column="0">
-             <widget class="QLabel" name="labelListType">
+	     <widget class="QLabel" name="labelListType">
+	      <property name="styleSheet">
+               <string notr="true">background: transparent; color: black</string>
+              </property>
               <property name="text">
                <string>Delegation list type</string>
               </property>
@@ -209,7 +218,10 @@
              </widget>
             </item>
             <item row="3" column="0" alignment="Qt::AlignTop">
-             <widget class="QLabel" name="labelAddressList">
+	     <widget class="QLabel" name="labelAddressList">
+	      <property name="styleSheet">
+               <string notr="true">background: transparent; color: black</string>
+              </property>
               <property name="text">
                <string>Address list</string>
               </property>
@@ -235,7 +247,10 @@
              <widget class="BitcoinAmountField" name="leMinUtxo"/>
             </item>
             <item row="0" column="0">
-             <widget class="QLabel" name="labelMinFee">
+	     <widget class="QLabel" name="labelMinFee">
+	      <property name="styleSheet">
+               <string notr="true">background: transparent; color: black</string>
+              </property>
               <property name="text">
                <string>Minimum fee</string>
               </property>
