@@ -9,8 +9,10 @@ It features a Proof of Stake consensus mechanism, high transaction throughput, d
 HYDRA is [GPLv3 licensed](https://www.gnu.org/licenses/gpl-3.0.html)
 
 # Resources
-Devnet explorer: http://explorer.hydrachain.org/
-Devnet faucet: http://faucet.hydrachain.org
+Mainnet explorer: http://explorer.hydrachain.org/
+Testnet explorer: http://testexplorer.hydrachain.org/
+Testnet faucet: http://faucet.hydrachain.org
+Docs: https://docs.hydrachain.org/
 Wallet downloads: https://github.com/Hydra-Chain/node/releases
 
 # Building HYDRA Blockchain

@@ -734,7 +734,7 @@ fs::path GetDefaultDataDir()
     // Unix: ~/.hydra
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "HYDRA_devnet";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "HYDRA";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -744,10 +744,10 @@ fs::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/HYDRA_devnet";
+    return pathRet / "Library/Application Support/HYDRA";
 #else
     // Unix
-    return pathRet / ".hydra_devnet";
+    return pathRet / ".hydra";
 #endif
 #endif
 }

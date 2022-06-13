@@ -4,7 +4,7 @@
 #include <chainparams.h>
 
 dev::eth::EVMSchedule QtumDGP::getGasSchedule(unsigned int blockHeight, const Consensus::Params& consensusParams, const std::string& networkID){
-	if (networkID == "main" && blockHeight >= consensusParams.MuirGlacierHeight) 
+	if (blockHeight >= consensusParams.MuirGlacierHeight) 
     {
         return dev::eth::MuirGlacierSchedule;
     }
