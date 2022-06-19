@@ -76,6 +76,25 @@ void MilliSleep(int64_t n)
 #endif
 }
 
+#if defined(_WIN32)
+// gmtime_r can be defined by mingw
+#ifndef gmtime_r
+static struct tm* gmtime_r(const time_t* t, struct tm* r)
+{
+  // gmtime is threadsafe in windows because it uses TLS
+  struct tm *theTm = gmtime(t);
+  if (theTm) {
+    *r = *theTm;
+    return r;
+  } else {
+    return 0;
+  }
+}
+#endif // gmtime_r
+#else
+extern struct tm* gmtime_r(const time_t* t, struct tm* r);
+#endif
+
 std::string FormatISO8601DateTime(int64_t nTime) {
     struct tm ts;
     time_t time_val = nTime;

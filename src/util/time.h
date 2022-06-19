@@ -8,6 +8,23 @@
 
 #include <stdint.h>
 #include <string>
+#include <time.h>
+#include <chrono>
+
+// static struct tm* gmtime_r(const time_t* t, struct tm* r) { // gmtime is threadsafe in windows because it uses TLS 
+//     struct tm *theTm = gmtime(t); 
+//     if (theTm) 
+//     { 
+//         *r = *theTm; 
+//         return r; 
+//     } else { 
+//         return 0; 
+//     } 
+// }
+
+// extern struct tm* gmtime_r(const time_t* t, struct tm* r);
+
+void UninterruptibleSleep(const std::chrono::microseconds& n);
 
 /**
  * GetTimeMicros() and GetTimeMillis() both return the system time, but in
