@@ -3662,8 +3662,8 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
             }
 
             CTxUndo undoDummy;
-            blockundo.vtxundo.push_back(CTxUndo());
-            UpdateCoins(tx, view, blockundo.vtxundo.back(), pindex->nHeight);
+            blockundo.vtxundo.insert(blockundo.vtxundo.begin(), CTxUndo());
+            UpdateCoins(tx, view, blockundo.vtxundo.front(), pindex->nHeight);
 
             vPos.push_back(std::make_pair(tx.GetHash(), pos));
             pos.nTxOffset += ::GetSerializeSize(tx, CLIENT_VERSION);
