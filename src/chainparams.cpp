@@ -188,7 +188,16 @@ public:
         checkpointData = (CCheckpointData) {
             {
                 { 0, uint256S("0x000058b8d49cd33ae70558978ff60269d4de7d4b50ac1f733631765e4207a457")},
-                { 5000, uint256S("0x0000a93f9349490201a1877db655f010415874fb2be833565c7f96984e8b046c")}
+                { 5000, uint256S("0x0000a93f9349490201a1877db655f010415874fb2be833565c7f96984e8b046c")},
+		{ 50000, uint256S("0x7e44ec40710d819a259d32aba0a57365e6c939fa82f3d469f843e8e0c831589b")},
+		{ 100000, uint256S("0x9f61651dcf61582f730c3b45930247a56b691cc6070bcf3d5c5a58f4e5b5c575")},
+		{ 150000, uint256S("0xaad4409b6728f09c3b7927776a5473e569a11e019c12e1d613ef9fe46ce8f018")},
+		{ 200000, uint256S("0x65d6d7a3cc3b87ae4ae46297d0d371f3056db94265ba4f98da8530f5f6bd8f50")},
+		{ 248000, uint256S("0x2757d9bc6a7764f84eaf006c7f7f43b653b11c93e8f709b83300648cbfca251a")},
+		{ 300000, uint256S("0x4dc449e81e83d2545b1fd667b1e7b7cde13f88fab886251b1afb3356f0fb1737")},
+		{ 350000, uint256S("0x4cb2fe2dea4285fae07ee7422cf845a6792c50b19c44be9d09ea19b9b43a6d0f")},
+		{ 400000, uint256S("0xac0a9efae375664bb7e69a9058d0131682814f9ef81ebe12f40e9b03efbb817c")},
+		{ 450000, uint256S("0xe05c213e3c098e5f5dbfdf8e7da5964483af82831c978a042554fedb86ce5ffc")}
             }
         };
 
@@ -198,10 +207,10 @@ public:
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E};
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
 
-        consensus.MuirGlacierHeight = 0x7fffffff;
-        consensus.nOfflineStakeHeight = 0x7fffffff;
-        consensus.nReduceBlocktimeHeight = 0x7fffffff;
-        consensus.nLastMPoSBlock = 0x7fffffff;
+        consensus.MuirGlacierHeight = 477300;
+        consensus.nOfflineStakeHeight = 477300;
+        consensus.nReduceBlocktimeHeight = 477300;
+        consensus.nLastMPoSBlock = 477299;
 
         consensus.BIP34Hash = uint256S("0x000058b8d49cd33ae70558978ff60269d4de7d4b50ac1f733631765e4207a457");
         // consensus.BIP65Height: 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
@@ -213,7 +222,7 @@ public:
         consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0xbfbbfc2c3be3d4e085082aff2e4e73a4e21dbf6205bc41b84b38ffac0a8bc114"); //453354
+        consensus.defaultAssumeValid = uint256S("0xe05c213e3c098e5f5dbfdf8e7da5964483af82831c978a042554fedb86ce5ffc"); //450000
     }
 };
 
@@ -254,6 +263,18 @@ public:
         checkpointData = (CCheckpointData) {
             {
                 {0, uint256S("0x00002670c621a105d887fec054bead4805e4f0f8661802d71cec52f5d71c76d8")},
+		{ 5000, uint256S("0x00002327c0c0f1ce9cd3ae49c4d4aa4f63c7d9b05442653ed4eee2443cb00ed8")},
+                { 50000, uint256S("0x0fe80e66280bc80112dde1ee4b3c6f2bf7025d6f7158ec0950b99bdfcd7f1177")},
+                { 100000, uint256S("0x08ef0b6bfa457ba180165b5d7810df46f6b4b4c7a3b90ed9bef35aa495695cfd")},
+                { 150000, uint256S("0x08260c1b6cedd2098f83d12d1740c951539ad1242c26a40ffc10d71a04ba3a09")},
+                { 200000, uint256S("0x73d9f563976cbd2ca226427c75af81dbd1c25b4b2c2e909bc57ba7ba480e1ea9")},
+                { 248000, uint256S("0x18675de3fbb6043de88f6a187bdbb60f4b1f46d267d9807bded16c22bbfd2e23")},
+		{ 270200, uint256S("0x6204efcab8a85c6dbb29997787a3fc1276257c8e83ba9783dd93aeb9bb47a802")},
+                { 300000, uint256S("0x78bd24c4f7f6b08bf5817fa400823460188aa700e4d0f7ea84f368bcdf2beaa0")},
+                { 350000, uint256S("0x7b41832162e265ee5be8e487d23ce2445493e2fc296a4d7407c39af01ec02ece")},
+                { 400000, uint256S("0x4a8d9d3a902e2d75d3bb74f28cd9f5b70e848ab8f05aeb1d94ef38a8f07d7c10")},
+                { 450000, uint256S("0x82a07944b03820de2694c90d730b55fac5f8ed860bb7c251715257bba111e8f1")},
+		{ 500000, uint256S("0x1565a6317500662cc897c8f209490ab50b28dac809fc6ea54efac86c74b06675")}
             }
         };
 
@@ -279,7 +300,7 @@ public:
         consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x39ffa0c5924550db0e75030ff8513c3145d491dff2e17b8e3ea1cea7b4662ff0"); //1079274
+        consensus.defaultAssumeValid = uint256S("0x1565a6317500662cc897c8f209490ab50b28dac809fc6ea54efac86c74b06675"); //500000
     }
 };
 
