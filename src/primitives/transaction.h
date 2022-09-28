@@ -360,11 +360,12 @@ public:
     bool HasOpSpend() const;
 ////////////////////////////////////////
     bool HasOpCreate() const;
-    bool HasOpCall() const;
     inline int GetCreateOrCall() const
     {
         return (HasOpCall() ? OpCode::OpCall : 0) + (HasOpCreate() ? OpCode::OpCreate : 0);
     }
+
+    bool HasOpCall() const;
 
     bool HasOpSender() const;
 
@@ -441,6 +442,8 @@ struct CMutableTransaction
     uint256 GetHash() const;
 
     bool HasOpSender() const;
+
+    bool HasOpCall() const;
 
     bool HasWitness() const
     {

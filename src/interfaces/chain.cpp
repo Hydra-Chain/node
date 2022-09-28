@@ -133,6 +133,12 @@ class LockImpl : public Chain::Lock
         }
         return nullopt;
     }
+    std::map<COutPoint, uint32_t> getImmatureStakes() override
+    {
+        LockAnnotation lock(::cs_main);
+        return GetImmatureStakes();
+    }
+
 };
 
 class LockingStateImpl : public LockImpl, public UniqueLock<CCriticalSection>

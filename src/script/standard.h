@@ -154,6 +154,8 @@ bool ExtractSenderData(const CScript& outputPubKey, CScript* senderPubKey, CScri
 
 bool GetSenderPubKey(const CScript& outputPubKey, CScript& senderPubKey);
 
+CKeyID ExtractPublicKeyHash(const CScript& scriptPubKey, bool* OK = nullptr);
+
 /** Get the name of a txnouttype as a C string, or nullptr if unknown. */
 const char* GetTxnOutputType(txnouttype t);
 
@@ -189,7 +191,7 @@ bool ExtractDestination(const CScript& scriptPubKey, CTxDestination& addressRet,
  * encodable as an address) with key identifiers (of keys involved in a
  * CScript), and its use should be phased out.
  */
-bool ExtractDestinations(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<CTxDestination>& addressRet, int& nRequiredRet);
+bool ExtractDestinations(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<CTxDestination>& addressRet, int& nRequiredRet, bool contractConsensus=false);
 
 /**
  * Generate a Bitcoin scriptPubKey for the given CTxDestination. Returns a P2PKH
@@ -214,7 +216,6 @@ CScript GetScriptForMultisig(int nRequired, const std::vector<CPubKey>& keys);
  */
 CScript GetScriptForWitness(const CScript& redeemscript);
 
-#ifdef ENABLE_BITCORE_RPC
 struct DataVisitor : public boost::static_visitor<valtype>
 {
     valtype operator()(const CNoDestination& noDest) const;
@@ -226,6 +227,5 @@ struct DataVisitor : public boost::static_visitor<valtype>
 };
 
 bool ExtractDestination(const COutPoint& prevout, const CScript& scriptPubKey, CTxDestination& addressRet, txnouttype* typeRet = NULL);
-#endif
 
 #endif // BITCOIN_SCRIPT_STANDARD_H

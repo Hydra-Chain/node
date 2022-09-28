@@ -2,7 +2,9 @@
 #include <util/system.h>
 #include <validation.h>
 #include <chainparams.h>
+#include <script/script.h>
 #include <qtum/qtumstate.h>
+#include <libevm/VMFace.h>
 
 using namespace std;
 using namespace dev;
@@ -29,6 +31,7 @@ ResultExecute QtumState::execute(EnvInfo const& _envInfo, SealEngineFace const& 
     _sealEngine.deleteAddresses.insert({_t.sender(), _envInfo.author()});
 
     h256 oldStateRoot = rootHash();
+    h256 oldUTXORoot = rootHashUTXO();
     bool voutLimit = false;
     bool contractSendsMoney = false;
 
@@ -65,6 +68,7 @@ ResultExecute QtumState::execute(EnvInfo const& _envInfo, SealEngineFace const& 
         e.finalize();
         if (_p == Permanence::Reverted){
             m_cache.clear();
+            m_changeLog.clear();
             cacheUTXO.clear();
         } else {
             deleteAccounts(_sealEngine.deleteAddresses);
@@ -122,9 +126,9 @@ ResultExecute QtumState::execute(EnvInfo const& _envInfo, SealEngineFace const& 
             refund.vout.push_back(CTxOut(CAmount(_t.value().convert_to<uint64_t>()), script));
         }
         //make sure to use empty transaction if no vouts made
-        return ResultExecute{ex, dev::eth::TransactionReceipt(oldStateRoot, gas, e.logs()), refund.vout.empty() ? CTransaction() : CTransaction(refund)};
+        return ResultExecute{ex, QtumTransactionReceipt(oldStateRoot, oldUTXORoot, gas, e.logs()), refund.vout.empty() ? CTransaction() : CTransaction(refund)};
     }else{
-        return ResultExecute{res, dev::eth::TransactionReceipt(rootHash(), startGasUsed + e.gasUsed(), e.logs()), tx ? *tx : CTransaction()};
+        return ResultExecute{res, QtumTransactionReceipt(rootHash(), rootHashUTXO(), startGasUsed + e.gasUsed(), e.logs()), tx ? *tx : CTransaction()};
     }
 }
 
@@ -285,6 +289,17 @@ void QtumState::validateTransfersWithChangeLog(){
 
     transfers=validatedTransfers;
 }
+
+void QtumState::deployDelegationsContract(){
+    dev::Address delegationsAddress = uintToh160(Params().GetConsensus().delegationsAddress);
+    if(!QtumState::addressInUse(delegationsAddress)){
+        QtumState::createContract(delegationsAddress);
+        QtumState::setCode(delegationsAddress, bytes{fromHex(DELEGATIONS_CONTRACT_CODE)}, QtumState::version(delegationsAddress));
+        commit(CommitBehaviour::RemoveEmptyAccounts);
+        db().commit();
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 CTransaction CondensingTX::createCondensingTX(){
     selectionVin();

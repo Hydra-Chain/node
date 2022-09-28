@@ -10,6 +10,7 @@
 #include <script/interpreter.h>
 #include <script/standard.h>
 #include "../validation.h"
+#include <chainparams.h>
 
 // TODO remove the following dependencies
 #include <chain.h>
@@ -299,7 +300,7 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
         assert(!coin.IsSpent());
 
         // If prev is coinbase, check that it's matured
-        if ((coin.IsCoinBase() || coin.IsCoinStake()) && nSpendHeight - coin.nHeight < COINBASE_MATURITY) {
+        if ((coin.IsCoinBase() || coin.IsCoinStake()) && nSpendHeight - coin.nHeight < ::Params().GetConsensus().CoinbaseMaturity(nSpendHeight)) {
             return state.Invalid(false,
                 REJECT_INVALID, "bad-txns-premature-spend-of-coinbase",
                 strprintf("tried to spend coinbase at depth %d", nSpendHeight - coin.nHeight));

@@ -7,6 +7,7 @@
 #include <interfaces/node.h>
 #include <interfaces/handler.h>
 #include <algorithm>
+#include <chainparams.h>
 
 #include <QDateTime>
 #include <QFont>
@@ -68,6 +69,9 @@ public:
 private Q_SLOTS:
     void updateTokenTx(const QString &hash)
     {
+        if(walletModel && walletModel->node().shutdownRequested())
+            return;
+
         // Initialize variables
         uint256 tokenHash = uint256S(hash.toStdString());
         int64_t fromBlock = 0;
@@ -76,7 +80,7 @@ private Q_SLOTS:
         uint256 blockHash;
         bool found = false;
 
-        int64_t backInPast = first ? COINBASE_MATURITY : 10;
+        int64_t backInPast = first ? Params().GetConsensus().MaxCheckpointSpan() : 10;
         first = false;
 
         // Get current height and block hash
@@ -121,6 +125,7 @@ private Q_SLOTS:
             tokenAbi.setAddress(tokenInfo.contract_address);
             tokenAbi.setSender(tokenInfo.sender_address);
             tokenAbi.transferEvents(tokenEvents, fromBlock, toBlock);
+            tokenAbi.burnEvents(tokenEvents, fromBlock, toBlock);
             for(size_t i = 0; i < tokenEvents.size(); i++)
             {
                 TokenEvent event = tokenEvents[i];
@@ -141,11 +146,17 @@ private Q_SLOTS:
 
     void cleanTokenTxEntries()
     {
+        if(walletModel && walletModel->node().shutdownRequested())
+            return;
+
         if(walletModel) walletModel->wallet().cleanTokenTxEntries();
     }
 
     void updateBalance(QString hash, QString contractAddress, QString senderAddress)
     {
+        if(walletModel && walletModel->node().shutdownRequested())
+            return;
+            
         tokenAbi.setAddress(contractAddress.toStdString());
         tokenAbi.setSender(senderAddress.toStdString());
         std::string strBalance;
@@ -502,7 +513,7 @@ static void NotifyTokenChanged(TokenItemModel *tim, const uint256 &hash, ChangeT
 void TokenItemModel::subscribeToCoreSignals()
 {
     // Connect signals to wallet
-    m_handler_token_changed = walletModel->wallet().handleTokenChanged(boost::bind(NotifyTokenChanged, this, _1, _2));
+    m_handler_token_changed = walletModel->wallet().handleTokenChanged(boost::bind(NotifyTokenChanged, this, boost::placeholders::_1, boost::placeholders::_2));
 }
 
 void TokenItemModel::unsubscribeFromCoreSignals()

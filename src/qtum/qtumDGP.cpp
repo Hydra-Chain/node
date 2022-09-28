@@ -3,12 +3,17 @@
 #include "locktrip/dgp.h"
 #include <chainparams.h>
 
-dev::eth::EVMSchedule QtumDGP::getGasSchedule(unsigned int blockHeight){
-        return dev::eth::ConstantinopleSchedule;
+dev::eth::EVMSchedule QtumDGP::getGasSchedule(unsigned int blockHeight, const Consensus::Params& consensusParams, const std::string& networkID){
+	if (blockHeight >= consensusParams.MuirGlacierHeight) 
+    {
+        return dev::eth::MuirGlacierSchedule;
+    }
+	
+    return dev::eth::ConstantinopleSchedule;
 }
 
 uint32_t QtumDGP::getBlockSize(unsigned int blockHeight){
-    uint64_t blockSize = DEFAULT_BLOCK_SIZE_DGP;
+    uint64_t blockSize = DEFAULT_BLOCK_SIZE_DGP / Params().GetConsensus().BlocktimeDownscaleFactor(blockHeight);
     if(blockHeight < 2){ // bug fix
         return blockSize;
     }

@@ -31,6 +31,8 @@ static const bool DEFAULT_STAKE = true;
 
 static const bool DEFAULT_STAKE_CACHE = true;
 
+static const bool DEFAULT_SUPER_STAKE = false;
+
 //How many seconds to look ahead and prepare a block for staking
 //Look ahead up to 3 "timeslots" in the future, 48 seconds
 //Reduce this to reduce computational waste for stakers, increase this to increase the amount of time available to construct full blocks
@@ -47,6 +49,9 @@ static const int32_t STAKE_TIME_BUFFER = 2;
 //How often to try to stake blocks in milliseconds
 //Note this is overridden for regtest mode
 static const int32_t STAKER_POLLING_PERIOD = 5000;
+
+//How often to try to check for future walid block
+static const int32_t STAKER_WAIT_FOR_WALID_BLOCK = 3000;
 
 //How much time to spend trying to process transactions when using the generate RPC call
 static const int32_t POW_MINER_MAX_TIME = 60;
@@ -232,6 +237,9 @@ private:
     int nHeight;
     int64_t nLockTimeCutoff;
     const CChainParams& chainparams;
+#ifdef ENABLE_WALLET
+    CWallet *pwallet = 0;
+#endif
 
 public:
     struct Options {
@@ -242,6 +250,9 @@ public:
 
     explicit BlockAssembler(const CChainParams& params);
     BlockAssembler(const CChainParams& params, const Options& options);
+#ifdef ENABLE_WALLET
+    explicit BlockAssembler(const CChainParams& params, CWallet *pwallet);
+#endif
 
 ///////////////////////////////////////////// // qtum
     ByteCodeExecResult bceResult;
@@ -260,7 +271,7 @@ public:
     /** Construct a new block template with coinbase to scriptPubKeyIn */
     std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true,
             bool fProofOfStake=false, int64_t* pTotalFees=0, int32_t nTime=0, int32_t nTimeLimit=0, CWallet* wallet=nullptr,
-            std::set<std::pair<const CWalletTx*,unsigned int> > setCoins={});
+            std::set<std::pair<const CWalletTx*,unsigned int> > setCoins={}, std::vector<COutPoint> setDelegateCoins=std::vector<COutPoint>());
     std::unique_ptr<CBlockTemplate> CreateEmptyBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true,
             bool fProofOfStake=false, int64_t* pTotalFees = 0, int32_t nTime=0);
 
@@ -297,7 +308,8 @@ private:
     void ReplaceRewardTransaction();
 
     bool ExecuteCoinstakeContractCalls(CWallet& wallet, int64_t* pTotalFees, int32_t txProofTime,
-                                       std::set<std::pair<const CWalletTx*,unsigned int> >);
+                                       std::set<std::pair<const CWalletTx*,unsigned int> >,
+                                       std::vector<COutPoint>& setDelegateCoins);
 
     // helper functions for addPackageTxs()
     /** Remove confirmed (inBlock) entries from given set */
@@ -323,6 +335,7 @@ private:
 #ifdef ENABLE_WALLET
 /** Generate a new block, without valid proof-of-work */
 void StakeQtums(bool fStake, CWallet *pwallet, CConnman* connman, boost::thread_group*& stakeThread);
+void RefreshDelegates(CWallet *pwallet, bool myDelegates, bool stakerDelegates);
 #endif
 
 /** Modify the extranonce in a block */

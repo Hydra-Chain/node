@@ -154,6 +154,11 @@ QIcon PlatformStyle::MultiStatesIcon(const QString &resourcename, StateType type
         icon.addPixmap(pix3, QIcon::Selected, QIcon::On);
         break;
     }
+    case PushButtonLight:
+    {
+        color = colorAlt;
+    }
+    case PushButtonIcon:
     case PushButton:
     {
         QImage img1(resourcename);

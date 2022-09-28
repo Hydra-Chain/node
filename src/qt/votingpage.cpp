@@ -12,7 +12,7 @@
 #include "qt/guiconstants.h"
 #include "styleSheet.h"
 #include "execrpccommand.h"
-#include "contractabi.h"
+#include "util/contractabi.h"
 #include "util/system.h"
 #include "locktrip/price-oracle.h"
 

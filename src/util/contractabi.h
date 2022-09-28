@@ -3,8 +3,6 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <QRegularExpression>
-#include <QStringList>
 
 #define paternUint "^[0-9]{1,77}$"
 #define paternInt "^\\-{0,1}[0-9]{1,76}$"
@@ -13,7 +11,6 @@
 #define paternHex "^[a-fA-F0-9]{1,}$"
 #define paternBytes paternHex
 #define paternBytes32 "^[a-fA-F0-9]{%1,%1}$"
-
 
 /**
  * @brief The ParameterType class Decode the api parameter type,
@@ -137,7 +134,6 @@ public:
     bool abiIn(const std::vector<std::string> &value, std::string &data, std::map<int, std::string>& mapDynamic) const;
     bool abiOut(const std::string &data, size_t& pos, std::vector<std::string> &value) const;
     const ParameterType &decodeType() const;
-    static bool getRegularExpession(const ParameterType &paramType, QRegularExpression &regEx);
 
     std::string name; // The name of the parameter;
     std::string type; // The canonical type of the parameter.
@@ -171,11 +167,15 @@ public:
 
     bool abiOut(const std::string& data, std::vector<std::vector<std::string>>& values, std::vector<ParameterABI::ErrorType>& errors) const;
 
+    bool abiOut(const std::vector<std::string>& topics, const std::string& data, std::vector<std::vector<std::string>>& values, std::vector<ParameterABI::ErrorType>& errors) const;
+
     std::string selector() const;
+
+    int numIndexed() const;
 
     static std::string defaultSelector();
 
-    QString errorMessage(std::vector<ParameterABI::ErrorType>& errors, bool in) const;
+    std::string errorMessage(std::vector<ParameterABI::ErrorType>& errors, bool in) const;
 
     std::string name; // The name of the function;
     std::string type; // Function types: "function", "constructor", "fallback" or "event"
@@ -184,6 +184,7 @@ public:
     bool payable; // True if function accepts ether, defaults to false.
     bool constant; // True if function is specified to not modify blockchain state.
     bool anonymous; // True if the event was declared as anonymous.
+    std::string stateMutability; // Function state mutability: "pure", "view", "nonpayable" or "payable"
 
     // Constructor and fallback function never have name or outputs.
     // Fallback function doesn't have inputs either.
@@ -191,18 +192,24 @@ public:
     // Sending non-zero ether to non-payable function will throw.
     // Type can be omitted, defaulting to "function".
 
+    void cache();
+
 private:
     void processDynamicParams(const std::map<int, std::string>& mapDynamic, std::string& data) const;
+    bool cached;
+    std::string cacheSelector;
 };
 
 class ContractABI
 {
 public:
     ContractABI();
+    ContractABI(const std::string& json_data);
     bool loads(const std::string& json_data);
     void clean();
 
     std::vector<FunctionABI> functions;
+    FunctionABI operator[](std::string name) const;
 };
 
 #endif // CONTRACTABI_H

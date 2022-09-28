@@ -198,6 +198,8 @@ using DebugLock = UniqueLock<typename std::remove_reference<typename std::remove
         LeaveCritical();           \
     }
 
+#define WITH_LOCK(cs, code) [&] { LOCK(cs); code; }()
+
 class CSemaphore
 {
 private:

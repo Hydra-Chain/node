@@ -14,6 +14,9 @@
 #include <qt/tokenitemmodel.h>
 #include <qt/tokentransactiontablemodel.h>
 #include <qt/contracttablemodel.h>
+#include <qt/delegationitemmodel.h>
+#include <qt/superstakeritemmodel.h>
+#include <qt/delegationstakeritemmodel.h>
 
 #include <interfaces/handler.h>
 #include <interfaces/node.h>
@@ -35,6 +38,8 @@
 
 #include <iostream>
 
+static int pollSyncSkip = 30;
+
 class WalletWorker : public QObject
 {
     Q_OBJECT
@@ -46,6 +51,9 @@ public:
 private Q_SLOTS:
     void updateModel()
     {
+        if(walletModel && walletModel->node().shutdownRequested())
+            return;
+            
         // Update the model with results of task that take more time to be completed
         walletModel->checkCoinAddressesChanged();
         walletModel->checkStakeWeightChanged();
@@ -61,6 +69,9 @@ WalletModel::WalletModel(std::unique_ptr<interfaces::Wallet> wallet, interfaces:
     recentRequestsTableModel(0),
     tokenItemModel(0),
     tokenTransactionTableModel(0),
+    delegationItemModel(nullptr),
+    superStakerItemModel(nullptr),
+    delegationStakerItemModel(nullptr),
     cachedEncryptionStatus(Unencrypted),
     cachedNumBlocks(0),
     nWeight(0),
@@ -76,6 +87,9 @@ WalletModel::WalletModel(std::unique_ptr<interfaces::Wallet> wallet, interfaces:
     recentRequestsTableModel = new RecentRequestsTableModel(this);
     tokenItemModel = new TokenItemModel(this);
     tokenTransactionTableModel = new TokenTransactionTableModel(platformStyle, this);
+    delegationItemModel = new DelegationItemModel(this);
+    superStakerItemModel = new SuperStakerItemModel(this);
+    delegationStakerItemModel = new DelegationStakerItemModel(this);
 
     // This timer will be fired repeatedly to update the balance
     WalletWorker * worker = new WalletWorker(this);
@@ -121,19 +135,24 @@ void WalletModel::updateDgpCache() {
 
 void WalletModel::pollBalanceChanged()
 {
+    // Get node synchronization information
+    int numBlocks = -1;
+    bool isSyncing = false;
+    pollNum++;
+    if(!m_node.tryGetSyncInfo(numBlocks, isSyncing) || (isSyncing && pollNum < pollSyncSkip))
+        return;
+
     // Try to get balances and return early if locks can't be acquired. This
     // avoids the GUI from getting stuck on periodical polls if the core is
     // holding the locks for a longer time - for example, during a wallet
     // rescan.
     interfaces::WalletBalances new_balances;
-    int numBlocks = -1;
     if (!m_wallet->tryGetBalances(new_balances, numBlocks)) {
         return;
     }
 
-    // Get node synchronization information
-    bool isSyncing = false;
-    m_node.getSyncInfo(numBlocks, isSyncing);
+    pollNum = 0;
+    
     bool cachedNumBlocksChanged = numBlocks != cachedNumBlocks;
     if(fForceCheckBalanceChanged || cachedNumBlocksChanged)
     {
@@ -152,6 +171,8 @@ void WalletModel::pollBalanceChanged()
         if(cachedNumBlocksChanged)
         {
             checkTokenBalanceChanged();
+            checkDelegationChanged();
+            checkSuperStakerChanged();
         }
 
         if(balanceChanged)
@@ -188,6 +209,22 @@ void WalletModel::checkTokenBalanceChanged()
     if(tokenItemModel)
     {
         tokenItemModel->checkTokenBalanceChanged();
+    }
+}
+
+void WalletModel::checkDelegationChanged()
+{
+    if(delegationItemModel)
+    {
+        delegationItemModel->checkDelegationChanged();
+    }
+}
+
+void WalletModel::checkSuperStakerChanged()
+{
+    if(superStakerItemModel)
+    {
+        superStakerItemModel->checkSuperStakerChanged();
     }
 }
 
@@ -314,8 +351,9 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
         // reject absurdly high fee. (This can never happen because the
         // wallet caps the fee at maxTxFee. This merely serves as a
         // belt-and-suspenders check)
-        if (nFeeRequired > m_node.getMaxTxFee())
+        if (nFeeRequired > m_node.getMaxTxFee()) {
             return AbsurdFee;
+        }
     }
 
     return SendCoinsReturn(OK);
@@ -420,6 +458,21 @@ TokenItemModel *WalletModel::getTokenItemModel()
 TokenTransactionTableModel *WalletModel::getTokenTransactionTableModel()
 {
     return tokenTransactionTableModel;
+}
+
+DelegationItemModel *WalletModel::getDelegationItemModel()
+{
+    return delegationItemModel;
+}
+
+SuperStakerItemModel *WalletModel::getSuperStakerItemModel()
+{
+    return superStakerItemModel;
+}
+
+DelegationStakerItemModel *WalletModel::getDelegationStakerItemModel()
+{
+    return delegationStakerItemModel;
 }
 
 WalletModel::EncryptionStatus WalletModel::getEncryptionStatus() const
@@ -564,7 +617,7 @@ void WalletModel::subscribeToCoreSignals()
     m_handler_transaction_changed = m_wallet->handleTransactionChanged(boost::bind(NotifyTransactionChanged, this, _1, _2));
     m_handler_show_progress = m_wallet->handleShowProgress(boost::bind(ShowProgress, this, _1, _2));
     m_handler_watch_only_changed = m_wallet->handleWatchOnlyChanged(boost::bind(NotifyWatchonlyChanged, this, _1));
-    m_handler_contract_book_changed = m_wallet->handleContractBookChanged(boost::bind(NotifyContractBookChanged, this, _1, _2, _3, _4));
+    m_handler_contract_book_changed = m_wallet->handleContractBookChanged(boost::bind(NotifyContractBookChanged, this, boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3, boost::placeholders::_4));
 }
 
 void WalletModel::unsubscribeFromCoreSignals()

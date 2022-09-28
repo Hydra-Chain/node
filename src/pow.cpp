@@ -75,7 +75,9 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         // Special difficulty rule for testnet:
         // If the new block's timestamp is more than 2* 10 minutes
         // then allow mining of a min-difficulty block.
-        if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2) {
+        int nHeight = pindexLast->nHeight + 1;
+        if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.TargetSpacing(nHeight)*2)
+        {
             return nTargetLimit;
         }
         else
@@ -103,19 +105,19 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
             return pindexLast->nBits;
     }
     // Limit adjustment step
-    int64_t nTargetSpacing = params.nPowTargetSpacing;
+    int nHeight = pindexLast->nHeight + 1;
+    int64_t nTargetSpacing = params.TargetSpacing(nHeight);
     int64_t nActualSpacing = pindexLast->GetBlockTime() - nFirstBlockTime;
-
 	// Retarget
-    const arith_uint256 bnTargetLimit = GetLimit(pindexLast ? pindexLast->nHeight+1 : 0, params, fProofOfStake);
+    const arith_uint256 bnTargetLimit = GetLimit(nHeight, params, fProofOfStake);
     // ppcoin: target change every block
     // ppcoin: retarget with exponential moving toward target spacing
     arith_uint256 bnNew;
     bnNew.SetCompact(pindexLast->nBits);
     bool ignore = CheckQIP9BlockTimeDiff(pindexLast);
-    int64_t nInterval = params.DifficultyAdjustmentInterval(pindexLast->nHeight + 1, ignore);
+    int64_t nInterval = params.DifficultyAdjustmentInterval(nHeight, ignore); 
 
-    if (pindexLast->nHeight + 1 < params.QIP9Height  || ignore) {
+    if (nHeight < params.QIP9Height || ignore) {
         if (nActualSpacing < 0)
             nActualSpacing = nTargetSpacing;
         if (nActualSpacing > nTargetSpacing * 10)
@@ -127,7 +129,8 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nF
             nActualSpacing = nTargetSpacing;
         if (nActualSpacing > nTargetSpacing * 20)
             nActualSpacing = nTargetSpacing * 20;
-        bnNew = mul_exp(bnNew, 2 * (nActualSpacing - nTargetSpacing) / 16, (nInterval + 1) * nTargetSpacing / 16);
+        uint32_t stakeTimestampMask=params.StakeTimestampMask(nHeight);
+        bnNew = mul_exp(bnNew, 2 * (nActualSpacing - nTargetSpacing) / (stakeTimestampMask + 1), (nInterval + 1) * nTargetSpacing / (stakeTimestampMask + 1));
     }
 
     if (bnNew <= 0 || bnNew > bnTargetLimit)

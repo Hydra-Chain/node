@@ -5,12 +5,14 @@
 #ifndef BITCOIN_INTERFACES_CHAIN_H
 #define BITCOIN_INTERFACES_CHAIN_H
 
-#include <optional.h>
+#include <optional.h>               // For Optional and nullopt
+#include <primitives/transaction.h> // For CTransactionRef
 
 #include <memory>
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <map>
 
 class CBlock;
 class CScheduler;
@@ -105,6 +107,9 @@ public:
         //! is guaranteed to be an ancestor of the block used to create the
         //! locator.
         virtual Optional<int> findLocatorFork(const CBlockLocator& locator) = 0;
+
+        //! Get map of the immature stakes.
+        virtual std::map<COutPoint, uint32_t> getImmatureStakes() = 0;
     };
 
     //! Return Lock interface. Chain is locked when this is called, and

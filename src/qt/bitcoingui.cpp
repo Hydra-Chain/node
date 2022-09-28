@@ -324,12 +324,16 @@ void BitcoinGUI::createActions()
     sendToContractAction = new QAction(tr("Send To Contract"), this);
     callContractAction = new QAction(tr("Call Contract"), this);
 
-    stakeAction = new QAction(platformStyle->MultiStatesIcon(":/icons/tx_mined"), tr("&Stake"), this);
-    stakeAction->setStatusTip(tr("Show stake of wallet"));
-    stakeAction->setToolTip(stakeAction->statusTip());
-    stakeAction->setCheckable(true);
-    stakeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
-    tabGroup->addAction(stakeAction);
+    walletStakeAction = new QAction(platformStyle->MultiStatesIcon(":/icons/tx_mined"), tr("&Stake"), this);
+    walletStakeAction->setStatusTip(tr("Show stake of wallet"));
+    walletStakeAction->setToolTip(walletStakeAction->statusTip());
+    walletStakeAction->setCheckable(true);
+    walletStakeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
+    tabGroup->addAction(walletStakeAction);
+
+    stakeAction = new QAction(tr("Staking"), this);
+    delegationAction = new QAction(tr("Delegations"), this);
+    superStakerAction = new QAction(tr("Super Staking"), this);
 
     historyAction = new QAction(platformStyle->MultiStatesIcon(":/icons/history"), tr("&Transactions"), this);
     historyAction->setStatusTip(tr("Browse transaction history"));
@@ -388,6 +392,10 @@ void BitcoinGUI::createActions()
     connect(addTokenAction, SIGNAL(triggered()), this, SLOT(gotoAddTokenPage()));
     connect(stakeAction, &QAction::triggered, [this]{ showNormalIfMinimized(); });
     connect(stakeAction, &QAction::triggered, this, &BitcoinGUI::gotoStakePage);
+    connect(delegationAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(delegationAction, SIGNAL(triggered()), this, SLOT(gotoDelegationPage()));
+    connect(superStakerAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(superStakerAction, SIGNAL(triggered()), this, SLOT(gotoSuperStakerPage()));
 #endif // ENABLE_WALLET
 
     quitAction = new QAction(platformStyle->MenuColorIcon(":/icons/quit"), tr("E&xit"), this);
@@ -543,7 +551,11 @@ void BitcoinGUI::createToolBars()
         contractActions.append(sendToContractAction);
         contractActions.append(callContractAction);
         appNavigationBar->mapGroup(smartContractAction, contractActions);
-        appNavigationBar->addAction(stakeAction);
+        QList<QAction*> walletStakeActions;
+        walletStakeActions.append(stakeAction);
+        walletStakeActions.append(delegationAction);
+        walletStakeActions.append(superStakerAction);
+        appNavigationBar->mapGroup(walletStakeAction, walletStakeActions);
         QList<QAction*> tokenActions;
         tokenActions.append(sendTokenAction);
         tokenActions.append(receiveTokenAction);
@@ -651,10 +663,10 @@ void BitcoinGUI::setClientModel(ClientModel *_clientModel)
 }
 
 #ifdef ENABLE_WALLET
-bool BitcoinGUI::addWallet(WalletModel *walletModel)
+void BitcoinGUI::addWallet(WalletModel *walletModel)
 {
     if(!walletFrame)
-        return false;
+        return;
     const QString name = walletModel->getWalletName();
     QString display_name = name.isEmpty() ? "["+tr("default wallet")+"]" : name;
     setWalletActionsEnabled(true);
@@ -666,18 +678,18 @@ bool BitcoinGUI::addWallet(WalletModel *walletModel)
     rpcConsole->addWallet(walletModel);
     appTitleBar->addWallet(walletModel);
     appTitleBar->setModel(walletModel);
-    QTimer::singleShot(MODEL_UPDATE_DELAY, clientModel, SLOT(updateTip()));
-    bool res = walletFrame->addWallet(walletModel);
+    if(!(clientModel->fBatchProcessingMode))
+        QTimer::singleShot(MODEL_UPDATE_DELAY, clientModel, SLOT(updateTip()));
+    walletFrame->addWallet(walletModel);
     if(walletFrame->isVoteInProgress())
     {
     	appNavigationBar->voteInProgress();
     }
-    return res;
 }
 
-bool BitcoinGUI::removeWallet(WalletModel* walletModel)
+void BitcoinGUI::removeWallet(WalletModel* walletModel)
 {
-    if (!walletFrame) return false;
+    if (!walletFrame) return;
     QString name = walletModel->getWalletName();
     int index = m_wallet_selector->findData(name);
     m_wallet_selector->removeItem(index);
@@ -689,21 +701,21 @@ bool BitcoinGUI::removeWallet(WalletModel* walletModel)
     }
     rpcConsole->removeWallet(walletModel);
     appTitleBar->removeWallet(walletModel);
-    return walletFrame->removeWallet(name);
+    walletFrame->removeWallet(name);
 }
 
-bool BitcoinGUI::setCurrentWallet(const QString& name)
+void BitcoinGUI::setCurrentWallet(const QString& name)
 {
     if(!walletFrame)
-        return false;
+        return;
 
-    return walletFrame->setCurrentWallet(name);
+    walletFrame->setCurrentWallet(name);
 }
 
-bool BitcoinGUI::setCurrentWalletBySelectorIndex(int index)
+void BitcoinGUI::setCurrentWalletBySelectorIndex(int index)
 {
     QString internal_name = m_wallet_selector->itemData(index).toString();
-    return setCurrentWallet(internal_name);
+    setCurrentWallet(internal_name);
 }
 
 void BitcoinGUI::removeAllWallets()
@@ -732,6 +744,9 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     verifyMessageAction->setEnabled(enabled);
     usedSendingAddressesAction->setEnabled(enabled);
     usedReceivingAddressesAction->setEnabled(enabled);
+    delegationAction->setEnabled(enabled);
+    superStakerAction->setEnabled(enabled);
+    walletStakeAction->setEnabled(enabled);
     openAction->setEnabled(enabled);
 }
 
@@ -872,6 +887,18 @@ void BitcoinGUI::gotoSendTokenPage()
     if (walletFrame) walletFrame->gotoSendTokenPage();
 }
 
+void BitcoinGUI::gotoDelegationPage()
+{
+    delegationAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoDelegationPage();
+}
+
+void BitcoinGUI::gotoSuperStakerPage()
+{
+    superStakerAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoSuperStakerPage();
+}
+
 void BitcoinGUI::gotoReceiveTokenPage()
 {
     receiveTokenAction->setChecked(true);
@@ -978,7 +1005,7 @@ void BitcoinGUI::updateHeadersSyncProgressLabel()
 {
     int64_t headersTipTime = clientModel->getHeaderTipTime();
     int headersTipHeight = clientModel->getHeaderTipHeight();
-    int estHeadersLeft = (GetTime() - headersTipTime) / Params().GetConsensus().nPowTargetSpacing;
+    int estHeadersLeft = (GetTime() - headersTipTime) / Params().GetConsensus().TargetSpacing(headersTipHeight);
     if (estHeadersLeft > HEADER_HEIGHT_DELTA_SYNC)
         progressBarLabel->setText(tr("Syncing Headers (%1%)...").arg(QString::number(100.0 / (headersTipHeight+estHeadersLeft)*headersTipHeight, 'f', 1)));
 }
@@ -1371,7 +1398,7 @@ void BitcoinGUI::toggleHidden()
 
 void BitcoinGUI::updateStakingIcon()
 {
-    if(m_node.shutdownRequested())
+    if(m_node.shutdownRequested() || !clientModel || clientModel->fBatchProcessingMode)
         return;
 
     if (!walletFrame) {
@@ -1391,8 +1418,10 @@ void BitcoinGUI::updateStakingIcon()
     {
         uint64_t nNetworkWeight = GetPoSKernelPS();
         const Consensus::Params& consensusParams = Params().GetConsensus();
+        int headersTipHeight = clientModel->getHeaderTipHeight();
+        int64_t nTargetSpacing = consensusParams.TargetSpacing(headersTipHeight);
 
-        unsigned nEstimateTime = consensusParams.nPowTargetSpacing * nNetworkWeight / nWeight;
+        unsigned nEstimateTime = nTargetSpacing * nNetworkWeight / nWeight;
 
         QString text;
         if (nEstimateTime < 60)

@@ -18,9 +18,8 @@
 #include <util/system.h>
 #include <util/moneystr.h>
 #include <util/time.h>
-#ifdef ENABLE_BITCORE_RPC
 #include <script/sign.h>
-#endif
+#include <chainparams.h>
 
 CTxMemPoolEntry::CTxMemPoolEntry(const CTransactionRef& _tx, const CAmount& _nFee,
                                  int64_t _nTime, unsigned int _entryHeight,
@@ -514,7 +513,7 @@ void CTxMemPool::removeForReorg(const CCoinsViewCache *pcoins, unsigned int nMem
                     continue;
                 const Coin &coin = pcoins->AccessCoin(txin.prevout);
                 if (nCheckFrequency != 0) assert(!coin.IsSpent());
-                if (coin.IsSpent() || (coin.IsCoinBase() && ((signed long)nMemPoolHeight) - coin.nHeight < COINBASE_MATURITY)) {
+                if (coin.IsSpent() || (coin.IsCoinBase() && ((signed long)nMemPoolHeight) - coin.nHeight < Params().GetConsensus().CoinbaseMaturity(nMemPoolHeight))) {
                     txToRemove.insert(it);
                     break;
                 }
@@ -575,10 +574,12 @@ void CTxMemPool::removeForBlock(const std::vector<CTransactionRef>& vtx, unsigne
         }
         removeConflicts(*tx);
         ClearPrioritisation(tx->GetHash());
-#ifdef ENABLE_BITCORE_RPC
-        removeAddressIndex(tx->GetHash());
-        removeSpentIndex(tx->GetHash());
-#endif
+
+        if(fAddressIndex) {
+            removeAddressIndex(tx->GetHash());
+            removeSpentIndex(tx->GetHash());
+        }
+
     }
     lastRollingFeeUpdate = GetTime();
     blockSinceLastRollingFeeBump = true;
@@ -1107,7 +1108,6 @@ void CTxMemPool::GetTransactionAncestry(const uint256& txid, size_t& ancestors, 
 
 SaltedTxidHasher::SaltedTxidHasher() : k0(GetRand(std::numeric_limits<uint64_t>::max())), k1(GetRand(std::numeric_limits<uint64_t>::max())) {}
 
-#ifdef ENABLE_BITCORE_RPC
 /////////////////////////////////////////////////////// // qtum
 void CTxMemPool::addAddressIndex(const CTxMemPoolEntry &entry, const CCoinsViewCache &view)
 {
@@ -1265,4 +1265,3 @@ bool CTxMemPool::removeSpentIndex(const uint256 txhash)
     return true;
 }
 ///////////////////////////////////////////////////////
-#endif

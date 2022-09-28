@@ -67,6 +67,12 @@ struct Params {
     int QIP7Height;
     /** Block height at which QIP9 becomes active */
     int QIP9Height;
+    /** Block height at which Muir Glacier fork becomse active*/
+    int MuirGlacierHeight;
+    /** Block height at which Offline Staking becomes active */
+    int nOfflineStakeHeight;
+    /** Block height at which Reduce Block Time becomes active */
+    int nReduceBlocktimeHeight;
 
     /**
      * Minimum blocks including miner confirmation of the total of 2016 blocks in a retargeting period,
@@ -80,17 +86,16 @@ struct Params {
     uint256 powLimit;
     uint256 posLimit;
     uint256 QIP9PosLimit;
+    uint256 RBTPosLimit;
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     bool fPoSNoRetargeting;
     int64_t nPowTargetSpacing;
+    int64_t nRBTPowTargetSpacing;
     int64_t nPowTargetTimespan;
     int64_t nPowTargetTimespanV2;
-    int64_t DifficultyAdjustmentInterval(int height, bool ignore) const
-    {
-        int64_t targetSpacing = (height < QIP9Height || ignore) ? nPowTargetTimespan : nPowTargetTimespanV2;
-        return targetSpacing / nPowTargetSpacing;
-    }
+    int64_t nRBTPowTargetTimespan;
+    int64_t nRBTPowTargetTimespanV2;
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;
     int nLastPOWBlock;
@@ -101,6 +106,79 @@ struct Params {
     int nMPoSRewardRecipients;
     int nFixUTXOCacheHFHeight;
     int nEnableHeaderSignatureHeight;
+    int nCheckpointSpan;
+    int nRBTCheckpointSpan;
+    uint160 delegationsAddress;
+    int nLastMPoSBlock;
+    uint32_t nStakeTimestampMask;
+    uint32_t nRBTStakeTimestampMask;
+    int64_t nBlocktimeDownscaleFactor;
+    /** Coinbase transaction outputs can only be spent after this number of new blocks (network rule) */
+    int nCoinbaseMaturity;
+    int nRBTCoinbaseMaturity;
+    int64_t DifficultyAdjustmentInterval(int height, bool ignore) const
+    {
+        int64_t targetTimespan = TargetTimespan(height, ignore);
+        int64_t targetSpacing = TargetSpacing(height);
+        return targetTimespan / targetSpacing;
+    }
+    int64_t StakeTimestampMask(int height) const
+    {
+        return height < nReduceBlocktimeHeight ? nStakeTimestampMask : nRBTStakeTimestampMask;
+    }
+    int64_t BlocktimeDownscaleFactor(int height) const
+    {
+        return height < nReduceBlocktimeHeight ? 1 : nBlocktimeDownscaleFactor;
+    }
+    int64_t TargetSpacing(int height) const
+    {
+        return height < nReduceBlocktimeHeight ? nPowTargetSpacing : nRBTPowTargetSpacing;
+    }
+    int64_t TimestampDownscaleFactor(int height) const
+    {
+        return height < nReduceBlocktimeHeight ? 1 : (nStakeTimestampMask + 1) / (nRBTStakeTimestampMask + 1);
+    }
+    int64_t TargetTimespan(int height, bool ignore) const
+    {
+        if (height < QIP9Height)
+        {
+            return nPowTargetTimespan;
+        }
+        else if (height >= QIP9Height && height < nReduceBlocktimeHeight)
+        {
+            if (ignore) 
+            {
+                return nPowTargetTimespan;
+            }
+            else
+            {
+                return nPowTargetTimespanV2;
+            }
+        }
+        else
+        {
+            if (ignore)
+            {
+                return nRBTPowTargetTimespan;
+            }
+            else
+            {
+                return nRBTPowTargetTimespanV2;
+            }
+        }
+    }
+    int CheckpointSpan(int height) const
+    {
+        return height < nReduceBlocktimeHeight ? nCheckpointSpan : nRBTCheckpointSpan;
+    }
+    int CoinbaseMaturity(int height) const
+    {
+        return height < nReduceBlocktimeHeight ? nCoinbaseMaturity : nRBTCoinbaseMaturity;
+    }
+    int MaxCheckpointSpan() const
+    {
+        return nCheckpointSpan <= nRBTCheckpointSpan ? nRBTCheckpointSpan : nCheckpointSpan;
+    }
 };
 } // namespace Consensus
 

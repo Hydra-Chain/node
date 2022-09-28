@@ -63,7 +63,10 @@ public:
     void setValue(const CAmount& value)
     {
         CAmount val = qMax(value, minAmount);
-        lineEdit()->setText(BitcoinUnits::format(currentUnit, val, false, BitcoinUnits::separatorAlways));
+        QString strValue = BitcoinUnits::format(currentUnit, val, false, BitcoinUnits::separatorAlways);
+        if(!notifyAlways && strValue == lineEdit()->text())
+            return;
+        lineEdit()->setText(strValue);
         Q_EMIT valueChanged();
     }
 
@@ -138,11 +141,17 @@ public:
         Q_EMIT valueChanged();
     }
 
+    void setNotifyAlways(bool value)
+    {
+        notifyAlways = value;
+    }
+
 private:
     int currentUnit;
     CAmount singleStep;
     CAmount minAmount;
     mutable QSize cachedMinimumSizeHint;
+    bool notifyAlways = true;
 
     /**
      * Parse a string into a number of base monetary units and
@@ -322,4 +331,9 @@ CAmount BitcoinAmountField::minimum() const
 void BitcoinAmountField::setMinimum(const CAmount& min)
 {
     amount->setMinimum(min);
+}
+
+void BitcoinAmountField::setNotifyAlways(bool value)
+{
+    amount->setNotifyAlways(value);
 }
