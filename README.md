@@ -83,7 +83,7 @@ Then install [Homebrew](https://brew.sh).
 
 #### Dependencies
 
-    brew install cmake automake berkeley-db4 libtool boost miniupnpc openssl pkg-config protobuf qt5 libevent imagemagick librsvg qrencode gmp
+    brew install cmake automake berkeley-db4 libtool boost@1.76 miniupnpc openssl pkg-config protobuf qt5 libevent imagemagick librsvg qrencode gmp
 
 NOTE: Building with Qt4 is still supported, however, could result in a broken UI. Building with Qt5 is recommended.
 
