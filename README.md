@@ -66,7 +66,7 @@ Here is a brief description for compiling HYDRA on CentOS
     ./configure
     make -j4
 
-### Build on OSX
+### Build on Intel MacOS
 
 The commands in this guide should be executed in a Terminal application.
 The built-in one is located in `/Applications/Utilities/Terminal.app`.
@@ -101,13 +101,11 @@ NOTE: Building with Qt4 is still supported, however, could result in a broken UI
     You can disable the GUI build by passing `--without-gui` to configure.
 
         ./autogen.sh
-        ./configure
+        ./configure --with-boost=/usr/local/Cellar/boost@1.76/1.76.0_2
         make
 
-3.  It is recommended to build and run the unit tests:
-
-        make check
-
 ### Run
+
+`export DYLD_LIBRARY_PATH=/usr/local/Cellar/boost@1.76/1.76.0_2/lib`
 
 Then you can either run the command-line daemon using `src/hydrad` and `src/hydra-cli`, or you can run the Qt GUI using `src/qt/hydra-qt`
