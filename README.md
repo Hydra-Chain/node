@@ -17,7 +17,7 @@ Wallet downloads: https://github.com/Hydra-Chain/node/releases
 
 # Building HYDRA Blockchain
 
-### Build on Ubuntu
+### Build on Ubuntu (18.04 or lower)
 
     # This is a quick start script for compiling HYDRA on  Ubuntu
 
@@ -26,6 +26,31 @@ Wallet downloads: https://github.com/Hydra-Chain/node/releases
     sudo add-apt-repository ppa:bitcoin/bitcoin
     sudo apt-get update
     sudo apt-get install libdb4.8-dev libdb4.8++-dev
+
+    # If you want to build the Qt GUI:
+    sudo apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler qrencode
+
+    git clone https://github.com/Hydra-Chain/node.git --recursive HYDRA
+    cd HYDRA
+
+    # Note autogen will prompt to install some more dependencies if needed
+    ./autogen.sh
+    ./configure 
+    make -j2
+    
+### Build on Ubuntu (above 18.04)
+
+    # This is a quick start script for compiling HYDRA on  Ubuntu
+
+    sudo apt-get install build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils git cmake libboost-all-dev libgmp3-dev
+    sudo apt-get install software-properties-common
+    
+    # The below steps are required for installing libdb4.8
+
+    sudo echo "deb http://ppa.launchpad.net/bitcoin/bitcoin/ubuntu artful main" >> /etc/apt/sources.list.d/bitcoin.list
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8842CE5E
+    sudo apt update
+    sudo apt install libdb4.8-dev libdb4.8++-dev
 
     # If you want to build the Qt GUI:
     sudo apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler qrencode
