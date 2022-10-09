@@ -46,11 +46,21 @@ Wallet downloads: https://github.com/Hydra-Chain/node/releases
     sudo apt-get install software-properties-common
     
     # The below steps are required for installing libdb4.8
-
-    sudo echo "deb http://ppa.launchpad.net/bitcoin/bitcoin/ubuntu artful main" >> /etc/apt/sources.list.d/bitcoin.list
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8842CE5E
-    sudo apt update
-    sudo apt install libdb4.8-dev libdb4.8++-dev
+    
+    cd ~
+    mkdir dev
+    cd dev
+    wget -N http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz
+    tar -xvf db-4.8.30.NC.tar.gz
+    sed -i s/__atomic_compare_exchange/__atomic_compare_exchange_db/g db-4.8.30.NC/dbinc/atomic.h
+    cd db-4.8.30.NC/build_unix
+    mkdir -p build
+    BDB_PREFIX=/usr/local
+    ../dist/configure --enable-cxx --prefix=$BDB_PREFIX
+    make
+    sudo make install
+    
+    # Now you can return to the folder in which you will clone the HYDRA repository
 
     # If you want to build the Qt GUI:
     sudo apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler qrencode
