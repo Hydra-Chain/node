@@ -44,8 +44,6 @@ Wallet downloads: https://github.com/Hydra-Chain/node/releases
 
     sudo apt-get install build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils git cmake libboost-all-dev libgmp3-dev
     sudo apt-get install software-properties-common
-    sudo add-apt-repository ppa:bitcoin/bitcoin
-    sudo apt-get update
     
     # The below steps are required for installing libdb4.8
 
