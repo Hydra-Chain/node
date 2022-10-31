@@ -1802,7 +1802,7 @@ static UniValue addsuperstakeraddress(const JSONRPCRequest& request) {
 
         // Update super staker data
         if(!pwallet->AddSuperStakerEntry(superStaker))
-            throw JSONRPCError(RPC_TYPE_ERROR, "Failed to update the super staker");
+            throw JSONRPCError(RPC_TYPE_ERROR, "Failed to add the super staker");
     }
     else
     {
