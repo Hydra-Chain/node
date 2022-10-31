@@ -6804,6 +6804,7 @@ static const CRPCCommand commands[] =
     { "wallet",             "sendtocontract",                   &sendtocontract,                {"contractaddress", "bytecode", "amount", "gasLimit", "senderAddress", "broadcast", "changeToSender"} },
     { "wallet",             "removedelegationforaddress",       &removedelegationforaddress,    {"address", "gasLimit"} },
     { "wallet",             "setdelegateforaddress",            &setdelegateforaddress,         {"staker", "fee", "address", "gasLimit"} },
+    { "wallet",             "setsuperstakervaluesforaddress",   &setsuperstakervaluesforaddress, {"address", "stakingminutxovalue", "stakingminfee", "allow", "exclude"} },
     { "wallet",             "listsuperstakercustomvalues",             &listsuperstakercustomvalues,          {} },
     { "wallet",             "listsuperstakervaluesforaddress",         &listsuperstakervaluesforaddress,      {"address"} },
     { "wallet",             "removesuperstakervaluesforaddress",       &removesuperstakervaluesforaddress,    {"address"} },
