@@ -1715,11 +1715,11 @@ static UniValue addsuperstakeraddress(const JSONRPCRequest& request) {
                 },
                 RPCExamples{
                     HelpExampleCli("addsuperstakeraddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10}\"")
-                    + HelpExampleCli("addsuperstakeraddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"allow\\\":[\\\"QD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
-                    + HelpExampleCli("addsuperstakeraddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"exclude\\\":[\\\"QD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
+                    + HelpExampleCli("addsuperstakeraddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"allow\\\":[\\\"HD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
+                    + HelpExampleCli("addsuperstakeraddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"exclude\\\":[\\\"HD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
                     + HelpExampleRpc("addsuperstakeraddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10}\"")
-                    + HelpExampleRpc("addsuperstakeraddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"allow\\\":[\\\"QD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
-                    + HelpExampleRpc("addsuperstakeraddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"exclude\\\":[\\\"QD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
+                    + HelpExampleRpc("addsuperstakeraddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"allow\\\":[\\\"HD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
+                    + HelpExampleRpc("addsuperstakeraddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"exclude\\\":[\\\"HD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
                 },
             }.ToString());
 
@@ -1873,11 +1873,11 @@ static UniValue setsuperstakervaluesforaddress(const JSONRPCRequest& request){
                 },
                 RPCExamples{
                     HelpExampleCli("setsuperstakervaluesforaddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10}\"")
-                    + HelpExampleCli("setsuperstakervaluesforaddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"allow\\\":[\\\"QD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
-                    + HelpExampleCli("setsuperstakervaluesforaddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"exclude\\\":[\\\"QD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
+                    + HelpExampleCli("setsuperstakervaluesforaddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"allow\\\":[\\\"HD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
+                    + HelpExampleCli("setsuperstakervaluesforaddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"exclude\\\":[\\\"HD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
                     + HelpExampleRpc("setsuperstakervaluesforaddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10}\"")
-                    + HelpExampleRpc("setsuperstakervaluesforaddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"allow\\\":[\\\"QD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
-                    + HelpExampleRpc("setsuperstakervaluesforaddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"exclude\\\":[\\\"QD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
+                    + HelpExampleRpc("setsuperstakervaluesforaddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"allow\\\":[\\\"HD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
+                    + HelpExampleRpc("setsuperstakervaluesforaddress", "\"{\\\"address\\\":\\\"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\\\",\\\"stakingminutxovalue\\\": \\\"100\\\",\\\"stakingminfee\\\": 10,\\\"exclude\\\":[\\\"HD1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XX\\\"]}\"")
                 },
             }.ToString());
 
