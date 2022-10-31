@@ -192,6 +192,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "removedelegationforaddress", 1, "gasLimit" },
     { "setdelegateforaddress", 1, "fee" },
     { "setdelegateforaddress", 3, "gasLimit" },
+    { "addsuperstakeraddress", 0, "params" },
     { "setsuperstakervaluesforaddress", 0, "params" },
     { "hrc20approve", 4, "gasLimit" },
     { "hrc20approve", 5, "checkOutputs" },
