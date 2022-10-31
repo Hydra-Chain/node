@@ -2179,7 +2179,7 @@ Note: Siden gebyret er kalkuleret på en per-byte basis, et gebyr på "100 satos
         <translation>Skjul</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>Anbefalet:</translation>
     </message>
     <message>

@@ -1543,7 +1543,7 @@ etlike ure of dae (of nooit) sal neem om te bevestig. Oorweeg om
         <translation>Versteek</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>Aanbeveel:</translation>
     </message>
     <message>

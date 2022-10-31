@@ -2010,7 +2010,7 @@ Kérem a kulcsmondatban használjon &lt;b&gt; tíz vagy több véletlenszerű ka
         <translation>Elrejtés</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>Ajánlott:</translation>
     </message>
     <message>

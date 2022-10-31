@@ -130,7 +130,7 @@
             <item>
              <widget class="QCheckBox" name="cbRecommended">
               <property name="text">
-               <string>Recommended</string>
+               <string>Default</string>
               </property>
               <property name="checked">
                <bool>true</bool>

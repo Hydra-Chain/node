@@ -2849,7 +2849,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
     </message>
     <message>
         <location line="+112"/>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

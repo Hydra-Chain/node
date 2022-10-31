@@ -2188,7 +2188,7 @@ Notera: Då avgiften beräknas per byte kommer en avgift på 50 satoshi tas ut f
         <translation>Göm</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>Rekommenderad:</translation>
     </message>
     <message>

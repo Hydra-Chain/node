@@ -806,7 +806,7 @@
            <bool>false</bool>
           </property>
           <property name="text">
-           <string>Recommended</string>
+           <string>Default</string>
           </property>
           <property name="checked">
            <bool>true</bool>

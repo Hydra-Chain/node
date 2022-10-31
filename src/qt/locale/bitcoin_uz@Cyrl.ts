@@ -1007,7 +1007,7 @@
         <translation>Хар килобайтига</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>Тавсия этилган</translation>
     </message>
     <message>

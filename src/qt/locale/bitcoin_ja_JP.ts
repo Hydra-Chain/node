@@ -1981,7 +1981,7 @@
         <translation>(ツールチップを読む)</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>推奨:</translation>
     </message>
     <message>

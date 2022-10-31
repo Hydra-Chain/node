@@ -1895,7 +1895,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>மறை</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>பரிந்துரைக்கப்படுகிறது:</translation>
     </message>
     <message>

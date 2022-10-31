@@ -1405,7 +1405,7 @@
         <translation>پنهان کردن</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>توصیه شده:</translation>
     </message>
     <message>

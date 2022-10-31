@@ -2119,7 +2119,7 @@
         <translation>Piilota</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>Suositeltu:</translation>
     </message>
     <message>

@@ -1975,7 +1975,7 @@
         <translation>إخفاء</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>موصى به:</translation>
     </message>
     <message>

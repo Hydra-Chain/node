@@ -1433,7 +1433,7 @@
         <translation>Skrij</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>Priporočena:</translation>
     </message>
     <message>

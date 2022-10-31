@@ -2083,7 +2083,7 @@ Nota: Com que la comissió es calcula en funció dels bytes, una comissió de "1
         <translation>Amaga</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>Recomanada:</translation>
     </message>
     <message>

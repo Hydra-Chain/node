@@ -1245,7 +1245,7 @@
         <translation>Peida</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>Soovitatud:</translation>
     </message>
     <message>

@@ -1597,7 +1597,7 @@
         <translation>Скрий</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>Препоръчителна:</translation>
     </message>
     <message>

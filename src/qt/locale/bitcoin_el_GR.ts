@@ -1551,7 +1551,7 @@
         <translation>Απόκρυψη</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>Προτεινόμενο: </translation>
     </message>
     <message>

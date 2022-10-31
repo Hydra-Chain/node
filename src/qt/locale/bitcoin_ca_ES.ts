@@ -1841,7 +1841,7 @@
         <translation>Amaga</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>Recomanada:</translation>
     </message>
     <message>

@@ -147,7 +147,7 @@
         <translation>Κεφάλαια μη επαρκή</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>Συνίσταται:</translation>
     </message>
     </context>

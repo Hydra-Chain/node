@@ -1575,7 +1575,7 @@
         <translation>Cacher</translation>
     </message>
     <message>
-        <source>Recommended:</source>
+        <source>Default:</source>
         <translation>Recommandé: </translation>
     </message>
     <message>
