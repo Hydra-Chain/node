@@ -1794,6 +1794,7 @@ static UniValue addsuperstakeraddress(const JSONRPCRequest& request) {
     if(!found)
     {
         // Set custom configuration
+        superStaker.stakerAddress = uint160(*pkhStaker);
         superStaker.fCustomConfig = true;
         superStaker.nMinFee = nMinFee;
         superStaker.nMinDelegateUtxo = nMinUtxoValue;
