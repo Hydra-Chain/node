@@ -1655,6 +1655,66 @@ UniValue GetJsonSuperStakerConfig(const CSuperStakerInfo& superStaker)
     return result;
 }
 
+static UniValue removesuperstakeraddress(const JSONRPCRequest& request) {
+    std::shared_ptr<CWallet> const wallet = GetWalletForJSONRPCRequest(request);
+    CWallet* const pwallet = wallet.get();
+
+    if (!EnsureWalletIsAvailable(pwallet, request.fHelp)) {
+        return NullUniValue;
+    }
+
+    auto locked_chain = pwallet->chain().lock();
+    LOCK(pwallet->cs_wallet);
+    if (request.fHelp || request.params.size() != 1)
+        throw std::runtime_error(
+            RPCHelpMan{"removesuperstakeraddress",
+                "\nRemove superstaker address from wallet." +
+                HelpRequiringPassphrase(pwallet) + "\n",
+                {
+                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The super staker HYDRA address."},
+                },
+                RPCResult{
+                },
+                RPCExamples{
+                HelpExampleCli("removesuperstakeraddress", "HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd")
+                + HelpExampleRpc("removesuperstakeraddress", "HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd")
+                },
+            }.ToString());
+
+    // Parse the super staker address
+    CTxDestination destStaker = DecodeDestination(request.params[0].get_str());
+    const CKeyID *pkhStaker = boost::get<CKeyID>(&destStaker);
+    if (!pkhStaker) {
+        throw JSONRPCError(RPC_TYPE_ERROR, "Invalid address for staker. Only P2PK and P2PKH allowed");
+    }
+
+    // Search for super staker
+    CSuperStakerInfo superStaker;
+    bool found = false;
+    for(auto item : pwallet->mapSuperStaker)
+    {
+        if(CKeyID(item.second.stakerAddress) == *pkhStaker)
+        {
+            superStaker = item.second;
+            found = true;
+            break;
+        }
+    }
+
+    if(found)
+    {
+        // Update super staker data
+        if(!pwallet->RemoveSuperStakerEntry(superStaker.GetHash(), true))
+            throw JSONRPCError(RPC_TYPE_ERROR, "Failed to remove the super staker");
+    }
+    else
+    {
+        throw JSONRPCError(RPC_TYPE_ERROR, "Failed to find super staker!");
+    }
+
+    return GetJsonSuperStakerConfig(superStaker);
+}
+
 static UniValue addsuperstakeraddress(const JSONRPCRequest& request) {
     std::shared_ptr<CWallet> const wallet = GetWalletForJSONRPCRequest(request);
     CWallet* const pwallet = wallet.get();
@@ -6963,6 +7023,7 @@ static const CRPCCommand commands[] =
     { "wallet",             "removedelegationforaddress",       &removedelegationforaddress,    {"address", "gasLimit"} },
     { "wallet",             "setdelegateforaddress",            &setdelegateforaddress,         {"staker", "fee", "address", "gasLimit"} },
     { "wallet",             "addsuperstakeraddress",            &addsuperstakeraddress,         {"address", "stakingminutxovalue", "stakingminfee", "allow", "exclude"} },
+    { "wallet",             "removesuperstakeraddress",         &removesuperstakeraddress       {"address"} },
     { "wallet",             "setsuperstakervaluesforaddress",   &setsuperstakervaluesforaddress, {"address", "stakingminutxovalue", "stakingminfee", "allow", "exclude"} },
     { "wallet",             "listsuperstakercustomvalues",             &listsuperstakercustomvalues,          {} },
     { "wallet",             "listsuperstakervaluesforaddress",         &listsuperstakervaluesforaddress,      {"address"} },
