@@ -1674,6 +1674,28 @@ static UniValue removesuperstakeraddress(const JSONRPCRequest& request) {
                     {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The super staker HYDRA address."},
                 },
                 RPCResult{
+                    RPCResult::Type::ARR, "", "",
+                    {
+                        {
+                            RPCResult::Type::OBJ, "", "",
+                            {
+                                {RPCResult::Type::STR, "address", "Address of the staker."},
+                                {RPCResult::Type::BOOL, "customconfig", "Custom configuration exist."},
+                                {RPCResult::Type::NUM, "stakingminfee", "Minimum fee for delegate."},
+                                {RPCResult::Type::NUM, "stakingminutxovalue", "Minimum UTXO value for delegate."},
+                                {RPCResult::Type::ARR, "allow", "List of allowed delegate addresses.",
+                                    {
+                                        {RPCResult::Type::STR, "address", "The delegate address"},
+                                    },
+                                },
+                                {RPCResult::Type::ARR, "exclude", "List of excluded delegate addresses.",
+                                    {
+                                        {RPCResult::Type::STR, "address", "The delegate address"},
+                                    },
+                                },
+                            }
+                        },
+                    }
                 },
                 RPCExamples{
                 HelpExampleCli("removesuperstakeraddress", "HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd")
