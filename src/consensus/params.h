@@ -73,6 +73,13 @@ struct Params {
     int nOfflineStakeHeight;
     /** Block height at which Reduce Block Time becomes active */
     int nReduceBlocktimeHeight;
+    /** Block height at which 4x block time reward fix becomes active */
+    int nRewardFixHeight;
+    /** Block height at which reward offset subtraction becomes active */
+    int nRewardOffsetHeight;
+    /** Reward offset amount */
+    CAmount nRewardOffsetAmount;
+
 
     /**
      * Minimum blocks including miner confirmation of the total of 2016 blocks in a retargeting period,

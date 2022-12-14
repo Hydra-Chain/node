@@ -1913,9 +1913,25 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         if (chainActive.Tip()->nHeight >= chainparams.GetConsensus().nReduceBlocktimeHeight && nVersion < MIN_PEER_PROTO_VERSION_AFTER_REDUCEBLOCKTIME) {
             // disconnect from peers older than this proto version
             LogPrint(BCLog::NET, "peer=%d using obsolete version after reduce block time hardfork %i; disconnecting\n", pfrom->GetId(), nVersion);
+            if (enable_bip61) {
+                connman->PushMessage(pfrom, CNetMsgMaker(INIT_PROTO_VERSION).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
+                        strprintf("Version must be %d or greater after offline stake hardfork", MIN_PEER_PROTO_VERSION_AFTER_OFFLINESTAKE)));
+            }
             pfrom->fDisconnect = true;
             return false;
         }
+
+        if (chainActive.Tip()->nHeight >= chainparams.GetConsensus().nRewardOffsetHeight && nVersion < MIN_PEER_PROTO_VERSION_AFTER_REWARDFIX) {
+            // disconnect from peers older than this proto version
+            LogPrint(BCLog::NET, "peer=%d using obsolete version after reward fix hardfork %i; disconnecting\n", pfrom->GetId(), nVersion);
+            if (enable_bip61) {
+                connman->PushMessage(pfrom, CNetMsgMaker(INIT_PROTO_VERSION).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
+                        strprintf("Version must be %d or greater after reward fix hardfork", MIN_PEER_PROTO_VERSION_AFTER_REWARDFIX)));
+            }
+            pfrom->fDisconnect = true;
+            return false;
+        }
+
 
         if (!vRecv.empty())
             vRecv >> addrFrom >> nNonce;

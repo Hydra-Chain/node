@@ -1426,7 +1426,15 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params &consensusParams) {
     }
 
     for(int i = lastHeight; i < nHeight; i++) {
-        prevTotalSupplay += (lastPercentage * prevTotalSupplay) / blocksPerYear;
+        if(i >= consensusParams.nRewardFixHeight) {
+            prevTotalSupplay += (lastPercentage * prevTotalSupplay) / (blocksPerYear * 4);
+        } else { 
+            prevTotalSupplay += (lastPercentage * prevTotalSupplay) / blocksPerYear;
+        }
+    }
+
+    if(nHeight >= consensusParams.nRewardOffsetHeight) {
+        prevTotalSupplay -= consensusParams.nRewardOffsetAmount;
     }
 
     CAmount reward = (lastPercentage * prevTotalSupplay) / blocksPerYear;

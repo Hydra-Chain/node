@@ -1474,7 +1474,7 @@ static UniValue removedelegationforaddress(const JSONRPCRequest& request){
     dgp.calculateGasPriceBuffer(defaultGasPrice, gasPriceBuffer);
     CAmount nGasPrice = gasPriceBuffer + defaultGasPrice;
 
-    if (request.fHelp || request.params.size() < 2)
+    if (request.fHelp || request.params.size() < 1)
         throw std::runtime_error(
             RPCHelpMan{"removedelegationforaddress",
                 "\nRemove delegation for address." +
@@ -1542,8 +1542,7 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request){
     dgp.calculateGasPriceBuffer(defaultGasPrice, gasPriceBuffer);
     CAmount nGasPrice = gasPriceBuffer + defaultGasPrice;
 
-    if (request.fHelp || request.params.size() < 4
-    )
+    if (request.fHelp || request.params.size() < 3)
         throw std::runtime_error(
             RPCHelpMan{"setdelegateforaddress",
                 "\nSet delegate for address." +
