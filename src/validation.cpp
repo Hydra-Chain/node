@@ -629,7 +629,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
         *pfMissingInputs = false;
     }
 
-    if (!CheckTransaction(tx, state))
+    if (!CheckTransaction(tx, state, -1))
         return false; // state filled in by CheckTransaction
 
     // Coinbase is only valid in a block, not as a loose transaction
@@ -5257,7 +5257,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     bool lastWasContract=false;
     // Check transactions
     for (const auto& tx : block.vtx) {
-        if (!CheckTransaction(*tx, state, true))
+        if (!CheckTransaction(*tx, state, chainActive.Height()+1, true))
             return state.Invalid(false, state.GetRejectCode(), state.GetRejectReason(),
                                  strprintf("Transaction check failed (tx hash %s) %s", tx->GetHash().ToString(), state.GetDebugMessage()));
         //OP_SPEND can only exist immediately after a contract tx in a block, or after another OP_SPEND

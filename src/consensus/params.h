@@ -79,6 +79,8 @@ struct Params {
     int nRewardOffsetHeight;
     /** Reward offset amount */
     CAmount nRewardOffsetAmount;
+    /** Block height at which contract outs <= 1 rule becomes active*/
+    int nContractOutsHeight;
 
 
     /**

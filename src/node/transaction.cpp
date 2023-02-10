@@ -43,6 +43,19 @@ TransactionError BroadcastTransaction(const CTransactionRef tx, uint256& hashTx,
     std::promise<void> promise;
     hashTx = tx->GetHash();
 
+    const CTransaction& check_tx = *tx;
+    auto contract_outs = 0;
+    for (const auto& txout : check_tx.vout) {
+        if (txout.scriptPubKey.HasOpCall() || txout.scriptPubKey.HasOpCreate() ||
+        txout.scriptPubKey.HasOpCoinstakeCall() || txout.scriptPubKey.HasOpSender()) {
+            contract_outs++;
+        }
+    }
+
+    if(contract_outs > 1) {
+        return TransactionError::MEMPOOL_REJECTED;
+    }
+
     { // cs_main scope
     LOCK(cs_main);
     CCoinsViewCache &view = *pcoinsTip;

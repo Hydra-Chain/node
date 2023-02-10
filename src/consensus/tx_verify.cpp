@@ -162,7 +162,7 @@ int64_t GetTransactionSigOpCost(const CTransaction& tx, const CCoinsViewCache& i
     return nSigOps;
 }
 
-bool CheckTransaction(const CTransaction& tx, CValidationState &state, bool fCheckDuplicateInputs)
+bool CheckTransaction(const CTransaction& tx, CValidationState &state, int nHeight, bool fCheckDuplicateInputs)
 {
     // Basic checks that don't depend on any context
     if (tx.vin.empty())
@@ -180,6 +180,7 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, bool fChe
 
     // Check for negative or overflow output values
     CAmount nValueOut = 0;
+    auto contract_outs = 0;
     for (const auto& txout : tx.vout)
     {
         if (txout.IsEmpty() && !tx.IsCoinBase() && !tx.IsCoinStake())
@@ -195,6 +196,7 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, bool fChe
         /////////////////////////////////////////////////////////// // qtum
         if (txout.scriptPubKey.HasOpCall() || txout.scriptPubKey.HasOpCreate() ||
         txout.scriptPubKey.HasOpCoinstakeCall() || txout.scriptPubKey.HasOpSender()) {
+	    contract_outs++;
             std::vector<valtype> vSolutions;
             txnouttype whichType = Solver(txout.scriptPubKey, vSolutions, true);
             if (whichType == TX_NONSTANDARD) {
@@ -202,6 +204,16 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, bool fChe
             }
         }
         ///////////////////////////////////////////////////////////
+    }
+
+    if (nHeight != -1 && nHeight >= Params().GetConsensus().nContractOutsHeight) {
+        if(contract_outs > 1) {
+            return state.DoS(100, false, REJECT_INVALID, "bad-txns-contract-outs-more-than-one");
+        }
+    } else if (nHeight == -1) {
+        if(contract_outs > 1) {
+            return state.DoS(100, false, REJECT_INVALID, "bad-txns-contract-outs-more-than-one");
+        }
     }
 
     // Check for duplicate inputs - note that this check is slow so we skip it in CheckBlock
@@ -263,7 +275,7 @@ bool CheckQtumTransaction(const ExtractQtumTX & extractQtumTxResult, CValidation
             }
             else if(qtumTransaction.receiveAddress() == LockTripDgpContract){
                 std::string hex = dev::toHex(qtumTransaction.data());
-                if (!hex.substr(0, 8).compare(d.getContractFunctionHex(FINISH_VOTE)) == 0) {
+                if (!(hex.substr(0, 8).compare(d.getContractFunctionHex(FINISH_VOTE))) == 0) {
                     return state.DoS(100, false, REJECT_INVALID,
                                      "bad-txns-coinstake-can-call-only-finish-vote-inside-coinstake");
                 }
