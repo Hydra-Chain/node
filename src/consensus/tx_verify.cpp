@@ -196,7 +196,7 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, int nHeig
         /////////////////////////////////////////////////////////// // qtum
         if (txout.scriptPubKey.HasOpCall() || txout.scriptPubKey.HasOpCreate() ||
         txout.scriptPubKey.HasOpCoinstakeCall() || txout.scriptPubKey.HasOpSender()) {
-	    contract_outs++;
+	        contract_outs++;
             std::vector<valtype> vSolutions;
             txnouttype whichType = Solver(txout.scriptPubKey, vSolutions, true);
             if (whichType == TX_NONSTANDARD) {

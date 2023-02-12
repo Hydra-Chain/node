@@ -3132,20 +3132,6 @@ bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std
     uint64_t bytePrice = 0;
     oracle.getBytePrice(bytePrice);
 
-    const CTransaction& check_tx = *tx;
-    auto contract_outs = 0;
-    for (const auto& txout : check_tx.vout) {
-        if (txout.scriptPubKey.HasOpCall() || txout.scriptPubKey.HasOpCreate() ||
-        txout.scriptPubKey.HasOpCoinstakeCall() || txout.scriptPubKey.HasOpSender()) {
-            contract_outs++;
-        }
-    }
-
-    if(contract_outs > 1) {
-        strFailReason = _("Contract outputs more than one.");
-        return false;
-    }
-
     CAmount nValue = 0;
     int nChangePosRequest = nChangePosInOut;
     unsigned int nSubtractFeeFromAmount = 0;
@@ -4141,6 +4127,19 @@ bool CWallet::CommitTransaction(CTransactionRef tx, mapValue_t mapValue, std::ve
     {
         auto locked_chain = chain().lock();
         LOCK(cs_wallet);
+
+        const CTransaction& check_tx = *tx;
+        auto contract_outs = 0;
+        for (const auto& txout : check_tx.vout) {
+            if (txout.scriptPubKey.HasOpCall() || txout.scriptPubKey.HasOpCreate() ||
+            txout.scriptPubKey.HasOpCoinstakeCall() || txout.scriptPubKey.HasOpSender()) {
+                contract_outs++;
+            }
+        }
+
+        if(contract_outs > 1) {
+            return state.DoS(100, false, REJECT_INVALID, "bad-txns-contract-outs-more-than-one");;
+        }
 
         CWalletTx wtxNew(this, std::move(tx));
         wtxNew.mapValue = std::move(mapValue);
