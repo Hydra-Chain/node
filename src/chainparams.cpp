@@ -295,6 +295,7 @@ public:
         consensus.nRewardFixHeight = 785140;
         consensus.nRewardOffsetHeight = 785140;
         consensus.nRewardOffsetAmount = 94225990557823100;
+	    consensus.nContractOutsHeight = 979410;
 
         // consensus.BIP65Height - 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
         // consensus.BIP66Height - 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
