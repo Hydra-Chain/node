@@ -1422,7 +1422,7 @@ static UniValue getblock(const JSONRPCRequest& request)
 ////////////////////////////////////////////////////////////////////// // qtum
 UniValue callcontract(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() < 2 || request.params.size() > 4)
+    if (request.fHelp || request.params.size() < 2 || request.params.size() > 5)
         throw std::runtime_error(
             RPCHelpMan{"callcontract",
                 "\nCall contract methods offline, or test contract deployment offline.\n",
