@@ -54,12 +54,10 @@ public:
         Prune,                  // bool
         PruneSize,              // int
         DatabaseCache,          // int
-        LogEvents,              // bool
         SuperStaking,           // bool
         SpendZeroConfChange,    // bool
         ZeroBalanceAddressToken,// bool
         Listen,                 // bool
-        UseChangeAddress,    // bool
         CheckForUpdates,        // bool
         ReserveBalance,         // CAmount
         OptionIDRowCount,

@@ -429,9 +429,6 @@ void SetupServerArgs()
     hidden_args.emplace_back("-sysperms");
 #endif
     gArgs.AddArg("-txindex", strprintf("Maintain a full transaction index, used by the getrawtransaction rpc call (default: %u)", DEFAULT_TXINDEX), false, OptionsCategory::OPTIONS);
-    gArgs.AddArg("-logevents", strprintf("Maintain a full EVM log index, used by searchlogs and gettransactionreceipt rpc calls (default: %u)", DEFAULT_LOGEVENTS), false, OptionsCategory::OPTIONS);
-
-    gArgs.AddArg("-addrindex", strprintf("Maintain a full address index (default: %u)", DEFAULT_ADDRINDEX), false, OptionsCategory::OPTIONS);
 
     gArgs.AddArg("-deleteblockchaindata", "Delete the local copy of the block chain data", false, OptionsCategory::OPTIONS);
     gArgs.AddArg("-forceinitialblocksdownloadmode", strprintf("Force initial blocks download mode for the node (default: %u)", DEFAULT_FORCE_INITIAL_BLOCKS_DOWNLOAD_MODE), false, OptionsCategory::OPTIONS);
@@ -907,10 +904,6 @@ void InitParameterInteraction()
     {
         if (gArgs.SoftSetBoolArg("-staking", true))
             LogPrintf("%s: parameter interaction: -superstaking=1 -> setting -staking=1\n", __func__);
-        if (gArgs.SoftSetBoolArg("-logevents", true))
-            LogPrintf("%s: parameter interaction: -superstaking=1 -> setting -logevents=1\n", __func__);
-        if (gArgs.SoftSetBoolArg("-addrindex", true))
-            LogPrintf("%s: parameter interaction: -superstaking=1 -> setting -addrindex=1\n", __func__);
     }
     #endif
 
@@ -1568,11 +1561,7 @@ bool AppInitMain(InitInterfaces& interfaces)
     nTotalCache = std::max(nTotalCache, nMinDbCache << 20); // total cache cannot be less than nMinDbCache
     nTotalCache = std::min(nTotalCache, nMaxDbCache << 20); // total cache cannot be greater than nMaxDbcache
     int64_t nBlockTreeDBCache = std::min(nTotalCache / 8, nMaxBlockDBCache << 20);
-
-    if (gArgs.GetBoolArg("-addrindex", DEFAULT_ADDRINDEX)) {
-        // enable 3/4 of the cache if addressindex and/or spentindex is enabled
-        nBlockTreeDBCache = nTotalCache * 3 / 4;
-    }
+    nBlockTreeDBCache = nTotalCache * 3 / 4;
 
     nTotalCache -= nBlockTreeDBCache;
     int64_t nTxIndexCache = std::min(nTotalCache / 8, gArgs.GetBoolArg("-txindex", DEFAULT_TXINDEX) ? nMaxTxIndexCache << 20 : 0);
@@ -1732,26 +1721,6 @@ bool AppInitMain(InitInterfaces& interfaces)
                 fRecordLogOpcodes = gArgs.IsArgSet("-record-log-opcodes");
                 fIsVMlogFile = fs::exists(GetDataDir() / "vmExecLogs.json");
                 ///////////////////////////////////////////////////////////
-
-                /////////////////////////////////////////////////////////////// // qtum
-                if (fAddressIndex != gArgs.GetBoolArg("-addrindex", DEFAULT_ADDRINDEX)) {
-                    strLoadError = _("You need to rebuild the database using -reindex to change -addrindex");
-                    break;
-                }
-                ///////////////////////////////////////////////////////////////
-                // Check for changed -logevents state
-                if (fLogEvents != gArgs.GetBoolArg("-logevents", DEFAULT_LOGEVENTS) && !fLogEvents) {
-                    strLoadError = _("You need to rebuild the database using -reindex to enable -logevents");
-                    break;
-                }
-
-                if (!gArgs.GetBoolArg("-logevents", DEFAULT_LOGEVENTS))
-                {
-                    pstorageresult->wipeResults();
-                    pblocktree->WipeHeightIndex();
-                    fLogEvents = false;
-                    pblocktree->WriteFlag("logevents", fLogEvents);
-                }
 
             if (!fReset) {
                 // Note that RewindBlockIndex MUST run even if we're about to -reindex-chainstate.

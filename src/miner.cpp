@@ -428,8 +428,9 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     dev::h256 oldHashStateRoot(globalState->rootHash());
     dev::h256 oldHashUTXORoot(globalState->rootHashUTXO());
     ////////////////////////////////////////////////// deploy offline staking contract
-    if(nHeight == chainparams.GetConsensus().nOfflineStakeHeight){
-        globalState->deployDelegationsContract();
+    if(nHeight == chainparams.GetConsensus().nOfflineStakeHeight ||
+        nHeight == chainparams.GetConsensus().nDelegationsGasFixHeight){
+        globalState->deployDelegationsContract(nHeight);
     }
     /////////////////////////////////////////////////
     int nPackagesSelected = 0;
@@ -1631,7 +1632,7 @@ void ThreadStakeMiner(CWallet *pwallet, CConnman* connman)
                                     //if being agressive, then check more often to publish immediately when valid. This might allow you to find more blocks, 
                                     //but also increases the chance of broadcasting invalid blocks and getting DoS banned by nodes,
                                     //or receiving more stale/orphan blocks than normal. Use at your own risk.
-                                    if(!SleepStaker(pwallet, 100)) return;
+                                    if(!SleepStaker(pwallet, nMinerWaitWalidBlock)) return;
                                 }else{
                                     //too early, so wait 3 seconds and try again
                                     if(!SleepStaker(pwallet, nMinerWaitWalidBlock)) return;

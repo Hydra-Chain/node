@@ -290,11 +290,12 @@ void QtumState::validateTransfersWithChangeLog(){
     transfers=validatedTransfers;
 }
 
-void QtumState::deployDelegationsContract(){
-    dev::Address delegationsAddress = uintToh160(Params().GetConsensus().delegationsAddress);
+void QtumState::deployDelegationsContract(int height){
+    dev::Address delegationsAddress = uintToh160(Params().GetConsensus().GetDelegationsAddress(height));
+    std::string delegationsContractCode = Params().GetDelegationsContractCode(height);
     if(!QtumState::addressInUse(delegationsAddress)){
         QtumState::createContract(delegationsAddress);
-        QtumState::setCode(delegationsAddress, bytes{fromHex(DELEGATIONS_CONTRACT_CODE)}, QtumState::version(delegationsAddress));
+        QtumState::setCode(delegationsAddress, bytes{fromHex(delegationsContractCode)}, QtumState::version(delegationsAddress));
         commit(CommitBehaviour::RemoveEmptyAccounts);
         db().commit();
     }

@@ -249,7 +249,8 @@ BITCOIN_CORE_H = \
   locktrip/economy.h \
   locktrip/contract-proxy.h \
   locktrip/dgp.h \
-  locktrip/price-oracle.h
+  locktrip/price-oracle.h \
+  locktrip/lydra.h
   #locktrip/contractabi-base.h
 
 
@@ -320,6 +321,7 @@ libbitcoin_server_a_SOURCES = \
   locktrip/contract-proxy.cpp \
   locktrip/dgp.cpp \
   locktrip/price-oracle.cpp \
+  locktrip/lydra.cpp \
   consensus/consensus.cpp \
   qtum/storageresults.cpp \
   qtum/qtumdelegation.cpp \
@@ -476,6 +478,7 @@ libbitcoin_common_a_LIBADD = $(LIBBITCOIN_SERVER)
 libbitcoin_common_a_SOURCES = \
   base58.cpp \
   locktrip/dgp.cpp \
+  locktrip/lydra.cpp \
   locktrip/contract-proxy.cpp \
   pow.cpp \
   bech32.cpp \

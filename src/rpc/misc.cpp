@@ -26,8 +26,11 @@
 #include <util/strencodings.h>
 #include <locktrip/dgp.h>
 #include <locktrip/price-oracle.h>
+#include "locktrip/lydra.h"
 #include <warnings.h>
 
+#include <rpc/contract_util.h>
+#include <util/tokenstr.h>
 #include <stdint.h>
 #ifdef HAVE_MALLOC_INFO
 #include <malloc.h>
@@ -79,6 +82,93 @@ static UniValue validateaddress(const JSONRPCRequest& request)
         ret.pushKVs(detail);
     }
     return ret;
+}
+
+UniValue getlydrainfo(const JSONRPCRequest& request) {
+    std::shared_ptr<CWallet> const wallet = GetWalletForJSONRPCRequest(request);
+    CWallet* const pwallet = wallet.get();
+
+    if (!EnsureWalletIsAvailable(pwallet, request.fHelp)) {
+        return NullUniValue;
+    }
+
+    auto locked_chain = pwallet->chain().lock();
+    LOCK(pwallet->cs_wallet);
+
+    if (request.fHelp || request.params.size() != 1)
+        throw std::runtime_error(
+            RPCHelpMan{"getlydrainfo",
+                "\nGet LYDRA info for address\n",
+                {
+                    {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The HYDRA address to get LYDRA info for."},
+                },
+                RPCResult{
+                    RPCResult::Type::OBJ, "", "",
+                    {
+                        {RPCResult::Type::NUM, "lydra_available", "The available LYDRA balance for the address"},
+                        {RPCResult::Type::NUM, "hydra_locked", "The locked HYDRA balance for the address"},
+                    }
+                },
+                RPCExamples{
+                    HelpExampleCli("getlydrainfo", "\"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\"")
+                },
+            }.ToString());
+
+    UniValue senderaddress = request.params[0];
+
+    if(chainActive.Height() < Params().GetConsensus().nLydraHeight) {
+        throw JSONRPCError(RPC_TYPE_ERROR, "LYDRA not activated yet!");
+    }
+
+    // Parse the sender address
+    CTxDestination destSender = DecodeDestination(senderaddress.get_str());
+    const CKeyID *pkhSender = boost::get<CKeyID>(&destSender);
+    std::string hex_senderaddress = pkhSender->GetReverseHex();
+    if (!pkhSender) {
+        throw JSONRPCError(RPC_TYPE_ERROR, "Invalid wallet address. Only P2PK and P2PKH allowed");
+    }
+
+    // Get the private key for the sender address
+    CKey key;
+    CKeyID keyID(*pkhSender);
+    if (!pwallet->GetKey(keyID, key)) {
+        throw JSONRPCError(RPC_WALLET_ERROR, "Private key not available for the wallet address");
+    }
+
+    // Get parameters
+    CallToken token;
+    token.setAddress(uintToh160(Params().GetConsensus().lydraAddress).hex());
+    std::string sender = request.params[0].get_str();
+    token.setSender(sender);
+
+    // Get balance of address
+    std::string result;
+    if(!token.balanceOf(result))
+        throw JSONRPCError(RPC_MISC_ERROR, "Fail to get balance");
+
+    // Get decimals
+    uint32_t decimals;
+    if(!token.decimals(decimals))
+        throw JSONRPCError(RPC_MISC_ERROR, "Fail to get decimals");
+
+    // Check value
+    dev::s256 value(result);
+    if(value < 0)
+        throw JSONRPCError(RPC_MISC_ERROR, "Invalid balance, vout must be positive");
+
+    auto lydra_balance = FormatToken(decimals, value);
+
+    Lydra lydraContract;
+    uint64_t locked_hydra_amount;
+    lydraContract.getLockedHydraAmountPerAddress(uintToh160(Params().GetConsensus().lydraAddress), hex_senderaddress, locked_hydra_amount);
+
+    auto locked_hydra_amount_fl = FormatToken(decimals, locked_hydra_amount);
+
+    UniValue output(UniValue::VOBJ);
+    output.pushKV("lydra_available", lydra_balance);
+    output.pushKV("hydra_locked", locked_hydra_amount_fl);
+
+    return output;
 }
 
 UniValue getdgpinfo(const JSONRPCRequest& request)
@@ -1523,6 +1613,7 @@ static const CRPCCommand commands[] =
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////// // qtum
     { "control",            "getdgpinfo",             &getdgpinfo,             {} },
+    { "control",            "getlydrainfo",           &getlydrainfo,            {"address"} },
     { "util",               "getaddresstxids",        &getaddresstxids,        {"addresses"} },
     { "util",               "getaddressdeltas",       &getaddressdeltas,       {"addresses"} },
     { "util",               "getaddressbalance",      &getaddressbalance,      {"addresses"} },

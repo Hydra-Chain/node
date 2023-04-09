@@ -35,6 +35,7 @@
 #include <pos.h>
 #include <miner.h>
 #include <locktrip/price-oracle.h>
+#include <locktrip/lydra.h>
 
 #include <algorithm>
 #include <assert.h>
@@ -3553,6 +3554,88 @@ bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std
             return false;
         }
 
+        std::vector<CTxDestination> check_addresses;
+        std::map<CTxDestination, CAmount> addresses_inputs;
+        std::map<CTxDestination, CAmount> addresses_outputs;
+        std::map<CTxDestination, CAmount> addresses_rembalance;
+        std::vector<std::pair<uint256, int> > addresses_index;
+        std::map<uint256, CTxDestination> addrhash_dest;
+
+        CCoinsView dummy;
+        CCoinsViewCache view(&dummy);
+        {
+            LOCK(cs_main);
+            LOCK(mempool.cs);
+
+            CCoinsViewMemPool viewMemPool(pcoinsTip.get(), mempool);
+            view.SetBackend(viewMemPool);
+
+            if (chainActive.Height() >= Params().GetConsensus().nLydraHeight) {
+                for (const CTxIn& txin : check_tx.vin) {
+                    CTxDestination dest;
+                    const CTxOut &prevout = view.GetOutputFor(txin);
+                    if (ExtractDestination(txin.prevout, prevout.scriptPubKey, dest)) {
+                        check_addresses.push_back(dest);
+                        uint256 hashBytes;
+                        int type = 0;
+                        if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
+                            strFailReason = _("Invalid address decoded");
+                            return false;
+                        }
+
+                        addresses_index.push_back(std::make_pair(hashBytes, type));
+                        addrhash_dest[hashBytes] = dest;
+                        if(addresses_inputs.find(dest) != addresses_inputs.end())
+                            addresses_inputs[dest] += prevout.nValue;
+                        else
+                            addresses_inputs[dest] = prevout.nValue;
+                    }
+                }
+
+                for (size_t j = 0; j < check_tx.vout.size(); j++) {
+                    const CTxOut &out = check_tx.vout[j];
+                    CTxDestination dest;
+                    if (ExtractDestination(out.scriptPubKey, dest)) {
+                        if(addresses_outputs.find(dest) != addresses_outputs.end())
+                            addresses_outputs[dest] += out.nValue;
+                        else
+                            addresses_outputs[dest] = out.nValue;
+                    }
+                }
+
+                for (const auto &addr_pair : addresses_index)
+                {
+                    std::vector<std::pair<CAddressIndexKey, CAmount> > address_index;
+                    if (!GetAddressIndex(addr_pair.first, addr_pair.second, address_index)) {
+                        strFailReason = _("Unable to get address index.");
+                        return false;
+                    }
+
+                    for (std::vector<std::pair<CAddressIndexKey, CAmount> >::const_iterator it=address_index.begin(); it!=address_index.end(); it++) {
+                        if(addresses_rembalance.find(addrhash_dest[(*it).first.hashBytes]) != addresses_rembalance.end())
+                            addresses_rembalance[addrhash_dest[(*it).first.hashBytes]] += it->second;
+                        else
+                            addresses_rembalance[addrhash_dest[(*it).first.hashBytes]] = it->second;
+                    }
+
+                    auto rembalance = addresses_rembalance[addrhash_dest[addr_pair.first]];
+                    auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
+                    auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
+                    Lydra l;
+                    uint64_t locked_hydra_amount;
+                    l.getLockedHydraAmountPerAddress(uintToh160(Params().GetConsensus().lydraAddress), boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
+
+                    if(rembalance - all_inputs + all_outputs < locked_hydra_amount) {
+                        strFailReason = _("Spending more than available HYDRA amount. The rest is locked for LYDRA tokens.");
+                        return false;
+                    }
+                }
+            }
+
+            // we have all inputs cached now, so switch back to dummy, so we don't need to keep lock on mempool
+            view.SetBackend(dummy);
+        }
+
         // Limit size
         if (GetTransactionWeight(*tx) > MAX_STANDARD_TX_WEIGHT)
         {
@@ -5333,7 +5416,7 @@ std::shared_ptr<CWallet> CWallet::CreateWalletFromFile(interfaces::Chain& chain,
     walletInstance->m_signal_rbf = gArgs.GetBoolArg("-walletrbf", DEFAULT_WALLET_RBF);
     if(!ParseMoney(gArgs.GetArg("-reservebalance", FormatMoney(DEFAULT_RESERVE_BALANCE)), walletInstance->m_reserve_balance))
         walletInstance->m_reserve_balance = DEFAULT_RESERVE_BALANCE;
-    walletInstance->m_use_change_address = gArgs.GetBoolArg("-usechangeaddress", DEFAULT_USE_CHANGE_ADDRESS);
+    walletInstance->m_use_change_address = DEFAULT_USE_CHANGE_ADDRESS;
     if(!ParseMoney(gArgs.GetArg("-stakingminutxovalue", FormatMoney(DEFAULT_STAKING_MIN_UTXO_VALUE)), walletInstance->m_staking_min_utxo_value))
         walletInstance->m_staking_min_utxo_value = DEFAULT_STAKING_MIN_UTXO_VALUE;
     if(!ParseMoney(gArgs.GetArg("-minstakerutxosize", FormatMoney(DEFAULT_STAKER_MIN_UTXO_SIZE)), walletInstance->m_staker_min_utxo_size))

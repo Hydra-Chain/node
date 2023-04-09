@@ -19,6 +19,7 @@ static const QString PARAM_STAKER = "staker";
 static const QString PARAM_FEE = "fee";
 static const QString PARAM_ADDRESS = "address";
 static const QString PARAM_GASLIMIT = "gaslimit";
+static const QString PARAM_LOCKAMOUNT = "lockamount";
 
 static const CAmount SINGLE_STEP = 0.00000001*COIN;
 }
@@ -39,6 +40,7 @@ AddDelegationPage::AddDelegationPage(QWidget *parent) :
     ui->labelStakerAddress->setToolTip(tr("Super staker address."));
     ui->labelFee->setToolTip(tr("Super staker fee in percentage."));
     ui->labelAddress->setToolTip(tr("Delegate address to the staker."));
+    ui->labelLockAmount->setToolTip(tr("HYDRA lock amount for LYDRA minting"));
 
     GUIUtil::setupAddressWidget(ui->lineEditStakerAddress, this);
 
@@ -47,6 +49,10 @@ AddDelegationPage::AddDelegationPage(QWidget *parent) :
     ui->lineEditGasLimit->setMinimum(ADD_DELEGATION_MIN_GAS_LIMIT);
     ui->lineEditGasLimit->setMaximum(DEFAULT_GAS_LIMIT_OP_CREATE);
     ui->lineEditGasLimit->setValue(DEFAULT_GAS_LIMIT_OP_CREATE);
+
+    // ui->lineEditLockAmount->setMinimum(0);
+    // ui->lineEditLockAmount->setMaximum(100_000_000);
+    ui->lineEditLockAmount->setValue(0);
 
     ui->spinBoxFee->setMinimum(0);
     ui->spinBoxFee->setMaximum(100);
@@ -62,6 +68,7 @@ AddDelegationPage::AddDelegationPage(QWidget *parent) :
 
     QStringList lstOptional;
     lstOptional.append(PARAM_GASLIMIT);
+    lstOptional.append(PARAM_LOCKAMOUNT);
 
     QMap<QString, QString> lstTranslations;
     lstTranslations[PARAM_STAKER] = ui->labelStakerAddress->text();
@@ -111,6 +118,7 @@ void AddDelegationPage::clearAll()
     ui->spinBoxFee->setValue(DEFAULT_STAKING_MIN_FEE);
     ui->lineEditAddress->setCurrentIndex(-1);
     ui->lineEditGasLimit->setValue(DEFAULT_GAS_LIMIT_OP_CREATE);
+    ui->lineEditLockAmount->setValue(-1);
     ui->addDelegationButton->setEnabled(false);
 }
 
@@ -180,6 +188,7 @@ void AddDelegationPage::on_addDelegationClicked()
         QString resultJson;
         int unit = BitcoinUnits::BTC;
         uint64_t gasLimit = ui->lineEditGasLimit->value();
+        QString lockAmount = BitcoinUnits::format(unit, ui->lineEditLockAmount->value(), false, BitcoinUnits::separatorNever);
 
         QString delegateAddress = ui->lineEditAddress->currentText();
         QString stakerAddress = ui->lineEditStakerAddress->text();
@@ -231,7 +240,10 @@ void AddDelegationPage::on_addDelegationClicked()
         ExecRPCCommand::appendParam(lstParams, PARAM_FEE, QString::number(stakerFee));
         ExecRPCCommand::appendParam(lstParams, PARAM_ADDRESS, delegateAddress);
         ExecRPCCommand::appendParam(lstParams, PARAM_GASLIMIT, QString::number(gasLimit));
-
+        
+        if(!ui->fullAmountCheckbox->isChecked()) {
+            ExecRPCCommand::appendParam(lstParams, PARAM_LOCKAMOUNT, lockAmount);
+        }
 
         QString questionString = tr("Are you sure you want to delegate the address to the staker<br /><br />");
         questionString.append(tr("<b>%1</b>?")

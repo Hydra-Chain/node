@@ -137,6 +137,7 @@ CChainParams::CChainParams()
                                 consensus.nCoinbaseMaturity;
 
     consensus.delegationsAddress = uint160(ParseHex("0000000000000000000000000000000000000093")); // Delegations contract for offline staking
+    consensus.delegationsAddressGasFix = uint160(ParseHex("0000000000000000000000000000000000000094")); // Delegations contract for offline staking
     consensus.nStakeTimestampMask = 15;
     consensus.nRBTStakeTimestampMask = 3;
 }
@@ -215,6 +216,9 @@ public:
         consensus.nRewardOffsetHeight = 658600;
         consensus.nRewardOffsetAmount = 33018156505135300;
         consensus.nContractOutsHeight = 852800;
+        consensus.nLydraHeight = 0x7fffffff;
+        consensus.lydraAddress = uint160(ParseHex("")); // LYDRA token address
+        consensus.nDelegationsGasFixHeight = 0x7fffffff;
 
         consensus.BIP34Hash = uint256S("0x000058b8d49cd33ae70558978ff60269d4de7d4b50ac1f733631765e4207a457");
         // consensus.BIP65Height: 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
@@ -295,7 +299,10 @@ public:
         consensus.nRewardFixHeight = 785140;
         consensus.nRewardOffsetHeight = 785140;
         consensus.nRewardOffsetAmount = 94225990557823100;
-	    consensus.nContractOutsHeight = 979410;
+        consensus.nContractOutsHeight = 979410;
+        consensus.nLydraHeight = 0x7fffffff;
+        consensus.lydraAddress = uint160(ParseHex("")); // LYDRA token address
+        consensus.nDelegationsGasFixHeight = 0x7fffffff;
 
         // consensus.BIP65Height - 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
         // consensus.BIP66Height - 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182

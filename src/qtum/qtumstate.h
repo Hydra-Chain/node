@@ -108,7 +108,7 @@ public:
         return dev::Address(hashTxIdAndVout);
     }
 
-    void deployDelegationsContract();
+    void deployDelegationsContract(int height);
 
     virtual ~QtumState(){}
 

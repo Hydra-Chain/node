@@ -49,6 +49,7 @@
 #include <serialize.h>
 #include <pubkey.h>
 #include <key.h>
+#include <key_io.h>
 #include <wallet/wallet.h>
 #include <util/convert.h>
 #include <util/signstr.h>
@@ -79,6 +80,7 @@
 #include <locktrip/economy.h>
 #include <locktrip/price-oracle.h>
 #include <locktrip/dgp.h>
+#include <locktrip/lydra.h>
 
 std::unique_ptr<QtumState> globalState;
 std::shared_ptr<dev::eth::SealEngineFace> globalSealEngine;
@@ -269,9 +271,9 @@ int nScriptCheckThreads = 0;
 std::atomic_bool fImporting(false);
 std::atomic_bool fReindex(false);
 
-bool fAddressIndex = false; // qtum
+bool fAddressIndex = true; // qtum
 
-bool fLogEvents = false;
+bool fLogEvents = true;
 bool fHavePruned = false;
 bool fPruneMode = false;
 bool fIsBareMultisigStd = DEFAULT_PERMIT_BAREMULTISIG;
@@ -723,6 +725,13 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
             }
         }
 
+        std::vector<CTxDestination> check_addresses;
+        std::map<CTxDestination, CAmount> addresses_inputs;
+        std::map<CTxDestination, CAmount> addresses_outputs;
+        std::map<CTxDestination, CAmount> addresses_rembalance;
+        std::vector<std::pair<uint256, int> > addresses_index;
+        std::map<uint256, CTxDestination> addrhash_dest;
+
         // do all inputs exist?
         for (const CTxIn& txin : tx.vin) {
             if (!pcoinsTip->HaveCoinInCache(txin.prevout)) {
@@ -741,6 +750,68 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                     *pfMissingInputs = true;
                 }
                 return false; // fMissingInputs and !state.IsInvalid() is used to detect this condition, don't set state.Invalid()
+            }
+        }
+
+        if (chainActive.Height() >= chainparams.GetConsensus().nLydraHeight) {
+            for (const CTxIn& txin : tx.vin) {
+                CTxDestination dest;
+                const CTxOut &prevout = view.GetOutputFor(txin);
+                if (ExtractDestination(txin.prevout, prevout.scriptPubKey, dest)) {
+                    check_addresses.push_back(dest);
+                    uint256 hashBytes;
+                    int type = 0;
+                    if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
+                    return state.DoS(100, error("%s: invalid address decoded", __func__),
+                        REJECT_INVALID, "invalid-address");
+                    }
+
+                    addresses_index.push_back(std::make_pair(hashBytes, type));
+                    addrhash_dest[hashBytes] = dest;
+                    if(addresses_inputs.find(dest) != addresses_inputs.end())
+                    addresses_inputs[dest] += prevout.nValue;
+                    else
+                    addresses_inputs[dest] = prevout.nValue;
+                }
+            }
+
+            for (size_t j = 0; j < tx.vout.size(); j++) {
+                const CTxOut &out = tx.vout[j];
+                CTxDestination dest;
+                if (ExtractDestination(out.scriptPubKey, dest)) {
+                    if(addresses_outputs.find(dest) != addresses_outputs.end())
+                    addresses_outputs[dest] += out.nValue;
+                    else
+                    addresses_outputs[dest] = out.nValue;
+                }
+            }
+
+            for (const auto &addr_pair : addresses_index)
+            {
+                std::vector<std::pair<CAddressIndexKey, CAmount> > address_index;
+                if (!GetAddressIndex(addr_pair.first, addr_pair.second, address_index)) {
+                    return state.DoS(100, error("%s: unable to get addr index", __func__),
+                            REJECT_INVALID, "unable-addr-index");
+                }
+
+                for (std::vector<std::pair<CAddressIndexKey, CAmount> >::const_iterator it=address_index.begin(); it!=address_index.end(); it++) {
+                    if(addresses_rembalance.find(addrhash_dest[(*it).first.hashBytes]) != addresses_rembalance.end())
+                    addresses_rembalance[addrhash_dest[(*it).first.hashBytes]] += it->second;
+                    else
+                    addresses_rembalance[addrhash_dest[(*it).first.hashBytes]] = it->second;
+                }
+
+                auto rembalance = addresses_rembalance[addrhash_dest[addr_pair.first]];
+                auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
+                auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
+                Lydra l;
+                uint64_t locked_hydra_amount;
+                l.getLockedHydraAmountPerAddress(uintToh160(chainparams.GetConsensus().lydraAddress), boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
+
+                if(rembalance - all_inputs + all_outputs < locked_hydra_amount) {
+                    return state.DoS(100, error("%s: Spending more than available HYDRA amount. The rest is locked for LYDRA tokens.", __func__),
+                            REJECT_INVALID, "spend-more-than-locked");
+                }
             }
         }
 
@@ -3302,12 +3373,33 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
             ////////////////////////////////////////////////////////////////// // qtum
             if (fAddressIndex)
             {
+                std::vector<CTxDestination> check_addresses;
+                std::map<CTxDestination, CAmount> addresses_inputs;
+                std::map<CTxDestination, CAmount> addresses_outputs;
+                std::map<CTxDestination, CAmount> addresses_rembalance;
+                std::vector<std::pair<uint256, int> > addresses_index;
+                std::map<uint256, CTxDestination> addrhash_dest;
+
                 for (size_t j = 0; j < tx.vin.size(); j++) {
                     const CTxIn input = tx.vin[j];
                     const CTxOut &prevout = view.GetOutputFor(tx.vin[j]);
 
                     CTxDestination dest;
                     if (ExtractDestination(input.prevout, prevout.scriptPubKey, dest)) {
+                        check_addresses.push_back(dest);
+                        uint256 hashBytes;
+                        int type = 0;
+                        if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
+                           return state.DoS(100, error("%s: invalid address decoded", __func__),
+                                    REJECT_INVALID, "invalid-address");
+                        }
+                        addresses_index.push_back(std::make_pair(hashBytes, type));
+                        addrhash_dest[hashBytes] = dest;
+                        if(addresses_inputs.find(dest) != addresses_inputs.end())
+                            addresses_inputs[dest] += prevout.nValue;
+                        else
+                            addresses_inputs[dest] = prevout.nValue;
+
                         valtype bytesID(boost::apply_visitor(DataVisitor(), dest));
                         if(bytesID.empty()) {
                             continue;
@@ -3319,6 +3411,49 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                         // remove address from unspent index
                         addressUnspentIndex.push_back(std::make_pair(CAddressUnspentKey(dest.which(), uint256(addressBytes), input.prevout.hash, input.prevout.n), CAddressUnspentValue()));
                         spentIndex.push_back(std::make_pair(CSpentIndexKey(input.prevout.hash, input.prevout.n), CSpentIndexValue(tx.GetHash(), j, pindex->nHeight, prevout.nValue, dest.which(), uint256(addressBytes))));
+                    }
+                }
+
+                for (size_t j = 0; j < tx.vout.size(); j++) {
+                    const CTxOut &out = tx.vout[j];
+                    CTxDestination dest;
+                    if (ExtractDestination(out.scriptPubKey, dest)) {
+                        if(addresses_outputs.find(dest) != addresses_outputs.end())
+                            addresses_outputs[dest] += out.nValue;
+                        else
+                            addresses_outputs[dest] = out.nValue;
+                    }
+                }
+
+                if(pindex->nHeight >= chainparams.GetConsensus().nLydraHeight) {
+                    if(!tx.IsCoinStake()) {
+                        for (const auto &addr_pair : addresses_index)
+                        {
+                            std::vector<std::pair<CAddressIndexKey, CAmount> > address_index;
+                            if (!GetAddressIndex(addr_pair.first, addr_pair.second, address_index)) {
+                                return state.DoS(100, error("%s: unable to get addr index", __func__),
+                                    REJECT_INVALID, "unable-addr-index");
+                            }
+
+                            for (std::vector<std::pair<CAddressIndexKey, CAmount> >::const_iterator it=address_index.begin(); it!=address_index.end(); it++) {
+                                if(addresses_rembalance.find(addrhash_dest[(*it).first.hashBytes]) != addresses_rembalance.end())
+                                    addresses_rembalance[addrhash_dest[(*it).first.hashBytes]] += it->second;
+                                else
+                                    addresses_rembalance[addrhash_dest[(*it).first.hashBytes]] = it->second;
+                            }
+
+                            auto rembalance = addresses_rembalance[addrhash_dest[addr_pair.first]];
+                            auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
+                            auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
+                            Lydra l;
+                            uint64_t locked_hydra_amount;
+                            l.getLockedHydraAmountPerAddress(uintToh160(chainparams.GetConsensus().lydraAddress), boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
+
+                            if(rembalance - all_inputs + all_outputs < locked_hydra_amount) {
+                                return state.DoS(100, error("%s: Spending more than available HYDRA amount. The rest is locked for LYDRA tokens.", __func__),
+                                    REJECT_INVALID, "spend-more-than-locked");
+                            }
+                        }
                     }
                 }
             }
@@ -3740,9 +3875,11 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     LogPrint(BCLog::BENCH, "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs (%.2fms/blk)]\n", nInputs - 1, MILLI * (nTime4 - nTime2), nInputs <= 1 ? 0 : MILLI * (nTime4 - nTime2) / (nInputs-1), nTimeVerify * MICRO, nTimeVerify * MILLI / nBlocksTotal);
 
 ///////////////////////////////////n/////////////////////////////// // qtum
-    if(pindex->nHeight == chainparams.GetConsensus().nOfflineStakeHeight){
-        globalState->deployDelegationsContract();
+    if(pindex->nHeight == chainparams.GetConsensus().nOfflineStakeHeight ||
+        pindex->nHeight == chainparams.GetConsensus().nDelegationsGasFixHeight){
+        globalState->deployDelegationsContract(pindex->nHeight);
     }
+    
     checkBlock.hashMerkleRoot = BlockMerkleRoot(checkBlock);
     checkBlock.hashStateRoot = h256Touint(globalState->rootHash());
     checkBlock.hashUTXORoot = h256Touint(globalState->rootHashUTXO());
@@ -6311,14 +6448,6 @@ bool static LoadBlockIndexDB(const CChainParams& chainparams) EXCLUSIVE_LOCKS_RE
     pblocktree->ReadReindexing(fReindexing);
     if(fReindexing) fReindex = true;
 
-    ///////////////////////////////////////////////////////////// // qtum
-    pblocktree->ReadFlag("addrindex", fAddressIndex);
-    LogPrintf("LoadBlockIndexDB(): address index %s\n", fAddressIndex ? "enabled" : "disabled");
-    /////////////////////////////////////////////////////////////
-    // Check whether we have a transaction index
-    pblocktree->ReadFlag("logevents", fLogEvents);
-    LogPrintf("%s: log events index %s\n", __func__, fLogEvents ? "enabled" : "disabled");
-
     return true;
 }
 
@@ -6784,14 +6913,6 @@ bool LoadBlockIndex(const CChainParams& chainparams)
         // needs_init.
 
         LogPrintf("Initializing databases...\n");
-        // Use the provided setting for -logevents in the new database
-        fLogEvents = gArgs.GetBoolArg("-logevents", DEFAULT_LOGEVENTS);
-        pblocktree->WriteFlag("logevents", fLogEvents);
-
-        /////////////////////////////////////////////////////////////// // qtum
-        fAddressIndex = gArgs.GetBoolArg("-addrindex", DEFAULT_ADDRINDEX);
-        pblocktree->WriteFlag("addrindex", fAddressIndex);
-        ///////////////////////////////////////////////////////////////
     }
     return true;
 }

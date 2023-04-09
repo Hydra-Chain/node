@@ -90,7 +90,7 @@ UniValue CallToContract(const UniValue& params)
     }
 
 
-    std::vector<ResultExecute> execResults = CallContract(addrAccount, ParseHex(data), senderAddress, gasLimit, nAmount);
+    std::vector<ResultExecute> execResults = CallContract(addrAccount, ParseHex(data), senderAddress, gasLimit, 0, nAmount);
 
     if(fRecordLogOpcodes){
         writeVMlog(execResults);

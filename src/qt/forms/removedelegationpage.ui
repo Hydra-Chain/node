@@ -50,6 +50,29 @@
      <property name="verticalSpacing">
       <number>15</number>
      </property>
+     <item row="3" column="0">
+      <widget class="QCheckBox" name="fullAmountCheckbox">
+         <property name="text">
+          <string>Burn all available LYDRA for HYDRA</string>
+         </property>
+        </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="labelUnlockAmount">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>UnlockAmount</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="BitcoinAmountField" name="lineEditUnlockAmount">
+     </item>
      <item row="1" column="0">
       <widget class="QLabel" name="labelGasLimit">
        <property name="minimumSize">
@@ -180,6 +203,7 @@
  <tabstops>
   <tabstop>lineEditAddress</tabstop>
   <tabstop>lineEditGasLimit</tabstop>
+  <tabstop>lineEditUnlockAmount</tabstop>
   <tabstop>removeDelegationButton</tabstop>
   <tabstop>clearButton</tabstop>
  </tabstops>

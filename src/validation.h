@@ -154,7 +154,7 @@ static const bool DEFAULT_PERMIT_BAREMULTISIG = true;
 static const bool DEFAULT_CHECKPOINTS_ENABLED = true;
 static const bool DEFAULT_TXINDEX = false;
 
-static const bool DEFAULT_ADDRINDEX = false;
+static const bool DEFAULT_ADDRINDEX = true;
 
 static const bool DEFAULT_LOGEVENTS = true;
 static const unsigned int DEFAULT_BANSCORE_THRESHOLD = 100;

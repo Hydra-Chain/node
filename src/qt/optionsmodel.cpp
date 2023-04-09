@@ -120,17 +120,8 @@ void OptionsModel::Init(bool resetSettings)
     {
         if (!m_node.softSetBoolArg("-staking", true))
             addOverriddenOption("-staking");
-        if (!m_node.softSetBoolArg("-logevents", true))
-            addOverriddenOption("-logevents");
-        if (!m_node.softSetBoolArg("-addrindex", true))
-            addOverriddenOption("-addrindex");
     }
 #endif
-
-    if (!settings.contains("fLogEvents"))
-        settings.setValue("fLogEvents", fLogEvents);
-    if (!m_node.softSetBoolArg("-logevents", settings.value("fLogEvents").toBool()))
-        addOverriddenOption("-logevents");
 
     if (!settings.contains("nReserveBalance"))
         settings.setValue("nReserveBalance", (long long)DEFAULT_RESERVE_BALANCE);
@@ -171,11 +162,6 @@ void OptionsModel::Init(bool resetSettings)
         settings.setValue("fListen", DEFAULT_LISTEN);
     if (!m_node.softSetBoolArg("-listen", settings.value("fListen").toBool()))
         addOverriddenOption("-listen");
-
-    if (!settings.contains("fUseChangeAddress"))
-        settings.setValue("fUseChangeAddress", DEFAULT_USE_CHANGE_ADDRESS);
-    if (!m_node.softSetBoolArg("-usechangeaddress", settings.value("fUseChangeAddress").toBool()))
-        addOverriddenOption("-usechangeaddress");
 
     if (!settings.contains("fUseProxy"))
         settings.setValue("fUseProxy", false);
@@ -360,8 +346,6 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return settings.value("nPruneSize");
         case DatabaseCache:
             return settings.value("nDatabaseCache");
-        case LogEvents:
-            return settings.value("fLogEvents");
 #ifdef ENABLE_WALLET
         case SuperStaking:
             return settings.value("fSuperStaking");
@@ -370,8 +354,6 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             return settings.value("nThreadsScriptVerif");
         case Listen:
             return settings.value("fListen");
-        case UseChangeAddress:
-            return settings.value("fUseChangeAddress");
         case CheckForUpdates:
             return settings.value("fCheckForUpdates");
         default:
@@ -515,12 +497,6 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 setRestartRequired(true);
             }
             break;
-        case LogEvents:
-            if (settings.value("fLogEvents") != value) {
-                settings.setValue("fLogEvents", value);
-                setRestartRequired(true);
-            }
-            break;
 #ifdef ENABLE_WALLET
         case SuperStaking:
             if (settings.value("fSuperStaking") != value) {
@@ -544,12 +520,6 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
         case Listen:
             if (settings.value("fListen") != value) {
                 settings.setValue("fListen", value);
-                setRestartRequired(true);
-            }
-            break;
-        case UseChangeAddress:
-            if (settings.value("fUseChangeAddress") != value) {
-                settings.setValue("fUseChangeAddress", value);
                 setRestartRequired(true);
             }
             break;

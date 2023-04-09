@@ -31,7 +31,7 @@ public:
         m_pfRemoveDelegationEvent(0)
     {
         // Initialize parameters
-        delegationsAddress = uintToh160(Params().GetConsensus().delegationsAddress);
+        delegationsAddress = uintToh160(Params().GetConsensus().GetDelegationsAddress(chainActive.Height()));
 
         // Get the ABI for the functions
         for(const FunctionABI& func : contractDelegationABI.functions)

@@ -15,6 +15,7 @@ namespace RemoveDelegation_NS
 static const QString PRC_COMMAND = "removedelegationforaddress";
 static const QString PARAM_ADDRESS = "address";
 static const QString PARAM_GASLIMIT = "gaslimit";
+static const QString PARAM_UNLOCKAMOUNT = "unlockamount";
 
 static const CAmount SINGLE_STEP = 0.00000001*COIN;
 }
@@ -32,6 +33,7 @@ RemoveDelegationPage::RemoveDelegationPage(QWidget *parent) :
     setWindowTitle(tr("Remove delegation"));
 
     ui->labelAddress->setToolTip(tr("Remove delegation for address."));
+    ui->labelUnlockAmount->setToolTip(tr("LYDRA amount to burn for HYDRA unlocking"));
 
     // Set defaults
     ui->lineEditGasLimit->setMinimum(MINIMUM_GAS_LIMIT);
@@ -39,12 +41,18 @@ RemoveDelegationPage::RemoveDelegationPage(QWidget *parent) :
     ui->lineEditGasLimit->setValue(DEFAULT_GAS_LIMIT_OP_SEND);
     ui->lineEditAddress->setReadOnly(true);
 
+    // ui->lineEditUnlockAmount->setMinimum(0);
+    // ui->lineEditUnlockAmount->setMaximum(100_000_000);
+    ui->lineEditUnlockAmount->setValue(0);
+
     // Create new PRC command line interface
     QStringList lstMandatory;
     lstMandatory.append(PARAM_ADDRESS);
 
     QStringList lstOptional;
     lstOptional.append(PARAM_GASLIMIT);
+    lstOptional.append(PARAM_UNLOCKAMOUNT);
+
     QMap<QString, QString> lstTranslations;
     lstTranslations[PARAM_ADDRESS] = ui->labelAddress->text();
     lstTranslations[PARAM_GASLIMIT] = ui->labelGasLimit->text();
@@ -84,6 +92,7 @@ void RemoveDelegationPage::setClientModel(ClientModel *_clientModel)
 void RemoveDelegationPage::clearAll()
 {
     ui->lineEditGasLimit->setValue(DEFAULT_GAS_LIMIT_OP_SEND);
+    ui->lineEditUnlockAmount->setValue(-1);
 }
 
 void RemoveDelegationPage::setDelegationData(const QString &_address, const QString &_hash)
@@ -140,6 +149,7 @@ void RemoveDelegationPage::on_removeDelegationClicked()
         QString resultJson;
         int unit = BitcoinUnits::BTC;
         uint64_t gasLimit = ui->lineEditGasLimit->value();
+        QString unlockAmount = BitcoinUnits::format(unit, ui->lineEditUnlockAmount->value(), false, BitcoinUnits::separatorNever);
 
         std::string sDelegateAddress = address.toStdString();
         std::string sHash = hash.toStdString();
@@ -194,6 +204,10 @@ void RemoveDelegationPage::on_removeDelegationClicked()
         // Append params to the list
         ExecRPCCommand::appendParam(lstParams, PARAM_ADDRESS, address);
         ExecRPCCommand::appendParam(lstParams, PARAM_GASLIMIT, QString::number(gasLimit));
+        
+        if(!ui->fullAmountCheckbox->isChecked()) {
+            ExecRPCCommand::appendParam(lstParams, PARAM_UNLOCKAMOUNT, unlockAmount);
+        }
 
         QString questionString = tr("Are you sure you want to remove the delegation for the address: <br /><br />");
         questionString.append(tr("<b>%1</b>?")

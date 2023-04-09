@@ -193,11 +193,15 @@ bool CheckProofOfStake(CBlockIndex* pindexPrev, CValidationState& state, const C
     int nHeight = pindexPrev->nHeight + 1;
     bool checkDelegation = false;
     int nOfflineStakeHeight = Params().GetConsensus().nOfflineStakeHeight;
-    if (nHeight >= nOfflineStakeHeight && !Params().GetConsensus().delegationsAddress.IsNull())
+    int nDelegationsGasFixHeight = Params().GetConsensus().nDelegationsGasFixHeight;
+    if (nHeight >= nOfflineStakeHeight && 
+        !Params().GetConsensus().delegationsAddress.IsNull() && 
+        !Params().GetConsensus().delegationsAddressGasFix.IsNull())
     {
         ////////////////////////////////////////////////// deploy offline staking contract
-        if(nHeight == nOfflineStakeHeight){
-            globalState->deployDelegationsContract();
+        if(nHeight == nOfflineStakeHeight || 
+            nHeight == nDelegationsGasFixHeight){
+            globalState->deployDelegationsContract(nHeight);
         }
         /////////////////////////////////////////////////
 

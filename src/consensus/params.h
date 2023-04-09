@@ -79,8 +79,12 @@ struct Params {
     int nRewardOffsetHeight;
     /** Reward offset amount */
     CAmount nRewardOffsetAmount;
-    /** Block height at which contract outs <= 1 rule becomes active*/
+    /** Block height at which contract outs <= 1 rule becomes active */
     int nContractOutsHeight;
+    /** Block height at which lydra becomes active */
+    int nLydraHeight;
+    /** Block height at which delegations contract gas fix becomes active */
+    int nDelegationsGasFixHeight;
 
 
     /**
@@ -118,6 +122,8 @@ struct Params {
     int nCheckpointSpan;
     int nRBTCheckpointSpan;
     uint160 delegationsAddress;
+    uint160 delegationsAddressGasFix;
+    uint160 lydraAddress;
     int nLastMPoSBlock;
     uint32_t nStakeTimestampMask;
     uint32_t nRBTStakeTimestampMask;
@@ -187,6 +193,10 @@ struct Params {
     int MaxCheckpointSpan() const
     {
         return nCheckpointSpan <= nRBTCheckpointSpan ? nRBTCheckpointSpan : nCheckpointSpan;
+    }
+    uint160 GetDelegationsAddress(int height) const
+    {
+        return height < nDelegationsGasFixHeight ? delegationsAddress : delegationsAddressGasFix;
     }
 };
 } // namespace Consensus
