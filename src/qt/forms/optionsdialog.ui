@@ -252,8 +252,6 @@
         </layout>
        </item>
        <item>
-       </item>
-       <item>
         <widget class="QCheckBox" name="superStaking">
          <property name="text">
           <string>Enable s&amp;uper staking</string>
@@ -349,8 +347,6 @@
              <string>Enable &amp;zero balance for receiver token address</string>
             </property>
            </widget>
-          </item>
-          <item>
           </item>
           <item>
            <widget class="QCheckBox" name="checkForUpdates">
