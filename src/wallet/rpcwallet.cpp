@@ -1597,7 +1597,7 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request){
     UniValue params(UniValue::VARR);
     UniValue contractaddress = HexStr(Params().GetConsensus().GetDelegationsAddress(chainActive.Height()));
     UniValue amount = 0;
-    UniValue gasLimit = request.params.size() > 3 ? request.params[3] : DEFAULT_GAS_LIMIT_OP_SEND;
+    UniValue gasLimit = request.params.size() > 3 ? request.params[3] : DEFAULT_GAS_LIMIT_OP_CREATE;
     UniValue senderaddress = request.params[2];
     CAmount lockAmount = request.params.size() > 4 ? AmountFromValue(request.params[4]) : -1;
     
