@@ -217,7 +217,8 @@ public:
         consensus.nRewardOffsetAmount = 33018156505135300;
         consensus.nContractOutsHeight = 852800;
         consensus.nLydraHeight = 0x7fffffff;
-        consensus.lydraAddress = uint160(ParseHex("")); // LYDRA token address
+        // consensus.lydraAddress = uint160(ParseHex("")); // LYDRA token address
+        consensus.lydraAddress = uint160(ParseHex("ffffffffffffffffffffffffffffffffffffffff")); // LYDRA token address
         consensus.nDelegationsGasFixHeight = 0x7fffffff;
 
         consensus.BIP34Hash = uint256S("0x000058b8d49cd33ae70558978ff60269d4de7d4b50ac1f733631765e4207a457");
