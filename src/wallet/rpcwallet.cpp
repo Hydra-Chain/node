@@ -7305,6 +7305,8 @@ static const CRPCCommand commands[] =
     { "wallet",             "hrc20transferfrom",               &qrc20transferfrom,              {"contractaddress", "owneraddress", "spenderaddress", "receiveraddress", "amount", "gasLimit", "checkOutputs"} },
     { "wallet",             "hrc20burn",                       &qrc20burn,                      {"contractaddress", "owneraddress", "amount", "gasLimit", "checkOutputs"} },
     { "wallet",             "hrc20burnfrom",                   &qrc20burnfrom,                  {"contractaddress", "owneraddress", "spenderaddress", "amount", "gasLimit", "checkOutputs"} },
+    { "wallet",             "mintlydra",                       &mintlydra,                      {"address", "lockAmount"} },
+    { "wallet",             "burnlydra",                       &burnlydra,                      {"address", "unlockAmount"} },
 };
 // clang-format on
 
