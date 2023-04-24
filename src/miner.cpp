@@ -1499,6 +1499,13 @@ void ThreadStakeMiner(CWallet *pwallet, CConnman* connman)
 
     while (pwallet && !pwallet->IsStakeClosing())
     {
+        if (fDelegationsContract) {
+            if (chainActive.Height() == Params().GetConsensus().nDelegationsGasFixHeight)
+            {
+                RefreshDelegates(pwallet, true, true);
+            }
+        }
+
         while (pwallet->IsLocked() || !pwallet->m_enabled_staking || fReindex || fImporting)
         {
             pwallet->m_last_coin_stake_search_interval = 0;
