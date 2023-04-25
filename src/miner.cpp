@@ -1279,6 +1279,11 @@ public:
         pwallet->updateDelegationsStaker(delegations_staker);
     }
 
+    void UpdateDelegationsAddress()
+    {
+        qtumDelegations.UpdateDelegationsAddress();
+    }
+
 private:
     CWallet *pwallet;
     QtumDelegation qtumDelegations;
@@ -1398,6 +1403,11 @@ public:
         }
     }
 
+    void UpdateDelegationsAddress()
+    {
+        qtumDelegations.UpdateDelegationsAddress();
+    }
+
 private:
 
     CWallet *pwallet;
@@ -1500,9 +1510,10 @@ void ThreadStakeMiner(CWallet *pwallet, CConnman* connman)
     while (pwallet && !pwallet->IsStakeClosing())
     {
         if (fDelegationsContract) {
-            if (chainActive.Height() == Params().GetConsensus().nDelegationsGasFixHeight)
+            if (chainActive.Height() >= Params().GetConsensus().nDelegationsGasFixHeight)
             {
-                RefreshDelegates(pwallet, true, true);
+                delegationsStaker.UpdateDelegationsAddress();
+                myDelegations.UpdateDelegationsAddress();
             }
         }
 

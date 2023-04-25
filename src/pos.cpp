@@ -207,6 +207,9 @@ bool CheckProofOfStake(CBlockIndex* pindexPrev, CValidationState& state, const C
 
         // Check if the delegation contract exist
         QtumDelegation& qtumDelegation = GetQtumDelegation();
+        if (chainActive.Height() >= Params().GetConsensus().nDelegationsGasFixHeight) {
+            qtumDelegation.UpdateDelegationsAddress();
+        }
         if(!qtumDelegation.ExistDelegationContract())
             return state.DoS(100, error("CheckProofOfStake() : The delegation contract doesn't exist, block height %i", nOfflineStakeHeight)); // Internal error, delegation contract not exist
 
@@ -540,6 +543,9 @@ bool GetDelegationFeeFromContract(const uint160& address, uint8_t& fee)
 {
     Delegation delegation;
     QtumDelegation& qtumDelegation = GetQtumDelegation();
+    if (chainActive.Height() >= Params().GetConsensus().nDelegationsGasFixHeight) {
+        qtumDelegation.UpdateDelegationsAddress();
+    }
     bool ret = qtumDelegation.GetDelegation(address, delegation);
     if(ret) ret &= qtumDelegation.VerifyDelegation(address, delegation);
     if(ret)

@@ -55,6 +55,11 @@ public:
         assert(m_pfRemoveDelegationEvent);
     }
 
+    void UpdateDelegationAddress()
+    {
+        delegationsAddress = uintToh160(Params().GetConsensus().delegationsAddressGasFix);
+    }
+
     virtual ~QtumDelegationPriv()
     {
         if(m_pfDelegations)
@@ -165,6 +170,11 @@ QtumDelegation::~QtumDelegation()
     if(priv)
         delete priv;
     priv = 0;
+}
+
+void QtumDelegation::UpdateDelegationsAddress()
+{
+    priv->UpdateDelegationAddress();
 }
 
 bool QtumDelegation::GetDelegation(const uint160 &address, Delegation &delegation) const

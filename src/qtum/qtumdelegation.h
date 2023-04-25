@@ -101,6 +101,8 @@ public:
      */
     virtual ~QtumDelegation();
 
+    void UpdateDelegationsAddress();
+
     /**
      * @brief GetDelegation Get delegation for an address
      * @param address Public key hash address
