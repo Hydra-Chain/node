@@ -1523,18 +1523,20 @@ static UniValue removedelegationforaddress(const JSONRPCRequest& request){
     params.push_back(senderaddress);
 
     if(chainActive.Height() >= Params().GetConsensus().nLydraHeight) {
-        Lydra lydraContract;
-        std::string burnDatahex;
-        lydraContract.getBurnDatahex(burnDatahex, unlockAmount);
+        if(unlockAmount != 0) {
+            Lydra lydraContract;
+            std::string burnDatahex;
+            lydraContract.getBurnDatahex(burnDatahex, unlockAmount);
 
-        UniValue lydraParams(UniValue::VARR);
-        lydraParams.push_back(HexStr(Params().GetConsensus().lydraAddress));
-        lydraParams.push_back(burnDatahex);
-        lydraParams.push_back(0);
-        lydraParams.push_back(gasLimit);
-        lydraParams.push_back(senderaddress);
+            UniValue lydraParams(UniValue::VARR);
+            lydraParams.push_back(HexStr(Params().GetConsensus().lydraAddress));
+            lydraParams.push_back(burnDatahex);
+            lydraParams.push_back(0);
+            lydraParams.push_back(gasLimit);
+            lydraParams.push_back(senderaddress);
 
-        SendToContract(*locked_chain, pwallet, lydraParams);
+            SendToContract(*locked_chain, pwallet, lydraParams);
+        }
     }
 
     // Send to contract
@@ -1597,7 +1599,13 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request){
     UniValue params(UniValue::VARR);
     UniValue contractaddress = HexStr(Params().GetConsensus().GetDelegationsAddress(chainActive.Height()));
     UniValue amount = 0;
-    UniValue gasLimit = request.params.size() > 3 ? request.params[3] : DEFAULT_GAS_LIMIT_OP_CREATE;
+    
+    if(chainActive.Height() >= Params().GetConsensus().nDelegationsGasFixHeight) {
+        UniValue gasLimit = request.params.size() > 3 ? request.params[3] : DEFAULT_GAS_LIMIT_OP_SEND;
+    } else {
+        UniValue gasLimit = request.params.size() > 3 ? request.params[3] : DEFAULT_GAS_LIMIT_OP_CREATE;
+    }
+
     UniValue senderaddress = request.params[2];
     CAmount lockAmount = request.params.size() > 4 ? AmountFromValue(request.params[4]) : -1;
     
