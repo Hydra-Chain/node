@@ -85,6 +85,8 @@ struct Params {
     int nLydraHeight;
     /** Block height at which delegations contract gas fix becomes active */
     int nDelegationsGasFixHeight;
+    /** Block height at which contract outs fix filtering becomes active */
+    int nContractOutsPeerFilteringHeight;
 
 
     /**
