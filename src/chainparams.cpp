@@ -228,7 +228,6 @@ public:
         consensus.nRewardOffsetHeight = 658600;
         consensus.nRewardOffsetAmount = 33018156505135300;
         consensus.nContractOutsHeight = 852800;
-        consensus.nContractOutsPeerFilteringHeight = 1092940;
         consensus.nRefundFixHeight = 0x7fffffff;
         consensus.nLydraHeight = 0x7fffffff;
         // consensus.lydraAddress = uint160(ParseHex("")); // LYDRA token address
