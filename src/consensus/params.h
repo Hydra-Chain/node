@@ -85,9 +85,8 @@ struct Params {
     int nLydraHeight;
     /** Block height at which delegations contract gas fix becomes active */
     int nDelegationsGasFixHeight;
-    /** Block height at which contract outs fix filtering becomes active */
-    int nContractOutsPeerFilteringHeight;
-
+    /** Block height at which refund fix becomes active */
+    int nRefundFixHeight;
 
     /**
      * Minimum blocks including miner confirmation of the total of 2016 blocks in a retargeting period,

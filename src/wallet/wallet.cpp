@@ -3541,17 +3541,19 @@ bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std
         tx = MakeTransactionRef(std::move(txNew));
 
         const CTransaction& check_tx = *tx;
-        auto contract_outs = 0;
-        for (const auto& txout : check_tx.vout) {
-            if (txout.scriptPubKey.HasOpCall() || txout.scriptPubKey.HasOpCreate() ||
-            txout.scriptPubKey.HasOpCoinstakeCall() || txout.scriptPubKey.HasOpSender()) {
-                contract_outs++;
+        if (chainActive.Height() < Params().GetConsensus().nRefundFixHeight) {
+            auto contract_outs = 0;
+            for (const auto& txout : check_tx.vout) {
+                if (txout.scriptPubKey.HasOpCall() || txout.scriptPubKey.HasOpCreate() ||
+                txout.scriptPubKey.HasOpCoinstakeCall() || txout.scriptPubKey.HasOpSender()) {
+                    contract_outs++;
+                }
             }
-        }
 
-        if(contract_outs > 1) {
-            strFailReason = _("Contract outputs more than one.");
-            return false;
+            if(contract_outs > 1) {
+                strFailReason = _("Contract outputs more than one.");
+                return false;
+            }
         }
 
         std::vector<CTxDestination> check_addresses;

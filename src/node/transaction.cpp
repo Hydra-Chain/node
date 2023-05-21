@@ -9,6 +9,7 @@
 #include <validation.h>
 #include <validationinterface.h>
 #include <node/transaction.h>
+#include <chainparams.h>
 
 #include <future>
 
@@ -44,16 +45,19 @@ TransactionError BroadcastTransaction(const CTransactionRef tx, uint256& hashTx,
     hashTx = tx->GetHash();
 
     const CTransaction& check_tx = *tx;
-    auto contract_outs = 0;
-    for (const auto& txout : check_tx.vout) {
-        if (txout.scriptPubKey.HasOpCall() || txout.scriptPubKey.HasOpCreate() ||
-        txout.scriptPubKey.HasOpCoinstakeCall() || txout.scriptPubKey.HasOpSender()) {
-            contract_outs++;
-        }
-    }
 
-    if(contract_outs > 1) {
-        return TransactionError::MEMPOOL_REJECTED;
+    if (chainActive.Height() < Params().GetConsensus().nRefundFixHeight) {
+        auto contract_outs = 0;
+        for (const auto& txout : check_tx.vout) {
+            if (txout.scriptPubKey.HasOpCall() || txout.scriptPubKey.HasOpCreate() ||
+            txout.scriptPubKey.HasOpCoinstakeCall() || txout.scriptPubKey.HasOpSender()) {
+                contract_outs++;
+            }
+        }
+
+        if(contract_outs > 1) {
+            return TransactionError::MEMPOOL_REJECTED;
+        }
     }
 
     { // cs_main scope

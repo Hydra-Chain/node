@@ -206,12 +206,7 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, int nHeig
         ///////////////////////////////////////////////////////////
     }
 
-    if (nHeight != -1 && nHeight >= Params().GetConsensus().nContractOutsHeight) {
-        if(contract_outs > 1) {
-            LogPrintf("%s\n", tx.ToString());
-            return state.DoS(100, false, REJECT_INVALID, "bad-txns-contract-outs-more-than-one");
-        }
-    } else if (nHeight == -1) {
+    if (nHeight >= Params().GetConsensus().nContractOutsHeight && nHeight < Params().GetConsensus().nRefundFixHeight) {
         if(contract_outs > 1) {
             LogPrintf("%s\n", tx.ToString());
             return state.DoS(100, false, REJECT_INVALID, "bad-txns-contract-outs-more-than-one");

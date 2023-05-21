@@ -1950,16 +1950,13 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             cleanSubVer = SanitizeString(strSubVer);
         }
 
-        if (chainActive.Tip()->nHeight >= chainparams.GetConsensus().nContractOutsPeerFilteringHeight && 
-                ((strSubVer.find("0.20.6") != std::string::npos) || 
-                (strSubVer.find("0.20.7") != std::string::npos) || 
-                (strSubVer.find("0.20.8") != std::string::npos) ||
-                (strSubVer.find("0.20.9") != std::string::npos))) {
+        if (chainActive.Tip()->nHeight >= chainparams.GetConsensus().nRefundFixHeight && 
+                ((strSubVer.find("0.20.10") != std::string::npos))) {
             // disconnect from peers older than this subversion
-            LogPrint(BCLog::NET, "peer=%d using obsolete subversion after contract outs hardfork %s; disconnecting\n", pfrom->GetId(), strSubVer);
+            LogPrint(BCLog::NET, "peer=%d using obsolete subversion after refund fix hardfork %s; disconnecting\n", pfrom->GetId(), strSubVer);
             if (enable_bip61) {
                 connman->PushMessage(pfrom, CNetMsgMaker(INIT_PROTO_VERSION).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
-                        strprintf("Version must be %s or greater after contract outs hardfork", "Satoshi:0.20.10")));
+                        strprintf("Version must be %s or greater after refund fix hardfork", "Satoshi:0.20.10")));
             }
             pfrom->fDisconnect = true;
             return false;

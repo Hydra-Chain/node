@@ -631,7 +631,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
         *pfMissingInputs = false;
     }
 
-    if (!CheckTransaction(tx, state, -1))
+    if (!CheckTransaction(tx, state, chainActive.Height()+1, true))
         return false; // state filled in by CheckTransaction
 
     // Coinbase is only valid in a block, not as a loose transaction
@@ -2734,6 +2734,9 @@ bool ByteCodeExec::performByteCode(dev::eth::Permanence type){
 
 bool ByteCodeExec::processingResults(ByteCodeExecResult& resultBCE){
     const Consensus::Params& consensusParams = Params().GetConsensus();
+    int64_t allGasFee = 0;
+    std::vector<int64_t> oldRefundAmounts{};
+    auto txFee = txs[0].getTransactionFee();
     for(size_t i = 0; i < result.size(); i++){
         uint64_t gasUsed = (uint64_t) result[i].execRes.gasUsed;
         resultBCE.execExceptions.emplace_back(result[i].execRes.excepted);
@@ -2764,7 +2767,8 @@ bool ByteCodeExec::processingResults(ByteCodeExecResult& resultBCE){
             uint64_t gasPrice = (uint64_t) txs[i].gasPrice();
 
             resultBCE.usedGas += gasUsed;
-            int64_t amount = txs[i].getTransactionFee() - (gasUsed * gasPrice);
+            oldRefundAmounts.push_back(txs[i].getTransactionFee() - (gasUsed * gasPrice));
+            allGasFee += (gasUsed * gasPrice);
 
             Dgp dgp;
             uint64_t dividendPercentage;
@@ -2791,22 +2795,36 @@ bool ByteCodeExec::processingResults(ByteCodeExecResult& resultBCE){
                     resultBCE.contractOwners.emplace_back(contractOwnerAddress);
                 }
             }
-
-            if (amount < 0) {
-                return false;
-            }
-            if(amount > 0){
-                // Refund the rest of the amount to the sender that provide the coins for the contract
-                CScript script(CScript() << OP_DUP << OP_HASH160 << txs[i].getRefundSender().asBytes() << OP_EQUALVERIFY << OP_CHECKSIG);
-                resultBCE.refundOutputs.push_back(CTxOut(amount, script));
-                resultBCE.refundSender += amount;
-            }
         }
 
         if(result[i].tx != CTransaction()){
             resultBCE.valueTransfers.push_back(result[i].tx);
         }
     }
+
+    if (chainActive.Height() >= consensusParams.nRefundFixHeight) {
+        if (txFee-allGasFee < 0) {
+            return false;
+        } else {
+            CScript script(CScript() << OP_DUP << OP_HASH160 << txs[0].getRefundSender().asBytes() << OP_EQUALVERIFY << OP_CHECKSIG);
+            resultBCE.refundOutputs.push_back(CTxOut(txFee-allGasFee, script));
+            resultBCE.refundSender += txFee-allGasFee;
+        }
+    } else {
+        for (const auto& refundAmount : oldRefundAmounts)
+        {
+            if (refundAmount < 0) {
+                return false;
+            }
+            if(refundAmount > 0){
+                // Refund the rest of the amount to the sender that provide the coins for the contract
+                CScript script(CScript() << OP_DUP << OP_HASH160 << txs[0].getRefundSender().asBytes() << OP_EQUALVERIFY << OP_CHECKSIG);
+                resultBCE.refundOutputs.push_back(CTxOut(refundAmount, script));
+                resultBCE.refundSender += refundAmount;
+            }
+        }
+    }
+
     return true;
 }
 
