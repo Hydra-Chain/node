@@ -1951,7 +1951,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         }
 
         if (chainActive.Tip()->nHeight >= chainparams.GetConsensus().nRefundFixHeight && 
-                ((strSubVer.find("0.20.10") != std::string::npos))) {
+                ((strSubVer.find("0.20.10") == std::string::npos))) {
             // disconnect from peers older than this subversion
             LogPrint(BCLog::NET, "peer=%d using obsolete subversion after refund fix hardfork %s; disconnecting\n", pfrom->GetId(), strSubVer);
             if (enable_bip61) {
