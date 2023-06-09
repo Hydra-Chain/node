@@ -1255,7 +1255,7 @@ UniValue SendToContract(interfaces::Chain::Lock& locked_chain, CWallet* const pw
     CReserveKey reservekey(pwallet);
 
     CTransactionRef tx;
-    if (!pwallet->CreateTransaction(locked_chain, vecSend, tx, reservekey, nFeeRequired, nChangePosRet, strError, coinControl, true, nGasFee, true, signSenderAddress)) {
+    if (!pwallet->CreateTransaction(locked_chain, vecSend, tx, reservekey, nFeeRequired, nChangePosRet, strError, coinControl, true, nGasFee, true, signSenderAddress, senderAddress)) {
         if (nFeeRequired > pwallet->GetBalance())
             strError = strprintf("Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds!", FormatMoney(nFeeRequired));
         throw JSONRPCError(RPC_WALLET_ERROR, strError);
