@@ -254,7 +254,7 @@ void AddDelegationPage::on_addDelegationClicked()
         if(!ui->fullAmountCheckbox->isChecked()) {
             ExecRPCCommand::appendParam(lstParams, PARAM_LOCKAMOUNT, lockAmount);
         } else {
-            ExecRPCCommand::appendParam(lstParams, PARAM_LOCKAMOUNT, "-1");
+            ExecRPCCommand::appendParam(lstParams, PARAM_LOCKAMOUNT, QString::number(std::numeric_limits<int64_t>::max()));
         }
 
         PriceOracle oracle;

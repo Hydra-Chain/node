@@ -1440,6 +1440,7 @@ static UniValue removedelegationforaddress(const JSONRPCRequest& request)
     UniValue gasLimit = request.params.size() > 1 ? request.params[1] : DEFAULT_GAS_LIMIT_OP_SEND;
     UniValue senderaddress = request.params[0];
     CAmount unlockAmount = request.params.size() > 2 ? AmountFromValue(request.params[2]) : -1;
+    if (unlockAmount == std::numeric_limits<int64_t>::max()) unlockAmount = -1;
 
     // Add the send to contract parameters to the list
     params.push_back(contractaddress);
@@ -1538,6 +1539,7 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request)
 
     UniValue senderaddress = request.params[2];
     CAmount lockAmount = request.params.size() > 4 ? AmountFromValue(request.params[4]) : 0;
+    if (lockAmount == std::numeric_limits<int64_t>::max()) lockAmount = -1;
 
     // Parse the staker address
     CTxDestination destStaker = DecodeDestination(request.params[0].get_str());
