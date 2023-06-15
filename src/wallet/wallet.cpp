@@ -3648,8 +3648,8 @@ bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std
 
         // Limit size
         if (GetTransactionWeight(*tx) > MAX_STANDARD_TX_WEIGHT)
-        {
-            strFailReason = _("Transaction too large");
+        {   auto failReasonStr = "Transaction too large and exceeds max " + std::to_string(MAX_STANDARD_TX_WEIGHT/1000) + "KB size. Try doing it in several smaller transactions or consolidate your UTXOs first.";
+            strFailReason = _(failReasonStr.c_str());
             return false;
         }
     }
