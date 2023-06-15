@@ -212,6 +212,12 @@ void RemoveDelegationPage::on_removeDelegationClicked()
         QString questionString = tr("Are you sure you want to remove the delegation for the address: <br /><br />");
         questionString.append(tr("<b>%1</b>?")
                             .arg(ui->lineEditAddress->text()));
+        
+        if (ui->fullAmountCheckbox->isChecked()) {
+            questionString.append(tr("<br /><br />All LYDRA on the selected delegating address will be burned, releasing the same amount of HYDRA."));
+        } else {
+            questionString.append(tr("<br /><br />%1 LYDRA is requested to be burned for HYDRA releasing.").arg(unlockAmount));
+        }
 
         SendConfirmationDialog confirmationDialog(tr("Confirm remove delegation."), questionString, SEND_CONFIRM_DELAY, this);
         confirmationDialog.exec();

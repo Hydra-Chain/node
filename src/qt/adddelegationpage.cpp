@@ -1,6 +1,8 @@
 #include "adddelegationpage.h"
 #include "qt/forms/ui_adddelegationpage.h"
 
+#include <univalue.h>
+#include <core_io.h>
 #include <qt/guiutil.h>
 #include <validation.h>
 #include <util/moneystr.h>
@@ -11,6 +13,8 @@
 #include <qt/rpcconsole.h>
 #include <qt/execrpccommand.h>
 #include <qt/sendcoinsdialog.h>
+
+#include "locktrip/price-oracle.h"
 
 namespace AddDelegation_NS
 {
@@ -251,9 +255,20 @@ void AddDelegationPage::on_addDelegationClicked()
             ExecRPCCommand::appendParam(lstParams, PARAM_LOCKAMOUNT, lockAmount);
         }
 
+        PriceOracle oracle;
+        uint64_t oracleGasPrice;
+        oracle.getPrice(oracleGasPrice);
+        auto shownKeptBuffer = ValueFromAmount((int64_t)(oracleGasPrice * DEFAULT_GAS_LIMIT_OP_CREATE * 2)).getValStr();
+
         QString questionString = tr("Are you sure you want to delegate the address to the staker<br /><br />");
         questionString.append(tr("<b>%1</b>?")
                               .arg(ui->lineEditStakerAddress->text()));
+
+        if (ui->fullAmountCheckbox->isChecked()) {
+            questionString.append(tr("<br /><br />%1 HYDRA will be kept free from the delegating address balance. Rest will be locked for LYDRA minting.").arg(QString::fromStdString(shownKeptBuffer)));
+        } else {
+            questionString.append(tr("<br /><br />%1 HYDRA is requested to be locked for LYDRA minting.").arg(lockAmount));
+        }
 
         SendConfirmationDialog confirmationDialog(tr("Confirm address delegation to staker."), questionString, SEND_CONFIRM_DELAY, this);
         confirmationDialog.exec();
