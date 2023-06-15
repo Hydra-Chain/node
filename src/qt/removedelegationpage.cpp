@@ -210,10 +210,10 @@ void RemoveDelegationPage::on_removeDelegationClicked()
         ExecRPCCommand::appendParam(lstParams, PARAM_ADDRESS, address);
         ExecRPCCommand::appendParam(lstParams, PARAM_GASLIMIT, QString::number(gasLimit));
         
-        if(!ui->fullAmountCheckbox->isChecked()) {
-            ExecRPCCommand::appendParam(lstParams, PARAM_UNLOCKAMOUNT, unlockAmount);
+        if(ui->fullAmountCheckbox->isChecked()) {
+            ExecRPCCommand::appendParam(lstParams, PARAM_UNLOCKAMOUNT, QString::number(COIN));
         } else {
-            ExecRPCCommand::appendParam(lstParams, PARAM_UNLOCKAMOUNT, QString::number(std::numeric_limits<int64_t>::max()));
+            ExecRPCCommand::appendParam(lstParams, PARAM_UNLOCKAMOUNT, unlockAmount);
         }
 
         QString questionString = tr("Are you sure you want to remove the delegation for the address: <br /><br />");

@@ -255,10 +255,10 @@ void AddDelegationPage::on_addDelegationClicked()
         ExecRPCCommand::appendParam(lstParams, PARAM_ADDRESS, delegateAddress);
         ExecRPCCommand::appendParam(lstParams, PARAM_GASLIMIT, QString::number(gasLimit));
         
-        if(!ui->fullAmountCheckbox->isChecked()) {
-            ExecRPCCommand::appendParam(lstParams, PARAM_LOCKAMOUNT, lockAmount);
+        if(ui->fullAmountCheckbox->isChecked()) {
+            ExecRPCCommand::appendParam(lstParams, PARAM_LOCKAMOUNT, QString::number(COIN));
         } else {
-            ExecRPCCommand::appendParam(lstParams, PARAM_LOCKAMOUNT, QString::number(std::numeric_limits<int64_t>::max()));
+            ExecRPCCommand::appendParam(lstParams, PARAM_LOCKAMOUNT, lockAmount);
         }
 
         PriceOracle oracle;
