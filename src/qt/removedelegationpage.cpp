@@ -61,6 +61,7 @@ RemoveDelegationPage::RemoveDelegationPage(QWidget *parent) :
 
     connect(ui->removeDelegationButton, &QPushButton::clicked, this, &RemoveDelegationPage::on_removeDelegationClicked);
     connect(ui->lineEditAddress, &QValidatedLineEdit::textChanged, this, &RemoveDelegationPage::on_updateRemoveDelegationButton);
+    connect(ui->fullAmountCheckbox, &QCheckBox::clicked, this, &RemoveDelegationPage::on_fullAmountCheckboxClicked);
 }
 
 RemoveDelegationPage::~RemoveDelegationPage()
@@ -105,6 +106,10 @@ void RemoveDelegationPage::setDelegationData(const QString &_address, const QStr
 bool RemoveDelegationPage::isDataValid()
 {
     return !address.isEmpty() && !hash.isEmpty();
+}
+
+void RemoveDelegationPage::on_fullAmountCheckboxClicked() {
+    ui->lineEditUnlockAmount->setEnabled(!ui->fullAmountCheckbox->isChecked());
 }
 
 void RemoveDelegationPage::on_gasInfoChanged(quint64 blockGasLimit)

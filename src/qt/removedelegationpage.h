@@ -33,6 +33,7 @@ private Q_SLOTS:
     void on_clearButton_clicked();
     void on_removeDelegationClicked();
     void on_updateRemoveDelegationButton();
+    void on_fullAmountCheckboxClicked();
     void updateDisplayUnit();
 
 private:

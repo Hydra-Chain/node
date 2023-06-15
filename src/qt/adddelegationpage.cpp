@@ -86,6 +86,7 @@ AddDelegationPage::AddDelegationPage(QWidget *parent) :
     connect(ui->lineEditStakerName, &QLineEdit::textChanged, this, &AddDelegationPage::on_updateAddDelegationButton);
     connect(ui->lineEditAddress, &QComboBox::currentTextChanged, this, &AddDelegationPage::on_updateAddDelegationButton);
     connect(ui->lineEditStakerAddress, &QValidatedLineEdit::textChanged, this, &AddDelegationPage::on_updateAddDelegationButton);
+    connect(ui->fullAmountCheckbox, &QCheckBox::clicked, this, &AddDelegationPage::on_fullAmountCheckboxClicked);
 }
 
 AddDelegationPage::~AddDelegationPage()
@@ -147,6 +148,9 @@ bool AddDelegationPage::isDataValid()
         dataValid = false;
 
     return dataValid;
+}
+void AddDelegationPage::on_fullAmountCheckboxClicked() {
+    ui->lineEditLockAmount->setEnabled(!ui->fullAmountCheckbox->isChecked());
 }
 
 void AddDelegationPage::on_gasInfoChanged(quint64 blockGasLimit)
