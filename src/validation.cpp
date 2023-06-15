@@ -774,6 +774,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                     }
                 }
             }
+            
             for (const CTxIn& txin : tx.vin) {
                 CTxDestination dest;
                 const CTxOut& prevout = view.GetOutputFor(txin);

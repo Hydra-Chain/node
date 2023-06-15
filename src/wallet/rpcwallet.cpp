@@ -1411,7 +1411,7 @@ static UniValue removedelegationforaddress(const JSONRPCRequest& request)
                 {
                     {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The HYDRA address to remove delegation, the address will be used as sender too."},
                     {"gasLimit", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "gasLimit, default: " + i64tostr(DEFAULT_GAS_LIMIT_OP_SEND) + ", max: " + i64tostr(blockGasLimit)},
-                    {"unlockAmount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "unlockAmount (in HYDRA), default: whole LYDRA balance"},
+                    {"unlockAmount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "unlockAmount (in HYDRA), default: 0, pass -1 for whole amount"},
                 },
                 RPCResult{
                     RPCResult::Type::ARR, "", "",
@@ -1424,7 +1424,8 @@ static UniValue removedelegationforaddress(const JSONRPCRequest& request)
                             }},
                     }},
                 RPCExamples{
-                    HelpExampleCli("removedelegationforaddress", " \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 6000000")},
+                    HelpExampleCli("removedelegationforaddress", " \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 6000000") + 
+                    HelpExampleCli("removedelegationforaddress", " \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 6000000 100")},
             }
                 .ToString());
 
@@ -1444,25 +1445,23 @@ static UniValue removedelegationforaddress(const JSONRPCRequest& request)
     params.push_back(gasLimit);
     params.push_back(senderaddress);
 
-    if (chainActive.Height() >= Params().GetConsensus().nLydraHeight) {
-        if (unlockAmount != 0) {
-            Lydra lydraContract;
-            std::string burnDatahex;
-            lydraContract.getBurnDatahex(burnDatahex, unlockAmount);
+    if (unlockAmount != 0 && chainActive.Height() >= Params().GetConsensus().nLydraHeight) {
+        Lydra lydraContract;
+        std::string burnDatahex;
+        lydraContract.getBurnDatahex(burnDatahex, unlockAmount);
 
-            UniValue lydraParams(UniValue::VARR);
-            lydraParams.push_back(HexStr(Params().GetConsensus().lydraAddress));
-            lydraParams.push_back(burnDatahex);
-            lydraParams.push_back(0);
-            lydraParams.push_back(gasLimit);
-            lydraParams.push_back(senderaddress);
-            auto burn_res = SendToContract(*locked_chain, pwallet, lydraParams, -1);
-            if (burn_res.isObject()) {
-                if (request.params.size() > 2)
-                    updateLydraLockedCache(unlockAmount, false);
-                else
-                    clearLydraLockedCache();
-            }
+        UniValue lydraParams(UniValue::VARR);
+        lydraParams.push_back(HexStr(Params().GetConsensus().lydraAddress));
+        lydraParams.push_back(burnDatahex);
+        lydraParams.push_back(0);
+        lydraParams.push_back(gasLimit);
+        lydraParams.push_back(senderaddress);
+        auto burn_res = SendToContract(*locked_chain, pwallet, lydraParams, -1);
+        if (burn_res.isObject()) {
+            if (request.params.size() > 2)
+                updateLydraLockedCache(unlockAmount, false);
+            else
+                clearLydraLockedCache();
         }
     }
 
@@ -1504,7 +1503,7 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request)
                     {"fee", RPCArg::Type::NUM, RPCArg::Optional::NO, "Percentage of the reward that will be paid to the staker."},
                     {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The HYDRA address that contain the coins that will be delegated to the staker, the address will be used as sender too."},
                     {"gasLimit", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "gasLimit, default: " + i64tostr(DEFAULT_GAS_LIMIT_OP_CREATE) + ", max: " + i64tostr(blockGasLimit)},
-                    {"lockAmount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "lockAmount (in HYDRA), default: whole balance"},
+                    {"lockAmount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "lockAmount (in HYDRA), default: 0, pass -1 for whole amount"},
                 },
                 RPCResult{
                     RPCResult::Type::ARR, "", "",
@@ -1517,7 +1516,8 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request)
                             }},
                     }},
                 RPCExamples{
-                    HelpExampleCli("setdelegateforaddress", " \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 10 \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" 6000000")},
+                    HelpExampleCli("setdelegateforaddress", " \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 10 \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" 6000000") + 
+                    HelpExampleCli("setdelegateforaddress", " \"HM72Sfpbz1BPpXFHz9m3CdqATR44Jvaydd\" 10 \"HX1GkJdye9WoUnrE2v6ZQhQ72EUVDtGXQX\" 6000000 100")},
             }
                 .ToString());
 
@@ -1534,7 +1534,7 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request)
     }
 
     UniValue senderaddress = request.params[2];
-    CAmount lockAmount = request.params.size() > 4 ? AmountFromValue(request.params[4]) : -1;
+    CAmount lockAmount = request.params.size() > 4 ? AmountFromValue(request.params[4]) : 0;
 
     // Parse the staker address
     CTxDestination destStaker = DecodeDestination(request.params[0].get_str());
@@ -1585,7 +1585,7 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request)
     auto delegate_ret = SendToContract(*locked_chain, pwallet, params);
     // MilliSleep(3000);
 
-    if (chainActive.Height() >= Params().GetConsensus().nLydraHeight) {
+    if (lockAmount != 0 && chainActive.Height() >= Params().GetConsensus().nLydraHeight) {
         Lydra lydraContract;
         std::string mintDatahex;
         lydraContract.getMintDatahex(mintDatahex);
@@ -6899,14 +6899,14 @@ static UniValue mintlydra(const JSONRPCRequest& request)
     uint64_t nGasLimit = DEFAULT_GAS_LIMIT_OP_SEND;
     bool fCheckOutputs = true;
 
-    if (request.fHelp || request.params.size() < 1 || request.params.size() > 2)
+    if (request.fHelp || request.params.size() != 2)
         throw std::runtime_error(
             RPCHelpMan{
                 "mintlydra",
                 "\nMint LYDRA (lock HYDRA) to a given wallet address.\nWARNING: Minting will happen only if address balance is above 5M gas!\n",
                 {
                     {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The hydra address that will lock HYDRA to mint LYDRA."},
-                    {"lockAmount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "lockAmount (in HYDRA), default: whole balance"},
+                    {"lockAmount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "lockAmount (in HYDRA), pass -1 for whole amount"},
                 },
                 RPCResult{
                     RPCResult::Type::OBJ, "", "",
@@ -6919,12 +6919,12 @@ static UniValue mintlydra(const JSONRPCRequest& request)
                 .ToString());
 
     UniValue senderaddress = request.params[0];
-    CAmount lockAmount = request.params.size() > 1 ? AmountFromValue(request.params[1]) : -1;
+    CAmount lockAmount = AmountFromValue(request.params[1]);
 
     // Parse the sender address
     CTxDestination destSender = DecodeDestination(senderaddress.get_str());
     const CKeyID* pkhSender = boost::get<CKeyID>(&destSender);
-    std::string hex_senderaddress = pkhSender->GetReverseHex();
+    
     if (!pkhSender) {
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid contract sender address. Only P2PK and P2PKH allowed");
     }
@@ -6937,6 +6937,7 @@ static UniValue mintlydra(const JSONRPCRequest& request)
     }
 
     if (chainActive.Height() >= Params().GetConsensus().nLydraHeight) {
+        std::string hex_senderaddress = pkhSender->GetReverseHex();
         Lydra lydraContract;
         std::string mintDatahex;
         lydraContract.getMintDatahex(mintDatahex);
@@ -7004,14 +7005,14 @@ static UniValue burnlydra(const JSONRPCRequest& request)
     uint64_t nGasLimit = DEFAULT_GAS_LIMIT_OP_SEND;
     bool fCheckOutputs = true;
 
-    if (request.fHelp || request.params.size() < 1 || request.params.size() > 2)
+    if (request.fHelp || request.params.size() != 2)
         throw std::runtime_error(
             RPCHelpMan{
                 "burnlydra",
                 "\nBurn LYDRA (unlock HYDRA) from a given wallet address.\nWARNING: Equal amount of HYDRA will be unlocked to this address only if it contains any LYDRA balance!\n",
                 {
                     {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The hydra address that will burn LYDRA to unlock HYDRA."},
-                    {"unlockAmount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "unlockAmount (in HYDRA), default: whole LYDRA balance"},
+                    {"unlockAmount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "unlockAmount (in HYDRA), pass -1 for whole amount"},
                 },
                 RPCResult{
                     RPCResult::Type::OBJ, "", "",
@@ -7024,12 +7025,12 @@ static UniValue burnlydra(const JSONRPCRequest& request)
                 .ToString());
 
     UniValue senderaddress = request.params[0];
-    CAmount unlockAmount = request.params.size() > 1 ? AmountFromValue(request.params[1]) : -1;
+    CAmount unlockAmount = AmountFromValue(request.params[1]);
 
     // Parse the sender address
     CTxDestination destSender = DecodeDestination(senderaddress.get_str());
     const CKeyID* pkhSender = boost::get<CKeyID>(&destSender);
-    std::string hex_senderaddress = pkhSender->GetReverseHex();
+    
     if (!pkhSender) {
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid contract sender address. Only P2PK and P2PKH allowed");
     }

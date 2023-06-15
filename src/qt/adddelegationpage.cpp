@@ -188,6 +188,12 @@ void AddDelegationPage::on_addDelegationClicked()
         QString resultJson;
         int unit = BitcoinUnits::BTC;
         uint64_t gasLimit = ui->lineEditGasLimit->value();
+        if (chainActive.Height() >= Params().GetConsensus().nDelegationsGasFixHeight) {
+            if (gasLimit > DEFAULT_GAS_LIMIT_OP_SEND) gasLimit = DEFAULT_GAS_LIMIT_OP_SEND;
+        } else {
+            gasLimit = DEFAULT_GAS_LIMIT_OP_CREATE;
+        }
+        
         QString lockAmount = BitcoinUnits::format(unit, ui->lineEditLockAmount->value(), false, BitcoinUnits::separatorNever);
 
         QString delegateAddress = ui->lineEditAddress->currentText();

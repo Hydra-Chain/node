@@ -116,14 +116,9 @@ UniValue getlydrainfo(const JSONRPCRequest& request) {
 
     UniValue senderaddress = request.params[0];
 
-    if(chainActive.Height() < Params().GetConsensus().nLydraHeight) {
-        throw JSONRPCError(RPC_TYPE_ERROR, "LYDRA not activated yet!");
-    }
-
     // Parse the sender address
     CTxDestination destSender = DecodeDestination(senderaddress.get_str());
     const CKeyID *pkhSender = boost::get<CKeyID>(&destSender);
-    std::string hex_senderaddress = pkhSender->GetReverseHex();
     if (!pkhSender) {
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid wallet address. Only P2PK and P2PKH allowed");
     }
@@ -134,6 +129,12 @@ UniValue getlydrainfo(const JSONRPCRequest& request) {
     if (!pwallet->GetKey(keyID, key)) {
         throw JSONRPCError(RPC_WALLET_ERROR, "Private key not available for the wallet address");
     }
+
+    if(chainActive.Height() < Params().GetConsensus().nLydraHeight) {
+        throw JSONRPCError(RPC_TYPE_ERROR, "LYDRA not activated yet!");
+    }
+
+    std::string hex_senderaddress = pkhSender->GetReverseHex();
 
     // Get parameters
     CallToken token;
