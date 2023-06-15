@@ -753,14 +753,15 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
 
                 std::vector<QtumTransaction> qtumTransactions = resultConverter.first;
                 for (QtumTransaction qtumTransaction : qtumTransactions) {
-                    if (qtumTransaction.receiveAddress() == uintToh160(Params().GetConsensus().lydraAddress))
+                    if (qtumTransaction.receiveAddress() == uintToh160(Params().GetConsensus().lydraAddress)) {
                         lydra_tx_senders.push_back(qtumTransaction.sender());
+                    }
                 }
 
                 if (!lydra_tx_senders.empty()) {
                     for (auto it = pool.mapTx.begin(); it != pool.mapTx.end(); it++) {
                         const CTransaction& currTx = it->GetTx();
-                        QtumTxConverter converter(tx, NULL, NULL, contractflags);
+                        QtumTxConverter converter(currTx, NULL, NULL, contractflags);
                         ExtractQtumTX resultConverter;
                         converter.extractionQtumTransactions(resultConverter);
                         std::vector<QtumTransaction> qtumTransactions = resultConverter.first;

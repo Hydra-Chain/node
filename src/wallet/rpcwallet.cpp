@@ -1623,7 +1623,9 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request)
             if (mint_res.isObject()) updateLydraLockedCache(amount_to_lock, true);
         } else {
             if (lockAmount != 0) {
-                throw JSONRPCError(RPC_WALLET_ERROR, "WARNING: Delegation was initiated, but no LYDRA will be minted, as your balance is below 5M gas!");
+                auto strWarning = strprintf("WARNING: Delegation was initiated, but no LYDRA will be minted, as your free balance is below %s HYDRA!", 
+                                                ValueFromAmount((int64_t)(oracleGasPrice * DEFAULT_GAS_LIMIT_OP_CREATE * 2)).getValStr());
+                throw JSONRPCError(RPC_WALLET_ERROR, strWarning);
             }
         }
     }
