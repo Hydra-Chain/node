@@ -228,11 +228,10 @@ public:
         consensus.nRewardOffsetHeight = 658600;
         consensus.nRewardOffsetAmount = 33018156505135300;
         consensus.nContractOutsHeight = 852800;
-        consensus.nRefundFixHeight = 1119900;
-        consensus.nLydraHeight = 0x7fffffff;
-        // consensus.lydraAddress = uint160(ParseHex("")); // LYDRA token address
-        consensus.lydraAddress = uint160(ParseHex("ffffffffffffffffffffffffffffffffffffffff")); // LYDRA token address
-        consensus.nDelegationsGasFixHeight = 0x7fffffff;
+        consensus.nRefundFixHeight = 1160400;
+        consensus.nLydraHeight = 1160400;
+        consensus.lydraAddress = uint160(ParseHex("68a674e10694eeb00867d2e11c8b158b00b28e96")); // LYDRA token address
+        consensus.nDelegationsGasFixHeight = 1160400;
 
         consensus.BIP34Hash = uint256S("0x000058b8d49cd33ae70558978ff60269d4de7d4b50ac1f733631765e4207a457");
         // consensus.BIP65Height: 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
