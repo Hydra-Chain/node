@@ -476,7 +476,7 @@ static void PushNodeVersion(CNode *pnode, CConnman* connman, int64_t nTime)
     CAddress addrYou = (addr.IsRoutable() && !IsProxy(addr) ? addr : CAddress(CService(), addr.nServices));
     CAddress addrMe = CAddress(CService(), nLocalNodeServices);
 
-    if (chainActive.Tip()->nHeight >= Params().GetConsensus().nLydraHeight) {
+    if (chainActive.Tip()->nHeight >= Params().GetConsensus().nRefundFixHeight) {
         connman->PushMessage(pnode, CNetMsgMaker(INIT_PROTO_VERSION).Make(NetMsgType::VERSION, PROTOCOL_VERSION, (uint64_t)nLocalNodeServices, nTime, addrYou, addrMe,
                 nonce, strSubVersion, nNodeStartingHeight, ::g_relay_txes));
     } else {
