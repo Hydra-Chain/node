@@ -1964,10 +1964,10 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             return false;
         }
 
-        if (chainActive.Tip()->nHeight >= chainparams.GetConsensus().nRefundFixHeight) {
-            if (strSubVer.find("0.20.9") != std::string::npos ||
-                strSubVer.find("0.20.10") != std::string::npos ||
-                strSubVer.find("0.20.11") != std::string::npos) {
+        if (chainActive.Tip()->nHeight >= chainparams.GetConsensus().nRefundFixHeigh &&
+            (strSubVer.find("0.20.9") != std::string::npos ||
+            strSubVer.find("0.20.10") != std::string::npos ||
+            strSubVer.find("0.20.11") != std::string::npos)) {
                 // disconnect from peers older than this subversion
                 LogPrint(BCLog::NET, "peer=%d using obsolete subversion after refund fix hardfork %s; disconnecting\n", pfrom->GetId(), strSubVer);
                 if (enable_bip61) {
@@ -1976,7 +1976,6 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
                 }
                 pfrom->fDisconnect = true;
                 return false;
-            }
         }
         
 
