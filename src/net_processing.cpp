@@ -1964,7 +1964,7 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             return false;
         }
 
-        if (chainActive.Tip()->nHeight >= chainparams.GetConsensus().nRefundFixHeigh &&
+        if (chainActive.Tip()->nHeight >= chainparams.GetConsensus().nRefundFixHeight &&
             (strSubVer.find("0.20.9") != std::string::npos ||
             strSubVer.find("0.20.10") != std::string::npos ||
             strSubVer.find("0.20.11") != std::string::npos)) {
