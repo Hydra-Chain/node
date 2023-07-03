@@ -21,11 +21,12 @@ enum lydra_contract_funcs {
     MINT = 13
 };
 
-static uint64_t LYDRA_LOCKED_CACHE_AMOUNT = 0;
-static bool LYDRA_LOCKED_CACHE_FILLED = false;
+static std::map<std::string, uint64_t> LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS {};
+static std::map<std::string, bool> LYDRA_LOCKED_CACHE_FILLED_PER_ADDRESS {};
 
-void updateLydraLockedCache(int64_t& amount, bool isMinting);
-void clearLydraLockedCache();
+void updateLydraLockedCache(int64_t& amount, std::string address, bool isMinting);
+void clearLydraLockedCache(std::string address);
+uint64_t getAllLydraLockedCache();
 
 class Lydra : public ContractProxy
 {
@@ -33,7 +34,7 @@ public:
     Lydra();
     bool getMintDatahex(std::string& datahex);
     bool getBurnDatahex(std::string& datahex, int64_t amount);
-    bool getLockedHydraAmountPerAddress(dev::Address lydraContract, std::string lydraAddress, uint64_t& amount);
+    bool getLockedHydraAmountPerAddress(dev::Address lydraContract, std::string address, uint64_t& amount);
 };
 
 #endif // LOCKTRIP_LYDRA_H

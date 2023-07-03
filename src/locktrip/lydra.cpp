@@ -8,17 +8,42 @@
 #include <util/strencodings.h>
 #include <util/system.h>
 
-void updateLydraLockedCache(int64_t& amount, bool isMinting)
+void updateLydraLockedCache(int64_t& amount, std::string address, bool isMinting)
 {
-    if (isMinting)
-        LYDRA_LOCKED_CACHE_AMOUNT += amount;
-    else
-        LYDRA_LOCKED_CACHE_AMOUNT -= amount;
+    if(LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS.count(address)){
+        if (isMinting)
+            LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS[address] += amount;
+        else
+            LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS[address] -= amount;
+    } else {
+        if (isMinting) {
+            LYDRA_LOCKED_CACHE_FILLED_PER_ADDRESS.insert({address, true});
+            LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS.insert({address, amount});
+        } else {
+            LYDRA_LOCKED_CACHE_FILLED_PER_ADDRESS.insert({address, true});
+            LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS.insert({address, amount});
+        }
+    }
 }
 
-void clearLydraLockedCache()
+void clearLydraLockedCache(std::string address)
 {
-    LYDRA_LOCKED_CACHE_AMOUNT = 0;
+    if(LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS.count(address)){
+        LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS[address] = 0;
+    } else {
+        LYDRA_LOCKED_CACHE_FILLED_PER_ADDRESS.insert({address, true});
+        LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS.insert({address, 0});
+    }
+}
+
+uint64_t getAllLydraLockedCache() 
+{
+    uint64_t sum = 0;
+    for (const auto& pair : LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS) {
+        sum += pair.second;
+    }
+
+    return sum;
 }
 
 Lydra::Lydra()
@@ -45,9 +70,9 @@ bool Lydra::getBurnDatahex(std::string& datahex, int64_t amount)
     }
 }
 
-bool Lydra::getLockedHydraAmountPerAddress(dev::Address lydraContract, std::string lydraAddress, uint64_t& amount)
+bool Lydra::getLockedHydraAmountPerAddress(dev::Address lydraContract, std::string address, uint64_t& amount)
 {
-    std::vector<std::string> params{lydraAddress};
+    std::vector<std::string> params{address};
     std::string callString{};
     std::vector<std::vector<std::string>> values{params};
     bool status = this->generateCallString(values, callString, LOCKED_BALANCE);
@@ -59,9 +84,9 @@ bool Lydra::getLockedHydraAmountPerAddress(dev::Address lydraContract, std::stri
             dev::bytesConstRef o(&result[0].execRes.output);
             dev::u256 data = dev::eth::ABIDeserialiser<dev::u256>::deserialise(o);
             amount = uint64_t(dev::u256(dev::h256(data)));
-            if (!LYDRA_LOCKED_CACHE_FILLED) {
-                LYDRA_LOCKED_CACHE_AMOUNT = amount;
-                LYDRA_LOCKED_CACHE_FILLED = true;
+            if (!LYDRA_LOCKED_CACHE_FILLED_PER_ADDRESS.count(address)) {
+                LYDRA_LOCKED_CACHE_FILLED_PER_ADDRESS.insert({address, true});
+                LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS.insert({address, amount});
             }
             return true;
         } else {

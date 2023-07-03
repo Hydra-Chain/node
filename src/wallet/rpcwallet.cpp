@@ -1443,6 +1443,13 @@ static UniValue removedelegationforaddress(const JSONRPCRequest& request)
     if (request.params.size() > 2 && (request.params[2].get_str() == std::to_string(COIN) || request.params[2].get_str() == "-1")) unlockAmount = -1;
     else unlockAmount = request.params.size() > 2 ? AmountFromValue(request.params[2]) : 0;
 
+    // Parse the staker address
+    CTxDestination destStaker = DecodeDestination(request.params[0].get_str());
+    const CKeyID* pkhStaker = boost::get<CKeyID>(&destStaker);
+    if (!pkhStaker) {
+        throw JSONRPCError(RPC_TYPE_ERROR, "Invalid contract address for staker. Only P2PK and P2PKH allowed");
+    }
+
     // Add the send to contract parameters to the list
     params.push_back(contractaddress);
     params.push_back(datahex);
@@ -1464,9 +1471,9 @@ static UniValue removedelegationforaddress(const JSONRPCRequest& request)
         auto burn_res = SendToContract(*locked_chain, pwallet, lydraParams, -1);
         if (burn_res.isObject()) {
             if (request.params.size() > 2)
-                updateLydraLockedCache(unlockAmount, false);
+                updateLydraLockedCache(unlockAmount, pkhStaker->GetReverseHex(), false);
             else
-                clearLydraLockedCache();
+                clearLydraLockedCache(pkhStaker->GetReverseHex());
         }
     }
 
@@ -1540,8 +1547,8 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request)
 
     UniValue senderaddress = request.params[2];
     CAmount lockAmount;
-    if (request.params.size() > 2 && (request.params[2].get_str() == std::to_string(COIN) || request.params[2].get_str() == "-1")) lockAmount = -1;
-    else CAmount lockAmount = request.params.size() > 2 ? AmountFromValue(request.params[2]) : 0;
+    if (request.params.size() > 4 && (request.params[4].get_str() == std::to_string(COIN) || request.params[4].get_str() == "-1")) lockAmount = -1;
+    else lockAmount = request.params.size() > 4 ? AmountFromValue(request.params[4]) : 0;
 
     // Parse the staker address
     CTxDestination destStaker = DecodeDestination(request.params[0].get_str());
@@ -1624,7 +1631,7 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request)
             lydraParams.push_back(gasLimit);
             lydraParams.push_back(senderaddress);
             auto mint_res = SendToContract(*locked_chain, pwallet, lydraParams, amount_to_lock);
-            if (mint_res.isObject()) updateLydraLockedCache(amount_to_lock, true);
+            if (mint_res.isObject()) updateLydraLockedCache(amount_to_lock, hex_senderaddress, true);
         } else {
             if (lockAmount != 0) {
                 auto strWarning = strprintf("WARNING: Delegation was initiated, but no LYDRA will be minted, as your free balance is below %s HYDRA!", 
@@ -6929,8 +6936,8 @@ static UniValue mintlydra(const JSONRPCRequest& request)
 
     UniValue senderaddress = request.params[0];
     CAmount lockAmount;
-    if (request.params.size() > 2 && (request.params[2].get_str() == std::to_string(COIN) || request.params[2].get_str() == "-1")) lockAmount = -1;
-    else lockAmount = request.params.size() > 2 ? AmountFromValue(request.params[2]) : 0;
+    if (request.params.size() > 1 && (request.params[1].get_str() == std::to_string(COIN) || request.params[1].get_str() == "-1")) lockAmount = -1;
+    else lockAmount = request.params.size() > 1 ? AmountFromValue(request.params[1]) : 0;
 
     // Parse the sender address
     CTxDestination destSender = DecodeDestination(senderaddress.get_str());
@@ -6981,7 +6988,7 @@ static UniValue mintlydra(const JSONRPCRequest& request)
             lydraParams.push_back(senderaddress);
 
             auto mint_ret = SendToContract(*locked_chain, pwallet, lydraParams, amount_to_lock);
-            if (mint_ret.isObject()) updateLydraLockedCache(amount_to_lock, true);
+            if (mint_ret.isObject()) updateLydraLockedCache(amount_to_lock, hex_senderaddress, true);
             return mint_ret;
         } else {
             throw JSONRPCError(RPC_WALLET_ERROR, "Address balance is below 5M gas!");
@@ -7037,8 +7044,8 @@ static UniValue burnlydra(const JSONRPCRequest& request)
 
     UniValue senderaddress = request.params[0];
     CAmount unlockAmount;
-    if (request.params.size() > 2 && (request.params[2].get_str() == std::to_string(COIN) || request.params[2].get_str() == "-1")) unlockAmount = -1;
-    else unlockAmount = request.params.size() > 2 ? AmountFromValue(request.params[2]) : 0;
+    if (request.params.size() > 1 && (request.params[1].get_str() == std::to_string(COIN) || request.params[1].get_str() == "-1")) unlockAmount = -1;
+    else unlockAmount = request.params.size() > 1 ? AmountFromValue(request.params[1]) : 0;
 
     // Parse the sender address
     CTxDestination destSender = DecodeDestination(senderaddress.get_str());
@@ -7071,9 +7078,9 @@ static UniValue burnlydra(const JSONRPCRequest& request)
 
         if (burn_ret.isObject()) {
             if (request.params.size() > 1)
-                updateLydraLockedCache(unlockAmount, false);
+                updateLydraLockedCache(unlockAmount, pkhSender->GetReverseHex(), false);
             else
-                clearLydraLockedCache();
+                clearLydraLockedCache(pkhSender->GetReverseHex());
         }
 
         return burn_ret;
