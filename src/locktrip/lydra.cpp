@@ -59,7 +59,10 @@ bool Lydra::getLockedHydraAmountPerAddress(dev::Address lydraContract, std::stri
             dev::bytesConstRef o(&result[0].execRes.output);
             dev::u256 data = dev::eth::ABIDeserialiser<dev::u256>::deserialise(o);
             amount = uint64_t(dev::u256(dev::h256(data)));
-            if (!LYDRA_LOCKED_CACHE_FILLED) LYDRA_LOCKED_CACHE_AMOUNT = amount;
+            if (!LYDRA_LOCKED_CACHE_FILLED) {
+                LYDRA_LOCKED_CACHE_AMOUNT = amount;
+                LYDRA_LOCKED_CACHE_FILLED = true;
+            }
             return true;
         } else {
             return false;

@@ -1439,8 +1439,9 @@ static UniValue removedelegationforaddress(const JSONRPCRequest& request)
     UniValue amount = 0;
     UniValue gasLimit = request.params.size() > 1 ? request.params[1] : DEFAULT_GAS_LIMIT_OP_SEND;
     UniValue senderaddress = request.params[0];
-    CAmount unlockAmount = request.params.size() > 2 ? AmountFromValue(request.params[2]) : -1;
-    if (request.params.size() > 2 && request.params[2].get_str() == std::to_string(COIN)) unlockAmount = -1;
+    CAmount unlockAmount;
+    if (request.params.size() > 2 && (request.params[2].get_str() == std::to_string(COIN) || request.params[2].get_str() == "-1")) unlockAmount = -1;
+    else unlockAmount = request.params.size() > 2 ? AmountFromValue(request.params[2]) : 0;
 
     // Add the send to contract parameters to the list
     params.push_back(contractaddress);
@@ -1538,8 +1539,9 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request)
     }
 
     UniValue senderaddress = request.params[2];
-    CAmount lockAmount = request.params.size() > 4 ? AmountFromValue(request.params[4]) : 0;
-    if (request.params.size() > 4 && request.params[4].get_str() == std::to_string(COIN)) lockAmount = -1;
+    CAmount lockAmount;
+    if (request.params.size() > 2 && (request.params[2].get_str() == std::to_string(COIN) || request.params[2].get_str() == "-1")) lockAmount = -1;
+    else CAmount lockAmount = request.params.size() > 2 ? AmountFromValue(request.params[2]) : 0;
 
     // Parse the staker address
     CTxDestination destStaker = DecodeDestination(request.params[0].get_str());
@@ -6913,7 +6915,7 @@ static UniValue mintlydra(const JSONRPCRequest& request)
                 "\nMint LYDRA (lock HYDRA) to a given wallet address.\nWARNING: Minting will happen only if address balance is above 5M gas!\n",
                 {
                     {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The hydra address that will lock HYDRA to mint LYDRA."},
-                    {"lockAmount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "lockAmount (in HYDRA), pass -1 for whole amount"},
+                    {"lockAmount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "lockAmount (in HYDRA), default: 0, pass -1 for whole amount"},
                 },
                 RPCResult{
                     RPCResult::Type::OBJ, "", "",
@@ -6926,7 +6928,9 @@ static UniValue mintlydra(const JSONRPCRequest& request)
                 .ToString());
 
     UniValue senderaddress = request.params[0];
-    CAmount lockAmount = AmountFromValue(request.params[1]);
+    CAmount lockAmount;
+    if (request.params.size() > 2 && (request.params[2].get_str() == std::to_string(COIN) || request.params[2].get_str() == "-1")) lockAmount = -1;
+    else lockAmount = request.params.size() > 2 ? AmountFromValue(request.params[2]) : 0;
 
     // Parse the sender address
     CTxDestination destSender = DecodeDestination(senderaddress.get_str());
@@ -7019,7 +7023,7 @@ static UniValue burnlydra(const JSONRPCRequest& request)
                 "\nBurn LYDRA (unlock HYDRA) from a given wallet address.\nWARNING: Equal amount of HYDRA will be unlocked to this address only if it contains any LYDRA balance!\n",
                 {
                     {"address", RPCArg::Type::STR, RPCArg::Optional::NO, "The hydra address that will burn LYDRA to unlock HYDRA."},
-                    {"unlockAmount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "unlockAmount (in HYDRA), pass -1 for whole amount"},
+                    {"unlockAmount", RPCArg::Type::AMOUNT, RPCArg::Optional::OMITTED, "unlockAmount (in HYDRA), default: 0, pass -1 for whole amount"},
                 },
                 RPCResult{
                     RPCResult::Type::OBJ, "", "",
@@ -7032,7 +7036,9 @@ static UniValue burnlydra(const JSONRPCRequest& request)
                 .ToString());
 
     UniValue senderaddress = request.params[0];
-    CAmount unlockAmount = AmountFromValue(request.params[1]);
+    CAmount unlockAmount;
+    if (request.params.size() > 2 && (request.params[2].get_str() == std::to_string(COIN) || request.params[2].get_str() == "-1")) unlockAmount = -1;
+    else unlockAmount = request.params.size() > 2 ? AmountFromValue(request.params[2]) : 0;
 
     // Parse the sender address
     CTxDestination destSender = DecodeDestination(senderaddress.get_str());
