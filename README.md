@@ -1,7 +1,5 @@
 # What is HYDRA?
 
-HYDRA is a decentralized open source bookings ecosystem for renting hotel rooms, private properties or accommodation. HYDRA will be the first system which allows end customers and property owners to deal with each other on the platform without any fee or commission.
-
 The HYDRA Blockchain is a hybrid utilizing the transaction model of Bitcoin and employing the powerful virtual machine of Ethereum. It is based on the Bitcoin Core, Ethereum and Qtum.
 It features a Proof of Stake consensus mechanism, high transaction throughput, democratic governance of key parameters, predictable network fees and a unique profit-sharing system.
 
