@@ -1440,7 +1440,7 @@ static UniValue removedelegationforaddress(const JSONRPCRequest& request)
     UniValue gasLimit = request.params.size() > 1 ? request.params[1] : DEFAULT_GAS_LIMIT_OP_SEND;
     UniValue senderaddress = request.params[0];
     CAmount unlockAmount;
-    if (request.params.size() > 2 && (request.params[2].get_str() == std::to_string(COIN) || request.params[2].get_str() == "-1")) unlockAmount = -1;
+    if (request.params.size() > 2 && (request.params[2].getValStr() == std::to_string(COIN) || request.params[2].getValStr() == "-1")) unlockAmount = -1;
     else unlockAmount = request.params.size() > 2 ? AmountFromValue(request.params[2]) : 0;
 
     // Parse the staker address
@@ -1547,7 +1547,7 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request)
 
     UniValue senderaddress = request.params[2];
     CAmount lockAmount;
-    if (request.params.size() > 4 && (request.params[4].get_str() == std::to_string(COIN) || request.params[4].get_str() == "-1")) lockAmount = -1;
+    if (request.params.size() > 4 && (request.params[4].getValStr() == std::to_string(COIN) || request.params[4].getValStr() == "-1")) lockAmount = -1;
     else lockAmount = request.params.size() > 4 ? AmountFromValue(request.params[4]) : 0;
 
     // Parse the staker address
@@ -6936,7 +6936,7 @@ static UniValue mintlydra(const JSONRPCRequest& request)
 
     UniValue senderaddress = request.params[0];
     CAmount lockAmount;
-    if (request.params.size() > 1 && (request.params[1].get_str() == std::to_string(COIN) || request.params[1].get_str() == "-1")) lockAmount = -1;
+    if (request.params.size() > 1 && (request.params[1].getValStr() == std::to_string(COIN) || request.params[1].getValStr() == "-1")) lockAmount = -1;
     else lockAmount = request.params.size() > 1 ? AmountFromValue(request.params[1]) : 0;
 
     // Parse the sender address
@@ -7044,7 +7044,7 @@ static UniValue burnlydra(const JSONRPCRequest& request)
 
     UniValue senderaddress = request.params[0];
     CAmount unlockAmount;
-    if (request.params.size() > 1 && (request.params[1].get_str() == std::to_string(COIN) || request.params[1].get_str() == "-1")) unlockAmount = -1;
+    if (request.params.size() > 1 && (request.params[1].getValStr() == std::to_string(COIN) || request.params[1].getValStr() == "-1")) unlockAmount = -1;
     else unlockAmount = request.params.size() > 1 ? AmountFromValue(request.params[1]) : 0;
 
     // Parse the sender address
