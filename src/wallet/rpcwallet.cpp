@@ -1470,10 +1470,10 @@ static UniValue removedelegationforaddress(const JSONRPCRequest& request)
         lydraParams.push_back(senderaddress);
         auto burn_res = SendToContract(*locked_chain, pwallet, lydraParams, -1);
         if (burn_res.isObject()) {
-            if (request.params.size() > 2)
-                updateLydraLockedCache(unlockAmount, pkhStaker->GetReverseHex(), false);
-            else
+            if (unlockAmount == -1)
                 clearLydraLockedCache(pkhStaker->GetReverseHex());
+            else
+                updateLydraLockedCache(unlockAmount, pkhStaker->GetReverseHex(), false);
         }
     }
 
@@ -7077,10 +7077,10 @@ static UniValue burnlydra(const JSONRPCRequest& request)
         auto burn_ret = SendToContract(*locked_chain, pwallet, lydraParams, -1);
 
         if (burn_ret.isObject()) {
-            if (request.params.size() > 1)
-                updateLydraLockedCache(unlockAmount, pkhSender->GetReverseHex(), false);
-            else
+            if (unlockAmount == -1)
                 clearLydraLockedCache(pkhSender->GetReverseHex());
+            else
+                updateLydraLockedCache(unlockAmount, pkhSender->GetReverseHex(), false);
         }
 
         return burn_ret;
