@@ -2,6 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "lydra.h"
 #include "libethcore/ABI.h"
 #include "qtum/qtumstate.h"
@@ -10,6 +12,7 @@
 #include <wallet/wallet.h>
 #include <interfaces/wallet.h>
 #include <chainparams.h>
+#include <key_io.h>
 
 void updateLydraLockedCache(int64_t& amount, std::string address, bool isMinting)
 {
@@ -60,12 +63,31 @@ void fillLydraLockedCacheForWallet()
 
 uint64_t getAllLydraLockedCache() 
 {
-    if (!LYDRA_LOCKED_CACHE_FILLED) fillLydraLockedCacheForWallet();
-
     uint64_t sum = 0;
-    for (const auto& pair : LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS) {
-        sum += pair.second;
+    Lydra l;
+    auto wallets = GetWallets();
+    for (const auto& wallet : wallets)
+    {
+        auto currWallet = interfaces::MakeWallet(wallet);
+        std::vector<std::string> spendableAddresses{};
+        std::vector<std::string> allAddresses{};
+        bool tmp;
+        currWallet->tryGetAvailableAddresses(spendableAddresses, allAddresses, tmp);
+        for (const auto& addr : allAddresses)
+        {
+	    CTxDestination destSender = DecodeDestination(addr);
+	    const CKeyID *pkhSender = boost::get<CKeyID>(&destSender);
+	    if (pkhSender) {
+	        uint64_t amount;
+	        LogPrintf("ADDRESS -> %s\n", addr);
+	        l.getLockedHydraAmountPerAddress(pkhSender->GetReverseHex(), amount);
+	        LogPrintf("AMOUNT -> %d\n", amount);
+	        sum += amount;
+	    }
+        }
     }
+
+    LogPrintf("SUM -> %d\n", sum);
 
     return sum;
 }

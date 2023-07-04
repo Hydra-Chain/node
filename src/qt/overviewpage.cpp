@@ -287,11 +287,20 @@ OverviewPage::~OverviewPage()
     delete ui;
 }
 
+void OverviewPage::setLydraLockedBalance()
+{
+    uint64_t allLydraLockedCache = getAllLydraLockedCache();
+    int unit = walletModel->getOptionsModel()->getDisplayUnit();
+    ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, m_balances.balance - allLydraLockedCache, false, BitcoinUnits::separatorAlways));
+    ui->labelLydraLocked->setText(BitcoinUnits::formatWithUnit(unit, allLydraLockedCache, false, BitcoinUnits::separatorAlways));
+}
+
 void OverviewPage::setBalance(const interfaces::WalletBalances& balances)
 {
     int unit = walletModel->getOptionsModel()->getDisplayUnit();
+    uint64_t allLydraLockedCache = getAllLydraLockedCache();
     m_balances = balances;
-    ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, balances.balance - getAllLydraLockedCache(), false, BitcoinUnits::separatorAlways));
+    ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, balances.balance - allLydraLockedCache, false, BitcoinUnits::separatorAlways));
     ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, balances.unconfirmed_balance, false, BitcoinUnits::separatorAlways));
     ui->labelImmature->setText(BitcoinUnits::formatWithUnit(unit, balances.immature_balance, false, BitcoinUnits::separatorAlways));
     ui->labelStake->setText(BitcoinUnits::formatWithUnit(unit, balances.stake, false, BitcoinUnits::separatorAlways));
@@ -301,7 +310,7 @@ void OverviewPage::setBalance(const interfaces::WalletBalances& balances)
     ui->labelWatchImmature->setText(BitcoinUnits::formatWithUnit(unit, balances.immature_watch_only_balance, false, BitcoinUnits::separatorAlways));
     ui->labelWatchStake->setText(BitcoinUnits::formatWithUnit(unit, balances.watch_only_stake, false, BitcoinUnits::separatorAlways));
     ui->labelWatchTotal->setText(BitcoinUnits::formatWithUnit(unit, balances.watch_only_balance + balances.unconfirmed_watch_only_balance + balances.immature_watch_only_balance + balances.watch_only_stake, false, BitcoinUnits::separatorAlways));
-    ui->labelLydraLocked->setText(BitcoinUnits::formatWithUnit(unit, getAllLydraLockedCache(), false, BitcoinUnits::separatorAlways));
+    ui->labelLydraLocked->setText(BitcoinUnits::formatWithUnit(unit, allLydraLockedCache, false, BitcoinUnits::separatorAlways));
     // only show immature (newly mined) balance if it's non-zero, so as not to complicate things
     // for the non-mining users
     bool showImmature = balances.immature_balance != 0;
@@ -410,6 +419,10 @@ void OverviewPage::setWalletModel(WalletModel *model)
 
     // check for presence of invalid tokens
     QTimer::singleShot(500, this, SLOT(checkForInvalidTokens()));
+
+    QTimer *lydraCacheTimer = new QTimer(this);
+    connect(lydraCacheTimer, &QTimer::timeout, this, [=]() {setLydraLockedBalance();});
+    lydraCacheTimer->start(1000);
 }
 
 void OverviewPage::updateDisplayUnit()

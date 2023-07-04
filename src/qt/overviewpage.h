@@ -37,7 +37,7 @@ public:
     void setClientModel(ClientModel *clientModel);
     void setWalletModel(WalletModel *walletModel);
     void showOutOfSyncWarning(bool fShow);
-
+    void setLydraLockedBalance();
 public Q_SLOTS:
     void setBalance(const interfaces::WalletBalances& balances);
     void checkForInvalidTokens();
