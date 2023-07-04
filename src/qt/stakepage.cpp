@@ -36,6 +36,7 @@ StakePage::StakePage(const PlatformStyle *_platformStyle, QWidget *parent) :
 {
     ui->setupUi(this);
     ui->checkStake->setEnabled(gArgs.GetBoolArg("-staking", DEFAULT_STAKE));
+    ui->labelCheckStakeText->setText(gArgs.GetBoolArg("-staking", DEFAULT_STAKE) ? "Staking on" : "Staking off");
     transactionView = new TransactionView(platformStyle, this, true);
     ui->frameStakeRecords->layout()->addWidget(transactionView);
 }
@@ -97,6 +98,7 @@ void StakePage::on_checkStake_clicked(bool checked)
         return;
 
     this->walletModel->wallet().setEnabledStaking(checked);
+    ui->labelCheckStakeText->setText(checked ? "Staking on" : "Staking off");
 
     if(checked && WalletModel::Locked == walletModel->getEncryptionStatus())
         Q_EMIT requireUnlock(true);

@@ -68,6 +68,11 @@ QLabel#labelTotal,
     color: white;
 }
 
+QLabel#labelNetwork,
+#labelMempoolTitle{
+    color: black;
+}
+
 QLabel#labelTotal {
     color: black;
 }
@@ -734,11 +739,11 @@ QCheckBox:indicator:indeterminate:disabled {
 Radio Button CSS
 --------------------------------------------*/
 QRadioButton{
-    color: #bdbdbd;
+    color: #000000;
     outline-style: none;
 }
 QRadioButton:hover, QRadioButton:checked {
-    color: #ffffff;
+    color: #000000;
 }
 QRadioButton:disabled {
     color: rgba(255, 255, 255, 10%);
@@ -829,7 +834,7 @@ QPushButton:pressed {
     border: 1px solid #122b40;
 }
 QPushButton::disabled {
-    color: rgba(255, 255, 255, 40%);
+    color: #ffffff;
     background: rgba(2, 156, 224, 60%);
 }
 /*--------------------------------------------

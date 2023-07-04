@@ -20,4 +20,5 @@ QPushButton::pressed{
 }
 QPushButton::disabled{
 	background-color: transparent;
+	color: #000000;
 }
