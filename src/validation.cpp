@@ -827,7 +827,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                 auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
                 Lydra l;
                 uint64_t locked_hydra_amount;
-                l.getLockedHydraAmountPerAddress(uintToh160(chainparams.GetConsensus().lydraAddress), boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
+                l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
 
                 if (rembalance - all_inputs + all_outputs < locked_hydra_amount) {
                     return state.DoS(100, error("%s: Spending more than available HYDRA amount. The rest is locked for LYDRA tokens.", __func__),
@@ -3444,7 +3444,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                             auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
                             Lydra l;
                             uint64_t locked_hydra_amount;
-                            l.getLockedHydraAmountPerAddress(uintToh160(chainparams.GetConsensus().lydraAddress), boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
+                            l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
 
                             if (rembalance - all_inputs + all_outputs < locked_hydra_amount) {
                                 return state.DoS(100, error("%s: Spending more than available HYDRA amount. The rest is locked for LYDRA tokens.", __func__),

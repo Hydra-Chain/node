@@ -1605,7 +1605,7 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request)
         lydraContract.getMintDatahex(mintDatahex);
 
         uint64_t locked_hydra_amount;
-        lydraContract.getLockedHydraAmountPerAddress(uintToh160(Params().GetConsensus().lydraAddress), hex_senderaddress, locked_hydra_amount);
+        lydraContract.getLockedHydraAmountPerAddress(hex_senderaddress, locked_hydra_amount);
 
         std::map<CTxDestination, CAmount> balances = pwallet->GetAddressBalances(*locked_chain);
 
@@ -6961,7 +6961,7 @@ static UniValue mintlydra(const JSONRPCRequest& request)
         lydraContract.getMintDatahex(mintDatahex);
 
         uint64_t locked_hydra_amount;
-        lydraContract.getLockedHydraAmountPerAddress(uintToh160(Params().GetConsensus().lydraAddress), hex_senderaddress, locked_hydra_amount);
+        lydraContract.getLockedHydraAmountPerAddress(hex_senderaddress, locked_hydra_amount);
 
         std::map<CTxDestination, CAmount> balances = pwallet->GetAddressBalances(*locked_chain);
 

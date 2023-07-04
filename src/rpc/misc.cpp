@@ -161,7 +161,7 @@ UniValue getlydrainfo(const JSONRPCRequest& request) {
 
     Lydra lydraContract;
     uint64_t locked_hydra_amount;
-    lydraContract.getLockedHydraAmountPerAddress(uintToh160(Params().GetConsensus().lydraAddress), hex_senderaddress, locked_hydra_amount);
+    lydraContract.getLockedHydraAmountPerAddress(hex_senderaddress, locked_hydra_amount);
 
     auto locked_hydra_amount_fl = FormatToken(decimals, locked_hydra_amount);
 
