@@ -51,8 +51,13 @@ AddDelegationPage::AddDelegationPage(QWidget *parent) :
     ui->lineEditAddress->setSenderAddress(true);
 
     ui->lineEditGasLimit->setMinimum(ADD_DELEGATION_MIN_GAS_LIMIT);
-    ui->lineEditGasLimit->setMaximum(DEFAULT_GAS_LIMIT_OP_CREATE);
-    ui->lineEditGasLimit->setValue(DEFAULT_GAS_LIMIT_OP_CREATE);
+    if (chainActive.Height() >= Params().GetConsensus().nDelegationsGasFixHeight) {
+        ui->lineEditGasLimit->setMaximum(DEFAULT_GAS_LIMIT_OP_SEND);
+        ui->lineEditGasLimit->setValue(DEFAULT_GAS_LIMIT_OP_SEND);
+    } else {
+        ui->lineEditGasLimit->setMaximum(DEFAULT_GAS_LIMIT_OP_CREATE);
+        ui->lineEditGasLimit->setValue(DEFAULT_GAS_LIMIT_OP_CREATE);
+    }
 
     // ui->lineEditLockAmount->setMinimum(0);
     // ui->lineEditLockAmount->setMaximum(100_000_000);
