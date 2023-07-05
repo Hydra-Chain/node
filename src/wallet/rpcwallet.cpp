@@ -1468,13 +1468,7 @@ static UniValue removedelegationforaddress(const JSONRPCRequest& request)
         lydraParams.push_back(0);
         lydraParams.push_back(gasLimit);
         lydraParams.push_back(senderaddress);
-        auto burn_res = SendToContract(*locked_chain, pwallet, lydraParams, -1);
-        if (burn_res.isObject()) {
-            if (unlockAmount == -1)
-                clearLydraLockedCache(pkhStaker->GetReverseHex());
-            else
-                updateLydraLockedCache(unlockAmount, pkhStaker->GetReverseHex(), false);
-        }
+        SendToContract(*locked_chain, pwallet, lydraParams, -1);
     }
 
     // Send to contract
@@ -1630,8 +1624,7 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request)
             lydraParams.push_back(0);
             lydraParams.push_back(gasLimit);
             lydraParams.push_back(senderaddress);
-            auto mint_res = SendToContract(*locked_chain, pwallet, lydraParams, amount_to_lock);
-            if (mint_res.isObject()) updateLydraLockedCache(amount_to_lock, hex_senderaddress, true);
+            SendToContract(*locked_chain, pwallet, lydraParams, amount_to_lock);
         } else {
             if (lockAmount != 0) {
                 auto strWarning = strprintf("WARNING: Delegation was initiated, but no LYDRA will be minted, as your free balance is below %s HYDRA!", 
@@ -6988,7 +6981,6 @@ static UniValue mintlydra(const JSONRPCRequest& request)
             lydraParams.push_back(senderaddress);
 
             auto mint_ret = SendToContract(*locked_chain, pwallet, lydraParams, amount_to_lock);
-            if (mint_ret.isObject()) updateLydraLockedCache(amount_to_lock, hex_senderaddress, true);
             return mint_ret;
         } else {
             throw JSONRPCError(RPC_WALLET_ERROR, "Address balance is below 5M gas!");
@@ -7075,14 +7067,6 @@ static UniValue burnlydra(const JSONRPCRequest& request)
         lydraParams.push_back(senderaddress);
 
         auto burn_ret = SendToContract(*locked_chain, pwallet, lydraParams, -1);
-
-        if (burn_ret.isObject()) {
-            if (unlockAmount == -1)
-                clearLydraLockedCache(pkhSender->GetReverseHex());
-            else
-                updateLydraLockedCache(unlockAmount, pkhSender->GetReverseHex(), false);
-        }
-
         return burn_ret;
     } else {
         throw JSONRPCError(RPC_TYPE_ERROR, "LYDRA is not activated yet!");

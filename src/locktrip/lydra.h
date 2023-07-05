@@ -21,9 +21,6 @@ enum lydra_contract_funcs {
     MINT = 13
 };
 
-static std::map<std::string, uint64_t> LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS {};
-static bool LYDRA_LOCKED_CACHE_FILLED = false;
-
 void updateLydraLockedCache(int64_t& amount, std::string address, bool isMinting);
 void clearLydraLockedCache(std::string address);
 uint64_t getAllLydraLockedCache();

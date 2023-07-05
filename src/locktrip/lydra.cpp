@@ -14,53 +14,6 @@
 #include <chainparams.h>
 #include <key_io.h>
 
-void updateLydraLockedCache(int64_t& amount, std::string address, bool isMinting)
-{
-    if(LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS.count(address)){
-        if (isMinting) {
-            LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS[address] += amount;
-        } else {
-            if (amount >= LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS[address]) clearLydraLockedCache(address);
-            else LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS[address] -= amount;
-        }
-    } else {
-        if (isMinting) {
-            LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS.insert({address, amount});
-        }
-    }
-}
-
-void clearLydraLockedCache(std::string address)
-{
-    if(LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS.count(address)){
-        LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS[address] = 0;
-    } else {
-        LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS.insert({address, 0});
-    }
-}
-
-void fillLydraLockedCacheForWallet()
-{
-    auto wallets = GetWallets();
-    for (const auto& wallet : wallets)
-    {
-        auto currWallet = interfaces::MakeWallet(wallet);
-        std::vector<std::string> spendableAddresses{};
-        std::vector<std::string> allAddresses{};
-        bool tmp;
-        currWallet->tryGetAvailableAddresses(spendableAddresses, allAddresses, tmp);
-        Lydra l;
-        for (const auto& addr : allAddresses)
-        {
-            uint64_t amount;
-            l.getLockedHydraAmountPerAddress(addr, amount);
-            LYDRA_LOCKED_CACHE_AMOUNT_PER_ADDRESS.insert({addr, amount});
-        }
-    }
-
-    LYDRA_LOCKED_CACHE_FILLED = true;
-}
-
 uint64_t getAllLydraLockedCache() 
 {
     uint64_t sum = 0;
@@ -75,19 +28,15 @@ uint64_t getAllLydraLockedCache()
         currWallet->tryGetAvailableAddresses(spendableAddresses, allAddresses, tmp);
         for (const auto& addr : allAddresses)
         {
-	    CTxDestination destSender = DecodeDestination(addr);
-	    const CKeyID *pkhSender = boost::get<CKeyID>(&destSender);
-	    if (pkhSender) {
-	        uint64_t amount;
-	        LogPrintf("ADDRESS -> %s\n", addr);
-	        l.getLockedHydraAmountPerAddress(pkhSender->GetReverseHex(), amount);
-	        LogPrintf("AMOUNT -> %d\n", amount);
-	        sum += amount;
-	    }
+            CTxDestination destSender = DecodeDestination(addr);
+            const CKeyID *pkhSender = boost::get<CKeyID>(&destSender);
+            if (pkhSender) {
+                uint64_t amount;
+                l.getLockedHydraAmountPerAddress(pkhSender->GetReverseHex(), amount);
+                sum += amount;
+            }
         }
     }
-
-    LogPrintf("SUM -> %d\n", sum);
 
     return sum;
 }
