@@ -13,10 +13,12 @@
 #include <interfaces/wallet.h>
 #include <chainparams.h>
 #include <key_io.h>
+#include <tuple>
 
-uint64_t getAllLydraLockedCache() 
+std::tuple<uint64_t, bool> getAllLydraLockedCache() 
 {
     uint64_t sum = 0;
+    bool successful = false;
     Lydra l;
     auto wallets = GetWallets();
     for (const auto& wallet : wallets)
@@ -33,12 +35,16 @@ uint64_t getAllLydraLockedCache()
             if (pkhSender) {
                 uint64_t amount;
                 l.getLockedHydraAmountPerAddress(pkhSender->GetReverseHex(), amount);
+                std::cout << pkhSender->GetReverseHex() << " -> " << amount << std::endl;
                 sum += amount;
+                successful = true;
             }
         }
     }
 
-    return sum;
+    std::cout << "sum -> " << sum << std::endl;
+
+    return std::make_tuple(sum, successful);
 }
 
 Lydra::Lydra()

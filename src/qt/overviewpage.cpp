@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+#include <functional>
 
 #include <qt/overviewpage.h>
 #include <qt/forms/ui_overviewpage.h>
@@ -289,7 +290,10 @@ OverviewPage::~OverviewPage()
 
 void OverviewPage::setLydraLockedBalance()
 {
-    uint64_t allLydraLockedCache = getAllLydraLockedCache();
+    auto lydraLockedCache = getAllLydraLockedCache();
+    while (!std::get<1>(lydraLockedCache)) lydraLockedCache = getAllLydraLockedCache();
+    auto allLydraLockedCache = std::get<0>(lydraLockedCache);
+    std::cout << "IN UI -> " << allLydraLockedCache << std::endl;
     int unit = walletModel->getOptionsModel()->getDisplayUnit();
     ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, m_balances.balance - allLydraLockedCache, false, BitcoinUnits::separatorAlways));
     ui->labelLydraLocked->setText(BitcoinUnits::formatWithUnit(unit, allLydraLockedCache, false, BitcoinUnits::separatorAlways));
@@ -298,7 +302,9 @@ void OverviewPage::setLydraLockedBalance()
 void OverviewPage::setBalance(const interfaces::WalletBalances& balances)
 {
     int unit = walletModel->getOptionsModel()->getDisplayUnit();
-    uint64_t allLydraLockedCache = getAllLydraLockedCache();
+    auto lydraLockedCache = getAllLydraLockedCache();
+    while (!std::get<1>(lydraLockedCache)) lydraLockedCache = getAllLydraLockedCache();
+    auto allLydraLockedCache = std::get<0>(lydraLockedCache);
     m_balances = balances;
     ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, balances.balance - allLydraLockedCache, false, BitcoinUnits::separatorAlways));
     ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, balances.unconfirmed_balance, false, BitcoinUnits::separatorAlways));
@@ -420,9 +426,9 @@ void OverviewPage::setWalletModel(WalletModel *model)
     // check for presence of invalid tokens
     QTimer::singleShot(500, this, SLOT(checkForInvalidTokens()));
 
-    QTimer *lydraCacheTimer = new QTimer(this);
-    connect(lydraCacheTimer, &QTimer::timeout, this, [=]() {setLydraLockedBalance();});
-    lydraCacheTimer->start(1000);
+    // QTimer *lydraCacheTimer = new QTimer(this);
+    // connect(lydraCacheTimer, &QTimer::timeout, this, [=]() {setLydraLockedBalance();});
+    // lydraCacheTimer->start(1000);
 }
 
 void OverviewPage::updateDisplayUnit()

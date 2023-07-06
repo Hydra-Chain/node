@@ -21,9 +21,7 @@ enum lydra_contract_funcs {
     MINT = 13
 };
 
-void updateLydraLockedCache(int64_t& amount, std::string address, bool isMinting);
-void clearLydraLockedCache(std::string address);
-uint64_t getAllLydraLockedCache();
+std::tuple<uint64_t, bool> getAllLydraLockedCache();
 
 class Lydra : public ContractProxy
 {
