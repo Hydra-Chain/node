@@ -288,17 +288,6 @@ OverviewPage::~OverviewPage()
     delete ui;
 }
 
-void OverviewPage::setLydraLockedBalance()
-{
-    auto lydraLockedCache = getAllLydraLockedCache();
-    while (!std::get<1>(lydraLockedCache)) lydraLockedCache = getAllLydraLockedCache();
-    auto allLydraLockedCache = std::get<0>(lydraLockedCache);
-    std::cout << "IN UI -> " << allLydraLockedCache << std::endl;
-    int unit = walletModel->getOptionsModel()->getDisplayUnit();
-    ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, m_balances.balance - allLydraLockedCache, false, BitcoinUnits::separatorAlways));
-    ui->labelLydraLocked->setText(BitcoinUnits::formatWithUnit(unit, allLydraLockedCache, false, BitcoinUnits::separatorAlways));
-}
-
 void OverviewPage::setBalance(const interfaces::WalletBalances& balances)
 {
     int unit = walletModel->getOptionsModel()->getDisplayUnit();
@@ -425,10 +414,6 @@ void OverviewPage::setWalletModel(WalletModel *model)
 
     // check for presence of invalid tokens
     QTimer::singleShot(500, this, SLOT(checkForInvalidTokens()));
-
-    // QTimer *lydraCacheTimer = new QTimer(this);
-    // connect(lydraCacheTimer, &QTimer::timeout, this, [=]() {setLydraLockedBalance();});
-    // lydraCacheTimer->start(1000);
 }
 
 void OverviewPage::updateDisplayUnit()

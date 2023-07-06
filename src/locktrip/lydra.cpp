@@ -35,14 +35,11 @@ std::tuple<uint64_t, bool> getAllLydraLockedCache()
             if (pkhSender) {
                 uint64_t amount;
                 l.getLockedHydraAmountPerAddress(pkhSender->GetReverseHex(), amount);
-                std::cout << pkhSender->GetReverseHex() << " -> " << amount << std::endl;
                 sum += amount;
                 successful = true;
             }
         }
     }
-
-    std::cout << "sum -> " << sum << std::endl;
 
     return std::make_tuple(sum, successful);
 }
