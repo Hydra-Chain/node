@@ -35,6 +35,7 @@ static const int MIN_PEER_PROTO_VERSION_AFTER_REWARDFIX = 70020;
 //! disconnect from peers older than this proto version after lydra activation
 static const int MIN_PEER_PROTO_VERSION_AFTER_LYDRA = 70021;
 
+//! disconnect from peers older than this proto version after delegation fix activation
 static const int MIN_PEER_PROTO_VERSION_AFTER_REFUNDFIX = 70022;
 
 //! nTime field added to CAddress, starting with this version;

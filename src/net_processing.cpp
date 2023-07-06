@@ -1964,12 +1964,12 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             return false;
         }
 
-	if (chainActive.Tip()->nHeight >= chainparams.GetConsensus().nRefundFixHeight && nVersion < MIN_PEER_PROTO_VERSION_AFTER_REFUNDFIX) {
+	    if (chainActive.Tip()->nHeight >= chainparams.GetConsensus().nRefundFixHeight && nVersion < MIN_PEER_PROTO_VERSION_AFTER_REFUNDFIX) {
             // disconnect from peers older than this proto version
             LogPrint(BCLog::NET, "peer=%d using obsolete version after reward fix hardfork %i; disconnecting\n", pfrom->GetId(), nVersion);
             if (enable_bip61) {
                 connman->PushMessage(pfrom, CNetMsgMaker(INIT_PROTO_VERSION).Make(NetMsgType::REJECT, strCommand, REJECT_OBSOLETE,
-                        strprintf("Version must be %d or greater after reward fix hardfork", MIN_PEER_PROTO_VERSION_AFTER_LYDRA)));
+                        strprintf("Version must be %d or greater after reward fix hardfork", MIN_PEER_PROTO_VERSION_AFTER_REFUNDFIX)));
             }
             pfrom->fDisconnect = true;
             return false;
