@@ -3580,7 +3580,7 @@ bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std
             CCoinsViewMemPool viewMemPool(pcoinsTip.get(), mempool);
             view.SetBackend(viewMemPool);
 
-            if (chainActive.Height() >= Params().GetConsensus().nLydraHeight) {
+            if (chainActive.Height() >= 9999999){// Params().GetConsensus().nLydraHeight) {
                 for (const CTxIn& txin : check_tx.vin) {
                     CTxDestination dest;
                     const CTxOut &prevout = view.GetOutputFor(txin);

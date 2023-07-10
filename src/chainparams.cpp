@@ -210,7 +210,12 @@ public:
                 { 800000, uint256S("0x5b4ead3de1ac2624703799734e7bafaf3370a061a0eac184ab785ba00012e97b")},
                 { 850000, uint256S("0xd61afa26c97b32559e7c9374c29bb2976b88618d7f5880f1b402a6ec580e0ad6")},
                 { 852800, uint256S("0x08dbeaccf351c68a8a04b67e49a8189a548a9e2ebcc7adfdfaaaff26ad425ca7")},
-                { 900000, uint256S("0x3fee8aaac367236a34191b0f36ff675920ba18be84bb71278441fe39d9813f4c")}
+                { 900000, uint256S("0x3fee8aaac367236a34191b0f36ff675920ba18be84bb71278441fe39d9813f4c")},
+                { 1160400, uint256S("0xfc13ccffed1470787816b0716f1be963a9f5a4d3f6c6beb392c1d455d450eb59")},
+                { 1160900, uint256S("0x9b89e65e6424e125e16cc0a26203c4099bdf4fefd10156f77e7cbe4428b378d7")},
+                { 1161900, uint256S("0x532b03653ab3f4332ff27f15feb515c001d919a3fe80a2e47ac456eb7c9d514e")},
+                { 1162900, uint256S("0x24f80ee89c215b22c6f08e7f0280b93d20a24ea9795c465c56a18bb614b33059")},
+                { 1163800, uint256S("0x9214142d7c956cf9c374d05fa8a3aee66881e96a4f499b6b77a65082ea86b829")}
             }
         };
 
@@ -243,7 +248,7 @@ public:
         consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x3fee8aaac367236a34191b0f36ff675920ba18be84bb71278441fe39d9813f4c"); //900000
+        consensus.defaultAssumeValid = uint256S("0x9214142d7c956cf9c374d05fa8a3aee66881e96a4f499b6b77a65082ea86b829"); //1163800
     }
 };
 

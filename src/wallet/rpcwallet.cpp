@@ -1457,7 +1457,7 @@ static UniValue removedelegationforaddress(const JSONRPCRequest& request)
     params.push_back(gasLimit);
     params.push_back(senderaddress);
 
-    if (unlockAmount != 0 && chainActive.Height() >= Params().GetConsensus().nLydraHeight) {
+    if (unlockAmount != 0 && chainActive.Height() >= 9999999){// Params().GetConsensus().nLydraHeight) {
         Lydra lydraContract;
         std::string burnDatahex;
         lydraContract.getBurnDatahex(burnDatahex, unlockAmount);
@@ -1593,7 +1593,7 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request)
     auto delegate_ret = SendToContract(*locked_chain, pwallet, params);
     // MilliSleep(3000);
 
-    if (lockAmount != 0 && chainActive.Height() >= Params().GetConsensus().nLydraHeight) {
+    if (lockAmount != 0 && chainActive.Height() >= 9999999){//Params().GetConsensus().nLydraHeight) {
         Lydra lydraContract;
         std::string mintDatahex;
         lydraContract.getMintDatahex(mintDatahex);
@@ -6947,7 +6947,7 @@ static UniValue mintlydra(const JSONRPCRequest& request)
         throw JSONRPCError(RPC_WALLET_ERROR, "Private key not available for the sender address");
     }
 
-    if (chainActive.Height() >= Params().GetConsensus().nLydraHeight) {
+    if (chainActive.Height() >= 9999999){//Params().GetConsensus().nLydraHeight) {
         std::string hex_senderaddress = pkhSender->GetReverseHex();
         Lydra lydraContract;
         std::string mintDatahex;
@@ -7054,7 +7054,7 @@ static UniValue burnlydra(const JSONRPCRequest& request)
         throw JSONRPCError(RPC_WALLET_ERROR, "Private key not available for the sender address");
     }
 
-    if (chainActive.Height() >= Params().GetConsensus().nLydraHeight) {
+    if (chainActive.Height() >= 9999999){//Params().GetConsensus().nLydraHeight) {
         Lydra lydraContract;
         std::string burnDatahex{};
         lydraContract.getBurnDatahex(burnDatahex, unlockAmount);
