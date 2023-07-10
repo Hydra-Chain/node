@@ -716,7 +716,6 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
         std::vector<CTxDestination> check_addresses;
         std::map<CTxDestination, CAmount> addresses_inputs;
         std::map<CTxDestination, CAmount> addresses_outputs;
-        std::map<CTxDestination, CAmount> addresses_rembalance;
         std::vector<std::pair<uint256, int>> addresses_index;
         std::map<uint256, CTxDestination> addrhash_dest;
 
@@ -809,20 +808,24 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
             }
 
             for (const auto& addr_pair : addresses_index) {
-                std::vector<std::pair<CAddressIndexKey, CAmount>> address_index;
-                if (!GetAddressIndex(addr_pair.first, addr_pair.second, address_index)) {
-                    return state.DoS(100, error("%s: unable to get addr index", __func__),
-                        REJECT_INVALID, "unable-addr-index");
+                // Get address utxos
+                std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
+                if (!GetAddressUnspent(addr_pair.first, addr_pair.second, unspentOutputs)) {
+                    //throw error("No information available for address");
                 }
 
-                for (std::vector<std::pair<CAddressIndexKey, CAmount>>::const_iterator it = address_index.begin(); it != address_index.end(); it++) {
-                    if (addresses_rembalance.find(addrhash_dest[(*it).first.hashBytes]) != addresses_rembalance.end())
-                        addresses_rembalance[addrhash_dest[(*it).first.hashBytes]] += it->second;
-                    else
-                        addresses_rembalance[addrhash_dest[(*it).first.hashBytes]] = it->second;
-                }
+                // Add the utxos to the list if they are mature and at least the minimum value
+                int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(chainActive.Height() + 1);
+                CAmount rembalance = 0;
+                for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
 
-                auto rembalance = addresses_rembalance[addrhash_dest[addr_pair.first]];
+                    int nDepth = chainActive.Height() - i->second.blockHeight + 1;
+                    if (nDepth < coinbaseMaturity)
+                        continue;
+
+                    rembalance += i->second.satoshis;
+                }
+                
                 auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
                 auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
                 Lydra l;
@@ -3374,7 +3377,6 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                 std::vector<CTxDestination> check_addresses;
                 std::map<CTxDestination, CAmount> addresses_inputs;
                 std::map<CTxDestination, CAmount> addresses_outputs;
-                std::map<CTxDestination, CAmount> addresses_rembalance;
                 std::vector<std::pair<uint256, int>> addresses_index;
                 std::map<uint256, CTxDestination> addrhash_dest;
 
@@ -3426,20 +3428,23 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                 if (pindex->nHeight >= chainparams.GetConsensus().nLydraHeight) {
                     if (!tx.IsCoinStake()) {
                         for (const auto& addr_pair : addresses_index) {
-                            std::vector<std::pair<CAddressIndexKey, CAmount>> address_index;
-                            if (!GetAddressIndex(addr_pair.first, addr_pair.second, address_index)) {
-                                return state.DoS(100, error("%s: unable to get addr index", __func__),
-                                    REJECT_INVALID, "unable-addr-index");
+                            // Get address utxos
+                            std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
+                            if (!GetAddressUnspent(addr_pair.first, addr_pair.second, unspentOutputs)) {
+                                //throw error("No information available for address");
                             }
 
-                            for (std::vector<std::pair<CAddressIndexKey, CAmount>>::const_iterator it = address_index.begin(); it != address_index.end(); it++) {
-                                if (addresses_rembalance.find(addrhash_dest[(*it).first.hashBytes]) != addresses_rembalance.end())
-                                    addresses_rembalance[addrhash_dest[(*it).first.hashBytes]] += it->second;
-                                else
-                                    addresses_rembalance[addrhash_dest[(*it).first.hashBytes]] = it->second;
-                            }
+                            // Add the utxos to the list if they are mature and at least the minimum value
+                            int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(chainActive.Height() + 1);
+                            CAmount rembalance = 0;
+                            for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
 
-                            auto rembalance = addresses_rembalance[addrhash_dest[addr_pair.first]];
+                                int nDepth = chainActive.Height() - i->second.blockHeight + 1;
+                                if (nDepth < coinbaseMaturity)
+                                    continue;
+
+                                rembalance += i->second.satoshis;
+                            }
                             auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
                             auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
                             Lydra l;
