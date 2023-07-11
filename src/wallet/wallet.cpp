@@ -3626,17 +3626,18 @@ bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std
                     for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
 
                         int nDepth = chainActive.Height() - i->second.blockHeight + 1;
-                        if (nDepth < coinbaseMaturity)
-                            continue;
+                        //if (nDepth < coinbaseMaturity)
+                           // continue;
 
                         rembalance += i->second.satoshis;
                     }
+
                     auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
                     auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
                     Lydra l;
                     uint64_t locked_hydra_amount;
                     l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
-
+                    LogPrintf("Address -> %s rembalance -> %d/n", boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), rembalance);
                     if(rembalance - all_inputs + all_outputs < locked_hydra_amount) {
                         strFailReason = _("Spending more than available HYDRA amount. The rest is locked for LYDRA tokens.");
                         return false;

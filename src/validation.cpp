@@ -820,8 +820,8 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                 for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
 
                     int nDepth = chainActive.Height() - i->second.blockHeight + 1;
-                    if (nDepth < coinbaseMaturity)
-                        continue;
+                    //if (nDepth < coinbaseMaturity)
+                        //continue;
 
                     rembalance += i->second.satoshis;
                 }
@@ -3440,8 +3440,8 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                             for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
 
                                 int nDepth = chainActive.Height() - i->second.blockHeight + 1;
-                                if (nDepth < coinbaseMaturity)
-                                    continue;
+                                //if (nDepth < coinbaseMaturity)
+                                    //continue;
 
                                 rembalance += i->second.satoshis;
                             }
