@@ -292,7 +292,12 @@ void OverviewPage::setBalance(const interfaces::WalletBalances& balances)
 {
     int unit = walletModel->getOptionsModel()->getDisplayUnit();
     auto lydraLockedCache = getAllLydraLockedCache();
-    while (!std::get<1>(lydraLockedCache)) lydraLockedCache = getAllLydraLockedCache();
+    int trials = 0;
+    while (!std::get<1>(lydraLockedCache)){
+        if (trials>5000) break;
+        lydraLockedCache = getAllLydraLockedCache();
+        trials++;
+    }
     auto allLydraLockedCache = std::get<0>(lydraLockedCache);
     m_balances = balances;
     ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, balances.balance - allLydraLockedCache, false, BitcoinUnits::separatorAlways));
