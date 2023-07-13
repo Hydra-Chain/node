@@ -1604,17 +1604,13 @@ static UniValue setdelegateforaddress(const JSONRPCRequest& request)
         std::map<CTxDestination, CAmount> balances = pwallet->GetAddressBalances(*locked_chain);
 
         CAmount amount_to_lock;
+        CAmount freebuffer = nGasPrice * DEFAULT_GAS_LIMIT_OP_CREATE * 2;
+        CAmount max_lock_amount = balances[DecodeDestination(senderaddress.get_str())] - locked_hydra_amount - freebuffer;
 
-        if (lockAmount == -1) {
-            amount_to_lock = balances[DecodeDestination(senderaddress.get_str())];
-            amount_to_lock -= locked_hydra_amount;
-            amount_to_lock -= (nGasPrice * DEFAULT_GAS_LIMIT_OP_CREATE * 2);
+        if (lockAmount == -1 || lockAmount >= max_lock_amount) {
+            amount_to_lock = max_lock_amount;
         } else {
-            if (lockAmount > balances[DecodeDestination(senderaddress.get_str())] - locked_hydra_amount - (nGasPrice * DEFAULT_GAS_LIMIT_OP_CREATE)) {
-                amount_to_lock = balances[DecodeDestination(senderaddress.get_str())] - locked_hydra_amount - (nGasPrice * DEFAULT_GAS_LIMIT_OP_CREATE);
-            } else {
-                amount_to_lock = lockAmount;
-            }
+            amount_to_lock = lockAmount;
         }
 
         if (amount_to_lock > 0) {
@@ -6959,18 +6955,14 @@ static UniValue mintlydra(const JSONRPCRequest& request)
         std::map<CTxDestination, CAmount> balances = pwallet->GetAddressBalances(*locked_chain);
 
         CAmount amount_to_lock;
+        CAmount freebuffer = nGasPrice * DEFAULT_GAS_LIMIT_OP_CREATE * 2;
+        CAmount max_lock_amount = balances[DecodeDestination(senderaddress.get_str())] - locked_hydra_amount - freebuffer;
 
-        if (lockAmount == -1) {
-            amount_to_lock = balances[DecodeDestination(senderaddress.get_str())];
-            amount_to_lock -= locked_hydra_amount;
-            amount_to_lock -= (nGasPrice * DEFAULT_GAS_LIMIT_OP_CREATE * 2);
+        if (lockAmount == -1 || lockAmount >= max_lock_amount) {
+            amount_to_lock = max_lock_amount;
         } else {
-            if (lockAmount > balances[DecodeDestination(senderaddress.get_str())] - locked_hydra_amount - (nGasPrice * DEFAULT_GAS_LIMIT_OP_CREATE)) {
-                amount_to_lock = balances[DecodeDestination(senderaddress.get_str())] - locked_hydra_amount - (nGasPrice * DEFAULT_GAS_LIMIT_OP_CREATE);
-            } else {
-                amount_to_lock = lockAmount;
-            }
-        }
+            amount_to_lock = lockAmount;
+        }        
 
         if (amount_to_lock > 0) {
             UniValue lydraParams(UniValue::VARR);

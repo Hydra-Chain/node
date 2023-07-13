@@ -3637,8 +3637,10 @@ bool CWallet::CreateTransaction(interfaces::Chain::Lock& locked_chain, const std
                     Lydra l;
                     uint64_t locked_hydra_amount;
                     l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
-                    LogPrintf("Address -> %s rembalance -> %d/n", boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), rembalance);
                     if(rembalance - all_inputs + all_outputs < locked_hydra_amount) {
+                        LogPrintf("Address -> %s | rembalance -> %d | spent -> %d | locked -> %d/n", 
+                                   boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), 
+                                   rembalance, all_outputs-all_inputs, locked_hydra_amount);
                         strFailReason = _("Spending more than available HYDRA amount. The rest is locked for LYDRA tokens.");
                         return false;
                     }
