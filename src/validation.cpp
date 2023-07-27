@@ -793,7 +793,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                         if(!addresses_balances.count(dest)) {
                             // Get address utxos
                             std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
-                            if (!GetAddressUnspent(hashBytes, dest, unspentOutputs)) {
+                            if (!GetAddressUnspent(hashBytes, type, unspentOutputs)) {
                                 //throw error("No information available for address");
                             }
 
@@ -837,7 +837,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                     if(!addresses_balances.count(dest)) {
                         // Get address utxos
                         std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
-                        if (!GetAddressUnspent(hashBytes, dest, unspentOutputs)) {
+                        if (!GetAddressUnspent(hashBytes, type, unspentOutputs)) {
                             //throw error("No information available for address");
                         }
 
