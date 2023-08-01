@@ -741,8 +741,6 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
         }
 
         if (chainActive.Height() >= chainparams.GetConsensus().nLydraHeight) {
-            std::map<CTxDestination, CAmount> addresses_balances;
-
             if (tx.HasOpCall()) {
                 std::vector<dev::Address> lydra_tx_senders{};
                 unsigned int contractflags = GetContractScriptFlags(GetSpendHeight(view), chainparams.GetConsensus());
@@ -776,44 +774,6 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                     }
                 }
             }
-
-            for (auto it = pool.mapTx.begin(); it != pool.mapTx.end(); it++) {
-                const CTransaction& currTx = it->GetTx();
-                for (const CTxIn& txin : currTx.vin) {
-                    CTxDestination dest;
-                    const CTxOut& prevout = view.GetOutputFor(txin);
-                    if (ExtractDestination(txin.prevout, prevout.scriptPubKey, dest)) {
-                        uint256 hashBytes;
-                        int type = 0;
-                        if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
-                            return state.DoS(100, error("%s: invalid address decoded", __func__),
-                                REJECT_INVALID, "invalid-address");
-                        }
-
-                        if(!addresses_balances.count(dest)) {
-                            // Get address utxos
-                            std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
-                            if (!GetAddressUnspent(hashBytes, type, unspentOutputs)) {
-                                //throw error("No information available for address");
-                            }
-
-                            // Add the utxos to the list if they are mature and at least the minimum value
-                            int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(chainActive.Height() + 1);
-                            CAmount rembalance = 0;
-                            for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
-
-                                int nDepth = chainActive.Height() - i->second.blockHeight + 1;
-                                //if (nDepth < coinbaseMaturity)
-                                    //continue;
-
-                                rembalance += i->second.satoshis;
-                            }
-
-                            addresses_balances.insert({dest, rembalance});
-                        }
-                    }
-                }
-            }
             
             for (const CTxIn& txin : tx.vin) {
                 CTxDestination dest;
@@ -833,28 +793,6 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                         addresses_inputs[dest] += prevout.nValue;
                     else
                         addresses_inputs[dest] = prevout.nValue;
-
-                    if(!addresses_balances.count(dest)) {
-                        // Get address utxos
-                        std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
-                        if (!GetAddressUnspent(hashBytes, type, unspentOutputs)) {
-                            //throw error("No information available for address");
-                        }
-
-                        // Add the utxos to the list if they are mature and at least the minimum value
-                        int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(chainActive.Height() + 1);
-                        CAmount rembalance = 0;
-                        for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
-
-                            int nDepth = chainActive.Height() - i->second.blockHeight + 1;
-                            //if (nDepth < coinbaseMaturity)
-                                //continue;
-
-                            rembalance += i->second.satoshis;
-                        }
-
-                        addresses_balances.insert({dest, rembalance});
-                    }
                 }
             }
 
@@ -869,21 +807,38 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                 }
             }
 
-            for (const auto& addr_pair : addresses_index) {                
+            for (const auto& addr_pair : addresses_index) {
+                // Get address utxos
+                std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
+                if (!GetAddressUnspent(addr_pair.first, addr_pair.second, unspentOutputs)) {
+                    //throw error("No information available for address");
+                }
+
+                // Add the utxos to the list if they are mature and at least the minimum value
+                int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(chainActive.Height() + 1);
+                CAmount rembalance = 0;
+                for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
+
+                    int nDepth = chainActive.Height() - i->second.blockHeight + 1;
+                    //if (nDepth < coinbaseMaturity)
+                        //continue;
+
+                    rembalance += i->second.satoshis;
+                }
+                
                 auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
                 auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
                 Lydra l;
                 uint64_t locked_hydra_amount;
                 l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
 
-                if (addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs < locked_hydra_amount) {
+                if (rembalance - all_inputs + all_outputs < locked_hydra_amount) {
                     LogPrintf("Address -> %s | rembalance -> %d | spent -> %d | locked -> %d/n", 
                                    boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), 
-                                   addresses_balances[addrhash_dest[addr_pair.first]], all_outputs-all_inputs, locked_hydra_amount);
-                    return state.Invalid(error("%s: Spending more than available HYDRA amount. The rest is locked for LYDRA tokens.", __func__), REJECT_INVALID, "spend-more-than-locked");
+                                   rembalance, all_outputs-all_inputs, locked_hydra_amount);
+                    return state.DoS(100, error("%s: Spending more than available HYDRA amount. The rest is locked for LYDRA tokens.", __func__),
+                        REJECT_INVALID, "spend-more-than-locked");
                 }
-
-                addresses_balances[addrhash_dest[addr_pair.first]] -= (all_inputs - all_outputs);
             }
         }
 
@@ -3512,7 +3467,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                                 LogPrintf("Address -> %s | rembalance -> %d | spent -> %d | locked -> %d/n", 
                                    boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), 
                                    addresses_balances[addrhash_dest[addr_pair.first]], all_outputs-all_inputs, locked_hydra_amount);
-                                return state.Invalid(error("%s: Spending more than available HYDRA amount. The rest is locked for LYDRA tokens.", __func__), REJECT_INVALID, "spend-more-than-locked");
+                                return error("%s: Spending more than available HYDRA amount. The rest is locked for LYDRA tokens.", __func__);
                             }
 
                             addresses_balances[addrhash_dest[addr_pair.first]] -= (all_inputs - all_outputs);

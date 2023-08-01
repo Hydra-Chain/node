@@ -216,6 +216,7 @@ struct update_for_parent_inclusion
 class BlockAssembler
 {
 private:
+    std::map<CTxDestination, CAmount> addresses_balances;
     // The constructed block template
     std::unique_ptr<CBlockTemplate> pblocktemplate;
     // A convenience pointer that always refers to the CBlock in pblocktemplate
@@ -306,6 +307,8 @@ private:
     void AddRefundTransactions();
 
     void ReplaceRewardTransaction();
+
+    bool CheckTransactionLydraSpending(const CTransaction& tx, int nHeight);
 
     bool ExecuteCoinstakeContractCalls(CWallet& wallet, int64_t* pTotalFees, int32_t txProofTime,
                                        std::set<std::pair<const CWalletTx*,unsigned int> >,
