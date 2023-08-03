@@ -698,7 +698,6 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTransaction& tx, int n
                 if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
                     return false;
                 }
-
                 addresses_index.push_back(std::make_pair(hashBytes, type));
                 addrhash_dest[hashBytes] = dest;
                 if (addresses_inputs.find(dest) != addresses_inputs.end())
@@ -710,7 +709,7 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTransaction& tx, int n
                     // Get address utxos
                     std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
                     if (!GetAddressUnspent(hashBytes, type, unspentOutputs)) {
-                        //throw error("No information available for address");
+                        return false;
                     }
 
                     // Add the utxos to the list if they are mature and at least the minimum value
@@ -718,9 +717,9 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTransaction& tx, int n
                     CAmount rembalance = 0;
                     for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
 
-                        // int nDepth = chainActive.Height() - i->second.blockHeight + 1;
-                        // if (nDepth < coinbaseMaturity && i->second.coinStake)
-                        //     continue;
+                        int nDepth = chainActive.Height() - i->second.blockHeight + 1;
+                        //if (nDepth < coinbaseMaturity)
+                            //continue;
 
                         rembalance += i->second.satoshis;
                     }
@@ -741,7 +740,8 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTransaction& tx, int n
             }
         }
 
-        for (const auto& addr_pair : addresses_index) {                
+
+        for (const auto& addr_pair : addresses_index) {
             auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
             auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
             Lydra l;
