@@ -3383,80 +3383,74 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                 std::map<CTxDestination, CAmount> addresses_inputs;
                 std::map<CTxDestination, CAmount> addresses_outputs;
                 std::vector<std::pair<uint256, int>> addresses_index;
-                std::map<uint256, CTxDestination> addrhash_dest; 
+                std::map<uint256, CTxDestination> addrhash_dest;
 
-                if (pindex->nHeight >= chainparams.GetConsensus().nLydraHeight && !tx.IsCoinStake()) {
-                    for (size_t j = 0; j < tx.vin.size(); j++) {
-                        const CTxIn input = tx.vin[j];
-                        const CTxOut& prevout = view.GetOutputFor(tx.vin[j]);
+                for (size_t j = 0; j < tx.vin.size(); j++) {
+                    const CTxIn input = tx.vin[j];
+                    const CTxOut& prevout = view.GetOutputFor(tx.vin[j]);
 
-                        CTxDestination dest;
-                        if (ExtractDestination(input.prevout, prevout.scriptPubKey, dest)) {
-                            check_addresses.push_back(dest);
-                            uint256 hashBytes;
-                            int type = 0;
-                            if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
-                                return state.DoS(100, error("%s: invalid address decoded", __func__),
-                                    REJECT_INVALID, "invalid-address");
-                            }
-                            addresses_index.push_back(std::make_pair(hashBytes, type));
-                            addrhash_dest[hashBytes] = dest;
-                            if (addresses_inputs.find(dest) != addresses_inputs.end())
-                                addresses_inputs[dest] += prevout.nValue;
-                            else
-                                addresses_inputs[dest] = prevout.nValue;
-
-                            if(!addresses_balances.count(dest)) {
-                                // Get address utxos
-                                std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
-                                if (!GetAddressUnspent(hashBytes, type, unspentOutputs)) {
-                                    //throw error("No information available for address");
-                                }
-
-                                // Add the utxos to the list if they are mature and at least the minimum value
-                                int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(chainActive.Height() + 1);
-                                CAmount rembalance = 0;
-                                for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
-
-                                    int nDepth = chainActive.Height() - i->second.blockHeight + 1;
-                                    //if (nDepth < coinbaseMaturity)
-                                        //continue;
-
-                                    rembalance += i->second.satoshis;
-                                }
-
-                                addresses_balances.insert({dest, rembalance});
-                            }
+                    CTxDestination dest;
+                    if (ExtractDestination(input.prevout, prevout.scriptPubKey, dest)) {
+                        check_addresses.push_back(dest);
+                        uint256 hashBytes;
+                        int type = 0;
+                        if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
+                            return state.DoS(100, error("%s: invalid address decoded", __func__),
+                                REJECT_INVALID, "invalid-address");
                         }
+                        addresses_index.push_back(std::make_pair(hashBytes, type));
+                        addrhash_dest[hashBytes] = dest;
+                        if (addresses_inputs.find(dest) != addresses_inputs.end())
+                            addresses_inputs[dest] += prevout.nValue;
+                        else
+                            addresses_inputs[dest] = prevout.nValue;
                     }
+                }
 
-                    for (size_t j = 0; j < tx.vout.size(); j++) {
-                        const CTxOut& out = tx.vout[j];
-                        CTxDestination dest;
-                        if (ExtractDestination(out.scriptPubKey, dest)) {
-                            if (addresses_outputs.find(dest) != addresses_outputs.end())
-                                addresses_outputs[dest] += out.nValue;
-                            else
-                                addresses_outputs[dest] = out.nValue;
-                        }
+                for (size_t j = 0; j < tx.vout.size(); j++) {
+                    const CTxOut& out = tx.vout[j];
+                    CTxDestination dest;
+                    if (ExtractDestination(out.scriptPubKey, dest)) {
+                        if (addresses_outputs.find(dest) != addresses_outputs.end())
+                            addresses_outputs[dest] += out.nValue;
+                        else
+                            addresses_outputs[dest] = out.nValue;
                     }
+                }
 
-            
-                    for (const auto& addr_pair : addresses_index) {
-                        auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
-                        auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
-                        Lydra l;
-                        uint64_t locked_hydra_amount;
-                        l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
+                if (pindex->nHeight >= chainparams.GetConsensus().nLydraHeight) {
+                    if (!tx.IsCoinStake()) {
+                        for (const auto& addr_pair : addresses_index) {
+                            // Get address utxos
+                            std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
+                            if (!GetAddressUnspent(addr_pair.first, addr_pair.second, unspentOutputs)) {
+                                //throw error("No information available for address");
+                            }
 
-                        if (addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs < locked_hydra_amount) {
-                            LogPrintf("Address -> %s | rembalance -> %d | spent -> %d | locked -> %d/n", 
-                                boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), 
-                                addresses_balances[addrhash_dest[addr_pair.first]], all_outputs-all_inputs, locked_hydra_amount);
-                            return error("%s: Spending more than available HYDRA amount. The rest is locked for LYDRA tokens.", __func__);
+                            // Add the utxos to the list if they are mature and at least the minimum value
+                            int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(chainActive.Height() + 1);
+                            CAmount rembalance = 0;
+                            for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
+
+                                int nDepth = chainActive.Height() - i->second.blockHeight + 1;
+                                //if (nDepth < coinbaseMaturity)
+                                    //continue;
+
+                                rembalance += i->second.satoshis;
+                            }
+                            auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
+                            auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
+                            Lydra l;
+                            uint64_t locked_hydra_amount;
+                            l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
+
+                            if (rembalance - all_inputs + all_outputs < locked_hydra_amount) {
+                                LogPrintf("Address -> %s | rembalance -> %d | spent -> %d | locked -> %d/n", 
+                                   boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), 
+                                   rembalance, all_outputs-all_inputs, locked_hydra_amount);
+                                return error("%s: Spending more than available HYDRA amount. The rest is locked for LYDRA tokens.", __func__);
+                            }
                         }
-
-                        addresses_balances[addrhash_dest[addr_pair.first]] -= (all_inputs - all_outputs);
                     }
                 }
 
