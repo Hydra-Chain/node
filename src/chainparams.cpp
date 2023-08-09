@@ -114,7 +114,7 @@ CChainParams::CChainParams()
     consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 999999999999ULL;
 
     // The best chain should have at least this much work.
-    consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000002279a0c3b3098082cf2"); // qtum
+    consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000000000000000000138b138b"); // qtum
 
 
     chainTxData = ChainTxData{

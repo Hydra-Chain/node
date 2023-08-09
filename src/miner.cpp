@@ -771,8 +771,8 @@ bool BlockAssembler::TestPackageTransactions(const CTxMemPool::setEntries& packa
             return false;
         if (!fIncludeWitness && it->GetTx().HasWitness())
             return false;
-        if (!CheckTransactionLydraSpending(it->GetTx(), nHeight))
-            return false;
+//if (!CheckTransactionLydraSpending(it->GetTx(), nHeight))
+//           return false;
     }
     return true;
 }
