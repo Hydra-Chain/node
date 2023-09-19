@@ -786,6 +786,8 @@ bool BlockAssembler::CheckTransactionLydraAddresses(const CTransaction& tx)
             }
         }
     }
+
+    return true;
 }
 
 // Perform transaction-level checks before adding to block:
@@ -804,8 +806,7 @@ bool BlockAssembler::TestPackageTransactions(const CTxMemPool::setEntries& packa
         // if (nHeight >= Params().GetConsensus().nLydraHeight && 
         //         !CheckTransactionLydraSpending(it->GetTx(), nHeight))
         //     return false;
-        if (nHeight >= Params().GetConsensus().nLydraHeight && 
-                !CheckTransactionLydraAddresses(it->GetTx()))
+        if (nHeight >= Params().GetConsensus().nLydraHeight && !CheckTransactionLydraAddresses(it->GetTx()))
             return false;
     }
     return true;
