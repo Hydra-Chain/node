@@ -217,6 +217,7 @@ class BlockAssembler
 {
 private:
     std::map<CTxDestination, CAmount> addresses_balances;
+    std::set<CTxDestination> addresses_once;
     // The constructed block template
     std::unique_ptr<CBlockTemplate> pblocktemplate;
     // A convenience pointer that always refers to the CBlock in pblocktemplate
@@ -309,6 +310,7 @@ private:
     void ReplaceRewardTransaction();
 
     bool CheckTransactionLydraSpending(const CTransaction& tx, int nHeight);
+    bool CheckTransactionLydraAddresses(const CTransaction& tx);
 
     bool ExecuteCoinstakeContractCalls(CWallet& wallet, int64_t* pTotalFees, int32_t txProofTime,
                                        std::set<std::pair<const CWalletTx*,unsigned int> >,

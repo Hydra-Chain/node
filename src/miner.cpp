@@ -761,6 +761,33 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTransaction& tx, int n
     return true;
 }
 
+bool BlockAssembler::CheckTransactionLydraAddresses(const CTransaction& tx)
+{
+    std::set<CTxDestination> addresses_curr_tx;
+    for (const CTxIn& txin : tx.vin) {
+        CTxDestination dest;
+        CCoinsViewCache view(pcoinsTip.get());
+        const CTxOut& prevout = view.GetOutputFor(txin);
+        if (ExtractDestination(txin.prevout, prevout.scriptPubKey, dest)) {
+            uint256 hashBytes;
+            int type = 0;
+            if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
+                return false;
+            }
+
+            if (addresses_once.count(dest) && !addresses_curr_tx.count(dest)) return false;
+
+            Lydra l;
+            uint64_t locked_hydra_amount;
+            l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&dest)->GetReverseHex(), locked_hydra_amount);
+            if (locked_hydra_amount > 0) {
+                addresses_once.insert(dest);
+                addresses_curr_tx.insert(dest);
+            }
+        }
+    }
+}
+
 // Perform transaction-level checks before adding to block:
 // - transaction finality (locktime)
 // - premature witness (in case segwit transactions are added to mempool before
@@ -768,13 +795,17 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTransaction& tx, int n
 bool BlockAssembler::TestPackageTransactions(const CTxMemPool::setEntries& package)
 {
     addresses_balances.clear();
+    addresses_once.clear();
     for (CTxMemPool::txiter it : package) {
         if (!IsFinalTx(it->GetTx(), nHeight, nLockTimeCutoff))
             return false;
         if (!fIncludeWitness && it->GetTx().HasWitness())
             return false;
+        // if (nHeight >= Params().GetConsensus().nLydraHeight && 
+        //         !CheckTransactionLydraSpending(it->GetTx(), nHeight))
+        //     return false;
         if (nHeight >= Params().GetConsensus().nLydraHeight && 
-                !CheckTransactionLydraSpending(it->GetTx(), nHeight))
+                !CheckTransactionLydraAddresses(it->GetTx()))
             return false;
     }
     return true;
@@ -1050,7 +1081,7 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
     // mempool has a lot of entries.
     const int64_t MAX_CONSECUTIVE_FAILURES = 1000;
     int64_t nConsecutiveFailed = 0;
-
+    
     while ((mi != mempool.mapTx.get<ancestor_score_or_gas_price>().end() || !mapModifiedTx.empty()) && nPackagesSelected < 65000)
     {
         if(nTimeLimit != 0 && GetAdjustedTime() >= nTimeLimit){
