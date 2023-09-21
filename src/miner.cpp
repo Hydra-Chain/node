@@ -761,31 +761,73 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTransaction& tx, int n
     return true;
 }
 
-bool BlockAssembler::CheckTransactionLydraAddresses(const CTransaction& tx)
+bool BlockAssembler::CheckTransactionLydraAddresses(const CTxMemPool::setEntries& package)
 {
-    std::set<CTxDestination> addresses_curr_tx;
-    for (const CTxIn& txin : tx.vin) {
-        CTxDestination dest;
-        CCoinsViewCache view(pcoinsTip.get());
-        const CTxOut& prevout = view.GetOutputFor(txin);
-        if (ExtractDestination(txin.prevout, prevout.scriptPubKey, dest)) {
-            uint256 hashBytes;
-            int type = 0;
-            if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
-                return false;
-            }
+	std::set<CTxDestination> addresses_once{};
+    for (CTxMemPool::txiter it : package) {
+			auto tx = it->GetTx();
+			LogPrintf("CHECKING TX -> %s\n", tx.GetHash().ToString());
+			for (CTxDestination d : addresses_once)
+			{
+				LogPrintf("ADDRESS -> %s\n", EncodeDestination(d));
+			}
+			LogPrintf("BEFORE CHECKING INPUTS\n");
+			std::set<CTxDestination> addresses_curr_tx{};
+			for (const CTxIn& txin : tx.vin) {
+				LogPrintf("CHECKING INPUT\n");
+				for (CTxDestination d : addresses_once)
+				{
+					LogPrintf("ADDRESS -> %s\n", EncodeDestination(d));
+				}
+				CTxDestination dest;
+				CCoinsViewCache view(pcoinsTip.get());
+				const CTxOut& prevout = view.GetOutputFor(txin);
+				auto success = false;
+				auto tries = 0;
+				while(!success && tries < 1000) {
+				    success = ExtractDestination(prevout.scriptPubKey, dest);
+				    tries++;	
+				}
+				LogPrintf("SUCCESS -> %d\n", success);
+				LogPrintf("DEST -> %s\n", EncodeDestination(dest));
+				if (success) {
+					uint256 hashBytes;
+					int type = 0;
+					if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
+						LogPrintf("FAIL DECODE\n");
+						return false;
+					}
+					LogPrintf("ADDRESSES_ONCE COUNT %s -> %d\n", EncodeDestination(dest), addresses_once.count(dest));
+					LogPrintf("ADDRESSES_CURR COUNT %s -> %d\n", EncodeDestination(dest), addresses_curr_tx.count(dest));
+					if (addresses_once.count(dest) && !addresses_curr_tx.count(dest)) {
+						LogPrintf("FAIL CHECK\n");
+						return false;
+					}
 
-            if (addresses_once.count(dest) && !addresses_curr_tx.count(dest)) return false;
-
-            Lydra l;
-            uint64_t locked_hydra_amount;
-            l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&dest)->GetReverseHex(), locked_hydra_amount);
-            if (locked_hydra_amount > 0) {
-                addresses_once.insert(dest);
-                addresses_curr_tx.insert(dest);
-            }
-        }
-    }
+					Lydra l;
+					uint64_t locked_hydra_amount;
+					l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&dest)->GetReverseHex(), locked_hydra_amount);
+					LogPrintf("LOCKED AMOUNT -> %d\n", locked_hydra_amount);
+					if (locked_hydra_amount > 0) {
+						LogPrintf("BEFORE INSERT\n");
+						addresses_once.insert(dest);
+						for (CTxDestination d : addresses_once)
+						{
+							LogPrintf("ADDRESS -> %s\n", EncodeDestination(d));
+						}
+						addresses_curr_tx.insert(dest);
+					}
+				} else {
+					LogPrintf("FAIL EXTRACT\n");
+					return false;
+				}
+			}
+			LogPrintf("AFTER CHECK TX\n");
+			for (CTxDestination d : addresses_once)
+		    {
+				LogPrintf("ADDRESS -> %s\n", EncodeDestination(d));
+			}
+	}
 
     return true;
 }
@@ -797,7 +839,7 @@ bool BlockAssembler::CheckTransactionLydraAddresses(const CTransaction& tx)
 bool BlockAssembler::TestPackageTransactions(const CTxMemPool::setEntries& package)
 {
     addresses_balances.clear();
-    addresses_once.clear();
+    std::set<CTxDestination> addresses_once{};
     for (CTxMemPool::txiter it : package) {
         if (!IsFinalTx(it->GetTx(), nHeight, nLockTimeCutoff))
             return false;
@@ -806,8 +848,19 @@ bool BlockAssembler::TestPackageTransactions(const CTxMemPool::setEntries& packa
         // if (nHeight >= Params().GetConsensus().nLydraHeight && 
         //         !CheckTransactionLydraSpending(it->GetTx(), nHeight))
         //     return false;
-        if (nHeight >= Params().GetConsensus().nLydraHeight && !CheckTransactionLydraAddresses(it->GetTx()))
+        /*if (nHeight >= Params().GetConsensus().nLydraHeight && !CheckTransactionLydraAddresses(it->GetTx(), addresses_once)) {
+            LogPrintf("AFTER CHECKING TX -> %s\n", it->GetTx().GetHash().ToString());
+            for (CTxDestination d : addresses_once)
+            {
+                LogPrintf("ADDRESS -> %s\n", EncodeDestination(d));
+            }
+            LogPrintf("END\n");
             return false;
+        }
+	for (CTxDestination d : addresses_once)
+        {
+            LogPrintf("ADDRESS -> %s\n", EncodeDestination(d));
+        }*/
     }
     return true;
 }
@@ -1175,6 +1228,14 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
             }
             continue;
         }
+
+	if (!CheckTransactionLydraAddresses(ancestors)) {
+	    if (fUsingModified) {
+                mapModifiedTx.get<ancestor_score_or_gas_price>().erase(modit);
+                failedTx.insert(iter);
+            }
+            continue;
+	}
 
         // This transaction will make it in; reset the failed counter.
         nConsecutiveFailed = 0;
