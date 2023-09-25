@@ -763,8 +763,10 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTransaction& tx, int n
 
 bool BlockAssembler::CheckTransactionLydraAddresses(const CTxMemPool::setEntries& package)
 {
-	std::set<CTxDestination> addresses_once{};
+	int ind = 0;
     for (CTxMemPool::txiter it : package) {
+			ind++;
+			LogPrintf("IND -> %d\n", ind);
 			auto tx = it->GetTx();
 			LogPrintf("CHECKING TX -> %s\n", tx.GetHash().ToString());
 			for (CTxDestination d : addresses_once)
@@ -774,6 +776,7 @@ bool BlockAssembler::CheckTransactionLydraAddresses(const CTxMemPool::setEntries
 			LogPrintf("BEFORE CHECKING INPUTS\n");
 			std::set<CTxDestination> addresses_curr_tx{};
 			for (const CTxIn& txin : tx.vin) {
+				LogPrintf("VIN SIZE -> %d\n", tx.vin.size());
 				LogPrintf("CHECKING INPUT\n");
 				for (CTxDestination d : addresses_once)
 				{
@@ -784,10 +787,12 @@ bool BlockAssembler::CheckTransactionLydraAddresses(const CTxMemPool::setEntries
 				const CTxOut& prevout = view.GetOutputFor(txin);
 				auto success = false;
 				auto tries = 0;
+				txnouttype whichType;
 				while(!success && tries < 1000) {
-				    success = ExtractDestination(prevout.scriptPubKey, dest);
+				    success = ExtractDestination(prevout.scriptPubKey, dest, &whichType);
 				    tries++;	
 				}
+				LogPrintf("WHICH TYPE -> %d\n", whichType);
 				LogPrintf("SUCCESS -> %d\n", success);
 				LogPrintf("DEST -> %s\n", EncodeDestination(dest));
 				if (success) {
@@ -1135,9 +1140,9 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
     // mempool has a lot of entries.
     const int64_t MAX_CONSECUTIVE_FAILURES = 1000;
     int64_t nConsecutiveFailed = 0;
-    
+    addresses_once.clear();
     while ((mi != mempool.mapTx.get<ancestor_score_or_gas_price>().end() || !mapModifiedTx.empty()) && nPackagesSelected < 65000)
-    {
+    {	
         if(nTimeLimit != 0 && GetAdjustedTime() >= nTimeLimit){
             //no more time to add transactions, just exit
             return;
