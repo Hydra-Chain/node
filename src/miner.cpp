@@ -726,6 +726,7 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
                     addresses_balances.insert({dest, rembalance});
                 }
             } else {
+				LogPrintf("FAIL EXTRACT\n");
                 return false;
             }
         }
@@ -734,12 +735,16 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
             const CTxOut& out = tx.vout[j];
             CTxDestination dest;
             if (ExtractDestination(out.scriptPubKey, dest)) {
+				LogPrintf("SUCCESS EXTRACT OUT\n");
+				LogPrintf("DEST -> %s\n", EncodeDestination(dest));
                 if (addresses_outputs.find(dest) != addresses_outputs.end())
                     addresses_outputs[dest] += out.nValue;
                 else
                     addresses_outputs[dest] = out.nValue;
             } else {
-                return false;
+				LogPrintf("FAIL EXTRACT OUT\n");
+				LogPrintf("DEST -> %s\n", EncodeDestination(dest));
+                continue;
             }
         }
 
