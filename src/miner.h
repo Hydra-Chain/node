@@ -309,7 +309,7 @@ private:
 
     void ReplaceRewardTransaction();
 
-    bool CheckTransactionLydraSpending(const CTransaction& tx, int nHeight);
+    bool CheckTransactionLydraSpending(const CTxMemPool::setEntries& package);
     bool CheckTransactionLydraAddresses(const CTxMemPool::setEntries& package);
 
     bool ExecuteCoinstakeContractCalls(CWallet& wallet, int64_t* pTotalFees, int32_t txProofTime,

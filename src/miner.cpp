@@ -678,84 +678,89 @@ bool BlockAssembler::TestPackage(uint64_t packageSize, int64_t packageSigOpsCost
     return true;
 }
 
-bool BlockAssembler::CheckTransactionLydraSpending(const CTransaction& tx, int nHeight)
+bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries& package)
 {
-    std::vector<CTxDestination> check_addresses;
-    std::map<CTxDestination, CAmount> addresses_inputs;
-    std::map<CTxDestination, CAmount> addresses_outputs;
-    std::vector<std::pair<uint256, int>> addresses_index;
-    std::map<uint256, CTxDestination> addrhash_dest;
+    for (CTxMemPool::txiter it : package) {
+        auto tx = it->GetTx();
+        std::map<CTxDestination, CAmount> addresses_inputs;
+        std::map<CTxDestination, CAmount> addresses_outputs;
+        std::vector<std::pair<uint256, int>> addresses_index;
+        std::map<uint256, CTxDestination> addrhash_dest;
 
-    for (const CTxIn& txin : tx.vin) {
-        CTxDestination dest;
-        CCoinsViewCache view(pcoinsTip.get());
-        const CTxOut& prevout = view.GetOutputFor(txin);
-        if (ExtractDestination(txin.prevout, prevout.scriptPubKey, dest)) {
-            check_addresses.push_back(dest);
-            uint256 hashBytes;
-            int type = 0;
-            if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
+        for (const CTxIn& txin : tx.vin) {
+            CTxDestination dest;
+            CCoinsViewCache view(pcoinsTip.get());
+            const CTxOut& prevout = view.GetOutputFor(txin);
+            if (ExtractDestination(txin.prevout, prevout.scriptPubKey, dest)) {
+                uint256 hashBytes;
+                int type = 0;
+                if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
+                    return false;
+                }
+                addresses_index.push_back(std::make_pair(hashBytes, type));
+                addrhash_dest[hashBytes] = dest;
+                if (addresses_inputs.find(dest) != addresses_inputs.end())
+                    addresses_inputs[dest] += prevout.nValue;
+                else
+                    addresses_inputs[dest] = prevout.nValue;
+
+                if(!addresses_balances.count(dest)) {
+                    // Get address utxos
+                    std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
+                    if (!GetAddressUnspent(hashBytes, type, unspentOutputs)) {
+                        return false;
+                    }
+
+                    // Add the utxos to the list if they are mature and at least the minimum value
+                    int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(chainActive.Height() + 1);
+                    CAmount rembalance = 0;
+                    for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
+
+                        int nDepth = chainActive.Height() - i->second.blockHeight + 1;
+                        //if (nDepth < coinbaseMaturity)
+                            //continue;
+
+                        rembalance += i->second.satoshis;
+                    }
+
+                    addresses_balances.insert({dest, rembalance});
+                }
+            } else {
                 return false;
             }
-            addresses_index.push_back(std::make_pair(hashBytes, type));
-            addrhash_dest[hashBytes] = dest;
-            if (addresses_inputs.find(dest) != addresses_inputs.end())
-                addresses_inputs[dest] += prevout.nValue;
-            else
-                addresses_inputs[dest] = prevout.nValue;
+        }
 
-            if(!addresses_balances.count(dest)) {
-                // Get address utxos
-                std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
-                if (!GetAddressUnspent(hashBytes, type, unspentOutputs)) {
+        for (size_t j = 0; j < tx.vout.size(); j++) {
+            const CTxOut& out = tx.vout[j];
+            CTxDestination dest;
+            if (ExtractDestination(out.scriptPubKey, dest)) {
+                if (addresses_outputs.find(dest) != addresses_outputs.end())
+                    addresses_outputs[dest] += out.nValue;
+                else
+                    addresses_outputs[dest] = out.nValue;
+            } else {
+                return false;
+            }
+        }
+
+        for (const auto& addr_pair : addresses_index) {
+            // if(addresses_balances.count(addrhash_dest[addr_pair.first]) && 
+            //     addresses_inputs.count(addrhash_dest[addr_pair.first]) &&
+            //     addresses_outputs.count(addrhash_dest[addr_pair.first])) {
+                auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
+                auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
+                Lydra l;
+                uint64_t locked_hydra_amount;
+                l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
+
+                if (addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs < locked_hydra_amount) {
                     return false;
                 }
 
-                // Add the utxos to the list if they are mature and at least the minimum value
-                int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(chainActive.Height() + 1);
-                CAmount rembalance = 0;
-                for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
-
-                    int nDepth = chainActive.Height() - i->second.blockHeight + 1;
-                    //if (nDepth < coinbaseMaturity)
-                        //continue;
-
-                    rembalance += i->second.satoshis;
-                }
-
-                addresses_balances.insert({dest, rembalance});
-            }
+                addresses_balances[addrhash_dest[addr_pair.first]] = 
+                    addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs;
+            // }
         }
-    }
-
-    for (size_t j = 0; j < tx.vout.size(); j++) {
-        const CTxOut& out = tx.vout[j];
-        CTxDestination dest;
-        if (ExtractDestination(out.scriptPubKey, dest)) {
-            if (addresses_outputs.find(dest) != addresses_outputs.end())
-                addresses_outputs[dest] += out.nValue;
-            else
-                addresses_outputs[dest] = out.nValue;
-        }
-    }
-
-    for (const auto& addr_pair : addresses_index) {
-        // if(addresses_balances.count(addrhash_dest[addr_pair.first]) && 
-        //     addresses_inputs.count(addrhash_dest[addr_pair.first]) &&
-        //     addresses_outputs.count(addrhash_dest[addr_pair.first])) {
-            auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
-            auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
-            Lydra l;
-            uint64_t locked_hydra_amount;
-            l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
-
-            if (addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs < locked_hydra_amount) {
-                return false;
-            }
-
-            addresses_balances[addrhash_dest[addr_pair.first]] = 
-                addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs;
-        // }
     }
 
     return true;
@@ -1141,6 +1146,7 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
     const int64_t MAX_CONSECUTIVE_FAILURES = 1000;
     int64_t nConsecutiveFailed = 0;
     addresses_once.clear();
+    addresses_balances.clear();
     while ((mi != mempool.mapTx.get<ancestor_score_or_gas_price>().end() || !mapModifiedTx.empty()) && nPackagesSelected < 65000)
     {	
         if(nTimeLimit != 0 && GetAdjustedTime() >= nTimeLimit){
@@ -1234,7 +1240,7 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
             continue;
         }
 
-	if (!CheckTransactionLydraAddresses(ancestors)) {
+	if (!CheckTransactionLydraSpending(ancestors)) {
 	    if (fUsingModified) {
                 mapModifiedTx.get<ancestor_score_or_gas_price>().erase(modit);
                 failedTx.insert(iter);
