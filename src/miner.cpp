@@ -682,10 +682,12 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
 {
     for (CTxMemPool::txiter it : package) {
         auto tx = it->GetTx();
+		LogPrintf("CHECKING TX -> %s\n", tx.GetHash().ToString());
         std::map<CTxDestination, CAmount> addresses_inputs;
         std::map<CTxDestination, CAmount> addresses_outputs;
         std::vector<std::pair<uint256, int>> addresses_index;
         std::map<uint256, CTxDestination> addrhash_dest;
+		std::set<uint256> addresses_index_checked;
 
         for (const CTxIn& txin : tx.vin) {
             CTxDestination dest;
@@ -695,6 +697,7 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
                 uint256 hashBytes;
                 int type = 0;
                 if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
+					LogPrintf("FAIL DECODE INDEX KEY\n");
                     return false;
                 }
                 addresses_index.push_back(std::make_pair(hashBytes, type));
@@ -708,6 +711,7 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
                     // Get address utxos
                     std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
                     if (!GetAddressUnspent(hashBytes, type, unspentOutputs)) {
+						LogPrintf("FAIL GET ADDRESS UNSPENT\n");
                         return false;
                     }
 
@@ -717,8 +721,8 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
                     for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
 
                         int nDepth = chainActive.Height() - i->second.blockHeight + 1;
-                        //if (nDepth < coinbaseMaturity)
-                            //continue;
+                        if (i->second.coinStake && nDepth < coinbaseMaturity)
+                            continue;
 
                         rembalance += i->second.satoshis;
                     }
@@ -734,17 +738,11 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
         for (size_t j = 0; j < tx.vout.size(); j++) {
             const CTxOut& out = tx.vout[j];
             CTxDestination dest;
-            if (ExtractDestination(out.scriptPubKey, dest)) {
-				LogPrintf("SUCCESS EXTRACT OUT\n");
-				LogPrintf("DEST -> %s\n", EncodeDestination(dest));
+            if (ExtractDestination(out.scriptPubKey, dest)) {	
                 if (addresses_outputs.find(dest) != addresses_outputs.end())
                     addresses_outputs[dest] += out.nValue;
                 else
                     addresses_outputs[dest] = out.nValue;
-            } else {
-				LogPrintf("FAIL EXTRACT OUT\n");
-				LogPrintf("DEST -> %s\n", EncodeDestination(dest));
-                continue;
             }
         }
 
@@ -757,17 +755,21 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
                 Lydra l;
                 uint64_t locked_hydra_amount;
                 l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
-
-                if (addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs < locked_hydra_amount) {
+                //LogPrintf("BALANCE %d | LOCKED %d\n", addresses_balances[addrhash_dest[addr_pair.first]], locked_hydra_amount);
+                if (!addresses_index_checked.count(addr_pair.first) && addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs < locked_hydra_amount) {
+					LogPrintf("FAIL CHECK -> BALANCE %d | ALL_INPUTS %d | ALL_OUTPUTS %d | LOCKED %d\n", addresses_balances[addrhash_dest[addr_pair.first]], all_inputs, all_outputs, locked_hydra_amount);
                     return false;
                 }
-
-                addresses_balances[addrhash_dest[addr_pair.first]] = 
-                    addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs;
+                if (!addresses_index_checked.count(addr_pair.first)) {
+                    addresses_balances[addrhash_dest[addr_pair.first]] = 
+                        addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs;
+					addresses_index_checked.insert(addr_pair.first);
+				}
             // }
         }
     }
 
+    LogPrintf("RETURN TRUE\n");
     return true;
 }
 
@@ -853,8 +855,6 @@ bool BlockAssembler::CheckTransactionLydraAddresses(const CTxMemPool::setEntries
 //   segwit activation)
 bool BlockAssembler::TestPackageTransactions(const CTxMemPool::setEntries& package)
 {
-    addresses_balances.clear();
-    std::set<CTxDestination> addresses_once{};
     for (CTxMemPool::txiter it : package) {
         if (!IsFinalTx(it->GetTx(), nHeight, nLockTimeCutoff))
             return false;
@@ -881,11 +881,13 @@ bool BlockAssembler::TestPackageTransactions(const CTxMemPool::setEntries& packa
 }
 
 bool BlockAssembler::AttemptToAddContractToBlock(CTxMemPool::txiter iter, uint64_t minGasPrice) {
-    if (nTimeLimit != 0 && GetAdjustedTime() >= nTimeLimit - nBytecodeTimeBuffer) {
+    /*if (nTimeLimit != 0 && GetAdjustedTime() >= nTimeLimit - nBytecodeTimeBuffer) {
+		LogPrintf("FAIL BYTECODE BUFFER\n");
         return false;
-    }
+    }*/
     if (gArgs.GetBoolArg("-disablecontractstaking", false))
     {
+		LogPrintf("FAIL CONTRACT STAKING\n");
         // Contract staking is disabled for the staker
         return false;
     }
@@ -993,6 +995,7 @@ bool BlockAssembler::AttemptToAddContractToBlock(CTxMemPool::txiter iter, uint64
         //contract will not be added to block, so revert state to before we tried
         globalState->setRoot(oldHashStateRoot);
         globalState->setRootUTXO(oldHashUTXORoot);
+		LogPrintf("FAIL GLOBAL STATE\n");
         return false;
     }
 
@@ -1253,6 +1256,8 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
             continue;
 	}
 
+	LogPrintf("AFTER LYDRA SPEND CHECK\n");
+
         // This transaction will make it in; reset the failed counter.
         nConsecutiveFailed = 0;
 
@@ -1267,6 +1272,7 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
                 //if out of time, or earlier ancestor failed, then skip the rest of the transactions
                 mapModifiedTx.erase(sortedEntries[i]);
                 wasAdded=false;
+				LogPrintf("EARLIER ANCESTOR\n");
                 continue;
             }
             const CTransaction& tx = sortedEntries[i]->GetTx();
@@ -1274,6 +1280,7 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
                 if (tx.HasCreateOrCall()) {
                     wasAdded = AttemptToAddContractToBlock(sortedEntries[i], minGasPrice);
                     if(!wasAdded){
+						LogPrintf("FAIL ADD CONTRACT TO BLOCK\n");
                         if(fUsingModified) {
                             //this only needs to be done once to mark the whole package (everything in sortedEntries) as failed
                             mapModifiedTx.get<ancestor_score_or_gas_price>().erase(modit);
@@ -1289,6 +1296,7 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
         }
 
         if(!wasAdded){
+			LogPrintf("FAIL WAS ADDED\n");
             //skip UpdatePackages if a transaction failed to be added (match TestPackage logic)
             continue;
         }
