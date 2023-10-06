@@ -87,6 +87,8 @@ struct Params {
     int nDelegationsGasFixHeight;
     /** Block height at which refund fix becomes active */
     int nRefundFixHeight;
+    /** Block height at which overspend fix becomes active */
+    int nLydraOverspendingFixHeight;
 
     /**
      * Minimum blocks including miner confirmation of the total of 2016 blocks in a retargeting period,

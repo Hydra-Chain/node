@@ -3067,6 +3067,96 @@ bool CheckDelegationOutput(const CBlock& block, bool& delegateOutputExist, CCoin
     return true;
 }
 
+bool CheckBlockLydraSpending(std::vector<CTransactionRef> vtx)
+{
+    std::map<CTxDestination, CAmount> addresses_balances;
+
+    for (unsigned int i = 0; i < vtx.size(); i++)
+    {
+        const CTransaction &tx = *(vtx[i]);
+        if (tx.IsCoinBase() || tx.IsCoinStake()) continue;
+		LogPrintf("CHECKING TX -> %s\n", tx.GetHash().ToString());
+        std::map<CTxDestination, CAmount> addresses_inputs;
+        std::map<CTxDestination, CAmount> addresses_outputs;
+        std::vector<std::pair<uint256, int>> addresses_index;
+        std::map<uint256, CTxDestination> addrhash_dest;
+		std::set<uint256> addresses_index_checked;
+        for (const CTxIn& txin : tx.vin) {
+            CTxDestination dest;
+            CCoinsViewCache view(pcoinsTip.get());
+            const CTxOut& prevout = view.GetOutputFor(txin);
+            if (ExtractDestination(txin.prevout, prevout.scriptPubKey, dest)) {
+                uint256 hashBytes;
+                int type = 0;
+                if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
+					LogPrintf("FAIL DECODE INDEX KEY\n");
+                    return false;
+                }
+                addresses_index.push_back(std::make_pair(hashBytes, type));
+                addrhash_dest[hashBytes] = dest;
+                if (addresses_inputs.find(dest) != addresses_inputs.end())
+                    addresses_inputs[dest] += prevout.nValue;
+                else
+                    addresses_inputs[dest] = prevout.nValue;
+                if(!addresses_balances.count(dest)) {
+                    // Get address utxos
+                    std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
+                    if (!GetAddressUnspent(hashBytes, type, unspentOutputs)) {
+						LogPrintf("FAIL GET ADDRESS UNSPENT\n");
+                        return false;
+                    }
+                    // Add the utxos to the list if they are mature and at least the minimum value
+                    int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(chainActive.Height() + 1);
+                    CAmount rembalance = 0;
+                    for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
+                        int nDepth = chainActive.Height() - i->second.blockHeight + 1;
+                        if (i->second.coinStake && nDepth < coinbaseMaturity)
+                            continue;
+                        rembalance += i->second.satoshis;
+                    }
+                    addresses_balances.insert({dest, rembalance});
+                }
+            } else {
+				LogPrintf("FAIL EXTRACT\n");
+                return false;
+            }
+        }
+        for (size_t j = 0; j < tx.vout.size(); j++) {
+            const CTxOut& out = tx.vout[j];
+            CTxDestination dest;
+            if (ExtractDestination(out.scriptPubKey, dest)) {	
+                if (addresses_outputs.find(dest) != addresses_outputs.end())
+                    addresses_outputs[dest] += out.nValue;
+                else
+                    addresses_outputs[dest] = out.nValue;
+            }
+        }
+        for (const auto& addr_pair : addresses_index) {
+            // if(addresses_balances.count(addrhash_dest[addr_pair.first]) && 
+            //     addresses_inputs.count(addrhash_dest[addr_pair.first]) &&
+            //     addresses_outputs.count(addrhash_dest[addr_pair.first])) {
+                auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
+                auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
+                Lydra l;
+                uint64_t locked_hydra_amount;
+                l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
+                //LogPrintf("BALANCE %d | LOCKED %d\n", addresses_balances[addrhash_dest[addr_pair.first]], locked_hydra_amount);
+                if (!addresses_index_checked.count(addr_pair.first) && addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs < locked_hydra_amount) {
+					LogPrintf("FAIL CHECK -> BALANCE %d | ALL_INPUTS %d | ALL_OUTPUTS %d | LOCKED %d\n", addresses_balances[addrhash_dest[addr_pair.first]], all_inputs, all_outputs, locked_hydra_amount);
+                    return false;
+                }
+                if (!addresses_index_checked.count(addr_pair.first)) {
+                    addresses_balances[addrhash_dest[addr_pair.first]] = 
+                        addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs;
+					addresses_index_checked.insert(addr_pair.first);
+				}
+            // }
+        }
+    }
+    LogPrintf("RETURN TRUE\n");
+    return true;
+}
+
 /** Apply the effects of this block (with given index) on the UTXO set represented by coins.
  *  Validity checks that depend on the UTXO set are also done; ConnectBlock()
  *  can fail if those validity checks fail (among other reasons). */
@@ -3346,7 +3436,11 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
         nValueCoinPrev = coin.out.nValue;
     }
 
-    std::map<CTxDestination, CAmount> addresses_balances;
+    if(pindex->nHeight >= chainparams.GetConsensus().nLydraOverspendingFixHeight) {
+        if(!CheckBlockLydraSpending(block.vtx))
+            return state.DoS(100, error("%s: LYDRA overspending detected", __func__), 
+                            REJECT_INVALID, "bad-txns-lydra-overspending");
+    }
 
     for (unsigned int i = 0; i < block.vtx.size(); i++) {
         const CTransaction& tx = *(block.vtx[i]);
