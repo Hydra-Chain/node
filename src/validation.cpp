@@ -3116,9 +3116,6 @@ bool CheckBlockLydraSpending(std::vector<CTransactionRef> vtx)
                     }
                     addresses_balances.insert({dest, rembalance});
                 }
-            } else {
-				LogPrintf("FAIL EXTRACT\n");
-                return false;
             }
         }
         for (size_t j = 0; j < tx.vout.size(); j++) {
