@@ -682,7 +682,6 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
 {
     for (CTxMemPool::txiter it : package) {
         auto tx = it->GetTx();
-		LogPrintf("CHECKING TX -> %s\n", tx.GetHash().ToString());
         std::map<CTxDestination, CAmount> addresses_inputs;
         std::map<CTxDestination, CAmount> addresses_outputs;
         std::vector<std::pair<uint256, int>> addresses_index;
@@ -697,7 +696,6 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
                 uint256 hashBytes;
                 int type = 0;
                 if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
-					LogPrintf("FAIL DECODE INDEX KEY\n");
                     return false;
                 }
                 addresses_index.push_back(std::make_pair(hashBytes, type));
@@ -711,7 +709,6 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
                     // Get address utxos
                     std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
                     if (!GetAddressUnspent(hashBytes, type, unspentOutputs)) {
-						LogPrintf("FAIL GET ADDRESS UNSPENT\n");
                         return false;
                     }
 
@@ -730,7 +727,6 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
                     addresses_balances.insert({dest, rembalance});
                 }
             } else {
-				LogPrintf("FAIL EXTRACT\n");
                 return false;
             }
         }
@@ -750,101 +746,22 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
             // if(addresses_balances.count(addrhash_dest[addr_pair.first]) && 
             //     addresses_inputs.count(addrhash_dest[addr_pair.first]) &&
             //     addresses_outputs.count(addrhash_dest[addr_pair.first])) {
-                auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
-                auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
-                Lydra l;
-                uint64_t locked_hydra_amount;
-                l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
-                //LogPrintf("BALANCE %d | LOCKED %d\n", addresses_balances[addrhash_dest[addr_pair.first]], locked_hydra_amount);
-                if (!addresses_index_checked.count(addr_pair.first) && addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs < locked_hydra_amount) {
-					LogPrintf("FAIL CHECK -> BALANCE %d | ALL_INPUTS %d | ALL_OUTPUTS %d | LOCKED %d\n", addresses_balances[addrhash_dest[addr_pair.first]], all_inputs, all_outputs, locked_hydra_amount);
-                    return false;
-                }
-                if (!addresses_index_checked.count(addr_pair.first)) {
-                    addresses_balances[addrhash_dest[addr_pair.first]] = 
-                        addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs;
-					addresses_index_checked.insert(addr_pair.first);
-				}
+            auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
+            auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
+            Lydra l;
+            uint64_t locked_hydra_amount;
+            l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
+            if (!addresses_index_checked.count(addr_pair.first) && addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs < locked_hydra_amount) {
+                return false;
+            }
+            if (!addresses_index_checked.count(addr_pair.first)) {
+                addresses_balances[addrhash_dest[addr_pair.first]] = 
+                    addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs;
+                addresses_index_checked.insert(addr_pair.first);
+            }
             // }
         }
     }
-
-    LogPrintf("RETURN TRUE\n");
-    return true;
-}
-
-bool BlockAssembler::CheckTransactionLydraAddresses(const CTxMemPool::setEntries& package)
-{
-	int ind = 0;
-    for (CTxMemPool::txiter it : package) {
-			ind++;
-			LogPrintf("IND -> %d\n", ind);
-			auto tx = it->GetTx();
-			LogPrintf("CHECKING TX -> %s\n", tx.GetHash().ToString());
-			for (CTxDestination d : addresses_once)
-			{
-				LogPrintf("ADDRESS -> %s\n", EncodeDestination(d));
-			}
-			LogPrintf("BEFORE CHECKING INPUTS\n");
-			std::set<CTxDestination> addresses_curr_tx{};
-			for (const CTxIn& txin : tx.vin) {
-				LogPrintf("VIN SIZE -> %d\n", tx.vin.size());
-				LogPrintf("CHECKING INPUT\n");
-				for (CTxDestination d : addresses_once)
-				{
-					LogPrintf("ADDRESS -> %s\n", EncodeDestination(d));
-				}
-				CTxDestination dest;
-				CCoinsViewCache view(pcoinsTip.get());
-				const CTxOut& prevout = view.GetOutputFor(txin);
-				auto success = false;
-				auto tries = 0;
-				txnouttype whichType;
-				while(!success && tries < 1000) {
-				    success = ExtractDestination(prevout.scriptPubKey, dest, &whichType);
-				    tries++;	
-				}
-				LogPrintf("WHICH TYPE -> %d\n", whichType);
-				LogPrintf("SUCCESS -> %d\n", success);
-				LogPrintf("DEST -> %s\n", EncodeDestination(dest));
-				if (success) {
-					uint256 hashBytes;
-					int type = 0;
-					if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
-						LogPrintf("FAIL DECODE\n");
-						return false;
-					}
-					LogPrintf("ADDRESSES_ONCE COUNT %s -> %d\n", EncodeDestination(dest), addresses_once.count(dest));
-					LogPrintf("ADDRESSES_CURR COUNT %s -> %d\n", EncodeDestination(dest), addresses_curr_tx.count(dest));
-					if (addresses_once.count(dest) && !addresses_curr_tx.count(dest)) {
-						LogPrintf("FAIL CHECK\n");
-						return false;
-					}
-
-					Lydra l;
-					uint64_t locked_hydra_amount;
-					l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&dest)->GetReverseHex(), locked_hydra_amount);
-					LogPrintf("LOCKED AMOUNT -> %d\n", locked_hydra_amount);
-					if (locked_hydra_amount > 0) {
-						LogPrintf("BEFORE INSERT\n");
-						addresses_once.insert(dest);
-						for (CTxDestination d : addresses_once)
-						{
-							LogPrintf("ADDRESS -> %s\n", EncodeDestination(d));
-						}
-						addresses_curr_tx.insert(dest);
-					}
-				} else {
-					LogPrintf("FAIL EXTRACT\n");
-					return false;
-				}
-			}
-			LogPrintf("AFTER CHECK TX\n");
-			for (CTxDestination d : addresses_once)
-		    {
-				LogPrintf("ADDRESS -> %s\n", EncodeDestination(d));
-			}
-	}
 
     return true;
 }
@@ -860,22 +777,6 @@ bool BlockAssembler::TestPackageTransactions(const CTxMemPool::setEntries& packa
             return false;
         if (!fIncludeWitness && it->GetTx().HasWitness())
             return false;
-        // if (nHeight >= Params().GetConsensus().nLydraHeight && 
-        //         !CheckTransactionLydraSpending(it->GetTx(), nHeight))
-        //     return false;
-        /*if (nHeight >= Params().GetConsensus().nLydraHeight && !CheckTransactionLydraAddresses(it->GetTx(), addresses_once)) {
-            LogPrintf("AFTER CHECKING TX -> %s\n", it->GetTx().GetHash().ToString());
-            for (CTxDestination d : addresses_once)
-            {
-                LogPrintf("ADDRESS -> %s\n", EncodeDestination(d));
-            }
-            LogPrintf("END\n");
-            return false;
-        }
-	for (CTxDestination d : addresses_once)
-        {
-            LogPrintf("ADDRESS -> %s\n", EncodeDestination(d));
-        }*/
     }
     return true;
 }
@@ -887,7 +788,6 @@ bool BlockAssembler::AttemptToAddContractToBlock(CTxMemPool::txiter iter, uint64
     }*/
     if (gArgs.GetBoolArg("-disablecontractstaking", false))
     {
-		LogPrintf("FAIL CONTRACT STAKING\n");
         // Contract staking is disabled for the staker
         return false;
     }
@@ -1153,7 +1053,6 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
     // mempool has a lot of entries.
     const int64_t MAX_CONSECUTIVE_FAILURES = 1000;
     int64_t nConsecutiveFailed = 0;
-    addresses_once.clear();
     addresses_balances.clear();
     while ((mi != mempool.mapTx.get<ancestor_score_or_gas_price>().end() || !mapModifiedTx.empty()) && nPackagesSelected < 65000)
     {	
@@ -1248,15 +1147,14 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
             continue;
         }
 
-	if (!CheckTransactionLydraSpending(ancestors)) {
-	    if (fUsingModified) {
+        if (!CheckTransactionLydraSpending(ancestors)) {
+            if (fUsingModified) {
                 mapModifiedTx.get<ancestor_score_or_gas_price>().erase(modit);
                 failedTx.insert(iter);
             }
             continue;
-	}
+        }
 
-	LogPrintf("AFTER LYDRA SPEND CHECK\n");
 
         // This transaction will make it in; reset the failed counter.
         nConsecutiveFailed = 0;
@@ -1272,7 +1170,6 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
                 //if out of time, or earlier ancestor failed, then skip the rest of the transactions
                 mapModifiedTx.erase(sortedEntries[i]);
                 wasAdded=false;
-				LogPrintf("EARLIER ANCESTOR\n");
                 continue;
             }
             const CTransaction& tx = sortedEntries[i]->GetTx();
@@ -1280,7 +1177,6 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
                 if (tx.HasCreateOrCall()) {
                     wasAdded = AttemptToAddContractToBlock(sortedEntries[i], minGasPrice);
                     if(!wasAdded){
-						LogPrintf("FAIL ADD CONTRACT TO BLOCK\n");
                         if(fUsingModified) {
                             //this only needs to be done once to mark the whole package (everything in sortedEntries) as failed
                             mapModifiedTx.get<ancestor_score_or_gas_price>().erase(modit);
@@ -1296,7 +1192,6 @@ void BlockAssembler::addPackageTxs(int &nPackagesSelected, int &nDescendantsUpda
         }
 
         if(!wasAdded){
-			LogPrintf("FAIL WAS ADDED\n");
             //skip UpdatePackages if a transaction failed to be added (match TestPackage logic)
             continue;
         }

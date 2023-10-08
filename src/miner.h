@@ -217,7 +217,6 @@ class BlockAssembler
 {
 private:
     std::map<CTxDestination, CAmount> addresses_balances;
-    std::set<CTxDestination> addresses_once;
     // The constructed block template
     std::unique_ptr<CBlockTemplate> pblocktemplate;
     // A convenience pointer that always refers to the CBlock in pblocktemplate

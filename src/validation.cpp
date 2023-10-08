@@ -3075,7 +3075,6 @@ bool CheckBlockLydraSpending(std::vector<CTransactionRef> vtx)
     {
         const CTransaction &tx = *(vtx[i]);
         if (tx.IsCoinBase() || tx.IsCoinStake()) continue;
-		LogPrintf("CHECKING TX -> %s\n", tx.GetHash().ToString());
         std::map<CTxDestination, CAmount> addresses_inputs;
         std::map<CTxDestination, CAmount> addresses_outputs;
         std::vector<std::pair<uint256, int>> addresses_index;
@@ -3089,7 +3088,6 @@ bool CheckBlockLydraSpending(std::vector<CTransactionRef> vtx)
                 uint256 hashBytes;
                 int type = 0;
                 if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
-					LogPrintf("FAIL DECODE INDEX KEY\n");
                     return false;
                 }
                 addresses_index.push_back(std::make_pair(hashBytes, type));
@@ -3102,7 +3100,6 @@ bool CheckBlockLydraSpending(std::vector<CTransactionRef> vtx)
                     // Get address utxos
                     std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
                     if (!GetAddressUnspent(hashBytes, type, unspentOutputs)) {
-						LogPrintf("FAIL GET ADDRESS UNSPENT\n");
                         return false;
                     }
                     // Add the utxos to the list if they are mature and at least the minimum value
@@ -3132,25 +3129,23 @@ bool CheckBlockLydraSpending(std::vector<CTransactionRef> vtx)
             // if(addresses_balances.count(addrhash_dest[addr_pair.first]) && 
             //     addresses_inputs.count(addrhash_dest[addr_pair.first]) &&
             //     addresses_outputs.count(addrhash_dest[addr_pair.first])) {
-                auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
-                auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
-                Lydra l;
-                uint64_t locked_hydra_amount;
-                l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
-                //LogPrintf("BALANCE %d | LOCKED %d\n", addresses_balances[addrhash_dest[addr_pair.first]], locked_hydra_amount);
-                if (!addresses_index_checked.count(addr_pair.first) && addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs < locked_hydra_amount) {
-					LogPrintf("FAIL CHECK -> BALANCE %d | ALL_INPUTS %d | ALL_OUTPUTS %d | LOCKED %d\n", addresses_balances[addrhash_dest[addr_pair.first]], all_inputs, all_outputs, locked_hydra_amount);
-                    return false;
-                }
-                if (!addresses_index_checked.count(addr_pair.first)) {
-                    addresses_balances[addrhash_dest[addr_pair.first]] = 
-                        addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs;
-					addresses_index_checked.insert(addr_pair.first);
-				}
+            auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
+            auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
+            Lydra l;
+            uint64_t locked_hydra_amount;
+            l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
+            if (!addresses_index_checked.count(addr_pair.first) && addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs < locked_hydra_amount) {
+                return false;
+            }
+            if (!addresses_index_checked.count(addr_pair.first)) {
+                addresses_balances[addrhash_dest[addr_pair.first]] = 
+                    addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs;
+                addresses_index_checked.insert(addr_pair.first);
+            }
             // }
         }
     }
-    LogPrintf("RETURN TRUE\n");
+
     return true;
 }
 
