@@ -300,7 +300,9 @@ void OverviewPage::setBalance(const interfaces::WalletBalances& balances)
     }
     auto allLydraLockedCache = std::get<0>(lydraLockedCache);
     m_balances = balances;
-    auto balanceValue = balances.balance - allLydraLockedCache;
+    auto balanceValue = 0;
+    if (allLydraLockedCache > balances.stake) balanceValue = balances.balance + balances.stake - allLydraLockedCache;
+    else balanceValue = balances.balance;
     if (balanceValue < 0) balanceValue = 0;
     ui->labelBalance->setText(BitcoinUnits::formatWithUnit(unit, balanceValue, false, BitcoinUnits::separatorAlways));
     ui->labelUnconfirmed->setText(BitcoinUnits::formatWithUnit(unit, balances.unconfirmed_balance, false, BitcoinUnits::separatorAlways));
