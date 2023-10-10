@@ -10,6 +10,8 @@
 #include <iostream>
 #include <string>
 
+#include <locktrip/lydra.h>
+
 //namespace TitleBar_NS {
 //const int titleHeight = 50;
 //}
@@ -118,8 +120,23 @@ void TitleBar::removeWallet(WalletModel *_model)
 
 void TitleBar::setBalanceLabel(const interfaces::WalletBalances &balances)
 {
+    auto lydraLockedCache = getAllLydraLockedCache();
+    int trials = 0;
+    while (!std::get<1>(lydraLockedCache)){
+        if (trials>5000) break;
+        lydraLockedCache = getAllLydraLockedCache();
+        trials++;
+    }
+    uint64_t allLydraLockedCache = std::get<0>(lydraLockedCache);
+    uint64_t balanceValue = 0;
+    if (allLydraLockedCache > balances.stake){
+        balanceValue = balances.balance + balances.stake - allLydraLockedCache;
+    } else {
+        balanceValue = balances.balance;
+    }
+
     if(m_model && m_model->getOptionsModel())
     {
-        ui->lblBalance->setText(BitcoinUnits::formatWithUnitTitleBar(m_model->getOptionsModel()->getDisplayUnit(), balances.balance));
+        ui->lblBalance->setText(BitcoinUnits::formatWithUnitTitleBar(m_model->getOptionsModel()->getDisplayUnit(), balanceValue));
     }
 }
