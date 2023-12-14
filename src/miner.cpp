@@ -684,7 +684,7 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
         auto tx = it->GetTx();
         std::map<CTxDestination, CAmount> addresses_inputs;
         std::map<CTxDestination, CAmount> addresses_outputs;
-        std::vector<std::pair<uint256, int>> addresses_index;
+        std::set<std::pair<uint256, int>> addresses_index;
         std::map<uint256, CTxDestination> addrhash_dest;
 		std::set<uint256> addresses_index_checked;
 
@@ -698,7 +698,7 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
                 if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
                     return false;
                 }
-                addresses_index.push_back(std::make_pair(hashBytes, type));
+                addresses_index.insert(std::make_pair(hashBytes, type));
                 addrhash_dest[hashBytes] = dest;
                 if (addresses_inputs.find(dest) != addresses_inputs.end())
                     addresses_inputs[dest] += prevout.nValue;

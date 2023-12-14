@@ -716,7 +716,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
         std::vector<CTxDestination> check_addresses;
         std::map<CTxDestination, CAmount> addresses_inputs;
         std::map<CTxDestination, CAmount> addresses_outputs;
-        std::vector<std::pair<uint256, int>> addresses_index;
+        std::set<std::pair<uint256, int>> addresses_index;
         std::map<uint256, CTxDestination> addrhash_dest;
 
         // do all inputs exist?
@@ -787,7 +787,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                             REJECT_INVALID, "invalid-address");
                     }
 
-                    addresses_index.push_back(std::make_pair(hashBytes, type));
+                    addresses_index.insert(std::make_pair(hashBytes, type));
                     addrhash_dest[hashBytes] = dest;
                     if (addresses_inputs.find(dest) != addresses_inputs.end())
                         addresses_inputs[dest] += prevout.nValue;
@@ -3077,7 +3077,7 @@ bool CheckBlockLydraSpending(std::vector<CTransactionRef> vtx)
         if (tx.IsCoinBase() || tx.IsCoinStake()) continue;
         std::map<CTxDestination, CAmount> addresses_inputs;
         std::map<CTxDestination, CAmount> addresses_outputs;
-        std::vector<std::pair<uint256, int>> addresses_index;
+        std::set<std::pair<uint256, int>> addresses_index;
         std::map<uint256, CTxDestination> addrhash_dest;
 		std::set<uint256> addresses_index_checked;
         for (const CTxIn& txin : tx.vin) {
@@ -3090,7 +3090,7 @@ bool CheckBlockLydraSpending(std::vector<CTransactionRef> vtx)
                 if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
                     return false;
                 }
-                addresses_index.push_back(std::make_pair(hashBytes, type));
+                addresses_index.insert(std::make_pair(hashBytes, type));
                 addrhash_dest[hashBytes] = dest;
                 if (addresses_inputs.find(dest) != addresses_inputs.end())
                     addresses_inputs[dest] += prevout.nValue;
@@ -3468,7 +3468,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                 std::vector<CTxDestination> check_addresses;
                 std::map<CTxDestination, CAmount> addresses_inputs;
                 std::map<CTxDestination, CAmount> addresses_outputs;
-                std::vector<std::pair<uint256, int>> addresses_index;
+                std::set<std::pair<uint256, int>> addresses_index;
                 std::map<uint256, CTxDestination> addrhash_dest;
 
                 for (size_t j = 0; j < tx.vin.size(); j++) {
@@ -3484,7 +3484,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                             return state.DoS(100, error("%s: invalid address decoded", __func__),
                                 REJECT_INVALID, "invalid-address");
                         }
-                        addresses_index.push_back(std::make_pair(hashBytes, type));
+                        addresses_index.insert(std::make_pair(hashBytes, type));
                         addrhash_dest[hashBytes] = dest;
                         if (addresses_inputs.find(dest) != addresses_inputs.end())
                             addresses_inputs[dest] += prevout.nValue;
