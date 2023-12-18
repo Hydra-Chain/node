@@ -55,6 +55,7 @@ class QComboBox;
 class QProgressBar;
 class QProgressDialog;
 class QDockWidget;
+class QTimer;
 QT_END_NAMESPACE
 
 /**
@@ -88,6 +89,8 @@ public:
 #endif // ENABLE_WALLET
     bool enableWallet = false;
 
+    void join();
+
 protected:
     void changeEvent(QEvent *e);
     void closeEvent(QCloseEvent *event);
@@ -112,6 +115,7 @@ private:
     QLabel *labelStakingIcon = nullptr;
     QProgressBar* progressBar = nullptr;
     QProgressDialog* progressDialog = nullptr;
+    QTimer *timerStakingIcon = nullptr;
 
     QMenuBar* appMenuBar = nullptr;
     TitleBar *appTitleBar = nullptr;

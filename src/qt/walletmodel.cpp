@@ -114,8 +114,7 @@ WalletModel::~WalletModel()
 {
     unsubscribeFromCoreSignals();
 
-    t.quit();
-    t.wait();
+    join();
 }
 
 void WalletModel::updateStatus()
@@ -852,4 +851,22 @@ void WalletModel::checkStakeWeightChanged()
 void WalletModel::checkCoinAddresses()
 {
     updateCoinAddresses = true;
+}
+
+void WalletModel::join()
+{
+    // Quit thread
+    if(t.isRunning())
+    {
+        t.quit();
+        t.wait();
+    }
+
+    // Join models
+    if(tokenItemModel)
+        tokenItemModel->join();
+    if(delegationItemModel)
+        delegationItemModel->join();
+    if(superStakerItemModel)
+        superStakerItemModel->join();
 }

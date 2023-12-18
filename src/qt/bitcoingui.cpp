@@ -203,7 +203,7 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
 
     if (gArgs.GetBoolArg("-staking", true))
     {
-        QTimer *timerStakingIcon = new QTimer(labelStakingIcon);
+        timerStakingIcon = new QTimer(labelStakingIcon);
         connect(timerStakingIcon, SIGNAL(timeout()), this, SLOT(updateStakingIcon()));
         timerStakingIcon->start(1000);
 
@@ -660,6 +660,22 @@ void BitcoinGUI::setClientModel(ClientModel *_clientModel)
 #endif // ENABLE_WALLET
         //unitDisplayControl->setOptionsModel(nullptr);
     }
+}
+
+void BitcoinGUI::join()
+{
+#ifdef ENABLE_WALLET
+    if (!walletFrame) {
+        return;
+    }
+
+    WalletView * const walletView = walletFrame->currentWalletView();
+    if (!walletView) {
+        return;
+    }
+    WalletModel * const walletModel = walletView->getWalletModel();
+    walletModel->join();
+#endif // ENABLE_WALLET
 }
 
 #ifdef ENABLE_WALLET

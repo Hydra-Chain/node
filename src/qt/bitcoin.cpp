@@ -457,6 +457,7 @@ void BitcoinApplication::requestShutdown()
     window->hide();
     window->setClientModel(0);
     pollShutdownTimer->stop();
+    window->join();
 
 #ifdef ENABLE_WALLET
     window->removeAllWallets();
