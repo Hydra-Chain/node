@@ -5202,7 +5202,7 @@ bool CheckFirstCoinstakeOutput(const CBlock& block)
 
 #ifdef ENABLE_WALLET
 // novacoin: attempt to generate suitable proof-of-stake
-bool SignBlock(std::shared_ptr<CBlock> pblock, CWallet& wallet, const CAmount& nTotalFees, uint32_t nTime, std::set<std::pair<const CWalletTx*, unsigned int>>& setCoins, std::vector<COutPoint>& setDelegateCoins)
+bool SignBlock(std::shared_ptr<CBlock> pblock, CWallet& wallet, const CAmount& nTotalFees, uint32_t nTime, std::set<std::pair<const CWalletTx*,unsigned int> >& setCoins, std::vector<COutPoint>& setSelectedCoins, std::vector<COutPoint>& setDelegateCoins, bool selectedOnly, bool tryOnly)
 {
     // if we are trying to sign
     //    something except proof-of-stake block template
@@ -5228,8 +5228,7 @@ bool SignBlock(std::shared_ptr<CBlock> pblock, CWallet& wallet, const CAmount& n
     if (wallet.IsStakeClosing()) return false;
     auto locked_chain = wallet.chain().lock();
     LOCK(wallet.cs_wallet);
-    if (wallet.CreateCoinStake(*locked_chain, wallet, pblock->nBits, nTotalFees, nTimeBlock, txCoinStake, key,
-            setCoins, setDelegateCoins, vchPoD, headerPrevout)) {
+    if (wallet.CreateCoinStake(*locked_chain, wallet, pblock->nBits, nTotalFees, nTimeBlock, txCoinStake, key, setCoins, setSelectedCoins, setDelegateCoins, selectedOnly, vchPoD, headerPrevout)){
         if (nTimeBlock >= chainActive.Tip()->GetMedianTimePast() + 1) {
             // make sure coinstake would meet timestamp protocol
             //    as it would be the same as the block timestamp
@@ -5237,6 +5236,9 @@ bool SignBlock(std::shared_ptr<CBlock> pblock, CWallet& wallet, const CAmount& n
             pblock->vtx[1] = MakeTransactionRef(std::move(txCoinStake));
             pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
             pblock->prevoutStake = headerPrevout;
+
+            if(tryOnly)
+                return true;
 
             // Check timestamp against prev
             if (pblock->GetBlockTime() <= chainActive.Tip()->GetBlockTime() || FutureDrift(pblock->GetBlockTime(), nHeight, consensusParams) < chainActive.Tip()->GetBlockTime()) {
