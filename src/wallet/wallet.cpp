@@ -5317,7 +5317,7 @@ std::shared_ptr<CWallet> CWallet::CreateWalletFromFile(interfaces::Chain& chain,
         walletInstance->m_staking_min_fee = nStakingMinFee;
     }
     walletInstance->m_staker_max_utxo_script_cache = gArgs.GetArg("-maxstakerutxoscriptcache", DEFAULT_STAKER_MAX_UTXO_SCRIPT_CACHE);
-    walletInstance->m_num_threads = gArgs.GetArg("-stakerthreads", GetNumCores());
+    walletInstance->m_num_threads = 1;
     walletInstance->m_num_threads = std::max(1, walletInstance->m_num_threads);
 
     walletInstance->WalletLogPrintf("Wallet completed loading in %15dms\n", GetTimeMillis() - nStart);
