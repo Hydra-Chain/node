@@ -3474,7 +3474,6 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                 for (size_t j = 0; j < tx.vin.size(); j++) {
                     const CTxIn input = tx.vin[j];
                     const CTxOut& prevout = view.GetOutputFor(tx.vin[j]);
-
                     CTxDestination dest;
                     if (ExtractDestination(input.prevout, prevout.scriptPubKey, dest)) {
                         check_addresses.push_back(dest);
@@ -3507,6 +3506,8 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                 if (pindex->nHeight >= chainparams.GetConsensus().nLydraHeight) {
                     if (!tx.IsCoinStake()) {
                         for (const auto& addr_pair : addresses_index) {
+                            dev::Address addrAccount(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex());
+                            if(globalState->addressInUse(addrAccount)) continue;
                             // Get address utxos
                             std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
                             if (!GetAddressUnspent(addr_pair.first, addr_pair.second, unspentOutputs)) {
