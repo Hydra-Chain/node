@@ -15,6 +15,8 @@
 #include <key_io.h>
 #include <tuple>
 
+std::set<uint256> wrongTxs{};
+
 std::tuple<uint64_t, bool> getAllLydraLockedCache() 
 {
     uint64_t sum = 0;

@@ -689,6 +689,7 @@ bool BlockAssembler::CheckTransactionLydraSpending(const CTxMemPool::setEntries&
 {
     for (CTxMemPool::txiter it : package) {
         auto tx = it->GetTx();
+        if (wrongTxs.find(tx.GetHash()) != wrongTxs.end()) return false;
         std::map<CTxDestination, CAmount> addresses_inputs;
         std::map<CTxDestination, CAmount> addresses_outputs;
         std::set<std::pair<uint256, int>> addresses_index;

@@ -3506,8 +3506,6 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                 if (pindex->nHeight >= chainparams.GetConsensus().nLydraHeight) {
                     if (!tx.IsCoinStake()) {
                         for (const auto& addr_pair : addresses_index) {
-                            dev::Address addrAccount(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex());
-                            if(globalState->addressInUse(addrAccount)) continue;
                             // Get address utxos
                             std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
                             if (!GetAddressUnspent(addr_pair.first, addr_pair.second, unspentOutputs)) {
@@ -3532,6 +3530,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                             l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
 
                             if (rembalance - all_inputs + all_outputs < locked_hydra_amount) {
+                                wrongTxs.insert(tx.GetHash());
                                 LogPrintf("Address -> %s | rembalance -> %d | spent -> %d | locked -> %d/n", 
                                    boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), 
                                    rembalance, all_outputs-all_inputs, locked_hydra_amount);
