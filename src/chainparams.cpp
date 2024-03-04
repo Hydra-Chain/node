@@ -251,6 +251,7 @@ public:
         consensus.lydraAddress = uint160(ParseHex("68a674e10694eeb00867d2e11c8b158b00b28e96")); // LYDRA token address
         consensus.nDelegationsGasFixHeight = 1160400;
         consensus.nLydraOverspendingFixHeight = 1517000;
+        consensus.nStakerOptimizationHeight = 0x7ffffffff;
 
         consensus.BIP34Hash = uint256S("0x000058b8d49cd33ae70558978ff60269d4de7d4b50ac1f733631765e4207a457");
         // consensus.BIP65Height: 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
@@ -350,6 +351,7 @@ public:
         consensus.nDelegationsGasFixHeight = 1071300;
         consensus.nRefundFixHeight = 1153800;
         consensus.nLydraOverspendingFixHeight = 1539720;
+        consensus.nStakerOptimizationHeight = 0x7ffffffff;
 
         // consensus.BIP65Height - 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
         // consensus.BIP66Height - 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182

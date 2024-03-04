@@ -89,6 +89,8 @@ struct Params {
     int nRefundFixHeight;
     /** Block height at which overspend fix becomes active */
     int nLydraOverspendingFixHeight;
+    /** Block height at which staker optimization fix becomes active */
+    int nStakerOptimizationHeight;
 
     /**
      * Minimum blocks including miner confirmation of the total of 2016 blocks in a retargeting period,
