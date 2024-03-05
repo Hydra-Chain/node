@@ -229,6 +229,13 @@ public:
                 { 1174400, uint256S("0x84ea50f1c988d9bf2253a7f6c5583eb6183c0daf0255c19c536fdc770ecd60de")},
                 { 1175400, uint256S("0xf7125e3c1d9a277da05c74f16fa6d7055138b6ffa81f33c59f4336e4462687f1")},
                 { 1176400, uint256S("0x92660e79da8f13d05ec97a4ecede44aa66d379b4592feebe9fbea769435de17b")},
+                { 1200000, uint256S("0x6617a571de572c2f50309069ae3ccec37bf42d987f746ee58b6e983649db3d57")},
+                { 1300000, uint256S("0xac7cd4cc1b0df660e7e6b314ab2580304d514e3acf428da01c419f2f193654f1")},
+                { 1400000, uint256S("0x929c878da05dfaaea9a5c02f9eac4b3f1f870b10fd51d11072675e68de68e72c")},
+                { 1500000, uint256S("0x62ecaaa9e481ed01303c1ee78ff7205e5b45c00719646b304bae054978cf194a")},
+                { 1600000, uint256S("0x1ed6cb9a4862c373f0f7dbf07b83f1e890214be4040683427ecb620905438c14")},
+                { 1700000, uint256S("0xbbffaaf329861df74e38cb484314265e6335347f261601620aeae5e1eebd1b8a")},
+                { 1800000, uint256S("0x7b03baeaa64b37fee3dec45990386389947a502911925add5520f7fde2cb8067")},
             }
         };
 
@@ -251,7 +258,7 @@ public:
         consensus.lydraAddress = uint160(ParseHex("68a674e10694eeb00867d2e11c8b158b00b28e96")); // LYDRA token address
         consensus.nDelegationsGasFixHeight = 1160400;
         consensus.nLydraOverspendingFixHeight = 1517000;
-        consensus.nStakerOptimizationHeight = 0x7ffffffff;
+        consensus.nStakerOptimizationHeight = 1849150;
 
         consensus.BIP34Hash = uint256S("0x000058b8d49cd33ae70558978ff60269d4de7d4b50ac1f733631765e4207a457");
         // consensus.BIP65Height: 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
@@ -328,7 +335,15 @@ public:
                 { 950000, uint256S("0x5b5012f2262fcbcd9f769eecdf57cde6dd22e1d6a405f36a89230a2fa8b60da5")},
                 { 979410, uint256S("0x282cdf3aa4957a50b6cac6e38f426a9c148cfb710084cf733575396ee08142b4")},
                 { 1000000, uint256S("0x7d73d44f39f5b699a4066f7ab9e36297dcef49e14e37524d6f50a4805ad06acc")},
-                { 1050000, uint256S("0x3f9e68d1bea7ad90511ab5279b28561920acd6ebb374bddc17ec8f86029b0c71")}
+                { 1050000, uint256S("0x3f9e68d1bea7ad90511ab5279b28561920acd6ebb374bddc17ec8f86029b0c71")},
+                { 1150000, uint256S("0xefec909ac85edda4dcdf849f81dbb3d2497b2f35a38f80281b352065c080b9a1")},
+                { 1250000, uint256S("0x8736de5c7e7bf3978f8573cc77e50293736430cbb878a230f49668ab13b75809")},
+                { 1350000, uint256S("0x99c0973f3895f7727a5939aa1d9365e9de3474412ba3d75d04b8f69a916b7222")},
+                { 1450000, uint256S("0xd5b008d3676f836683812bc84713943805d223aa2615f22f27c2c83461b55168")},
+                { 1550000, uint256S("0x62786bb5005da5146baf07affeedf3c7b4bfc43ab3b77a92b21ece836dac0f52")},
+                { 1650000, uint256S("0x7e96481b9f4341713dd6c674d7617e043a185d32f769231ab045e7773fc1da1c")},
+                { 1750000, uint256S("0xb0ebaaa21743d4b3a6d902492149b8fd494cf514db46d0aa07eeb94258ad3495")},
+                { 1850000, uint256S("0x774a56770e9cdcd0d26cd91a5a5c9b7a741a043ad2e2fc50160c7efaf4f958a0")},
             }
         };
 
@@ -351,7 +366,7 @@ public:
         consensus.nDelegationsGasFixHeight = 1071300;
         consensus.nRefundFixHeight = 1153800;
         consensus.nLydraOverspendingFixHeight = 1539720;
-        consensus.nStakerOptimizationHeight = 0x7ffffffff;
+        consensus.nStakerOptimizationHeight = 1934500;
 
         // consensus.BIP65Height - 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
         // consensus.BIP66Height - 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
