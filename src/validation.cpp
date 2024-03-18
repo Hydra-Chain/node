@@ -767,14 +767,14 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                         for (QtumTransaction qtumTransaction : qtumTransactions) {
                             if (qtumTransaction.receiveAddress() == uintToh160(Params().GetConsensus().lydraAddress) &&
                                 std::find(lydra_tx_senders.begin(), lydra_tx_senders.end(), qtumTransaction.sender()) != lydra_tx_senders.end()) {
-                                    return state.DoS(100, error("%s: Cannot mint to same address while another mint is pending", __func__),
-                                                        REJECT_INVALID, "another-mint-pending");
+                                return state.DoS(100, error("%s: Cannot mint to same address while another mint is pending", __func__),
+                                    REJECT_INVALID, "another-mint-pending");
                             }
                         }
                     }
                 }
             }
-            
+
             for (const CTxIn& txin : tx.vin) {
                 CTxDestination dest;
                 const CTxOut& prevout = view.GetOutputFor(txin);
@@ -809,23 +809,22 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
 
             for (const auto& addr_pair : addresses_index) {
                 // Get address utxos
-                std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
+                std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue>> unspentOutputs;
                 if (!GetAddressUnspent(addr_pair.first, addr_pair.second, unspentOutputs)) {
-                    //throw error("No information available for address");
+                    // throw error("No information available for address");
                 }
 
                 // Add the utxos to the list if they are mature and at least the minimum value
                 int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(chainActive.Height() + 1);
                 CAmount rembalance = 0;
-                for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
-
+                for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue>>::const_iterator i = unspentOutputs.begin(); i != unspentOutputs.end(); i++) {
                     int nDepth = chainActive.Height() - i->second.blockHeight + 1;
-                    //if (nDepth < coinbaseMaturity)
-                        //continue;
+                    // if (nDepth < coinbaseMaturity)
+                    // continue;
 
                     rembalance += i->second.satoshis;
                 }
-                
+
                 auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
                 auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
                 Lydra l;
@@ -833,9 +832,9 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                 l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
 
                 if (rembalance - all_inputs + all_outputs < locked_hydra_amount) {
-                    LogPrintf("Address -> %s | rembalance -> %d | spent -> %d | locked -> %d/n", 
-                                   boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), 
-                                   rembalance, all_outputs-all_inputs, locked_hydra_amount);
+                    LogPrintf("Address -> %s | rembalance -> %d | spent -> %d | locked -> %d/n",
+                        boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(),
+                        rembalance, all_outputs - all_inputs, locked_hydra_amount);
                     return state.DoS(100, error("%s: Spending more than available HYDRA amount. The rest is locked for LYDRA tokens.", __func__),
                         REJECT_INVALID, "spend-more-than-locked");
                 }
@@ -3069,22 +3068,22 @@ bool CheckDelegationOutput(const CBlock& block, bool& delegateOutputExist, CCoin
 
 bool CheckBlockLydraSpending(std::vector<CTransactionRef> vtx)
 {
-    std::map<CTxDestination, CAmount> addresses_balances;
+    std::map<std::string, CAmount> addresses_balances;
 
-    for (unsigned int i = 0; i < vtx.size(); i++)
-    {
-        const CTransaction &tx = *(vtx[i]);
+    for (unsigned int i = 0; i < vtx.size(); i++) {
+        const CTransaction& tx = *(vtx[i]);
         if (tx.IsCoinBase() || tx.IsCoinStake()) continue;
-        std::map<CTxDestination, CAmount> addresses_inputs;
-        std::map<CTxDestination, CAmount> addresses_outputs;
+        std::map<std::string, CAmount> addresses_inputs;
+        std::map<std::string, CAmount> addresses_outputs;
         std::set<std::pair<uint256, int>> addresses_index;
         std::map<uint256, CTxDestination> addrhash_dest;
-		std::set<uint256> addresses_index_checked;
+        std::set<uint256> addresses_index_checked;
         for (const CTxIn& txin : tx.vin) {
             CTxDestination dest;
             CCoinsViewCache view(pcoinsTip.get());
             const CTxOut& prevout = view.GetOutputFor(txin);
             if (ExtractDestination(txin.prevout, prevout.scriptPubKey, dest)) {
+                auto dest_hex = boost::get<CKeyID>(&dest)->GetReverseHex();
                 uint256 hashBytes;
                 int type = 0;
                 if (!DecodeIndexKey(EncodeDestination(dest), hashBytes, type)) {
@@ -3092,54 +3091,64 @@ bool CheckBlockLydraSpending(std::vector<CTransactionRef> vtx)
                 }
                 addresses_index.insert(std::make_pair(hashBytes, type));
                 addrhash_dest[hashBytes] = dest;
-                if (addresses_inputs.find(dest) != addresses_inputs.end())
-                    addresses_inputs[dest] += prevout.nValue;
+                if (addresses_inputs.find(dest_hex) != addresses_inputs.end())
+                    addresses_inputs[dest_hex] += prevout.nValue;
                 else
-                    addresses_inputs[dest] = prevout.nValue;
-                if(!addresses_balances.count(dest)) {
+                    addresses_inputs[dest_hex] = prevout.nValue;
+                if (!addresses_balances.count(dest_hex)) {
                     // Get address utxos
-                    std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
+                    std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue>> unspentOutputs;
                     if (!GetAddressUnspent(hashBytes, type, unspentOutputs)) {
                         return false;
                     }
                     // Add the utxos to the list if they are mature and at least the minimum value
                     int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(chainActive.Height() + 1);
                     CAmount rembalance = 0;
-                    for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
+                    for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue>>::const_iterator i = unspentOutputs.begin(); i != unspentOutputs.end(); i++) {
                         int nDepth = chainActive.Height() - i->second.blockHeight + 1;
                         if (i->second.coinStake && nDepth < coinbaseMaturity)
                             continue;
                         rembalance += i->second.satoshis;
                     }
-                    addresses_balances.insert({dest, rembalance});
+                    addresses_balances.insert({dest_hex, rembalance});
                 }
             }
         }
         for (size_t j = 0; j < tx.vout.size(); j++) {
             const CTxOut& out = tx.vout[j];
             CTxDestination dest;
-            if (ExtractDestination(out.scriptPubKey, dest)) {	
-                if (addresses_outputs.find(dest) != addresses_outputs.end())
-                    addresses_outputs[dest] += out.nValue;
+            if (ExtractDestination(out.scriptPubKey, dest)) {
+                auto dest_hex = boost::get<CKeyID>(&dest)->GetReverseHex();
+                if (addresses_outputs.find(dest_hex) != addresses_outputs.end())
+                    addresses_outputs[dest_hex] += out.nValue;
                 else
-                    addresses_outputs[dest] = out.nValue;
+                    addresses_outputs[dest_hex] = out.nValue;
+            } else {
+                if (tx.IsCoinStake()) continue;
+                auto hex_script = HexStr(out.scriptPubKey);
+                auto dest_hex = hex_script.substr(hex_script.length() - 42, 40);
+                if (addresses_outputs.find(dest_hex) != addresses_outputs.end())
+                    addresses_outputs[dest_hex] += out.nValue;
+                else
+                    addresses_outputs[dest_hex] = out.nValue;
             }
         }
         for (const auto& addr_pair : addresses_index) {
-            // if(addresses_balances.count(addrhash_dest[addr_pair.first]) && 
+            // if(addresses_balances.count(addrhash_dest[addr_pair.first]) &&
             //     addresses_inputs.count(addrhash_dest[addr_pair.first]) &&
             //     addresses_outputs.count(addrhash_dest[addr_pair.first])) {
-            auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
-            auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
+            auto dest_hex = boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex();
+            auto all_inputs = addresses_inputs[dest_hex];
+            auto all_outputs = addresses_outputs[dest_hex];
             Lydra l;
             uint64_t locked_hydra_amount;
-            l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
-            if (!addresses_index_checked.count(addr_pair.first) && addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs < locked_hydra_amount) {
+            l.getLockedHydraAmountPerAddress(dest_hex, locked_hydra_amount);
+            if (!addresses_index_checked.count(addr_pair.first) && addresses_balances[dest_hex] - all_inputs + all_outputs < locked_hydra_amount) {
                 return false;
             }
             if (!addresses_index_checked.count(addr_pair.first)) {
-                addresses_balances[addrhash_dest[addr_pair.first]] = 
-                    addresses_balances[addrhash_dest[addr_pair.first]] - all_inputs + all_outputs;
+                addresses_balances[dest_hex] =
+                    addresses_balances[dest_hex] - all_inputs + all_outputs;
                 addresses_index_checked.insert(addr_pair.first);
             }
             // }
@@ -3428,10 +3437,10 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
         nValueCoinPrev = coin.out.nValue;
     }
 
-    if(pindex->nHeight >= chainparams.GetConsensus().nLydraOverspendingFixHeight) {
-        if(!CheckBlockLydraSpending(block.vtx))
-            return state.DoS(100, error("%s: LYDRA overspending detected", __func__), 
-                            REJECT_INVALID, "bad-txns-lydra-overspending");
+    if (pindex->nHeight >= chainparams.GetConsensus().nLydraOverspendingFixHeight) {
+        if (!CheckBlockLydraSpending(block.vtx))
+            return state.DoS(100, error("%s: LYDRA overspending detected", __func__),
+                REJECT_INVALID, "bad-txns-lydra-overspending");
     }
 
     for (unsigned int i = 0; i < block.vtx.size(); i++) {
@@ -3466,8 +3475,8 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
             ////////////////////////////////////////////////////////////////// // qtum
             if (fAddressIndex) {
                 std::vector<CTxDestination> check_addresses;
-                std::map<CTxDestination, CAmount> addresses_inputs;
-                std::map<CTxDestination, CAmount> addresses_outputs;
+                std::map<std::string, CAmount> addresses_inputs;
+                std::map<std::string, CAmount> addresses_outputs;
                 std::set<std::pair<uint256, int>> addresses_index;
                 std::map<uint256, CTxDestination> addrhash_dest;
 
@@ -3476,6 +3485,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                     const CTxOut& prevout = view.GetOutputFor(tx.vin[j]);
                     CTxDestination dest;
                     if (ExtractDestination(input.prevout, prevout.scriptPubKey, dest)) {
+                        auto dest_hex = boost::get<CKeyID>(&dest)->GetReverseHex();
                         check_addresses.push_back(dest);
                         uint256 hashBytes;
                         int type = 0;
@@ -3485,10 +3495,10 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                         }
                         addresses_index.insert(std::make_pair(hashBytes, type));
                         addrhash_dest[hashBytes] = dest;
-                        if (addresses_inputs.find(dest) != addresses_inputs.end())
-                            addresses_inputs[dest] += prevout.nValue;
+                        if (addresses_inputs.find(dest_hex) != addresses_inputs.end())
+                            addresses_inputs[dest_hex] += prevout.nValue;
                         else
-                            addresses_inputs[dest] = prevout.nValue;
+                            addresses_inputs[dest_hex] = prevout.nValue;
                     }
                 }
 
@@ -3496,10 +3506,19 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                     const CTxOut& out = tx.vout[j];
                     CTxDestination dest;
                     if (ExtractDestination(out.scriptPubKey, dest)) {
-                        if (addresses_outputs.find(dest) != addresses_outputs.end())
-                            addresses_outputs[dest] += out.nValue;
+                        auto dest_hex = boost::get<CKeyID>(&dest)->GetReverseHex();
+                        if (addresses_outputs.find(dest_hex) != addresses_outputs.end())
+                            addresses_outputs[dest_hex] += out.nValue;
                         else
-                            addresses_outputs[dest] = out.nValue;
+                            addresses_outputs[dest_hex] = out.nValue;
+                    } else {
+                        if (tx.IsCoinStake()) continue;
+                        auto hex_script = HexStr(out.scriptPubKey);
+                        auto dest_hex = hex_script.substr(hex_script.length() - 42, 40);
+                        if (addresses_outputs.find(dest_hex) != addresses_outputs.end())
+                            addresses_outputs[dest_hex] += out.nValue;
+                        else
+                            addresses_outputs[dest_hex] = out.nValue;
                     }
                 }
 
@@ -3507,33 +3526,31 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                     if (!tx.IsCoinStake()) {
                         for (const auto& addr_pair : addresses_index) {
                             // Get address utxos
-                            std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > unspentOutputs;
+                            std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue>> unspentOutputs;
                             if (!GetAddressUnspent(addr_pair.first, addr_pair.second, unspentOutputs)) {
-                                //throw error("No information available for address");
+                                // throw error("No information available for address");
                             }
 
                             // Add the utxos to the list if they are mature and at least the minimum value
                             int coinbaseMaturity = Params().GetConsensus().CoinbaseMaturity(chainActive.Height() + 1);
                             CAmount rembalance = 0;
-                            for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> >::const_iterator i=unspentOutputs.begin(); i!=unspentOutputs.end(); i++) {
-
+                            for (std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue>>::const_iterator i = unspentOutputs.begin(); i != unspentOutputs.end(); i++) {
                                 int nDepth = chainActive.Height() - i->second.blockHeight + 1;
-                                //if (nDepth < coinbaseMaturity)
-                                    //continue;
+                                // if (nDepth < coinbaseMaturity)
+                                // continue;
 
                                 rembalance += i->second.satoshis;
                             }
-                            auto all_inputs = addresses_inputs[addrhash_dest[addr_pair.first]];
-                            auto all_outputs = addresses_outputs[addrhash_dest[addr_pair.first]];
+                            auto dest_hex = boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex();
+                            auto all_inputs = addresses_inputs[dest_hex];
+                            auto all_outputs = addresses_outputs[dest_hex];
                             Lydra l;
                             uint64_t locked_hydra_amount;
-                            l.getLockedHydraAmountPerAddress(boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), locked_hydra_amount);
+                            l.getLockedHydraAmountPerAddress(dest_hex, locked_hydra_amount);
 
                             if (rembalance - all_inputs + all_outputs < locked_hydra_amount) {
-                                wrongTxs.insert(tx.GetHash());
-                                LogPrintf("Address -> %s | rembalance -> %d | spent -> %d | locked -> %d/n", 
-                                   boost::get<CKeyID>(&addrhash_dest[addr_pair.first])->GetReverseHex(), 
-                                   rembalance, all_outputs-all_inputs, locked_hydra_amount);
+                                LogPrintf("Address -> %s | rembalance -> %d | spent -> %d | locked -> %d/n",
+                                    dest_hex, rembalance, all_outputs - all_inputs, locked_hydra_amount);
                                 return error("%s: Spending more than available HYDRA amount. The rest is locked for LYDRA tokens.", __func__);
                             }
                         }
@@ -5202,7 +5219,7 @@ bool CheckFirstCoinstakeOutput(const CBlock& block)
 
 #ifdef ENABLE_WALLET
 // novacoin: attempt to generate suitable proof-of-stake
-bool SignBlock(std::shared_ptr<CBlock> pblock, CWallet& wallet, const CAmount& nTotalFees, uint32_t nTime, std::set<std::pair<const CWalletTx*,unsigned int> >& setCoins, std::vector<COutPoint>& setSelectedCoins, std::vector<COutPoint>& setDelegateCoins, bool selectedOnly, bool tryOnly)
+bool SignBlock(std::shared_ptr<CBlock> pblock, CWallet& wallet, const CAmount& nTotalFees, uint32_t nTime, std::set<std::pair<const CWalletTx*, unsigned int>>& setCoins, std::vector<COutPoint>& setSelectedCoins, std::vector<COutPoint>& setDelegateCoins, bool selectedOnly, bool tryOnly)
 {
     // if we are trying to sign
     //    something except proof-of-stake block template
@@ -5228,7 +5245,7 @@ bool SignBlock(std::shared_ptr<CBlock> pblock, CWallet& wallet, const CAmount& n
     if (wallet.IsStakeClosing()) return false;
     auto locked_chain = wallet.chain().lock();
     LOCK(wallet.cs_wallet);
-    if (wallet.CreateCoinStake(*locked_chain, wallet, pblock->nBits, nTotalFees, nTimeBlock, txCoinStake, key, setCoins, setSelectedCoins, setDelegateCoins, selectedOnly, vchPoD, headerPrevout)){
+    if (wallet.CreateCoinStake(*locked_chain, wallet, pblock->nBits, nTotalFees, nTimeBlock, txCoinStake, key, setCoins, setSelectedCoins, setDelegateCoins, selectedOnly, vchPoD, headerPrevout)) {
         if (nTimeBlock >= chainActive.Tip()->GetMedianTimePast() + 1) {
             // make sure coinstake would meet timestamp protocol
             //    as it would be the same as the block timestamp
@@ -5237,7 +5254,7 @@ bool SignBlock(std::shared_ptr<CBlock> pblock, CWallet& wallet, const CAmount& n
             pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
             pblock->prevoutStake = headerPrevout;
 
-            if(tryOnly)
+            if (tryOnly)
                 return true;
 
             // Check timestamp against prev
@@ -7206,7 +7223,7 @@ void CChainState::CheckBlockIndex(const Consensus::Params& consensusParams)
             assert(pindex->GetBlockHash() == consensusParams.hashGenesisBlock); // Genesis block's hash must match.
             assert(pindex == chainActive.Genesis());                            // The current active chain's genesis block must be this block.
         }
-        if (!pindex->HaveTxsDownloaded()) assert(pindex->nSequenceId <= 0);     // nSequenceId can't be set positive for blocks that aren't linked (negative is used for preciousblock)
+        if (!pindex->HaveTxsDownloaded()) assert(pindex->nSequenceId <= 0); // nSequenceId can't be set positive for blocks that aren't linked (negative is used for preciousblock)
         // VALID_TRANSACTIONS is equivalent to nTx > 0 for all nodes (whether or not pruning has occurred).
         // HAVE_DATA is only equivalent to nTx > 0 (or VALID_TRANSACTIONS) if no pruning has occurred.
         if (!fHavePruned) {
@@ -7227,11 +7244,11 @@ void CChainState::CheckBlockIndex(const Consensus::Params& consensusParams)
         assert(nHeight < 2 || (pindex->pskip && (pindex->pskip->nHeight < nHeight)));        // The pskip pointer must point back for all but the first 2 blocks.
         assert(pindexFirstNotTreeValid == nullptr);                                          // All mapBlockIndex entries must at least be TREE valid
         if ((pindex->nStatus & BLOCK_VALID_MASK) >= BLOCK_VALID_TREE)
-            assert(pindexFirstNotTreeValid == nullptr);                                      // TREE valid implies all parents are TREE valid
+            assert(pindexFirstNotTreeValid == nullptr); // TREE valid implies all parents are TREE valid
         if ((pindex->nStatus & BLOCK_VALID_MASK) >= BLOCK_VALID_CHAIN)
-            assert(pindexFirstNotChainValid == nullptr);                                     // CHAIN valid implies all parents are CHAIN valid
+            assert(pindexFirstNotChainValid == nullptr); // CHAIN valid implies all parents are CHAIN valid
         if ((pindex->nStatus & BLOCK_VALID_MASK) >= BLOCK_VALID_SCRIPTS)
-            assert(pindexFirstNotScriptsValid == nullptr);                                   // SCRIPTS valid implies all parents are SCRIPTS valid
+            assert(pindexFirstNotScriptsValid == nullptr); // SCRIPTS valid implies all parents are SCRIPTS valid
         if (pindexFirstInvalid == nullptr) {
             // Checks for not-invalid blocks.
             assert((pindex->nStatus & BLOCK_FAILED_MASK) == 0); // The failed mask cannot be set for blocks without invalid parents.
